@@ -363,10 +363,48 @@ div.points {
   visibility: visible;
 }
 
+.dis-show-inline {
+  display: inline;
+  visibility: visible;
+}
+
 input[type="number"] {
   height: 32px;
   margin-bottom: 0;
   width: 112px;
+}
+
+input[type='checkbox']+label {
+  font-size: 10px;
+  line-height: 10px;
+}
+
+input[type='checkbox']+label span.minus {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  background-color: #ffffff;
+  background: url(/assets/img/minus1n.png);
+  background-size: 20px;
+}
+
+input[type='checkbox']:checked+label span.minus {
+  background: url(/assets/img/minus1.png);
+}
+
+input[type='checkbox']+label span.plus {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  background-color: #ffffff;
+  background: url(/assets/img/plus1n.png);
+  background-size: 20px;
+}
+
+input[type='checkbox']:checked+label span.plus {
+  background: url(/assets/img/plus1.png);
 }
 
 @media (max-width: 767px) {
@@ -395,6 +433,11 @@ input[type="number"] {
   }
 
   .dis-show {
+    display: none;
+    visibility: hidden;
+  }
+
+  .dis-show-inline {
     display: none;
     visibility: hidden;
   }
@@ -462,5 +505,9 @@ input[type="number"] {
   .w-20 {
     width: auto
   }
+}
+
+.popover {
+  z-index: 100;
 }
 

@@ -342,8 +342,9 @@
               <div class="card mt-4">
                 <div class="flex justify-between items-center heard-table cursor-pointer" data-toggle="collapse"
                   data-target="#levelclasslist" aria-expanded="true" aria-controls="levelclasslist">
-                  <div class="w-full p-2" style="color: #145240;">
-                    第一階段
+                  <div class="w-full p-2">
+                    <span class="dis-show-inline font-bold mr-1" style="color: #f00;">退選</span>
+                    <span style="color: #145240;">第一階段</span>
                     <span style="color: blue">已選課程</span>
                     <span style="float: right; font-size: larger;">可用點數：{{currentPoints}} / {{orignPoints}}</span>
                   </div>
@@ -379,8 +380,11 @@
                           <div class="text-center">
                             <div *ngIf="['1','2'].indexOf(currLevel) !== -1">
                               <input type="checkbox" [tooltip]="conflictCourseNames(item.HaveConflict)"
-                                placement="right" [(ngModel)]="item.WillQuit" [value]="item.CourseID"
-                                (click)="clickCourseCheckbox(item, 'WillQuit')" style="width: 20px; height: 20px;">
+                                placement="right" [(ngModel)]="item.WillQuit" [value]="item.CourseID" [id]="item.CourseID"
+                                (click)="clickCourseCheckbox(item, 'WillQuit')" class="dis-none">
+                              <label [for]="item.CourseID" class="mb-0">
+                                <span class="minus"></span>
+                              </label>
                             </div>
                             <div [appBorderColor]="item.CourseType" class="w-7 my-2">{{
                               courseTypeFormatPipe.transform(item.CourseType) }}</div>
@@ -511,7 +515,11 @@
               <div *ngIf="currLevel == '2'" class="card mt-4">
                 <div class="flex justify-between items-center heard-table cursor-pointer" data-toggle="collapse"
                   data-target="#level2classlist" aria-expanded="true" aria-controls="level2classlist">
-                  <div class="p-2">第二階段<span style="color: blue">已選課程</span></div>
+                  <div class="p-2">
+                    <span class="dis-show-inline font-bold mr-1" style="color: #f00;">退選</span>
+                    第二階段
+                    <span style="color: blue">已選課程</span>
+                  </div>
                   <div class="block md:hidden text-xl px-4 py-2">
                     <i class="collapse-close fa fa-angle-down font-bold" aria-hidden="true"></i>
                     <i class="collapse-open fa fa-angle-up font-bold" aria-hidden="true"></i>
@@ -535,8 +543,7 @@
                   </tr>
                 </thead>
                 <div class="collapse in" id="level2classlist" aria-expanded="true">
-                  <tbody *ngFor="let item of currAttends; let j = index" data-type="quit" id="choose02"
-                    class="dis-show">
+                  <tbody *ngFor="let item of currAttends; let j = index" data-type="quit" id="choose02" class="dis-show">
                     <div *ngIf="item.ChooseItem == '2'" [appBorderColor]="item.CourseType"
                       [ngClass]="{'my-error': item.HaveConflict.length > 0}" class="card bd-callout px-4 pt-3">
                       <div class="text-muted" style="outline: none;">
@@ -544,8 +551,11 @@
                           <div class="text-center">
                             <div *ngIf="['1','2'].indexOf(currLevel) !== -1">
                               <input type="checkbox" [tooltip]="conflictCourseNames(item.HaveConflict)"
-                                placement="right" [(ngModel)]="item.WillQuit" [value]="item.CourseID"
-                                (click)="clickCourseCheckbox(item, 'WillQuit')" style="width: 20px; height: 20px;">
+                                placement="right" [(ngModel)]="item.WillQuit" [value]="item.CourseID" [id]="item.CourseID"
+                                (click)="clickCourseCheckbox(item, 'WillQuit')" class="dis-none">
+                              <label [for]="item.CourseID" class="mb-0">
+                                <span class="minus"></span>
+                              </label>
                             </div>
                             <div [appBorderColor]="item.CourseType" class="w-7 my-2">{{
                               courseTypeFormatPipe.transform(item.CourseType) }}</div>
@@ -681,6 +691,7 @@
                   data-target="#canclasslist" aria-expanded="true" aria-controls="canclasslist"
                   style="background: #fff498;">
                   <div class="w-full p-2" style="color: #7e631e;">
+                    <span class="dis-show-inline font-bold mr-1" style="color: rgb(8, 163, 0);">加選</span>
                     <span style="color: red">可選課程</span>清單
                   </div>
                   <div class="block md:hidden text-xl px-4 py-2">
@@ -714,9 +725,13 @@
                         <div class="flex justify-center items-center gap-x-2 pb-3">
                           <div class="text-center">
                             <div *ngIf="['1','2'].indexOf(currLevel) !== -1">
-                              <input type="checkbox" #ck [tooltip]="conflictCourseNames(item.HaveConflict)"
-                                placement="right" [checked]="item.WillAdd"
-                                (click)="clickCourseCheckbox(item, 'WillAdd', ck)" style="width: 20px; height: 20px;">
+                              <input type="checkbox" #ck [tooltip]="conflictCourseNames(item.HaveConflict)" 
+                                placement="right" [checked]="item.WillAdd" [id]="item.CourseID"
+                                (click)="clickCourseCheckbox(item, 'WillAdd', ck)" class="dis-none">
+                              <label [for]="item.CourseID" class="mb-0">
+                                <span class="plus"></span>
+                              </label>
+
                             </div>
                             <div [appBorderColor]="item.CourseType" class="w-7 my-2">{{
                               courseTypeFormatPipe.transform(item.CourseType) }}</div>
