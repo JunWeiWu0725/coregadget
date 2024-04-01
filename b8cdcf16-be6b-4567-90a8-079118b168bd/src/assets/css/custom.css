@@ -385,12 +385,12 @@ input[type='checkbox']+label span.minus {
   height: 20px;
   position: relative;
   background-color: #ffffff;
-  background: url(/assets/img/minus1n.png);
+  background: url(../img/minus1n.png);
   background-size: 20px;
 }
 
 input[type='checkbox']:checked+label span.minus {
-  background: url(/assets/img/minus1.png);
+  background: url(../img/minus1.png);
 }
 
 input[type='checkbox']+label span.plus {
@@ -399,12 +399,12 @@ input[type='checkbox']+label span.plus {
   height: 20px;
   position: relative;
   background-color: #ffffff;
-  background: url(/assets/img/plus1n.png);
+  background: url(../img/plus1n.png);
   background-size: 20px;
 }
 
 input[type='checkbox']:checked+label span.plus {
-  background: url(/assets/img/plus1.png);
+  background: url(../img/plus1.png);
 }
 
 @media (max-width: 767px) {
