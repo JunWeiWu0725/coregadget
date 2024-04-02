@@ -323,7 +323,7 @@ jQuery(function () {
                     return '<td><a href="javascript: void(0);" class="btn btn-warning" data-index="' + index + '" data-survey-id="' + item.SurveyID + '" data-survey-category="' + item.Category + '" data-survey-school_year="' + item.SchoolYear + '" data-survey-semester="' + item.Semester + '">暫存</a></td>';
                     break;
                 case '1':
-                    return '<td><span class="btn disabled">已完成</span></td>';
+                    return '<td><span class="btn px-1 disabled">已完成</span></td>';
                     break;
                 default:
                 	return '<td><a href="javascript: void(0);" class="btn btn-danger" data-index="' + index + '" data-survey-id="' + item.SurveyID + '" data-survey-category="' + item.Category + '" data-survey-school_year="' + item.SchoolYear + '" data-survey-semester="' + item.Semester + '">開始填寫</a></td>';
@@ -522,7 +522,7 @@ jQuery(function () {
                         	if ($(that_questions.Hierarchy.Question).length === 1 && that_questions.Hierarchy.Question.Type === '問答題') {
                         		$('#no-option').html('<th colspan="2" style="background-color:#bbe6e2;background:#bbe6e2">題項<span class="text-error">（*為必填欄位）</span></th>');
                         	} else {
-                        		$('#no-option').html('<th>題項<span class="text-error">（*為必填欄位）</span></th><th>選項</th>');
+                        		$('#no-option').html('<th class="min-w-auto md:min-w-96">題項<span class="text-error">（*為必填欄位）</span></th><th class="w-36 sm:w-auto">選項</th>');
                         	}
                         	if ($(that_questions.Hierarchy).length > 0) {
                                 $(that_questions.Hierarchy).each(function(index, hierarchy) {
@@ -542,41 +542,41 @@ jQuery(function () {
                                             //#region 題目
                                             if (item.IsCase === 't') {
                                                 // 個案題
-                                                question_html += '<tr class="my-iscase"><td colspan="2"><div class="my-question-container">' +
-                                                    '<div class="my-question-number">' +
-                                                    (item.IsRequired === 't' ? '<span class="text-error my-star">*</span>' : '<span class="my-star">&nbsp;&nbsp;&nbsp;</span>') +
+                                                question_html += '<tr class="my-iscase"><td colspan="2"><div class="flex">' +
+                                                    '<div class="mr-3">' +
+                                                    (item.IsRequired === 't' ? '<span class="text-error my-star">*</span>' : '<span class="my-star ml-2"></span>') +
                                                     question_idx +
                                                     '</div>' +
-                                                    '<div class="my-question-title">' + (item.QuestionTitle || '') + '</div></div></td></tr>';
+                                                    '<div class="">' + (item.QuestionTitle || '') + '</div></div></td></tr>';
 
                                                 $(that_case).each(function(index, data) {
                                                     var case_idx = (item.QuestionOrder || '') + '-' + (index+1) + '.';
                                                     question_html += '<tr class="my-iscase">' +
                                                         '<td class="my-casename">' +
-                                                        '<div class="my-question-container">' +
-                                                        '<div class="my-question-number">' + case_idx + '</div>' +
-                                                        '<div class="my-question-title">' + (data.CaseName || '') + '</div></div></td>' +
+                                                        '<div class="">' +
+                                                        '<div class="">' + case_idx + '</div>' +
+                                                        '<div class="">' + (data.CaseName || '') + '</div></div></td>' +
                                                         get_option(item, data.CaseID) + '</tr>';
                                                 });
                                             } else {
                                             	if (item.Type === '問答題') {
                                             		// 問答題
-                                            		question_html += '<tr><td colspan="2"><div class="my-question-container">' +
-    													'<div class="my-question-number">' +
-    													(item.IsRequired === 't' ? '<span class="text-error my-star">*</span>' : '<span class="my-star">&nbsp;&nbsp;&nbsp;</span>') +
+                                            		question_html += '<tr><td colspan="2"><div class="flex">' +
+    													'<div class="mr-3">' +
+    													(item.IsRequired === 't' ? '<span class="text-error my-star">*</span>' : '<span class="my-star ml-2"></span>') +
     													question_idx +
     													'</div>' +
-    													'<div class="my-question-title">' + (item.QuestionTitle || '') + '</div></div>' +
+    													'<div class="">' + (item.QuestionTitle || '') + '</div></div>' +
     													get_option(item, '') +
     													'</td></tr>';
                                             	} else {
                                             		// 其他
-                                            		question_html += '<tr><td><div class="my-question-container">' +
-    													'<div class="my-question-number">' +
-    													(item.IsRequired === 't' ? '<span class="text-error my-star">*</span>' : '<span class="my-star">&nbsp;&nbsp;&nbsp;</span>') +
+                                            		question_html += '<tr><td><div class="flex">' +
+    													'<div class="mr-3">' +
+    													(item.IsRequired === 't' ? '<span class="text-error my-star">*</span>' : '<span class="my-star ml-2"></span>') +
     													question_idx +
     													'</div>' +
-    													'<div class="my-question-title">' + (item.QuestionTitle || '') + '</div></div></td>' +
+    													'<div class="">' + (item.QuestionTitle || '') + '</div></div></td>' +
     													get_option(item, '') +
     													'</tr>';
                                             	}

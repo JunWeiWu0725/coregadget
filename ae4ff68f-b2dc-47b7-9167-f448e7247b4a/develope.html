@@ -1,28 +1,33 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
-  <META HTTP-EQUIV="EXPIRES" CONTENT="0">
-  <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
-  <script src="js/gadget.js"></script>
-  <script>
-    init({
-      application: "test.emba.ntu.edu.tw",
-      paramValues: {},
-      oAuth: {
-        clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
-        clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-        // account: 'bubu@debug.ischool.com.tw',
-        // password:'1234'
-      }
-    });
-  </script>
+	<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+	<META HTTP-EQUIV="EXPIRES" CONTENT="0">
+	<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+	<script src="js/gadget.js"></script>
+	<script>
+		init({
+			application: "test.emba.ntu.edu.tw",
+			paramValues: {},
+			oAuth: {
+				clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
+				clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
+				account: '',
+				password: ''
+			}
+		});
+	</script>
 	<link href="css/bootstrap.css?20141015" rel="stylesheet" />
 	<link href="css/bootstrap-responsive.css?20141015" rel="stylesheet" />
 	<link href="css/mybootstrap.css?20141015" rel="stylesheet" />
 	<link href="css/default.css?20141015" rel="stylesheet" />
 	<link href="css/base.css?20141015" rel="stylesheet" />
+
+	<link href="css/purge.css" rel="stylesheet" />
+
 	<script src="js/jquery.min.js?20141015"></script>
 	<script src="js/bootstrap.js?20141015"></script>
 	<script src="js/jquery.validate.min.js?20141015"></script>
@@ -32,23 +37,24 @@
 	<script src="js/survey.js?20141015"></script>
 	<script src="js/surveyHistory.js?20141015"></script>
 </head>
+
 <body>
-  <div id="gadget" class="my-page">
-    <div id="mainMsg"></div>
-    <div class="row-fluid">
-      <div class="span12">
-        <h1>
-          <ul id="myTab" class="nav nav-tabs my-navtabs">
+	<div id="gadget" class="my-page mt-5">
+		<div id="mainMsg"></div>
+		<div class="row-fluid">
+			<div class="span12">
+				<h1>
+					<ul id="myTab" class="nav nav-tabs my-navtabs">
 
-            <li class="active"><a href="#tab1" data-toggle="tab" id="tabName">問卷調查</a></li>
-            <li><a href="#tab2" data-toggle="tab">問卷填答統計</a></li>
-		  	<li><a href="#tab3" data-toggle="tab">問卷填答注意事項</a></li>
-          </ul>
-        </h1>
-        <div class="tab-content">
-          <div class="tab-pane active" id="tab1">
+						<li class="active"><a href="#tab1" data-toggle="tab" id="tabName">問卷調查</a></li>
+						<li><a href="#tab2" data-toggle="tab"><span class="hidden sm:inline">問卷</span>填答統計</a></li>
+						<li><a href="#tab3" data-toggle="tab"><span class="hidden sm:inline">問卷填答</span>注意事項</a></li>
+					</ul>
+				</h1>
+				<div class="tab-content">
+					<div class="tab-pane active" id="tab1">
 
-			<!--
+						<!--
             <div class="tab-pane active" id="sa06">
               <div class="alert alert-info">
                 <div id="teaching_evaluation_precautions" style="color:black; background-color:white;">
@@ -56,11 +62,11 @@
               </div>
             </div>
 			-->
-			<!--
+						<!--
             <h4 style='font-size: 22px;font-size: 1.2rem;'><span id="tabName"></span> 課程問卷調查</h4>
 			-->
 
-			  <!--
+						<!--
 		  	<div id="SurveyCategory-2">
 		  		<div class="panel-group" id="accordion-2">
 		  			<div class="panel panel-default">
@@ -79,8 +85,8 @@
 		  	</div>
 			-->
 
-		  		<div id="tab_survey_list">
-					<!--
+						<div id="tab_survey_list">
+							<!--
 		  			<table class="table table-bordered table-striped table-list">
 		  				<thead>
 		  					<tr>
@@ -93,77 +99,84 @@
 		  				<tbody></tbody>
 		  			</table>
 						-->
-		  		</div>
+						</div>
 
-		  		<div id="tab_form">
-		  			<table id="course_info" class="table table-bordered">
-		  				<thead>
-		  					<tr>
-		  						<th>課號</th>
-		  						<th>課程名稱</th>
-		  						<th>任課教師</th>
-		  						<th>修課人數</th>
-		  					</tr>
-		  				</thead>
-		  				<tbody data-type="title"></tbody>
-		  				<thead>
-		  					<tr>
-		  						<th colspan="4">評鑑說明</th>
-		  					</tr>
-		  				</thead>
-		  				<tbody data-type="note">
-		  					<tr>
-		  						<td colspan="4"></td>
-		  					</tr>
-		  				</tbody>
-		  			</table>
-		  			<form id="form1">
-		  				<table class="table table-bordered table-striped">
-					  		<thead data-type="questions-title">
-					  			<tr id="no-option">
-					  				<th>題項<span class="text-error">（*為必填欄位）</span></th>
-					  				<th>選項</th>
-					  			</tr>
-					  		</thead>
-		  					<tbody data-type="questions"></tbody>
-		  				</table>
-		  			</form>
-		  			<div class="my-sure" data-type="form" style="display: none;">
-		  				<button class="btn btn-info" data-loading-text="儲存中..." data-action="temp" id="save-temp">暫存不送出</button>
-		  				<button class="btn btn-success" data-action="preview">預覽並送出</button>
-		  				<button class="btn" data-action="form_cancel">取消</button>
-		  			</div>
-		  			<div class="my-sure" data-type="preview" style="display: none;">
-		  				<button class="btn btn-success" data-loading-text="儲存中..." id="save-data">送出</button>
-		  				<button class="btn" data-action="preview_cancel">取消</button>
-		  			</div>
-		  		</div>
-		  	</div>
-          <div class="tab-pane" id="tab2">
-          	  <!-- 顯示課程評鑑值查詢 -->
-          	  <div id="course_evaluation_panel" class="alert alert-warning alert-dismissible fade in hide" role="alert">
-          	  	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+						<div id="tab_form">
+							<table id="course_info" class="table table-bordered">
+								<thead>
+									<tr>
+										<th>課號</th>
+										<th>課程名稱</th>
+										<th>任課教師</th>
+										<th>修課人數</th>
+									</tr>
+								</thead>
+								<tbody data-type="title"></tbody>
+								<thead>
+									<tr>
+										<th colspan="4">評鑑說明</th>
+									</tr>
+								</thead>
+								<tbody data-type="note">
+									<tr>
+										<td colspan="4"></td>
+									</tr>
+								</tbody>
+							</table>
+							<form id="form1">
+								<table class="table table-bordered table-striped">
+									<thead data-type="questions-title">
+										<tr id="no-option">
+											<th>題項<span class="text-error">（*為必填欄位）</span></th>
+											<th>選項</th>
+										</tr>
+									</thead>
+									<tbody data-type="questions"></tbody>
+								</table>
+							</form>
+							<div class="my-sure sticky bottom-0 bg-white p-3" data-type="form" style="display: none;">
+								<button class="btn btn-info" data-loading-text="儲存中..." data-action="temp" id="save-temp">暫存不送出</button>
+								<button class="btn btn-success" data-action="preview">預覽並送出</button>
+								<button class="btn" data-action="form_cancel">取消</button>
+							</div>
+							<div class="my-sure sticky bottom-0 bg-white p-3" data-type="preview" style="display: none;">
+								<button class="btn btn-success" data-loading-text="儲存中..." id="save-data">送出</button>
+								<button class="btn" data-action="preview_cancel">取消</button>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab2">
+						<!-- 顯示課程評鑑值查詢 -->
+						<div id="course_evaluation_panel" class="alert alert-warning alert-dismissible fade in hide" role="alert">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+									aria-hidden="true">×</span></button>
 
-          	  	<div id="show_course_evaluation"></div>
-          	  </div>
-              <div id="survey-history"></div>
-          </div>
-		  <div class="tab-pane" id="tab3">
-	  		<div class="tab-pane" id="sa05">
-	  		</div>
-		  </div>
-        </div>
-          <div class="footer-space"></div>
-          <div class="footer">
-              <img style="margin: 5px 10px 0px 0px; float: left; display: inline; zoom: 1;" border="0" src="src/red_logo.jpg">
-              <img style="margin: 5px 10px 0px 0px; float: left; display: inline; zoom: 1;" border="0" src="src/bot_logo.png">
-              <p style="text-align: left;">
-                  10617台北市大安區羅斯福路四段一號 臺灣大學管理學院一號館六樓 EMBA辦公室<br>
-                  TEL:886-2-33661010 FAX:886-2-23636073<br>
-                  Copyright © National Taiwan University All Rights Reserved
-              </p>
-          </div>
-    </div>
-  </div>
+							<div id="show_course_evaluation"></div>
+						</div>
+						<div id="survey-history"></div>
+					</div>
+					<div class="tab-pane" id="tab3">
+						<div class="tab-pane" id="sa05">
+						</div>
+					</div>
+				</div>
+				<div class="flex flex-wrap justify-center items-center gap-3 text-sm text-gray-500 border-t pt-2">
+					<div class="flex flex-nowrap items-center gap-3">
+						<div class="w-full">
+							<img src="src/red_logo.jpg">
+						</div>
+						<div class="w-full">
+							<img src="src/bot_logo.png" class="">
+						</div>
+					</div>
+					<div>
+						<div>10617台北市大安區羅斯福路四段一號 臺灣大學管理學院一號館六樓 EMBA辦公室</div>
+						<div class="my-2">TEL:886-2-33661010 FAX:886-2-23636073</div>
+						<div>Copyright © National Taiwan University All Rights Reserved</div>
+					</div>
+				</div>
+			</div>
+		</div>
 </body>
+
 </html>
