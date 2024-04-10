@@ -312,5 +312,9 @@ body {
 
 table thead th {
 	background: #DDDDE1 url(images/thbg.png) 0 0 repeat-x;
-	border-bottom: 1px solid #ACACAC;
+	/* border-bottom: 1px solid #ACACAC; */
+}
+
+.table-bordered th, .table-bordered td {
+  border-left: 1px solid #ebebeb;
 }
