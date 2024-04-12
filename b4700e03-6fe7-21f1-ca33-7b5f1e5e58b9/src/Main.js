@@ -413,7 +413,7 @@ function Main() {
     let entryOScore = null;
     if (subjectType === 'entry') {
       [].concat(semesterEntryScore || []).forEach(sem => {
-        if (sem.entry.includes('原始')) {
+        if (sem.entry.includes('原始') && sem.entry.includes(subject)) {
           entryOScore = sem.score;
         }
       })
@@ -442,7 +442,6 @@ function Main() {
       is_required: e.is_required,
 
     });
-
   };
 
   const handleShowCreditDetail = (e) => {
@@ -550,8 +549,8 @@ function Main() {
                     to={showNow ? '/CreditDetail' : null} key='' onClick={() => { handleShowCreditDetail(); }}>
                     <div className='text-subject ms-3'>取得學分</div>
                     {!showNow ? <div className='' style={{ color: '#86B963' }}>開放查詢時間：{viewTime}</div> : <>
-                      {[].concat(semesterCredit || []).map((credit) => {
-                        return <div className='row row-cols-2'>
+                      {[].concat(semesterCredit || []).map((credit, index) => {
+                        return <div className='row row-cols-2' key={index}>
                           <div className='col'>
                             <div className='fs-4-blue text-nowrap'>{credit.studied_count === '' ? '-' : credit.studied_count}</div>
                             <div className='text-small'>已修學分</div>
@@ -617,7 +616,7 @@ function Main() {
                 col = 'col-12 my-2';
               }
 
-              return <div className="col">
+              return <div className="col" key={index}>
                 <div className='card shadow h-100'>
 
                   <div className="card-body">
@@ -737,7 +736,7 @@ function Main() {
               col = 'col-12 my-2';
             }
 
-            return <div className="col">
+            return <div className="col" key={index}>
               <div className={passColor}>
 
                 <div className="card-body">

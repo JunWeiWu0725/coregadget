@@ -6,7 +6,7 @@ export const AppProvider = ({ children }) => {
     const [appData, setAppData] = useState({
 
         studentID: null,
-        semester: null,
+        semester: '',
         rankType: null,
         subject: null,
         subjectType: null,
