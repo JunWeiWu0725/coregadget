@@ -111,6 +111,11 @@ export class SchoolService {
       title: '1Campus Junior High School'
       , iconUrl: ''
       , gadgets: ['gradebook']//空陣列是一個都不顯示，undefined 是顯示全部。
+    }],
+    ['b.fhjh.tp.edu.tw', { //臺北市私立復興實驗高級中學(高中雙語部)
+      title: 'Taipei Fuhsing Private School'
+      , iconUrl: 'assets/img/fuhsing_logo.png'
+      //空陣列是一個都不顯示，undefined 是顯示全部。
     }]
   ]);
 
