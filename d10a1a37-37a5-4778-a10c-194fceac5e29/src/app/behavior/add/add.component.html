@@ -52,6 +52,8 @@
                 <label class="form-check-label" for="detention">Detention</label>
 
             </div>
+
+            
             <!-- 新增 Good Behavior -->
             <div class="form-group form-check m-2" >
                 <input id="isGoodBehavior" 
@@ -62,6 +64,17 @@
 
             </div>
 
+                     <!-- 新增 Good Behavior -->
+                     <div class="form-group form-check m-2" >
+                        <input id="currentDaaDsaFollow" 
+                                type="checkbox" 
+                                class="form-check-input" 
+                                [(ngModel)]="currentDaaDsaFollow">
+                        <label class="form-check-label" for="currentDaaDsaFollow">DAA/DSA Fellow up</label>
+        
+                    </div>
+        
+
         </div>
         <div class="col-md-12 col-lg-2">
             <button class="ml-auto btn btn-info btn-block" 
@@ -69,6 +82,7 @@
                     [routerLink]="['../list']"
                 (click)="save()">SAVE （Checked : {{checkCount}}）</button>
         </div>
+        
     </div>
     <div class="st-list d-flex flex-wrap mt-3 mt-lg-1">
         <div class="card st-check " 

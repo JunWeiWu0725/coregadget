@@ -11,6 +11,7 @@ export class EditDialogComponent implements OnInit {
   comment: string = '';
   detention: boolean = false;
   isGoodBehavior :boolean = false;
+  daaDsaFollow :boolean =false ;
 
   constructor(
     public dialogRef: MatDialogRef<EditDialogComponent>,
@@ -22,6 +23,7 @@ export class EditDialogComponent implements OnInit {
     this.comment = this.data.comment;
     this.detention = this.data.detention == true;
     this.isGoodBehavior = this.data.isGoodBehavior == true ;
+    this.daaDsaFollow = this.data.daaDsaFollow == true ;
   }
 
   onNoClick(): void {
@@ -29,14 +31,20 @@ export class EditDialogComponent implements OnInit {
       comment: '',
       detention: false,
       isGoodBehavior :false,
+      daaDsaFollow :false,
       confirm: false,
     });
   }
 
   onYesClick(): void {
+    let checkAmount  =  0 ;
+    this.isGoodBehavior ? checkAmount++ :checkAmount ;
+    this.detention ?  checkAmount++ :checkAmount ;
+    this.daaDsaFollow ? checkAmount++ :checkAmount ;
+   
+    if (checkAmount>1) {
+ 
 
-    if(this.isGoodBehavior && this.detention)
-  {
     alert("Good and Detention can't be selected in the same time")
     return ;
   }
@@ -45,6 +53,7 @@ export class EditDialogComponent implements OnInit {
       comment: this.comment,
       detention: this.detention,
       isGoodBehavior : this.isGoodBehavior,
+      daaDsaFollow :this.daaDsaFollow,
       confirm: true,
     });
 

@@ -22,6 +22,7 @@ export class AddComponent implements OnInit {
   currentDateString: string;
   currentDetention: boolean;
   currentGood: boolean;
+  currentDaaDsaFollow :boolean ; 
   courseID: string;
   courseName: string;
   checkCount: Number;
@@ -65,6 +66,7 @@ export class AddComponent implements OnInit {
       this.currentDateString = moment().format("YYYY-MM-DD");
       this.currentDetention = false;
       this.currentGood = false;
+      this.currentDaaDsaFollow =false ;
 
 
       if (this.behaviorDataService.addDate !== "") {
@@ -179,7 +181,12 @@ export class AddComponent implements OnInit {
         checkCanSendError += "No students selected. \n";
       }
 
-      if (this.currentDetention && this.currentGood) {
+      let checkAmount  =  0 ;
+      this.currentDetention ? checkAmount++ :checkAmount ;
+      this.currentGood ?  checkAmount++ :checkAmount ;
+      this.currentDaaDsaFollow ?checkAmount++ :checkAmount ;
+ 
+      if (checkAmount>1) {
         checkCanSend = false;
         checkCanSendError += "Good and Detention can't be selected in the same time . \n";
       }
@@ -194,7 +201,7 @@ export class AddComponent implements OnInit {
         //       Request: {
         //         BehaviorData: {
         //           Field: {
-        //             CourseID: this.courseID,
+        //             CourseID: this.courseID, 
         //             StudentID: data.ID,
         //             Comment: this.addText,
         //             CreateDate: this.currentDateString
@@ -218,6 +225,7 @@ export class AddComponent implements OnInit {
                 CourseID: this.courseID,
                 Detention: this.currentDetention ? "true" : "false",
                 IsGoodBehavior : this.currentGood ? "true" : "false",
+                DaaDsaFollow :this.currentDaaDsaFollow ? "true" : "false",
                 StudentID: data.ID
               }
             }

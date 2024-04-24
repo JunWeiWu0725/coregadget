@@ -34,6 +34,10 @@
                               class="badge badge-danger mr-1">Detention</span>
                               <span *ngIf="cdata.IsGoodBehavior=='true'"
                               class="badge badge-success mr-1">Good</span>
+                              <span *ngIf="cdata.DaaDsaFollow=='true'"
+                              class="badge  badge-mid mr-1">DAA/DSA Follow up</span>
+                              
+                              
                         <span >{{cdata.Comment}}</span>
                     </div>
                 </div>

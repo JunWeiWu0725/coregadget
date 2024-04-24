@@ -1916,6 +1916,10 @@ hr {
   color: white;
 }
 
+.badge-mid {
+  background-color: #bf59e7;
+  color: white;
+}
 .badge-success[href]:active, .badge-success[href]:focus, .badge-success[href]:hover {
   background-color: #388e3c;
   color: white;

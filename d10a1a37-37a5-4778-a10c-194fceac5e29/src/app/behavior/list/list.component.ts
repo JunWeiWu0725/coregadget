@@ -39,7 +39,7 @@ export class ListComponent implements OnInit {
 
   // 修改 comment
   async editComment(data) {
-    const result = await this.dialogService.editDialog("Edit " + data.CreateDate2 + " " + data.Name, "Comment", data.Comment, data.Detention=='true' ,data.IsGoodBehavior == 'true');
+    const result = await this.dialogService.editDialog("Edit " + data.CreateDate2 + " " + data.Name, "Comment", data.Comment, data.Detention=='true' ,data.IsGoodBehavior == 'true',data.DaaDsaFollow == 'true');
     if (result.confirm) {
       try {
         const rsp = await this.contract.send("behavior.EditBehaviorData", {
@@ -48,7 +48,8 @@ export class ListComponent implements OnInit {
               Field: {
                 Comment: result.comment,
                 Detention: result.detention,
-                IsGoodBehavior :result.isGoodBehavior
+                IsGoodBehavior :result.isGoodBehavior,
+                DaaDsaFollow :result.daaDsaFollow
               },
               Condition: {
                 Uid: data.BehaviorUID

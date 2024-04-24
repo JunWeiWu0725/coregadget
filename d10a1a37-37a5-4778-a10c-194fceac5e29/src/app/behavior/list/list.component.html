@@ -33,9 +33,15 @@
                 <div class="col-md-9 col-lg-10">
                     <span *ngIf="data.Detention=='true'"
                           class="badge badge-danger mr-1">Detention</span>
-                    <span *ngIf="data.IsGoodBehavior=='true'"
+                          <span *ngIf="data.IsGoodBehavior=='true'"
                           class="badge badge-success mr-1">Good</span>
-                    <span>{{data.Comment}}</span>
+                          <span *ngIf="data.DaaDsaFollow=='true'"
+                          class="badge badge-mid mr-1">DAA/DSA Follow up</span>
+
+                          <!-- <span *ngIf="cdata.DaaDsaFollow=='true'"
+                          class="badge  badge-mid mr-1">DAA/DSA Follow up</span>
+                           -->
+                    <span class ="p-2 fw-bold ">{{data.Comment}}</span>
                     <div class="float-right">
                         <a class="h6 text-info point"
                            (click)="editComment(data)">
