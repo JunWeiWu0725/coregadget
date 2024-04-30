@@ -188,7 +188,8 @@ export class AddComponent implements OnInit {
  
       if (checkAmount>1) {
         checkCanSend = false;
-        checkCanSendError += "Good and Detention can't be selected in the same time . \n";
+        // checkCanSendError += "Good and Detention can't be selected in the same time . \n";
+        checkCanSendError += "please select one answer choice. \n";
       }
 
 
