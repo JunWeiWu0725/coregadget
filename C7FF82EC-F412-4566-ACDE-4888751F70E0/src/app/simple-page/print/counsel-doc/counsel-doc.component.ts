@@ -24,6 +24,7 @@ export class CounselDocComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+  
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
         this.studentID = params.get("studentID");

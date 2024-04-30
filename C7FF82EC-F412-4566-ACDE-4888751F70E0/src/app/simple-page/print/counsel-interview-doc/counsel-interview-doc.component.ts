@@ -37,6 +37,8 @@ export class CounselInterviewDocComponent implements OnInit {
 
 
   ngOnInit() {
+    debugger
+    alert("dfddf")
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
         this.param = JSON.parse(params.get("param"));
@@ -49,6 +51,7 @@ export class CounselInterviewDocComponent implements OnInit {
 
   // 取得報表資料
   async getReportData() {
+  
     this.isLoading = true;
     this.isDisplayCounsel = false;
     this.isDisplayCase = false;
