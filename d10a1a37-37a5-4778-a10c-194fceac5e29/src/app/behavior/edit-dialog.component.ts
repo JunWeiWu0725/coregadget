@@ -45,7 +45,8 @@ export class EditDialogComponent implements OnInit {
     if (checkAmount>1) {
  
 
-    alert("Good and Detention can't be selected in the same time")
+    // alert("Good and Detention can't be selected in the same time")
+    alert("please select one answer choice.")
     return ;
   }
 
