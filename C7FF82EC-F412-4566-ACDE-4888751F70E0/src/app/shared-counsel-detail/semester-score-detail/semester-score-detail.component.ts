@@ -38,7 +38,7 @@ export class SemesterScoreDetailComponent implements OnInit {
   ngOnInit() {
     this.counselDetailComponent.setCurrentItem('semester_score');
     this.GetSchoolCoreInfo();
-  }
+  } 
 
   // 取得學制
   async GetSchoolCoreInfo() {

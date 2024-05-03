@@ -48,8 +48,7 @@ export class ExamScoreDetailComponent implements OnInit {
   }
 
   async loadData() {
-    alert("sdd")
-    debugger
+ 
     if (this.selectSchoolType === 'JHHC') {
       // 1.新竹版國中小評量成績
       this.serviceGetExamScore = "GetExamScoreJHHC";

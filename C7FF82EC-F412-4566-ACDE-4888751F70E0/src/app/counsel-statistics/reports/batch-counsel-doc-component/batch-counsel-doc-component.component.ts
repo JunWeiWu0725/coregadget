@@ -12,7 +12,7 @@ export class BatchCounselDocComponentComponent implements OnInit {
   constructor(private dsaService: DsaService,
     private el: ElementRef) { 
       let myTag = this.el.nativeElement.querySelector(".header")
-       alert("myTag"+JSON.stringify(myTag))
+      //  alert("myTag"+JSON.stringify(myTag))
 
     }
 
