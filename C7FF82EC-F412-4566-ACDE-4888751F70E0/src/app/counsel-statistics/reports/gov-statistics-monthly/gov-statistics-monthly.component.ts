@@ -7,7 +7,7 @@ import { CaseMonthlyStatistics, CaseMonthlyStatistics2, TeacherCounselRole } fro
 import { MapOperator } from 'rxjs/internal/operators/map';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { mapping } from './mapping';
-
+import * as ExcelJS from 'exceljs';
 
 @Component({
   selector: 'app-gov-statistics-monthly',
@@ -19,7 +19,9 @@ export class GovStatisticsMonthlyComponent implements OnInit {
 
 
 
-  
+
+  excelData: any[][] = [];
+
   @ViewChild('sheet1') sheet1: ElementRef;
   @ViewChild('sheet2') sheet2: ElementRef;
   reportNameList: { reportName, description, isShowDescrip?}[];
@@ -31,7 +33,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
   dsnsName: string = "";
   schoolType;
   schoolName = '';
-  maping  =new mapping();
+  maping = new mapping();
   /**sheet 1 資料 */
   data = [];
   /**sheet 2 資料 */
@@ -59,8 +61,8 @@ export class GovStatisticsMonthlyComponent implements OnInit {
   }
 
   async ngOnInit() {
-    console.log("以下皆非" , this.maping.StudentStatusMaps.get("以下皆非"))
-   
+    console.log("以下皆非", this.maping.StudentStatusMaps.get("以下皆非"))
+
     // console.log("mapping",mapping.StudentStatusMaps);
     // 取得教師編碼 
     await this.getTeacherConNumbr();
@@ -185,6 +187,30 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     }
   }
 
+  async onFileChange(event: any): Promise<void> {
+    const file = event.target.files[0];
+    const workbook = new ExcelJS.Workbook();
+    const reader = new FileReader();
+
+    reader.onload = async (e: any) => {
+      const data = new Uint8Array(e.target.result);
+      await workbook.xlsx.load(data);
+      const worksheet = workbook.getWorksheet(1);
+
+      // 将 Excel 数据保存到数组中
+      this.excelData = [];
+      worksheet.eachRow((row: any) => {
+        this.excelData.push(row.values);
+      });
+    };
+
+    reader.onerror = (error) => {
+      console.error('File reading error:', error);
+    };
+
+    reader.readAsArrayBuffer(file);
+  }
+
 
   /**取得學校資訊 主要是取得學校名稱 */
   async getSchoolInfo() {
@@ -198,8 +224,80 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       this.schoolName = rsp.result.school_name;
     }
   }
+
+
+
+  /* test*/
+  async readAndModifyExcelFile(): Promise<void> {
+    const workbook = new ExcelJS.Workbook();
+    const filePath = 'assets/111學年度-輔導教師工作成果填報(0502).xlsx'; // Excel 文件路径，根据实际情况修改
+
+
+    fetch(filePath)
+      .then(async response => {
+        if (!response.ok) {
+          throw new Error('File not found or inaccessible');
+        } else {
+          const arrayBuffer = await response.arrayBuffer();
+
+          // 使用 ExcelJS 讀取工作簿
+          const workbook = new ExcelJS.Workbook();
+          await workbook.xlsx.load(arrayBuffer); // 使用 load 方法載入數據
+          const sheet = workbook.getWorksheet('1.當月個案 ');
+          const cell = sheet.getCell(`A6`);
+          cell.value = '你要寫入的資料';
+          // 保存文件
+          const buffer = await workbook.xlsx.writeBuffer();
+          this.saveExcelFile(buffer, '111學年度-輔導教師工作成果填報(0502).xlsx');
+        }
+
+
+      })
+      .catch(error => {
+        console.error('Error checking file:', error);
+      });
+
+
+    // try {
+    //   await workbook.xlsx.readFile(filePath);
+    //   debugger
+
+    //   const worksheet = workbook.getWorksheet(1); // 获取第一个工作表
+
+    //   // 添加几行数据
+    //   worksheet.addRow([1, 'John', 'Doe']);
+    //   worksheet.addRow([2, 'Jane', 'Doe']);
+
+    //   // 保存文件
+    //   const buffer = await workbook.xlsx.writeBuffer();
+    //   this.saveExcelFile(buffer, '111學年度-輔導教師工作成果填報(0502).xlsx');
+    // } catch (error) {
+    //   console.log('err...', JSON.stringify(error))
+    //   console.error('Error reading or modifying Excel file:', error);
+    // }
+  }
+
+
+  private saveExcelFile(buffer: ArrayBuffer, filename: string): void {
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    // 创建一个 <a> 元素
+    const anchorElement = document.createElement('a');
+    anchorElement.href = window.URL.createObjectURL(blob);
+    anchorElement.download = filename;
+
+    // 将 <a> 元素添加到页面并模拟点击下载
+    document.body.appendChild(anchorElement);
+    anchorElement.click();
+
+    // 下载完成后移除 <a> 元素
+    document.body.removeChild(anchorElement);
+  }
+
   // 輔導工作月統計報表-教育部版
   async GetCaseMonthlyStatistics1() {
+    debugger
+    await this.readAndModifyExcelFile()
+    return
 
     // Service 取得資料邏輯：
     // 1. 未結案個案：是否結案=f  and 個案建立日期 <= 畫面上所選年月
@@ -233,10 +331,10 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       rec.TeacherName = rspRec.TeacherName;
       rec.ReportReferal = rspRec.ReportedReferralStatus; //202209 增加轉借狀況
       rec.CaseNo = rspRec.CaseNo; // 20220907 需求增加
-   
+
       rec.CaseSource = rspRec.CaseSource      // 202209增加個案來源 (複選)
       rec.TeacherCounselNumber = this.getTeacherConNumberByTeacherID(rspRec),
-      rec.GradeYear = rspRec.GradeYear;
+        rec.GradeYear = rspRec.GradeYear;
       rec.StudentGender = rspRec.StudentGender;
       rec.Status = rspRec.CaseStatus; //  新舊個案
       rec.Count = parseInt(rspRec.Count);
@@ -246,14 +344,14 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       // sheet1 副類別
       if (rspRec.SecondCategory) {
         let Category = JSON.parse(rspRec.SecondCategory);
-        
+
         Category.forEach(proRec => {
           if (proRec.answer_checked) {
             rec.CategoryValue.push(this.parseCategoryNoT1(proRec.answer_text));
-            if(proRec.answer_text.includes('其他')){ // 如果有其他選項
+            if (proRec.answer_text.includes('其他')) { // 如果有其他選項
               rec.CategoryOther = proRec.answer_martix[1]
-            }else{
-              rec.CategoryOther = '0' ;
+            } else {
+              rec.CategoryOther = '0';
             }
           }
         });
@@ -262,13 +360,13 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       if (rspRec.CaseMainCategory) {
         let CaseMainCatagory = JSON.parse(rspRec.CaseMainCategory);
         CaseMainCatagory.forEach(proRec => {
-          
-          
+
+
           if (proRec.answer_checked) {
             rec.MainCategoryValueList.push(this.parseCategoryNoT1(proRec.answer_text));
-            if(proRec.answer_text.includes('其他')){ // 如果有其他選項
+            if (proRec.answer_text.includes('其他')) { // 如果有其他選項
               rec.CaseMainCategoryOther = proRec.answer_martix[1]
-            }else{
+            } else {
               rec.CaseMainCategoryOther = '0'
 
 
@@ -277,48 +375,48 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         });
 
       }
-      
+
 
       //sheet  學生身分
       if (rspRec.StudentStatus) {
         let StudentStatus = JSON.parse(rspRec.StudentStatus);
-        
+
         StudentStatus.forEach(proRec => {
           if (proRec.answer_checked) {
-            
+
             rec.StudentStatusList.push(this.maping.StudentStatusMaps.get(proRec.answer_text));
           }
         })
       }
 
-     // 處理個案來源
+      // 處理個案來源
 
-     if(rspRec.CaseSource){
-      let CaseSource :string [] =  rspRec.CaseSource.split('___') ;
-         CaseSource.forEach(item =>{
-         if( rspRec.CaseStatus == "新"){
-           let mapNum = this.maping.CaseSourcesMapping.has(item) ? this.maping.CaseSourcesMapping.get(item) :item ;
-           rec.CaseSourceList.push(mapNum);
-         }else{ // 舊案填0
-          rec.CaseSourceList.push('0');
-         }
+      if (rspRec.CaseSource) {
+        let CaseSource: string[] = rspRec.CaseSource.split('___');
+        CaseSource.forEach(item => {
+          if (rspRec.CaseStatus == "新") {
+            let mapNum = this.maping.CaseSourcesMapping.has(item) ? this.maping.CaseSourcesMapping.get(item) : item;
+            rec.CaseSourceList.push(mapNum);
+          } else { // 舊案填0
+            rec.CaseSourceList.push('0');
+          }
 
-      });
-     
+        });
 
-     }
 
-    // 處理轉借概況 
-     if(rspRec.ReportedReferralStatus){
-      rec.ReportReferal  = this.maping.ReteralStatus.get(rspRec.ReportedReferralStatus)
+      }
 
-     }
+      // 處理轉借概況 
+      if (rspRec.ReportedReferralStatus) {
+        rec.ReportReferal = this.maping.ReteralStatus.get(rspRec.ReportedReferralStatus)
 
-     // 新案舊案 
-     if(rspRec.CaseStatus){
-      rec.Status = this.maping.NewOrOldCase.get(rspRec.CaseStatus)
+      }
 
-     }
+      // 新案舊案 
+      if (rspRec.CaseStatus) {
+        rec.Status = this.maping.NewOrOldCase.get(rspRec.CaseStatus)
+
+      }
 
       this.data.push(rec);
     });
@@ -339,21 +437,21 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       // let key = rspRec.TeacherID + rspRec.OccurDate + rspRec.ContactItem + rspRec.ContactName;
 
 
-        let rec: CaseMonthlyStatistics2 = new CaseMonthlyStatistics2();
-        rec.TeacherID = rspRec.ref_teacher_id;
-        rec.TeacherNickName = rspRec.nickname;
-        rec.TeacherCounselNumber = rspRec.teacher_counsel_number;
-        rec.TeacherReportRole = rspRec.teacher_report_role; // 教師身分
-        rec.TeacherName = rspRec.teacher_name;
-        rec.ServiceTarget = rspRec.detail_service_target;
-        rec.ServiceItemOtherDetail = rspRec.service_item_other_detail || 0 // 其他選項
-        rec.ServiceItem = rspRec.service_item;
-        rec.ContactName = rspRec.detail_service_target;
-        rec.BoyCount = rspRec.male || 0;
-        rec.GirlCount = rspRec.female || 0;
-        // rec.CLevel = rspRec.CLevel;
-  ;
-        this.data2.push(rec);
+      let rec: CaseMonthlyStatistics2 = new CaseMonthlyStatistics2();
+      rec.TeacherID = rspRec.ref_teacher_id;
+      rec.TeacherNickName = rspRec.nickname;
+      rec.TeacherCounselNumber = rspRec.teacher_counsel_number;
+      rec.TeacherReportRole = rspRec.teacher_report_role; // 教師身分
+      rec.TeacherName = rspRec.teacher_name;
+      rec.ServiceTarget = rspRec.detail_service_target;
+      rec.ServiceItemOtherDetail = rspRec.service_item_other_detail || 0 // 其他選項
+      rec.ServiceItem = rspRec.service_item;
+      rec.ContactName = rspRec.detail_service_target;
+      rec.BoyCount = rspRec.male || 0;
+      rec.GirlCount = rspRec.female || 0;
+      // rec.CLevel = rspRec.CLevel;
+      ;
+      this.data2.push(rec);
 
     });
 
@@ -368,19 +466,19 @@ export class GovStatisticsMonthlyComponent implements OnInit {
 
 
         let item = {
-          '教師編碼': da.TeacherCounselNumber ,
-          '身分':  this.maping.ReportTeacherRole.get(da.TeacherReportRole), // 新欄位 
+          '教師編碼': da.TeacherCounselNumber,
+          '身分': this.maping.ReportTeacherRole.get(da.TeacherReportRole), // 新欄位 
           '學生代號': da.CaseNo, // 新欄位(個案編號) 
           '學生年級': this.parseGradeYear(da.GradeYear),
           '學生性別': da.StudentGender,
-          '學生身分': da.StudentStatusList.length>0 ?da.StudentStatusList.join(','):'', // 新欄位 
+          '學生身分': da.StudentStatusList.length > 0 ? da.StudentStatusList.join(',') : '', // 新欄位 
           '個案來源': da.CaseSourceList.join(','), // 新欄位 
           '輔導概況': da.Status, // 新案舊案 
           '轉介概況 ': da.ReportReferal, // 新欄位 
-          '個案類別(主)': da.MainCategoryValueList.length> 0? da.MainCategoryValueList.join(','):'',
-          '個案類別(主) 其他說明':da.CaseMainCategoryOther||0 ,
-          '個案類別(副)': da.CategoryValue.join(',')||0,
-          '個案類別(副) 其他說明':da.CategoryOther ||0,
+          '個案類別(主)': da.MainCategoryValueList.length > 0 ? da.MainCategoryValueList.join(',') : '',
+          '個案類別(主) 其他說明': da.CaseMainCategoryOther || 0,
+          '個案類別(副)': da.CategoryValue.join(',') || 0,
+          '個案類別(副) 其他說明': da.CategoryOther || 0,
           // '新案舊案': da.Status, // 新規格暫時住借
           '晤談次數': da.Count
           // '其他服務次數': 0
@@ -394,10 +492,10 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         if (da.TeacherNickName != '')
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
         let item = {
-          '教師編碼': da.TeacherCounselNumber || (da.TeacherName+'(未設教師編碼)'),
+          '教師編碼': da.TeacherCounselNumber || (da.TeacherName + '(未設教師編碼)'),
           '身分': this.maping.ReportTeacherRole.get(da.TeacherReportRole),
           '服務項目': this.maping.ServiceItemsMapping.get(da.ServiceItem),
-          '其他說明' :da.ServiceItemOtherDetail ||'0',
+          '其他說明': da.ServiceItemOtherDetail || '0',
           '對象': this.maping.ServiceTargetMaps.get(da.ServiceTarget),
           // '日期': da.OccurDate,
           '服務人次(男)': da.BoyCount,
@@ -426,7 +524,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
 
       const ws2 = XLSX.utils.table_to_sheet(this.sheet2.nativeElement);
 
-      XLSX.utils.sheet_add_json(ws2,data2_d, { skipHeader: true, origin: { r: 4, c: 0 } });// 寫入資料 從第二列開始
+      XLSX.utils.sheet_add_json(ws2, data2_d, { skipHeader: true, origin: { r: 4, c: 0 } });// 寫入資料 從第二列開始
       // sheet 3
       const table = document.getElementById("sheet3");
 
@@ -439,7 +537,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       XLSX.writeFile(wb, fileName);
     } else {
       alert("沒有資料");
-    } 
+    }
 
     this.buttonDisable = false;
   }
@@ -866,7 +964,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       rec.StudentID = rspRec.StudentID;
       rec.TeacherName = rspRec.TeacherName;
       rec.GradeYear = rspRec.GradeYear;
- 
+
       rec.StudentGender = rspRec.StudentGender;
       rec.Status = rspRec.CaseStatus;
       rec.Count = parseInt(rspRec.Count);
