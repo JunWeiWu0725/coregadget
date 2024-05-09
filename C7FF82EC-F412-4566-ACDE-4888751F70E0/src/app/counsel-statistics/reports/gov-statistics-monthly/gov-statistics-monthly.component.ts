@@ -232,7 +232,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
   /* test*/
   async readAndModifyExcelFile(data1: any[], data2: any[]): Promise<void> {
     this.workbook = new ExcelJS.Workbook();
-    const filePath = 'assets/111學年度-輔導教師工作成果填報(0502).xlsx'; // Excel 文件路径，根据实际情况修改
+    const filePath = 'assets/輔導教師工作成果-111學年度-新修正表格(空白).xlsx'; // Excel 文件路径，根据实际情况修改
 
 
     fetch(filePath)
@@ -245,11 +245,11 @@ export class GovStatisticsMonthlyComponent implements OnInit {
           // 使用 ExcelJS 讀取工作簿
           // this.workbook = new ExcelJS.Workbook();
           await this.workbook.xlsx.load(arrayBuffer); // 使用 load 方法載入數據
-          const sheet1 = this.workbook.getWorksheet('1.當月個案 ');
-         let  firstCell1 = sheet1.getCell('A1')
-         const masterCell = firstCell1.master;
-      
-         masterCell.value=`[${(this.selectYear - 1911)}-${this.selectMonth}] ${this.schoolName}  輔導教師工作成果(當月個案填報)
+          const sheet1 = this.workbook.getWorksheet('表A-1-輔導教師-1.當月個案 ');
+          let firstCell1 = sheet1.getCell('A1')
+          const masterCell = firstCell1.master;
+
+          masterCell.value = `[${(this.selectYear - 1911)}-${this.selectMonth}] ${this.schoolName}  輔導教師工作成果(當月個案填報)
           本表填報為經輔導處（室）、辦理輔導業務單位專業評估後，開案進入介入性輔導之學生，一位學生填報一列，統計資料會以學生代號統計，所有欄位皆為必填，不可空白！`
           data1.forEach((x, index) => {
 
@@ -258,15 +258,15 @@ export class GovStatisticsMonthlyComponent implements OnInit {
           })
 
 
-   
 
-          const sheet2 = this.workbook.getWorksheet('2.相關服務')
-          let  firstCell2 = sheet2.getCell('A1')
+
+          const sheet2 = this.workbook.getWorksheet('表A-2-輔導教師-2.相關服務')
+          let firstCell2 = sheet2.getCell('A1')
           const masterCel2 = firstCell2.master;
-       
-          masterCel2.value=`[${(this.selectYear - 1911)}-${this.selectMonth}] ${this.schoolName}  輔導教師工作成果(相關服務填報)
+
+          masterCel2.value = `[${(this.selectYear - 1911)}-${this.selectMonth}] ${this.schoolName}  輔導教師工作成果(相關服務填報)
           (所有欄位皆為必填，不可空白！)`
-    
+
 
           data2.forEach((x, index) => {
 
@@ -488,7 +488,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       let data1: any[] = [];
       let data2_d: any[] = [];
 
-      let data_1_forexcelJS 
+      let data_1_forexcelJS
       this.data.forEach(da => {
         let tno = da.TeacherName;
         if (da.TeacherNickName != '')
@@ -534,7 +534,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
           // '其他服務次數': 0
         ]
         data1.push(item);
-      
+
       })
       // sheet2
 
