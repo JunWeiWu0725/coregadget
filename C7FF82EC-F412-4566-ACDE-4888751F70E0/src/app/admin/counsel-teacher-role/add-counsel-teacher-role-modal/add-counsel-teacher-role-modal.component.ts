@@ -24,6 +24,7 @@ export class AddCounselTeacherRoleModalComponent implements OnInit {
   selectTeacherID: string = "";
   selectTeahcer: TeacherCounselRole;
   TeacherCounselNumber :string;
+  JobTitle : string ;
   /**原有的教師資料(確認教師編碼是否重複用) */
   existTeacherConselRole :TeacherCounselRole [] =[] ;
   notTeachersCounselRole: TeacherCounselRole[] = [];
@@ -120,8 +121,9 @@ export class AddCounselTeacherRoleModalComponent implements OnInit {
     let itItm = {
       TeacherID: this.selectTeacherID,
       Role: this.selectRole,
-      TeacherCounselNumber :this.TeacherCounselNumber ,
-      TeacherReportRole :this.selectReportRole  
+      TeacherCounselNumber : this.TeacherCounselNumber ,
+      TeacherReportRole : this.selectReportRole ,  
+      JobTitle : this.JobTitle 
     }
     reqTeacherCounselRole.push(itItm);
     try {

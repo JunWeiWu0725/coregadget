@@ -10,6 +10,8 @@ export class TeacherCounselRole {
     TeacherCounselNumber:string ="";
     /** 輔導人力身分 (月報表使用) */
     TeacherReportRole :string = "" ;
+    /** 身分職稱 */
+    JobTitle : string  = "" ;
     /** 編輯模式 */
     isAddMode :boolean  = false ;
     isChage: boolean = false;

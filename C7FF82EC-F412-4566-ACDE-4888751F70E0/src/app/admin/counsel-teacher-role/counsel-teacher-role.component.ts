@@ -231,6 +231,7 @@ export class CounselTeacherRoleComponent implements OnInit {
       let resp = await this.dsaService.send("GetTeachersCounselRole", {
         Request: {}
       });
+      console.log("GetTeachersCounselRole .." ,resp )
       if (resp) {
         [].concat(resp.TeacherCounselRole || []).forEach(CounselRole => {
           let tea: TeacherCounselRole = new TeacherCounselRole();
@@ -239,6 +240,7 @@ export class CounselTeacherRoleComponent implements OnInit {
           tea.TeacherCounselNumber = CounselRole.TeacherCounselNumber
           tea.TeacherReportRole = CounselRole.TeacherReportRole
           tea.Role = CounselRole.Role;
+          tea.JobTitle = CounselRole.JobTitle; // 2024新增
           tea.parseOrder();
           if (tea.Role && tea.Role !== '') {
             this.teachersCounselRoles.push(tea);

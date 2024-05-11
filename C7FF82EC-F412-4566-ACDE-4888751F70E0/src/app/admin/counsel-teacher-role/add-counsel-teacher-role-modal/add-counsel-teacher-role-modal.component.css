@@ -1,0 +1,19 @@
+.form-control, .custom-select, .form-control-file  ,.form-control, .custom-select, .form-control-file{
+    border: none;
+    background: #e8e8e8;
+    border-radius: 5px;
+    padding: 8px;
+    margin: 5px;
+}
+
+
+ .mat-form-field-infix {
+    border: none !important; 
+    background: #e8e8e8 !important;
+    border-radius: 5px !important; 
+    padding: 0px !important;
+
+
+
+    
+}

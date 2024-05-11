@@ -96,7 +96,9 @@ export class CaseMonthlyStatistics2 {
     /** 呈報之教師身分 */
     TeacherReportRole :string;
     /** 系統之教師恩 */
-    TeacherRole: string;    
+    TeacherRole: string;
+    /** 身分職稱 */
+    JobTitle :string ;     
     OccurDate: string;n
     StudentID: string;
     TeacherName: string;

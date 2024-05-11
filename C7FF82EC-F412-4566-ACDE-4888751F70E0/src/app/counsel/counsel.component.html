@@ -90,7 +90,11 @@
             <ng-container *ngIf="roleService.role.indexOf('輔導老師') >= 0 || roleService.role.indexOf('班導師') >= 0">
                <div class="" style="width:45%  ">
 
-                  <input type="text" class="form-control" style="width: 60%;" placeholder="搜尋(學號,身分證號,姓名)"
+                  <input type="text" class="form-control"
+                   style="   
+                   width: 60%;
+                  background: #dcdcdca3;
+                  padding: 7px; border: none ; " placeholder="搜尋 (學號, 身分證號, 姓名)"
                      (keydown.enter)="search()" [(ngModel)]="searchText">
                </div>
 

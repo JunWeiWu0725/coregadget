@@ -191,7 +191,7 @@ ul.rwd-table .tr li {
 
     border: 0.7px solid #e0e0e0 !important;
     box-shadow: none !important;
-    border-radius: 50px !important;
+    border-radius: 10px !important;
     color: #3e495f !important;
     font-size: 16px !important;
     background: white !important;
@@ -885,4 +885,11 @@ justify-content: center;
 
 background: #fbfbfb !important;
 
+}
+
+ul.rwd-table .thead li, ul.rwd-table .tr li {padding: 11px !important;}
+
+
+.mat-form-field-appearance-legacy .mat-form-field-infix{
+    padding: 0px !important;
 }
