@@ -191,8 +191,21 @@ angular.module('learning', ['ngAnimate'])
 
                                     var targetStudent = studentKey[item.StudentID];
 
-                                    targetStudent[item.SchoolYear + item.Semester] = item.Sum;
-                                    targetStudent[item.SchoolYear + 'total'] += Number(item.Sum == "" ? "0" : item.Sum);
+                                    // 確保將 item.Sum 安全地轉換為數字
+                                    var sum = Number(item.Sum) || 0;
+                                    targetStudent[item.SchoolYear + item.Semester] = sum;
+                                
+                                    // 如果 targetStudent[item.SchoolYear + 'total'] 沒有初始化，這行代碼就會進行初始化
+                                    if (typeof targetStudent[item.SchoolYear + 'total'] === 'undefined') {
+                                        targetStudent[item.SchoolYear + 'total'] = 0;
+                                    }
+                                
+                                    targetStudent[item.SchoolYear + 'total'] += sum;
+
+                                    
+                                    //var targetStudent = studentKey[item.StudentID];
+                                    //targetStudent[item.SchoolYear + item.Semester] = item.Sum;
+                                    //targetStudent[item.SchoolYear + 'total'] += Number(item.Sum == "" ? "0" : item.Sum);
                                 })
                             }
                         });
