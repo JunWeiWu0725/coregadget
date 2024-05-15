@@ -9,31 +9,35 @@ body {
 }
 
 .table-cell {
-  background-image: url('bg2.png');
+  /* background-image: url('bgg.png'); */
+  /* background-image: url('bg2.png'); */
   /* background-image: url('../bg2.png'); */
   /* background-image: url('/public/bg2.png'); */
+  background-color: #a0cecb !important;
   background-size: 100% 100%;
   background-repeat: no-repeat;
 }
 
 tbody, td, tfoot, th, thead, tr {
-  border-style:none;
+  border-style: none;
   text-align: center;
 }
 
 
 .table {
   /* border: 2px solid rgb(255, 255, 255);  */
-  border-collapse: collapse; /* 合併相鄰的邊框線 */
+  border-collapse: collapse;
+  /* 合併相鄰的邊框線 */
   /* text-align: center; */
 }
 
-.table > :not(caption) > * > *{
+.table> :not(caption)>*>* {
   /* background-color:#98E5E9; */
-  background-color:#baebf0;
+  /* background-color: #a0cecb; */
   /* border: 1px solid rgb(255, 255, 255); */
   border-radius: inherit;
-  box-shadow: inset 2px 2px rgb(255, 255, 255);
+  box-shadow: none;
+  /* box-shadow: inset 2px 2px rgb(255, 255, 255); */
 }
 
 .table>:not(:last-child)>:last-child>* {
@@ -41,7 +45,7 @@ tbody, td, tfoot, th, thead, tr {
 }
 
 .accordion-button::after {
-  background-image:none;
+  background-image: none;
 }
 
 .accordion-button:not(.collapsed)::after {
@@ -56,11 +60,12 @@ tbody, td, tfoot, th, thead, tr {
   color: #000;
   background-color: #FCF8E3;
   box-shadow: none;
-  background-image:none;
+  background-image: none;
   border-radius: 5px;
   /* border: 1px solid #859B6D; */
 
 }
+
 .accordion-item {
   color: #000;
   background-color: #FCF8E3;
@@ -71,7 +76,7 @@ tbody, td, tfoot, th, thead, tr {
 
 
 .d-center {
-  display: flex!important;
+  display: flex !important;
   align-items: center;
   color: #8A6D3B;
   text-align: left;
@@ -84,22 +89,22 @@ tbody, td, tfoot, th, thead, tr {
 
 
 .btn-g {
-  color: #45A7AC !important;
-  border-color: #45A7AC !important;
+  color: #a0cecb !important;
+  border-color: #a0cecb !important;
   background-color: #fff !important;
   padding: 0.375rem 0.75rem;
 }
 
-.btn-g:hover{
-  background-color: #45A7AC!important;
-  /* background-color: #baebf0!important; */
-  color: #ffffff!important;
+.btn-g:hover {
+  background-color: #a0cecb !important;
+  /* background-color: #a0cecb!important; */
+  color: #ffffff !important;
 
 }
 
 .btn-g.active {
-  /* background-color: #45A7AC!important; */
-  background-color: #baebf0!important;
+  /* background-color: #a0cecb!important; */
+  background-color: #a0cecb !important;
   /* color: #ffffff!important; */
 
 }
@@ -109,7 +114,7 @@ tbody, td, tfoot, th, thead, tr {
 }
 
 .form-select {
-  border: 1px solid #baebf0;
+  border: 1px solid #a0cecb;
 }
 
 .form-select:focus {
@@ -118,6 +123,18 @@ tbody, td, tfoot, th, thead, tr {
   box-shadow: none;
 }
 
+/* tbody:nth-of-type(2n) tr:first-child {
+  background-color: #f8f9fa;
+} */
 
+tbody tr:nth-of-type(odd), tbody > tr:nth-of-type(odd) > th {
+  background: #f2f2f2;
+}
 
+tbody tr:nth-of-type(even), tbody > tr:nth-of-type(even) > th {
+  background: #fff;
+}
 
+.table :where(thead, tfoot) :where(th, td) {
+  font-weight: 500 !important;
+}
