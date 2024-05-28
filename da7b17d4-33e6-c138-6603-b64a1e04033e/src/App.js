@@ -471,21 +471,21 @@ function App() {
             <thead>
               <tr>
                 <th className="table-cell">
-                  <div className='text-end' style={{ color: 'white' }}>學期</div>
-                  <div className='text-start'>領域</div>
+                  {/* <div className='text-end text-white'>學期</div> */}
+                  <div>領域 / 學期</div>
                 </th>
 
                 {[].concat(allSemesters || []).map((semester) => (
-                  <th style={{ background: '#45A7AC', color: 'white' }}>{semester.title}</th>
+                  <th style={{ background: '#a0cecb' }}>{semester.title}</th>
                 ))}
-                <th style={{ background: '#45A7AC', color: 'white' }}>平均</th>
+                <th style={{ background: '#a0cecb' }}>平均</th>
               </tr>
             </thead>
             <tbody>
 
               {[].concat(sortedScoreList || []).map((score) => (
                 <tr>
-                  <th style={{ background: '#7BD8DC' }}>{score.Domain}</th>
+                  <th>{score.Domain}</th>
                   {[].concat(allSemesters || []).map((semester) => {
                     const matchedField = [].concat(score.Field || []).find((sf) => sf.SchoolYear + '-' + sf.Semester === semester.title);
                     return <td>{matchedField ? matchedField.Score : ''}</td>;
@@ -537,12 +537,12 @@ function App() {
             <thead>
               <tr>
                 <th className="table-cell">
-                  <div className='text-end' style={{ color: 'white' }}>學期</div>
-                  <div className='text-start'>獎懲</div>
+                  // <div className='text-end text-white'>學期</div>
+                  <div>獎懲</div>
                 </th>
 
                 {[].concat(allSemesters || []).map((semester) => (
-                  <th style={{ background: '#45A7AC', color: 'white' }}>{semester.title}</th>
+                  <th style={{ background: '#a0cecb' }}>{semester.title}</th>
                 ))}
               </tr>
             </thead>
@@ -618,12 +618,12 @@ function App() {
               <thead>
                 <tr>
                   <th className="table-cell">
-                    <div className='text-end' style={{ color: 'white' }}>學期</div>
-                    <div className='text-start'>獎懲</div>
+                    {/* <div className='text-end text-white'>學期</div> */}
+                    <div>獎懲 / 學期</div>
                   </th>
 
                   {[].concat(disciplineList || []).map((d) => (
-                    <th style={{ background: '#45A7AC', color: 'white' }}>{d.school_year}-{d.semester}</th>
+                    <th style={{ background: '#a0cecb' }}>{d.school_year}-{d.semester}</th>
                   ))}
                 </tr>
               </thead>
@@ -632,38 +632,38 @@ function App() {
 
 
                 <tr>
-                  <th style={{ background: '#7BD8DC' }}>大功</th>
+                  <th>大功</th>
                   {[].concat(disciplineList || []).map((dis) => {
                     return <td>{dis.大功}</td>;
                   })}
                 </tr>
 
                 <tr>
-                  <th style={{ background: '#7BD8DC' }}>小功</th>
+                  <th>小功</th>
                   {[].concat(disciplineList || []).map((dis) => {
                     return <td>{dis.小功}</td>;
                   })}
                 </tr>
                 <tr>
-                  <th style={{ background: '#7BD8DC' }}>嘉獎</th>
+                  <th>嘉獎</th>
                   {[].concat(disciplineList || []).map((dis) => {
                     return <td>{dis.嘉獎}</td>;
                   })}
                 </tr>
                 <tr>
-                  <th style={{ background: '#7BD8DC' }}>大過</th>
+                  <th>大過</th>
                   {[].concat(disciplineList || []).map((dis) => {
                     return <td>{dis.大過}</td>;
                   })}
                 </tr>
                 <tr>
-                  <th style={{ background: '#7BD8DC' }}>小過</th>
+                  <th>小過</th>
                   {[].concat(disciplineList || []).map((dis) => {
                     return <td>{dis.小過}</td>;
                   })}
                 </tr>
                 <tr>
-                  <th style={{ background: '#7BD8DC' }}>警告</th>
+                  <th>警告</th>
                   {[].concat(disciplineList || []).map((dis) => {
                     return <td>{dis.警告}</td>;
                   })}
@@ -728,14 +728,14 @@ function App() {
             <thead>
               <tr>
                 <th className="table-cell">
-                  <div className='text-end' style={{ color: 'white' }}>學期</div>
-                  <div className='text-start'>假別</div>
+                  {/* <div className='text-end text-white'>學期</div> */}
+                  <div>假別 / 學期</div>
                 </th>
 
                 {[].concat(allSemesters || []).map((semester) => (
-                  <th style={{ background: '#45A7AC', color: 'white' }}>{semester.title}</th>
+                  <th style={{ background: '#a0cecb' }}>{semester.title}</th>
                 ))}
-                <th style={{ background: '#45A7AC', color: 'white' }}>總計</th>
+                <th style={{ background: '#a0cecb' }}>總計</th>
               </tr>
             </thead>
             <tbody>
@@ -744,7 +744,7 @@ function App() {
 
                 absenceAndPeriodsList.includes(abs.Name) ?
                   <tr>
-                    <th style={{ background: '#7BD8DC' }}>{abs.Name}（節）</th>
+                    <th>{abs.Name}（節）</th>
                     {[].concat(allSemesters || []).map((semester) => {
                       const matchedField = [].concat(abs.Field || []).find((a) => a.SchoolYear + '-' + a.Semester === semester.title);
                       return <td>{matchedField ? matchedField.Sum : ''}</td>;
@@ -768,7 +768,7 @@ function App() {
                 }
                 return (
                   <tr key={abs.Name}>
-                    <th style={{ background: '#7BD8DC' }}>{abs.Name}（節）</th>
+                    <th>{abs.Name}（節）</th>
                     {[].concat(allSemesters || []).map((semester) => {
                       const matchedField = [].concat(abs.Field || []).find((a) => a.SchoolYear + '-' + a.Semester === semester.title);
                       return <td key={semester.title}>{matchedField ? matchedField.Sum : ''}</td>;
@@ -792,7 +792,7 @@ function App() {
 
 
               <tr>
-                <th style={{ background: '#7BD8DC' }}>上課天數（天）</th>
+                <th>上課天數（天）</th>
                 {[].concat(allSemesters || []).map((semester) => {
                   return <td>{semester.days}</td>;
                 })}
