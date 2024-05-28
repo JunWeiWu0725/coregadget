@@ -80,6 +80,9 @@ export class PsychologicalQuizSetupComponent implements OnInit {
     });
   }
 
+// 刪除 
+
+
   edit(item: Quiz) {
     this._addPsychologicalQuizData.isAdd = false;
     this._addPsychologicalQuizData.QuizData = item;

@@ -259,6 +259,7 @@ export class ComprehensiveComponent implements OnInit {
               // debugger
             } catch (err) {
               console.log(err);
+              alert("發生錯誤 :  \n"+ JSON.stringify(err))
             }
           }else{ //如需調整年級
             try {
@@ -275,6 +276,7 @@ export class ComprehensiveComponent implements OnInit {
               }
               // debugger
             } catch (err) {
+              
               console.log(err);
             }
           }
@@ -316,6 +318,7 @@ export class ComprehensiveComponent implements OnInit {
       clearSemester : function() {
         if (!this.isBringPreviousAnsCheck) {
           this.selectSemesterInfo = null ;
+          
         }
       }
     };

@@ -47,6 +47,7 @@ import { PsychologicalTestRoutingComponent } from './psychological-test/psycholo
 import { PsychologicalTestListComponent } from './psychological-test/psychological-test-list/psychological-test-list.component';
 import { ComprehensiveStatisticsComponent } from './comprehensive/comprehensive-statistics/comprehensive-statistics.component';
 import { PsychologicalQuizSetupComponent } from './admin/psychological-quiz-setup/psychological-quiz-setup.component';
+import { ComprehensiveComponent as AdminComprehensiveComponent   } from './admin/comprehensive/comprehensive.component';
 // tslint:disable-next-line: max-line-length
 import { AddPsychologicalQuizDataComponent } from './admin/psychological-quiz-setup/add-psychological-quiz-data/add-psychological-quiz-data.component';
 // tslint:disable-next-line: max-line-length
@@ -97,6 +98,7 @@ import { CounselHistoryPsychologicaltestComponent } from './simple-page/print/co
 import { ServiceItemStatisticsComponent } from './service-item-statistics/service-item-statistics.component';
 import { ServiceItemsStatisticsComponent } from './counsel-statistics/reports/service-items-statistics/service-items-statistics.component';
 import { StudentInfoComponent } from './comprehensive/student-info/student-info.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -128,6 +130,7 @@ import { StudentInfoComponent } from './comprehensive/student-info/student-info.
     PsychologicalTestListComponent,
     ComprehensiveStatisticsComponent,
     PsychologicalQuizSetupComponent,
+    AdminComprehensiveComponent,
     AddPsychologicalQuizDataComponent,
     DelPsychologicalQuizDataComponent,
     CounselHistoryComponent,

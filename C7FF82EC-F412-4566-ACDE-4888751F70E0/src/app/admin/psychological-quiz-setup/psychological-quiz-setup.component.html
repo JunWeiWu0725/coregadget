@@ -14,7 +14,8 @@
           <li class="sticky-top">測驗名稱</li>
           <li class="sticky-top">測驗項目</li>
           <li class="sticky-top">測驗類型</li>
-          <li class="sticky-top"></li>
+          <li class="sticky-top"></li>   
+       
           <!-- <li></li> -->
         </ol>
       </li>
@@ -35,12 +36,23 @@
           </li>
           <li data-title="測驗類型">{{ item.GetQuizType() }}</li>
           <li data-title="編輯">
-            <button class="btn btn-light ml-auto"
+            <!-- <button class="btn btn-light ml-auto"
                     data-toggle="modal"
                     data-backdrop="static"
                     (click)="edit(item)">
               編輯
             </button>
+             -->
+            <mat-icon aria-hidden="false" aria-label="Example home icon" style="color:  #4d94ff; cursor:pointer "
+            (click)="edit(item)">
+            mode_edit
+          </mat-icon>
+          <mat-icon class="ml-4" aria-hidden="false" aria-label="Example home icon"
+            style="color: #E05D5D ; cursor:pointer ;" (click)="delete(item)">
+            <!-- 處理disable 部分 -->
+            highlight_off
+          </mat-icon>
+
           </li>
           <!-- <li data-title="刪除">
             <button class="btn btn-danger ml-auto"

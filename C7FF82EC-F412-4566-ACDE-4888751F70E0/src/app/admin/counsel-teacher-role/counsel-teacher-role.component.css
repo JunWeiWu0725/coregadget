@@ -11,8 +11,3 @@ border: 1.1px solid rgba(128, 128, 128, 0.227);
 ul.rwd-table .thead li, ul.rwd-table .tr li {padding: 11px !important;}
 
 
-.form-control, .custom-select, .form-control-file{
-
-    width:30px !important
-
-}

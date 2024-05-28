@@ -53,7 +53,7 @@ export class AdminComponent implements OnInit {
       this.classTypeStr = "負責班級";
 
     }
-
+ 
     await this.appComponent.GetMyCounselTeacherRole();
     if (this.globalService.MyCounselTeacherRole === '輔導主任') {
       this.currentItem = 'counsel_teacher_role';

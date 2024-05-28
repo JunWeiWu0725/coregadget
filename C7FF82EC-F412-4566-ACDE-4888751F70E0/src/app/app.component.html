@@ -26,9 +26,9 @@
 
     <ul class="nav nav-justified nav-tabs mb-3 header-base ">
      <div>
-      <button (click)="mode='permissionShow'" >
+      <!-- <button (click)="mode='permissionShow'" >
             查詢權限
-     </button>
+     </button> -->
      </div>
     </ul>
     <!-- TAB NAV -->
@@ -149,7 +149,7 @@
         <li class="nav-item ">
           <a class="nav-link" [attr.data-toggle]="roleService.enableCase?'tab':null"
             (click)="!roleService.enablePsychologicalTest || routeTo('/psychological_test')"
-            [ngClass]="{'active': currentComponent == 'psychological-test', 'disabled': !roleService.enablePsychologicalTest}">
+            [ngClass]="{'active': currentComponent == ' ', 'disabled': !roleService.enablePsychologicalTest}">
             <b> 心理測驗</b></a>
         </li>
       </ng-container>
@@ -185,7 +185,13 @@
     </div>
   </div>
 
+  <!-- <div  class="fixed-bottom-left">
+    {{this.globalService.MyCounselTeacherRole}} :
+    {{this.globalService.teacherName}}
+    
+    
 
+  </div> -->
 
   
   <footer class="text-center p-2 mt-auto">

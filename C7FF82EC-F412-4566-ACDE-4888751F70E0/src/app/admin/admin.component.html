@@ -38,6 +38,21 @@
                 </a>
               </ng-container>
             </ng-container>
+
+            <ng-container *ngIf="counselVisible === true">
+              <ng-container *ngIf="isClassEnable">
+                <a class="list-group-item list-group-item-action d-flex"
+                   data-toggle="list"
+                   [ngClass]="{ 'active show': currentItem == 'admin_comprehensive' }"
+                   
+                   (click)="routeTo('admin_comprehensive')"> 
+                   設定綜合表現紀錄表題目
+                </a>
+              </ng-container>
+            </ng-container>
+
+
+           
           </div>
         </div>
       </div>

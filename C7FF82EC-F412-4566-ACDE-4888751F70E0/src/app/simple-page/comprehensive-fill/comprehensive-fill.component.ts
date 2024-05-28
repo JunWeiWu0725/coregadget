@@ -9,7 +9,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 export class ComprehensiveFillComponent implements OnInit {
 
   //如果使用者有改變卻沒有儲存，需要提醒使用需要先儲存。 
-  isChangeNotSave = false ;
+  isChangeNotSave = false;
   dsns: string;
   fillInKey: string;
 
@@ -22,7 +22,9 @@ export class ComprehensiveFillComponent implements OnInit {
   optionCodeMapping: any = {};
 
   isSaving: boolean = false;
-
+  isOpen: boolean = false;
+  startTime :string ="" ;
+  endTime :string  ="" ;
   config: any = { key: "" };
   loadingFillInData: boolean = false;
   loadFaildMsg: string = "";
@@ -48,14 +50,36 @@ export class ComprehensiveFillComponent implements OnInit {
         this.dsns = params.get("dsns");
         this.fillInKey = params.get("fill_in_key");//'A123456789'
         this.getSchoolInfo();
+
+
       }
     );
   }
 
+  /** */
+  async getSectionOpenDate() {
+  
+    try {
+
+      let rs = await this.send(this.dsns + "/1campus.counsel.public", "GetSecrionOpenDate", { FillInKey: this.fillInKey });
+
+      return rs
+
+    } catch (ex) {
+
+      alert(JSON.stringify(ex))
+    }
+  }
+
+
+
   async getSchoolInfo() {
+    // alert("" + JSON.stringify(this.fillInKey))
     this.schoolInfo = await this.send(this.dsns + "/1campus.counsel.public", "GetSchoolInfo");
-    if (this.fillInKey)
+    if (this.fillInKey) {
       this.getFillInData(false);
+     
+    }
     else {
       $("#modal-key").modal({ show: true, backdrop: false, keyboard: false, focus: true });
     }
@@ -63,7 +87,16 @@ export class ComprehensiveFillComponent implements OnInit {
 
 
   async getFillInData(closeModal) {
-    
+
+   let rs = await this.getSectionOpenDate() as any
+  //  {"result":{"end_time":"2023-09-30 11:19:00","start_time":"2023-08-18 11:19:00","isopen":"f"}}
+    if(rs.result){
+        console.log("rs.result",rs.result)
+      this.isOpen=rs.result.isopen =='t'
+      this.startTime=rs.result.start_time 
+      this.endTime=rs.result.end_time 
+    }
+
     if (this.loadingFillInData) return;
     this.loadingFillInData = true;
 
@@ -72,130 +105,130 @@ export class ComprehensiveFillComponent implements OnInit {
     this.questionSubject = [];
 
     // try{
-      var rsp = await this.send(this.dsns + "/1campus.counsel.public", "GetFillInData", { FillInKey: this.fillInKey });
-      if (rsp.QuestionSubject) {
-        if (closeModal)
-          $("#modal-key").modal('hide');
-        rsp.QuestionSubject = [].concat(rsp.QuestionSubject || []);
-        rsp.QuestionSubject.forEach((subject) => {
-          subject.QuestionGroup = [].concat(subject.QuestionGroup || []);
-          subject.QuestionGroup.forEach(group => {
-            group.QuestionQuery = [].concat(group.QuestionQuery || []);
-            group.QuestionQuery.forEach(query => {
-              query.HasText = false;
-              query.ShowMark = false;
-  
-              query.QuestionText = [].concat(query.QuestionText || []);
-              query.QuestionText.forEach(text => {
-                if (text.Text) {
-                  query.HasText = true;
+    var rsp = await this.send(this.dsns + "/1campus.counsel.public", "GetFillInData", { FillInKey: this.fillInKey });
+    if (rsp.QuestionSubject) {
+      if (closeModal)
+        $("#modal-key").modal('hide');
+      rsp.QuestionSubject = [].concat(rsp.QuestionSubject || []);
+      rsp.QuestionSubject.forEach((subject) => {
+        subject.QuestionGroup = [].concat(subject.QuestionGroup || []);
+        subject.QuestionGroup.forEach(group => {
+          group.QuestionQuery = [].concat(group.QuestionQuery || []);
+          group.QuestionQuery.forEach(query => {
+            query.HasText = false;
+            query.ShowMark = false;
+
+            query.QuestionText = [].concat(query.QuestionText || []);
+            query.QuestionText.forEach(text => {
+              if (text.Text) {
+                query.HasText = true;
+              }
+              text.Require = (text.Require == "true");
+              text.RequireLink = text.RequireLink || "";
+
+              text.ShowMark = false;
+
+              text.Option = [].concat(text.Option || []);
+              text.Option.forEach(option => {
+                option.AnswerChecked = (option.AnswerChecked == "true");
+                option.AnswerComplete = (option.AnswerComplete == "true");
+
+                if (option.OptionCode) {
+                  this.optionCodeMapping[option.OptionCode] = option;
                 }
-                text.Require = (text.Require == "true");
-                text.RequireLink = text.RequireLink || "";
-  
-                text.ShowMark = false;
-  
-                text.Option = [].concat(text.Option || []);
-                text.Option.forEach(option => {
-                  option.AnswerChecked = (option.AnswerChecked == "true");
-                  option.AnswerComplete = (option.AnswerComplete == "true");
-  
-                  if (option.OptionCode) {
-                    this.optionCodeMapping[option.OptionCode] = option;
-                  }
-  
-                  switch (text.Type) {
-                    case "單選":
-                      option.change = () => {
-                        if (!option.AnswerChecked) {
-                          option.AnswerChecked = true;
-                        }
-                        text.Option.forEach(optionC => {
-                          if (optionC != option) {
-                            optionC.AnswerChecked = false;
-                          }
-                        });
-                        console.log('單選');
-                        this.refreshMark('單選');
-                      };
-                      break;
-                    case "複選":
-                      option.change = () => {
-                        option.AnswerChecked = !option.AnswerChecked;
-                        console.log('複選');
-                        this.refreshMark('複選');
-                      };
-                      break;
-                    case "填答":
-                      option.AnswerChecked = true;
-                      break;
-                  }
-             
-                  option.AnswerMatrix = [].concat(JSON.parse(option.AnswerMatrix || '[]') || []);
-                  // console.log(    option.AnswerMatrix)
-                  option.IsTextArea = false;
-                  option.Template = [];
-                  //分割OptionText進Template
-                  var splitTemplate = () => {
-                    var keyWord = [];
-                    for (var key in this.optionKey) {
-                      keyWord.push(key);
-                    }
-                    keyWord.reverse();
-  
-                    var keySplit = (query, keyWord) => {
-                      var key = keyWord.pop();
-                      var list = query.split(key);
-  
-                      list.forEach((item, index) => {
-                        if (keyWord.length > 0) {
-                          if (item)
-                            keySplit(item, [].concat(keyWord));
-                        }
-                        else {
-                          if (item == "" && (index == 0 || index + 1 == list.length)) {
-  
-                          }
-                          else {
-                            option.Template.push(item);
-                          }
-                        }
-                        if (index + 1 != list.length) {
-                          if (this.optionKey[key].element == 'textarea') { option.IsTextArea = true; }
-                          option.Template.push(key);
+
+                switch (text.Type) {
+                  case "單選":
+                    option.change = () => {
+                      if (!option.AnswerChecked) {
+                        option.AnswerChecked = true;
+                      }
+                      text.Option.forEach(optionC => {
+                        if (optionC != option) {
+                          optionC.AnswerChecked = false;
                         }
                       });
-                    }
-                    keySplit(option.OptionText, keyWord);
-                  };
-                  splitTemplate();
-                  //建置預設的AnswerMatrix
-                  if (option.AnswerMatrix.length < option.Template.length) {
-                    option.Template.forEach((part, index) => {
-                      if(option.AnswerMatrix.length <= index){
-                        if(this.optionKey[part]){
-                          option.AnswerMatrix.push("");
+                      console.log('單選');
+                      this.refreshMark('單選');
+                    };
+                    break;
+                  case "複選":
+                    option.change = () => {
+                      option.AnswerChecked = !option.AnswerChecked;
+                      console.log('複選');
+                      this.refreshMark('複選');
+                    };
+                    break;
+                  case "填答":
+                    option.AnswerChecked = true;
+                    break;
+                }
+
+                option.AnswerMatrix = [].concat(JSON.parse(option.AnswerMatrix || '[]') || []);
+                // console.log(    option.AnswerMatrix)
+                option.IsTextArea = false;
+                option.Template = [];
+                //分割OptionText進Template
+                var splitTemplate = () => {
+                  var keyWord = [];
+                  for (var key in this.optionKey) {
+                    keyWord.push(key);
+                  }
+                  keyWord.reverse();
+
+                  var keySplit = (query, keyWord) => {
+                    var key = keyWord.pop();
+                    var list = query.split(key);
+
+                    list.forEach((item, index) => {
+                      if (keyWord.length > 0) {
+                        if (item)
+                          keySplit(item, [].concat(keyWord));
+                      }
+                      else {
+                        if (item == "" && (index == 0 || index + 1 == list.length)) {
+
                         }
-                        else{
-                          option.AnswerMatrix.push(part);
+                        else {
+                          option.Template.push(item);
                         }
+                      }
+                      if (index + 1 != list.length) {
+                        if (this.optionKey[key].element == 'textarea') { option.IsTextArea = true; }
+                        option.Template.push(key);
                       }
                     });
                   }
-                });
+                  keySplit(option.OptionText, keyWord);
+                };
+                splitTemplate();
+                //建置預設的AnswerMatrix
+                if (option.AnswerMatrix.length < option.Template.length) {
+                  option.Template.forEach((part, index) => {
+                    if (option.AnswerMatrix.length <= index) {
+                      if (this.optionKey[part]) {
+                        option.AnswerMatrix.push("");
+                      }
+                      else {
+                        option.AnswerMatrix.push(part);
+                      }
+                    }
+                  });
+                }
               });
             });
           });
         });
-        this.sectionInfo = rsp.Section;
-        this.studentInfo = rsp.Student;
-        this.questionSubject = rsp.QuestionSubject;
-        // debugger
-        this.refreshMark('');
- }
-      else{
-        alert("代碼錯誤");
-      }
+      });
+      this.sectionInfo = rsp.Section;
+      this.studentInfo = rsp.Student;
+      this.questionSubject = rsp.QuestionSubject;
+      // debugger
+      this.refreshMark('');
+    }
+    else {
+      alert("代碼錯誤");
+    }
     // }
     // catch (err) {
     //   console.log(err);
@@ -204,9 +237,9 @@ export class ComprehensiveFillComponent implements OnInit {
     this.loadingFillInData = false;
   }
 
-  refreshMark(param :string ) {
+  refreshMark(param: string) {
 
-    if(param!=''){
+    if (param != '') {
       this.isChangeNotSave = true;
 
     }
@@ -224,7 +257,7 @@ export class ComprehensiveFillComponent implements OnInit {
               if (option.AnswerChecked) {
                 option.AnswerComplete = true;
                 hasChecked = true;
-                option.Template.forEach((templateItem, index) => {                  
+                option.Template.forEach((templateItem, index) => {
                   if (this.optionKey[templateItem]) {
                     if (!option.AnswerMatrix[index]) {
                       // 完全沒有輸入
@@ -278,14 +311,14 @@ export class ComprehensiveFillComponent implements OnInit {
     });
   }
 
-  
+
   showRequireList() {
     alert(this.requireList.join("\n"));
   }
 
 
 
- 
+
   /**
    *
    * 當視窗被關閉時
@@ -294,9 +327,9 @@ export class ComprehensiveFillComponent implements OnInit {
    * @memberof ComprehensiveFillComponent
    */
   @HostListener('window:beforeunload', ['$event'])
-  onCTablose(event:any){
-    if(this.isChangeNotSave) {
-      event.returnValue ='跳出提醒視窗';
+  onCTablose(event: any) {
+    if (this.isChangeNotSave) {
+      event.returnValue = '跳出提醒視窗';
       return '';
     }
   }
@@ -311,7 +344,7 @@ export class ComprehensiveFillComponent implements OnInit {
   }
 
   async save() {
-    this.isChangeNotSave = false ;
+    this.isChangeNotSave = false;
     if (this.isSaving) { return; }
     this.isSaving = true;
     const options = [];

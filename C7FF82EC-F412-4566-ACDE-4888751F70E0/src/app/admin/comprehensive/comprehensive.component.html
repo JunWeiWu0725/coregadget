@@ -1,0 +1,149 @@
+<div class="pl-3">
+
+
+  <div class="d-flex justify-content-between">
+
+    <div class="dropdown h-100">
+      <button class="btn btn-light dropdown-toggle h-100" type="button" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false">
+        <span *ngIf="true">{{ currentTemplateSection?.section_name}}</span>
+      </button>
+      <div *ngIf="true" class="dropdown-menu dropdown-menu-scrollable">
+
+
+        <a class="dropdown-item" *ngFor="let template of selectTemplates" (click)="selectTemplate(template)">
+          <span>{{ template.section_name }}</span>
+        </a>
+      </div>
+    </div>
+
+    <div>
+
+
+      <button *ngIf="Mode =='編輯' && updateLists.length>0" class="btn btn-info ml-auto btn_bul_rad   " style=" "
+        (click)="save()">
+        <span>
+          {{'儲存'}}
+        </span>
+
+
+      </button>
+
+      <button *ngIf="this.GetQuestionSubjectMapValue().length>0" class="btn btn-info ml-auto btn_bul_rad  "
+        style="float:right ;" (click)="display()"> 預覽
+
+      </button>
+    </div>
+    <button *ngIf="Mode =='預覽'" class="btn btn-info ml-auto btn_bul_rad  float-right  floating-button p-2"
+      style=" margin :5px; z-index: 9999;" (click)="hideAlert()"> 離開預覽模式
+
+    </button>
+  </div>
+</div>
+
+<div class="overlay" *ngIf="showAlert"></div>
+<div>
+
+</div>
+
+
+
+
+
+
+<hr />
+
+<div style="border:1.5px solid #e1e1e1 ;background-color: #f5f5f5; " [ngClass]="{'displayView': showAlert}"
+  *ngIf="this.GetQuestionSubjectMapValue().length>0; else tmpLoading">
+  <ng-container *ngFor="let subject of this.GetQuestionSubjectMapValue() ">
+    <div class=" mb-2 px-3 mt-2 questionSheet">
+      <ng-container *ngIf="Mode =='編輯' ; else elseEmpty">
+        <input (click)="selectSubject(subject)" class="inline" type="checkbox" id="scales" name="scales"
+          [checked]="!subject.IsSetDisable ||!subject.ischildAllCheck()" />
+
+      </ng-container>
+      <h4 (click)="selectSubject(subject)" class="hover-a inline mb-2" [ngClass]="{'IsChecked':subject.IsSetDisable }">
+        {{subject.SubjectText}}</h4>
+        
+      <table class="table table-sm table-bordered m-1">
+        <ng-container *ngFor="let group of subject.GetQuestionGroups()">
+          <tr>
+            <th colspan="2" (click)="selectGroup(group,subject)" class=" text-left hover-a">
+              <ng-container *ngIf="Mode =='編輯' ; else elseEmpty">
+                <input type="checkbox" id="scales" name="scales" [checked]="!group.IsSetDisable" />
+              </ng-container>
+              <span [ngClass]="{'IsChecked':group.IsSetDisable }">
+                {{group.GroupText}}
+              </span>
+            </th>
+          </tr>
+          <ng-container *ngFor="let query of group.GetQuestionQuerys()">
+            <tr>
+              <td class="text-left pl-4 " style="width:221px ;" scope="col">
+
+
+
+                <div class="can_click ">
+
+
+                  <ng-container *ngIf="Mode =='編輯' ; else elseEmpty">
+                    <input (click)="selectQuery(query,group ,subject)" type="checkbox" id="scales" name="scales"
+                      [checked]="!query.IsSetDisable" />
+                  </ng-container>
+
+
+
+
+                  <span (click)="selectQuery(query,group ,subject)" class="hover-a"
+                    [ngClass]="{'IsChecked':query.IsChecked }">
+                    {{query.QueryText}} :
+
+                  </span>
+                </div>
+              </td>
+              <td class="text-left" scope="col">
+                <ng-container *ngFor="let questionText of query.GetQuestionText();let questionTextIndex = index">
+                  <span [attr.questionCode]=questionText.QuestionCode>
+                    <span *ngIf="questionText.QuestionText ">
+
+
+                      <div class="can_click" style="display: inline;"
+                        (click)="selectQuestionText(questionText,query,group ,subject)">
+
+                        <ng-container *ngIf="Mode =='編輯' ; else elseEmpty">
+                          <input class="custom-checkbox " type="checkbox" id="scales" name="scales"
+                            [checked]="!questionText.IsSetDisable" />
+                        </ng-container>
+                        <span class="hover-a" id="{{questionText.QuestionCode}}"
+                          [ngClass]="{'IsChecked':questionText.IsSetDisable }">
+                          {{questionText.QuestionText}}
+                        </span>
+                      </div>
+                      <span class="ml-1 mr-2">:<span class=" ml-3"> ---</span></span>
+                    </span>
+                    <span *ngIf="!questionText.QuestionText">
+                      <span style="color:transparent" class="material-icons  posit">
+                        close
+                      </span>
+                      <span *ngIf="" style="color:transparent" class="material-icons ">
+                        close
+                      </span>
+                      ---</span>
+                  </span>
+
+                </ng-container>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </table>
+    </div>
+  </ng-container>
+
+
+  <ng-template #elseEmpty>
+    <span class="material-icons posit" style="color: transparent; font-size: 12px;">
+      close
+    </span>
+  </ng-template>
+</div>

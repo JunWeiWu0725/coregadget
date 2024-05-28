@@ -1,0 +1,40 @@
+
+
+  .alert-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    z-index: 1000; /* 确保它在覆盖层之上 */
+  }
+ 
+  .floating-button {
+    position: fixed;
+    top: 20px; /* 距離視窗底部的距離 */
+    right: 20px; /* 距離視窗右側的距離 */
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 999; /* 確保按鈕在其他元素之上 */
+}
+
+.custom-checkbox:checked {
+    background-color: green !important;
+  } 
+
+  .custom-checkbox input[type="checkbox"]:checked {
+    background-color: green !important;
+    border-color: green !important;
+  }
+
+  .inline{
+
+display: inline;
+
+
+  }

@@ -34,6 +34,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
   public counselVisable: boolean = false;
   public counsel_statisticsVisable: boolean = false;
   public referralVisable: boolean = false;
+  /** 上排 個案資料 */
   public caseVisable: boolean = false;
   public comprehensiveVisable: boolean = false;
   public psychologicalTestVisable: boolean = false;
@@ -163,19 +164,28 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
   async GetMyCounselTeacherRole() {
     this.globalService.MyCounselTeacherRole = '';
     //  this.globalService.enableCase = false;
-    let resp = await this.dsaService.send("GetMyCounselTeacherRole", {
-      Request: {}
-    });
+    try{
+      let resp = await this.dsaService.send("GetMyCounselTeacherRole", {
+        Request: {}
+      });
+      
+      [].concat(resp.CounselTeacherRole || []).forEach(TeacherRole => {
+        this.globalService.MyCounselTeacherRole = TeacherRole.Role;
+        this.globalService.teacherName = TeacherRole.TeacherName
+        this.globalService.teacherID = TeacherRole.TeacherID
+      });
+  
+      // alert(""+this.globalService.MyCounselTeacherRole)
+      if (this.globalService.MyCounselTeacherRole != '' && this.globalService.MyCounselTeacherRole != '認輔老師' && this.globalService.MyCounselTeacherRole != '校外心理師'  ) {
+        this.globalService.enableCase = true;
+      } else
+        this.globalService.enableCase = false;
+      
+    }catch(ex){
+        alert('取得基本資料發生錯誤 : '+JSON.stringify(ex))
 
-    [].concat(resp.CounselTeacherRole || []).forEach(TeacherRole => {
-      this.globalService.MyCounselTeacherRole = TeacherRole.Role;
-    });
+    }
 
-    // alert(""+this.globalService.MyCounselTeacherRole)
-    if (this.globalService.MyCounselTeacherRole != '' && this.globalService.MyCounselTeacherRole != '認輔老師' && this.globalService.MyCounselTeacherRole != '校外心理師'  ) {
-      this.globalService.enableCase = true;
-    } else
-      this.globalService.enableCase = false;
   }
 
   routeTo(to) {
@@ -212,7 +222,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
 
 
   onScroll (){
-   alert(" hey")
+
 
   }
 }

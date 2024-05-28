@@ -12,7 +12,8 @@ import { AdminComponent } from './admin/admin.component';
 import { AdminRoutingComponent } from './admin/admin-routing/admin-routing.component';
 import { CounselTeacherRoleComponent } from './admin/counsel-teacher-role/counsel-teacher-role.component';
 import { CounselClassComponent } from './admin/counsel-class/counsel-class.component';
-import { ComprehensiveComponent } from './comprehensive/comprehensive.component';
+import { ComprehensiveComponent } from './comprehensive/comprehensive.component'; 
+
 import { ComprehensiveRoutingComponent } from './comprehensive/comprehensive-routing/comprehensive-routing.component';
 import { ComprehensiveSectionComponent } from './comprehensive/comprehensive-section/comprehensive-section.component';
 import { ComprehensiveClassViewComponent } from './comprehensive/comprehensive-class-view/comprehensive-class-view.component';
@@ -35,6 +36,7 @@ import { WorkServiceComponent } from './work-service/work-service.component';
 import { TeacherServiceComponent } from './teacher-service/teacher-service.component';
 import { CounselHistoryPsychologicaltestComponent } from './simple-page/print/counsel-history-psychologicaltest/counsel-history-psychologicaltest.component';
 import { StudentInfoComponent } from './comprehensive/student-info/student-info.component';
+import { ComprehensiveComponent as AdminComprehensiveComponent } from './admin/comprehensive/comprehensive.component';
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
   { path: "pd", component: PermissionDeniedComponent },
@@ -83,7 +85,8 @@ const routes: Routes = [
       { path: "", pathMatch: "full", component: AdminRoutingComponent },
       { path: "counsel_teacher_role", component: CounselTeacherRoleComponent },
       { path: "counsel_class", component: CounselClassComponent },
-      { path: "psychological_quiz_setup", component: PsychologicalQuizSetupComponent }
+      { path: "psychological_quiz_setup", component: PsychologicalQuizSetupComponent },
+      { path: "admin_comprehensive", component: AdminComprehensiveComponent }
     ]
   },{
     path: "teacher-service",

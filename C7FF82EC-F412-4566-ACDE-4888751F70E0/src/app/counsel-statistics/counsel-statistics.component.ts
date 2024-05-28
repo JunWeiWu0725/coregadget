@@ -56,6 +56,7 @@ export class CounselStatisticsComponent implements OnInit {
 
 
     if (gadget.params.groupAanalysisEnabled) {
+
       this.reportTypeList.push('選組分析表');
     }
 

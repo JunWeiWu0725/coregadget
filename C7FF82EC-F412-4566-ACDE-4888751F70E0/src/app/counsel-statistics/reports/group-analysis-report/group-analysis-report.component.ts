@@ -193,7 +193,7 @@ export class GroupAnalysisReportComponent implements OnInit {
 
         } catch (ex) {
           console.log("err", ex);
-         alert("報表產生發生錯誤!");
+         alert("報表產生發生錯誤!"+JSON.stringify(ex));
          $('#progressaAndDown').modal('hide');
         }
       }

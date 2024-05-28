@@ -37,8 +37,6 @@ export class PsychologicalTestDetailComponent implements OnInit {
           StudentID: StudentID
         }
       });
-
-      //console.log(resp);
       // 解析題目
       [].concat(resp.Quiz || []).forEach(data => {
 
@@ -63,7 +61,6 @@ export class PsychologicalTestDetailComponent implements OnInit {
             data1.QuizFieldList.sort(function (a, b) {
               return a.Order - b.Order;
             });
-            // console.log(data1.QuizFieldList);
           }
         });
       });

@@ -63,11 +63,11 @@
             <li data-title="姓名"
             style ="cursor: context-menu !important;"
                 title="{{stuRec.StudentName}}">
-              <div style="width:100%;position: relative;">
+              <div style="width:100%;position: relative; ">
                 <div *ngIf="stuRec.Status!='一般'"
                      class="text-danger"
-                     style="position: absolute; top:-17px; left:-12px; z-index: 30;">
-                  <small>{{stuRec.Status}}</small>
+                     style="position: absolute; top:-50x; left:-12px; z-index: 30;   ">
+                  <small> ({{stuRec.Status}})</small>
                 </div>
                 <!-- <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"> -->
                   <div class="w-100 align-baseline base-studentname" style ="cursor: context-menu !important;">
