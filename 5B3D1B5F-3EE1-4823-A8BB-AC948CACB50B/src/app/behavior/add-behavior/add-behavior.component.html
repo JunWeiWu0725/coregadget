@@ -48,27 +48,47 @@
              [(ngModel)]="addText">
     </div>
 
-    <div class="input-group col-md-12 col-lg-1">
+    <div class="input-group col-md-12 col-lg-2 row">
       <div class="form-group form-check" style="margin-left: 5px">
         <input id="detention"
                type="checkbox"
                class="form-check-input"
+               (change)="onCheckboxChange('detention')"
                [(ngModel)]="currentDetention">
         <label class="form-check-label"
                for="detention">Detention</label>
       </div>
-    </div>
-      
-    <div class="input-group col-md-12 col-lg-1" >
+
       <div class="form-group form-check" style="margin-left: 5px">
-          <input id="goodBehavior"
-                 type="checkbox"
-                 class="form-check-input"
-                 [(ngModel)]="currentGoodBehavior">
-          <label class="form-check-label"
-                 for="goodBehavior">Good</label>
-        </div>        
+        <input id="goodBehavior"
+               type="checkbox"
+               class="form-check-input"
+               (change)="onCheckboxChange('goodBehavior')"
+               [(ngModel)]="currentGoodBehavior">
+        <label class="form-check-label"
+               for="goodBehavior">Good</label>
+      </div>    
+      
+      <div class="form-group form-check  " style="margin-left: 5px">
+        <input id="currentDaaDsaFollow" 
+                type="checkbox" 
+                class="form-check-input" 
+                (change)="onCheckboxChange('currentDaaDsaFollow')"
+                [(ngModel)]="currentDaaDsaFollow">
+        <label class="form-check-label" for="currentDaaDsaFollow">DAA/DSA Follow up</label>
+  
     </div>
+
+    </div>
+ 
+   
+
+
+    
+    
+
+
+
     <div class="col-md-12 col-lg-2">
       <button class="ml-auto btn btn-info btn-block"
               disabled="{{checkButtonEnable}}"

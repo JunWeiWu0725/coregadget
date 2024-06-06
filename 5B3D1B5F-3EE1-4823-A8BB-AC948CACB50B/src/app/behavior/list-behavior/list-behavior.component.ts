@@ -43,12 +43,12 @@ export class ListBehaviorComponent implements OnInit {
   async  getClassBehaviorRecordsByClass() {
     //班級
     const RspBehaviorDataList = await this.contract.send("behaviorForAll.GetBehaviorDataByClassID"
-      , {
-        Request: {
-          ClassID: this.classID
-        }
+    , {
+      Request: {
+        ClassID: this.classID
       }
-    );
+    }
+  );
     this.behaviorDataList = Utils.array(RspBehaviorDataList, "Response/BehaviorData");
 
   }
@@ -59,12 +59,16 @@ export class ListBehaviorComponent implements OnInit {
   //
   async  getBehaviorRecordsFromMe() {
     const RspRecord = await this.contract.send("behaviorForAll.GetBehaviorRecordByTeacher");
+    // alert("getBehaviorRecordsFromMe" + JSON.stringify(RspRecord) )
+    
     this.behaviorDataList = Utils.array(RspRecord, "Response/BehaviorData");
   }
 
   // 修改 comment
-  async editComment(data) {
-    const result = await this.dialogService.editDialog("編輯  " + data.CreateDate2 + " " + data.Name, "事由:", data.Comment, data.Detention == 'true', data.GoodBehavior =='true');
+  async editComment(data) { 
+ 
+    const result = await this.dialogService.editDialog("編輯  " + data.CreateDate2 + " " + data.Name, "事由:", data.Comment, data.Detention == 'true', data.GoodBehavior =='true' ,data.DaaDsaFollow=='true');
+ 
     if (result.confirm) {
       try {
         const rsp = await this.contract.send("behaviorForAll.EditBehaviorData", {
@@ -74,6 +78,8 @@ export class ListBehaviorComponent implements OnInit {
                 Comment: result.comment,
                 Detention: result.detention,
                 IsGoodBehavior: result.goodBehavior,
+                DaaDsaFollow :result.daaDsaFollow
+
               },
               Condition: {
                 Uid: data.BehaviorUID

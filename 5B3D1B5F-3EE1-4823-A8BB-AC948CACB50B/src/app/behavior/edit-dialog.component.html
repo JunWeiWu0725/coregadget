@@ -12,6 +12,7 @@
       <input id="detention"
              type="checkbox"
              class="form-check-input"
+             (change)="onCheckboxChange('detention')"
              [(ngModel)]="detention">
       <label class="form-check-label"
              for="detention">Detention</label>
@@ -20,10 +21,22 @@
         <input id="goodBehavior"
                type="checkbox"
                class="form-check-input"
+               (change)="onCheckboxChange('goodBehavior')"
                [(ngModel)]="goodBehavior">
         <label class="form-check-label"
                for="goodBehavior">Good</label>
       </div>
+       <!--  DaaDsaFollow :this.currentDaaDsaFollow ? "true" : "false", -->
+    <div class="form-group form-check">
+      <input id="daaDsaFollow"
+             type="checkbox"
+             class="form-check-input"
+             (change)="onCheckboxChange('daaDsaFollow')"
+             [(ngModel)]="daaDsaFollow">
+      <label class="form-check-label"
+             for="daaDsaFollow">DAA/DSA Follow up</label>
+             
+    </div>
   </div>
   <div class="modal-footer">
     <button type="button"

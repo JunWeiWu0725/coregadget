@@ -21,6 +21,8 @@
                               class="badge badge-danger mr-1">Detention</span>
                          <span *ngIf="rec.GoodBehavior=='true'"
                               class="badge badge-success mr-1">Good</span>
+                              <span *ngIf="data.DaaDsaFollow=='true'"
+                              class="badge badge-follow-up mr-1">DAA/DSA Follow up</span>
                         <span>{{rec.Comment}}</span>
                     </div>
                 </div>

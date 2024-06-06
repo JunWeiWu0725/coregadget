@@ -11,6 +11,7 @@ export class EditDialogComponent implements OnInit {
   comment: string = '';
   detention: boolean = false;
   goodBehavior: boolean = false;
+  daaDsaFollow:boolean =false ;
   alertText: string = "";
 
 
@@ -19,12 +20,23 @@ export class EditDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
   }
-
+  onCheckboxChange(selected: string) {
+    if (selected === 'detention') {
+      this.goodBehavior = false;
+      this.daaDsaFollow = false;
+    } else if (selected === 'goodBehavior') {
+      this.detention = false;
+      this.daaDsaFollow = false;
+    } else if (selected === 'currentDaaDsaFollow') {
+      this.detention = false;
+      this.goodBehavior = false;
+    }
+  }
   ngOnInit() {
     this.comment = this.data.comment;
     this.detention = this.data.detention == true;
     this.goodBehavior = this.data.goodBehavior == true;
-   
+    this.daaDsaFollow =this.data.daaDsaFollow == true ;
   }
 
   onNoClick(): void {
@@ -32,6 +44,7 @@ export class EditDialogComponent implements OnInit {
       comment: '',
       detention: false,
       goodBehavior: false,
+      daaDsaFollow :false,
       confirm: false,
     });
   }
@@ -54,6 +67,7 @@ export class EditDialogComponent implements OnInit {
         comment: this.comment,
         detention: this.detention,
         goodBehavior: this.goodBehavior,
+        daaDsaFollow :this.daaDsaFollow,
         confirm: true
       });
     }
