@@ -26,24 +26,26 @@ export class CounselRoutingComponent implements OnInit {
   }
 
   routing() {
+    // alert("selectTarget"+this.globalService.selectTarget)
     let classID = "";
     if (!this.counselStudentService.isLoading) {
       if (
         !this.globalService.selectTarget &&
         this.counselStudentService.guidanceStudent.length > 0
       ) {
-        this.router.navigate(["list", "guidance", "g"], {
+        this.router.navigate(["list", "guidance", "g",'認輔老師'], {
           relativeTo: this.route,
           skipLocationChange: true
         });
       } else {
+        debugger
         if (this.counselStudentService.counselClass.length > 0) {
           if (!this.globalService.selectTarget) {
             classID = this.counselStudentService.counselClass[0].ClassID;
           } else {
             classID = this.globalService.selectTarget;
           }
-          this.router.navigate(["list", "class", classID], {
+          this.router.navigate(["list", "class", classID,'輔導老師'], {
             relativeTo: this.route,
             skipLocationChange: true
           });

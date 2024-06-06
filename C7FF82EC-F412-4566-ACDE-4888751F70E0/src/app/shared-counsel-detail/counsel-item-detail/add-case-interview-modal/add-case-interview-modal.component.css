@@ -1,0 +1,17 @@
+.inline-dropdown {
+
+    display: inline-block;
+    width: auto;
+}
+
+button {
+
+
+    cursor: pointer;
+    
+}
+
+button:hover {
+
+    background: rgba(222, 241, 234, 0.747)
+}

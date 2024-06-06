@@ -103,11 +103,25 @@
               </label>
             </div>
           </div>
-
+  
         </div>
 
 
-
+        <div class="custom-control custom-checkbox w-80">
+          <input type="checkbox"
+                 class="custom-control-input"
+                 [id]="'onlyMyself'"
+                 [disabled] ="!isAllowSelectPrintAll"
+                 [checked]="OnlyPrintMine"
+                 [(ngModel)]="OnlyPrintMine"
+              
+                  />
+          <label class="custom-control-label " style=" color: gray;"
+                 [for]="'onlyMyself'">
+                 僅列印本教師紀錄 
+                 <!-- {{OnlyPrintMine}} -->
+          </label>
+        </div>
 
         <div class="modal-footer">
           <button type="button"

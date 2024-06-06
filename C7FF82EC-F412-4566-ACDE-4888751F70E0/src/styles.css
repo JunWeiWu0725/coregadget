@@ -932,3 +932,8 @@ padding:  0px 50px;
     border-radius: 10px;
     z-index: 999;
 }
+
+button{
+
+    cursor: pointer !important;
+}

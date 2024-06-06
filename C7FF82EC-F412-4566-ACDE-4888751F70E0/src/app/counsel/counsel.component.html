@@ -20,20 +20,20 @@
                   <h6 class="dropdown-header drop-list-title" *ngIf="roleService.role.indexOf('班導師') >= 0">班導師身分</h6>
 
                   <a *ngFor="let classRec of counselStudentService.getCounselClass('班導師')"
-                     [routerLink]="['list', 'class', classRec.ClassID]"
+                     [routerLink]="['list', 'class', classRec.ClassID,'班導師']"
                      [ngClass]="{ active: selectItem === classRec.ClassName }" class="dropdown-item">
                      {{ classRec.ClassName }} 
                   </a>
                   <h6 class="dropdown-header drop-list-title" style="border-top :2px solid #80808057"
                      *ngIf="roleService.role.indexOf('認輔老師') >= 0">個案認輔教師身分</h6>
                   <a class="dropdown-item" *ngIf="roleService.role.indexOf('認輔老師') >= 0"
-                     [routerLink]="['list', 'guidance', 'g']" [ngClass]="{ active: selectItem === '認輔學生' }">
+                     [routerLink]="['list', 'guidance', 'g','認輔老師']" [ngClass]="{ active: selectItem === '認輔學生' }">
                      個案認輔學生
                   </a>
                   <h6 class="dropdown-header drop-list-title" style="border-top :2px solid #80808057"
                      *ngIf="roleService.role.indexOf('輔導老師') >= 0">輔導老師身分</h6>
                   <a *ngFor="let classRec of counselStudentService.getCounselClass('輔導老師')"
-                     [routerLink]="['list', 'class', classRec.ClassID]"
+                     [routerLink]="['list', 'class', classRec.ClassID,'輔導老師']"
                      [ngClass]="{ active: selectItem === classRec.ClassName }" class="dropdown-item">
                      {{ classRec.ClassName }}
                   </a>

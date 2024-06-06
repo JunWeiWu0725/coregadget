@@ -41,6 +41,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
   public adminVisable: boolean = false;
   public transferStudentVisable: boolean = false;
   public hasNewTransfer = false;
+  isOpenUserInfo =false
 
   constructor(
     private activeRoute: ActivatedRoute,
@@ -80,6 +81,23 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
       });
     }
   }
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.ctrlKey && event.key === 'k') {
+      this.onCtrlKPressed();
+      event.preventDefault();  // Prevent default action if necessary
+    }
+  }
+
+  onCtrlKPressed() {
+    // console.log('Ctrl + K pressed!');
+    this.isOpenUserInfo =!  this.isOpenUserInfo
+    
+    // 在这里添加您希望执行的操作
+  }
+
+
 
   async ngOnInit() {
     // 預設功能畫面文字

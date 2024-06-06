@@ -10,6 +10,7 @@ import { CaseInterview, DBOption, SemesterInfo } from "./case-interview-vo";
 import { AddCaseInterviewModalComponent } from "./add-case-interview-modal/add-case-interview-modal.component";
 import { DelCaseInterviewModalComponent } from "./del-case-interview-modal/del-case-interview-modal.component";
 import { ViewCaseInterviewModalComponent } from "./view-case-interview-modal/view-case-interview-modal.component";
+
 @Component({
   selector: "app-counsel-item-detail",
   templateUrl: "./counsel-item-detail.component.html",
@@ -87,6 +88,7 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview._CaseInterview.ContactName = "";
     this._addInterview._CaseInterview.ContactNameOther = "";
     this._addInterview._CaseInterview.Content = "";
+    this.decodeHtml( ""  ,'新增')
     this._addInterview._CaseInterview.selectCounselType = "請選擇方式";
     this._addInterview._CaseInterview.selectContactName = "請選擇對象";
     this._addInterview._CaseInterview.AuthorName = "";
@@ -111,6 +113,7 @@ export class CounselItemDetailComponent implements OnInit {
         // 新增之後跳出 新增服務項目 
         this._addServiceModal.mode = 'add';
         this._addServiceModal.CaseInterviewID = this._addInterview.InsertCaseInterViewID;
+           this._addServiceModal.CaseInterviewID = this._addInterview.InsertCaseInterViewID;
         this._addServiceModal.initModal();
 
         $("#addServiceModal").modal({ backdrop: 'static' });
@@ -162,6 +165,7 @@ export class CounselItemDetailComponent implements OnInit {
     this._viewCaseInterview.CounselTypeOther = caseInterview.CounselTypeOther;
     this._viewCaseInterview.ContactName = caseInterview.ContactName;
     this._viewCaseInterview.Content = caseInterview.Content;
+
     this._viewCaseInterview.getFile(caseInterview.UID);
 
     this._viewCaseInterview.AuthorName = caseInterview.AuthorName;
@@ -176,6 +180,42 @@ export class CounselItemDetailComponent implements OnInit {
 
   }
 
+  decodeHtml(html: string ,action :'修改'|'新增'): string {
+    if(action=='修改'){
+
+      const txt = document.querySelector('textarea');
+      // alert('inner'+JSON.stringify(txt))
+      console.log(txt)
+      txt.innerHTML = html;
+      // txt.value = html
+      return txt.value;
+
+    }else{
+      const txt = document.querySelector('textarea');
+      // alert('inner'+JSON.stringify(txt))
+      console.log(txt)
+      txt.innerHTML = "";
+      // txt.value = html
+      return txt.value;
+
+
+    }
+  }
+
+  // onChange(event: Event) {
+  //   alert("onchange22")
+  //   if( this._addInterview.editModeString = "修改"){
+  //       const target = event.target as HTMLTextAreaElement;
+  //       const value = target.value;
+  //       console.log('Textarea value:', value);
+  //       // 在此处处理内容的变化，例如解码 HTML 实体
+  //       this._addInterview._CaseInterview.Content = this.decodeHtml(value);
+
+
+  //     }
+
+  // }
+
   /** 編輯 */
   editInterviewModal(caseInterview: CaseInterview) {
     if (caseInterview.isEditDisable) // 不能編編輯 
@@ -186,6 +226,7 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview._editMode = "edit";
     this._addInterview.editModeString = "修改";
     this._addInterview._CaseInterview = caseInterview;
+    this.decodeHtml(caseInterview.Content ,"修改")
     this._addInterview._CaseInterview.selectCounselType = caseInterview.CounselType;
     this._addInterview._CaseInterview.selectContactName = caseInterview.ContactName;
     this._addInterview._CaseInterview.AuthorRole = this.globalService.MyCounselTeacherRole;

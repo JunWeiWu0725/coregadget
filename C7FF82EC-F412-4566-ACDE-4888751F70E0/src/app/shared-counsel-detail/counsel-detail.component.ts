@@ -86,7 +86,8 @@ export class CounselDetailComponent implements OnInit {
     // 判斷 個人輔導紀錄 功能只有管理者才可以使用
     this.setCounselPrintItemVisible = false;
     if (this.counselVisible) {
-      if (this.globalService.MyCounselTeacherRole === '輔導主任' || this.globalService.MyCounselTeacherRole === '輔導組長' ||this.globalService.MyCounselTeacherRole === '認輔老師') {
+      // if (this.globalService.MyCounselTeacherRole === '輔導主任' || this.globalService.MyCounselTeacherRole === '輔導組長' ||this.globalService.MyCounselTeacherRole === '認輔老師') {
+        if (this.globalService.MyCounselTeacherRole&&this.RoleService.role.indexOf('輔導老師') >= 0) {
         this.setCounselPrintItemVisible = true;
       }
     }

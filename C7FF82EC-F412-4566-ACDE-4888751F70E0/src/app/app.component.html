@@ -185,13 +185,15 @@
     </div>
   </div>
 
-  <!-- <div  class="fixed-bottom-left">
-    {{this.globalService.MyCounselTeacherRole}} :
-    {{this.globalService.teacherName}}
-    
+  <div  *ngIf="isOpenUserInfo  " class="fixed-bottom-left">
+    MyCounselTeacherRole(權限 ) :{{this.globalService.MyCounselTeacherRole}} 
+    <br>
+    teacherName(老師名稱) {{this.globalService.teacherName}}
+    <br>
+    currentRole  (目前角色) :{{this.globalService.currentRole}}
     
 
-  </div> -->
+  </div>
 
   
   <footer class="text-center p-2 mt-auto">

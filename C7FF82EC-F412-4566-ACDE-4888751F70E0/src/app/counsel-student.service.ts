@@ -9,6 +9,7 @@ export class CounselStudentService {
   public isLoading: boolean;
   public studentMap: Map<string, CounselStudent>;
   public classMap = new Map<string, CounselClass>();
+   /**輔導班級 */
   public counselClass: CounselClass[];
   public counselClassByGrade : Map<string,CounselClass> =new Map();
 
@@ -16,6 +17,7 @@ export class CounselStudentService {
 
   public getCounselClass(targetRole: string) {
     // debugger
+    console.log("CounselClass",this.counselClass)
     let list: CounselClass[] = [];
     this.counselClass.forEach((item) => {
       if (item.Role.indexOf(targetRole) >= 0)
@@ -190,6 +192,7 @@ export class CounselStudentService {
   }
 
 }
+
 
 export class CounselClass {
   ClassID: string;

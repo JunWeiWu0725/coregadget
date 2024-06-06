@@ -28,10 +28,40 @@ export class AddCaseInterviewModalComponent implements OnInit {
   _CaseInterview: CaseInterview;
 
   ngOnInit() {
+
     this.isCancel = true;
     this._CaseInterview = new CaseInterview();
+    
+  }
+  decodeHtml(html: string): string {
+    const txt = document.querySelector('textarea');
+    // alert('inner'+JSON.stringify(txt))
+    console.log(txt)
+    txt.innerHTML = html;
+  
+    // txt.value = html
+    return txt.value;
   }
 
+  onChange(event: Event) {
+    const textarea = event.target as HTMLTextAreaElement;
+    const value = textarea.value;
+    if( this.editModeString == "修改"){
+    this._CaseInterview.Content = this.decodeHtml(value);
+   
+    }else{
+      this._CaseInterview.Content =this.decodeHtml(value);
+    }
+    // alert(" this._CaseInterview.Content"+JSON.stringify(this._CaseInterview.Content))
+  }
+  getWeekDay(date: Date): string {
+    const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    return days[date.getDay()];
+  }
+  
+  getInnerHTML(val){
+    return val.replace(/(<([^>]+)>)/ig,'');
+  }
   /** 取得檔案 */
   async getFile(targetID: string) {
     this.fileUpladed = {};
@@ -92,6 +122,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
     try {
       this._CaseInterview.isSaveDisable = true;
       this._CaseInterview.Category = JSON.stringify(this._CaseInterview._category);
+      alert(JSON.stringify(this._CaseInterview))
       await this.SetCaseInterview(this._CaseInterview);
       $("#addCaseInterview").modal("hide");
       document.getElementById('description').style.height = 'auto';
@@ -148,7 +179,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
       isPrivate: data.isPrivate,
       StudentID: data.StudentID,
       Attachment: "",
-      Content: data.Content,
+      Content: data.Content ,
       CaseID: data.CaseID,
       AuthorRole: data.AuthorRole,
       Category: data.Category,
