@@ -18,6 +18,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "1campus": "set PUBLIC_URL=/1campus_gadget/fd119cfe-03ab-7017-30b1-ad95bd89b91e&&react-scripts build",
     "firebase": "set PUBLIC_URL=/fd119cfe-03ab-7017-30b1-ad95bd89b91e&&react-scripts build",
     "prod": "set PUBLIC_URL=/deployment/fd119cfe-03ab-7017-30b1-ad95bd89b91e&&react-scripts build"
   },
