@@ -22,8 +22,9 @@
     "build_test": "BUILD_PATH='./build/de01c584-b5ad-7147-fe7c-414eaf2a1eff' set PUBLIC_URL=/1campus_gadget/de01c584-b5ad-7147-fe7c-414eaf2a1eff&&react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "1campus": "set PUBLIC_URL=/1campus_gadget/de01c584-b5ad-7147-fe7c-414eaf2a1eff&&react-scripts build",
     "firebase": "set PUBLIC_URL=/de01c584-b5ad-7147-fe7c-414eaf2a1eff&&react-scripts build",
-    "prod": "set PUBLIC_URL=/deployment/de01c584-b5ad-7147-fe7c-414eaf2a1eff&&react-scripts build"
+    "prod": "set PUBLIC_URL=/deployment/de01c584-b5ad-7147-fe7c-414eaf2a1eff&&react-scripts build"    
   },
   "eslintConfig": {
     "extends": [

@@ -39,7 +39,7 @@ const RankDetail = () => {
 	const [selectedScoreType, setScoreType] = useState("定期");
 
 	//長條圖
-	const [levelList, setLevelList] = useState([{ name: "100", count: 0 }, { name: "90-99", count: 0 }, { name: "80-89", count: 0 }, { name: "70-79", count: 0 }, { name: "60-69", count: 0 }, { name: "<60", count: 0 }]);
+	const [levelList, setLevelList] = useState([{ name: "100", count: 0 }, { name: "90-99", count: 0 }, { name: "80-89", count: 0 }, { name: "70-79", count: 0 }, { name: "60-69", count: 0 }, { name: "50-59", count: 0 },{ name: "40-49", count: 0 },{ name: "30-39", count: 0 },{ name: "20-29", count: 0 },{ name: "10-19", count: 0 },{ name: "0-9", count: 0 }]);
 
 
 	//取長條圖最大值
@@ -105,15 +105,33 @@ const RankDetail = () => {
 						position_name = '70-79';
 					if (score >= 60 && score < 70)
 						position_name = '60-69';
-					if (score < 60)
-						position_name = '<60';
+					// if (score < 60)
+					// 	position_name = '<60';
+					if (score >= 50 && score < 60)
+						position_name = '50-59';
+					if (score >= 40 && score < 50)
+						position_name = '40-49';
+					if (score >= 30 && score < 40)
+						position_name = '30-39';
+					if (score >= 20 && score < 30)
+						position_name = '20-29';
+					if (score >= 10 && score < 20)
+						position_name = '10-19';
+					if (score >= 0 && score < 10)
+						position_name = '0-9';
 
 					source["100"] = Number(data.level_gte100);
 					source["90-99"] = Number(data.level_90);
 					source["80-89"] = Number(data.level_80);
 					source["70-79"] = Number(data.level_70);
 					source["60-69"] = Number(data.level_60);
-					source["<60"] = Number(data.under60);
+					// source["<60"] = Number(data.under60);
+					source["50-59"] = Number(data.level_50);
+					source["40-49"] = Number(data.level_40);
+					source["30-39"] = Number(data.level_30);
+					source["20-29"] = Number(data.level_20);
+					source["10-19"] = Number(data.level_10);
+					source["0-9"] = Number(data.level_lt10);
 
 					const merge = Object.getOwnPropertyNames(source).map(v => ({
 						name: v,
@@ -371,12 +389,17 @@ const RankDetail = () => {
 
 								<div className={chartHeight}  >
 									<ResponsiveContainer height="100%" width="100%">
-										<BarChart data={levelList} layout="vertical" margin={{ top: 30, right: 50, left: 10, bottom: 0 }}>
+									<BarChart data={levelList} layout="vertical" margin={{ top: 30, right: 50, left: 10, bottom: 0 }}>
+  <XAxis dataKey="count" type="number" label={{ value: '人數', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
+  <YAxis dataKey="name" type="category" interval={0} width={100} tick={{ fontSize: 10 }} minTickGap={5} label={{ value: '組距', position: 'insideTopLeft', offset: 0, dy: -15, dx: 40, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} />
+  <Bar dataKey="count" barSize={25} label={{ position: 'right' }} fillOpacity={0.8} />
+</BarChart>
+										{/* <BarChart data={levelList} layout="vertical" margin={{ top: 30, right: 50, left: 10, bottom: 0 }}>
 											<XAxis dateKey="count" type="number" label={{ value: '人數', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
 											<YAxis dataKey="name" type="category" label={{ value: '組距', position: 'insideTopLeft', offset: 0, dy: -15, dx: 40, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} />
 											<Bar dataKey="count" barSize={25} label={{ position: 'right' }} fillOpacity={0.8} >
 											</Bar>
-										</BarChart>
+										</BarChart> */}
 									</ResponsiveContainer>
 								</div>
 							</div>
