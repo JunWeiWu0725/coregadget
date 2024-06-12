@@ -30,12 +30,12 @@ const RankDetailKH = () => {
 	const [scoreLevelData, setScoreLevel] = useState([]);
 
 	//長條圖
-	const [levelList, setLevelList] = useState([{ name: "100", count: 0 }, { name: "90-99", count: 0 }, { name: "80-89", count: 0 }, { name: "70-79", count: 0 }, { name: "60-69", count: 0 }, { name: "<60", count: 0 }]);
+	const [levelList, setLevelList] = useState([{ name: "100", count: 0 }, { name: "90-99", count: 0 }, { name: "80-89", count: 0 }, { name: "70-79", count: 0 }, { name: "60-69", count: 0 }, { name: "50-59", count: 0 },{ name: "40-49", count: 0 },{ name: "30-39", count: 0 },{ name: "20-29", count: 0 },{ name: "10-19", count: 0 },{ name: "0-9", count: 0 }]);
 
 	//取長條圖最大值
 	const [chartMax, setChartMax] = useState(0);
 
-
+	const [SubjectWeightedAverage, setSubjectWeightedAverage] = useState(0);
 	const position = window.gadget.params.system_position;
 
 	var _connection = window.gadget.getContract("1campus.j.semester.parent");
@@ -72,6 +72,8 @@ const RankDetailKH = () => {
 				let score = Number(storageScore);
 				let position_name = '';
 
+				// 取得加權平均
+				setSubjectWeightedAverage(Number(data.weighted_average));
 				if (score >= 100)
 					position_name = '100';
 				if (score >= 90 && score < 100)
@@ -85,12 +87,31 @@ const RankDetailKH = () => {
 				if (score < 60)
 					position_name = '<60';
 
+				if (score >= 50 && score < 60)
+					position_name = '50-59';
+				if (score >= 40 && score < 50)
+					position_name = '40-49';
+				if (score >= 30 && score < 40)
+					position_name = '30-39';
+				if (score >= 20 && score < 30)
+					position_name = '20-29';
+				if (score >= 10 && score < 20)
+					position_name = '10-19';
+				if (score >= 0 && score < 10)
+					position_name = '0-9';
+
 				source["100"] = Number(data.level_gte100);
 				source["90-99"] = Number(data.level_90);
 				source["80-89"] = Number(data.level_80);
 				source["70-79"] = Number(data.level_70);
 				source["60-69"] = Number(data.level_60);
-				source["<60"] = Number(data.under60);
+				//source["<60"] = Number(data.under60);
+				source["50-59"] = Number(data.level_50);
+				source["40-49"] = Number(data.level_40);
+				source["30-39"] = Number(data.level_30);
+				source["20-29"] = Number(data.level_20);
+				source["10-19"] = Number(data.level_10);
+				source["0-9"] = Number(data.level_0);
 
 				const merge = Object.getOwnPropertyNames(source).map(v => ({
 					name: v,
@@ -200,6 +221,7 @@ const RankDetailKH = () => {
 									<div className='d-flex'>節/權數 {storagePeriod === storageCredit ? storageCredit : storagePeriod + '/' + storageCredit}</div>
 								}
 							</div>
+							<div className='ms-4' style={{ visibility: !isNaN(SubjectWeightedAverage) && SubjectWeightedAverage !== null && SubjectWeightedAverage !== undefined && SubjectWeightedAverage !== '' ? 'visible' : 'hidden' }}>班級平均：{SubjectWeightedAverage}</div>                            
 						</div>
 					</div>
 				</div>
