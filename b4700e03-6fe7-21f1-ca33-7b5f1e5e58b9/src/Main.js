@@ -401,7 +401,7 @@ function Main() {
   // }
 
   const handleShowRankDetail = (e) => {
-
+    
     var subject = e.subject;
     var subjectType = 'subject';
 
@@ -583,15 +583,15 @@ function Main() {
               //console.log('semesterEntryScore', semesterEntryScore);
               // let scoreMark = 'text-blue text-nowrap align-self-end';
               let col = 'col-12 my-2';
-
+              
               // let passColor = 'card card-pass shadow h-100';
               let scoreColor = 'fs-4-blue text-nowrap';
               let show = '/RankDetail';
               let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
-
+              
               if ([].concat(rankTypeList || []).length < 1) {
-                show = '/RankDetailImmediately'
-              }
+                show = '/RankDetailImmediately';
+              }             
 
               // //如果沒有及格標準，直接當60
               // if (Number(ses.score) < 60) {
@@ -706,7 +706,6 @@ function Main() {
             // let passingScore = sss.pass_standard === '' ? 60 : Number(sss.pass_standard);
             // if (Number(sss.score) < passingScore) {
 
-
             if ([].concat(rankTypeList || []).length < 1) {
               show = '/RankDetailImmediately'
             }
@@ -730,18 +729,35 @@ function Main() {
               // 顯示排名 且 有排名 (共4個)
               col = 'col-6 col-md-3 col-lg-3 my-2';
             }
-
+            
             if (!showRank || [].concat(rankTypeList || []).length < 1) {
               //不顯示排名 或 沒有排名 //只有分數
               col = 'col-12 my-2';
             }
+            
+            // 比對科目是否有固定排名
+            const foundRank = semesterRankMatrix.find(rank =>               
+              rank.item_type === '學期/科目成績' && 
+              rank.rank_type === selectedRankType && 
+              rank.item_name === sss.subject 
+            );
+
+            // 先使用即時排名
+            show = '/RankDetailImmediately';
+            
+            // 當有固定排名使用固定排名顯示
+            if (foundRank) {              
+              show = '/RankDetail';
+            }            
 
             return <div className="col" key={index}>
               <div className={passColor}>
 
                 <div className="card-body">
 
-                  <Link className={disabledCursor} to={show} key={sss.index} onClick={() => { handleShowRankDetail(sss); }}>
+                  <Link className={disabledCursor} to={show} key={sss.index} onClick={() => {                   
+                    handleShowRankDetail(sss);
+                  }}>
                     <div className='d-flex'>
                       <div className='d-flex me-auto pb-2 align-items-center'>
                         {!showNow ? <div className='rounded-circle me-1' style={{ width: '10px', height: '10px' }}></div> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
@@ -772,7 +788,7 @@ function Main() {
 
                       {semesterRankMatrix.map((rank, index) => {
                         if (showRank && showNow)
-                          if (rank.item_type === '學期/科目成績' && rank.rank_type === selectedRankType && rank.item_name === sss.subject) {
+                          if (rank.item_type === '學期/科目成績' && rank.rank_type === selectedRankType && rank.item_name === sss.subject) {                            
                             return <>
                               <div className={col}>
                                 <div>
@@ -812,7 +828,7 @@ function Main() {
 
                         <div className="d-flex align-items-center text-end text-more">
                           <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
-                          更多
+                          更多 
                         </div>
                       </div>
                       : ''}
