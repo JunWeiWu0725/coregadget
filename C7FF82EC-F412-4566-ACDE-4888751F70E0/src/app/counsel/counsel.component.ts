@@ -38,7 +38,7 @@ export class CounselComponent implements OnInit {
 
   search() {
     //console.log(this.searchText);
-    this.router.navigate(['list', 'search', this.searchText], {
+    this.router.navigate(['list', 'search', this.searchText,''], {
       relativeTo: this.activatedRoute
     });
   }

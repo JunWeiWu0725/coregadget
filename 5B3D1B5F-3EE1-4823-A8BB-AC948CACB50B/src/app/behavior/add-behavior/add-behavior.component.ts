@@ -33,7 +33,9 @@ export class AddBehaviorComponent implements OnInit {
   addText: string;
   studentDataListSelect: any;
   currentDetention: boolean;
-  currentGoodBehavior : boolean ;
+  currentGoodBehavior : boolean ; 
+  /***20240605 康橋新增 */
+  currentDaaDsaFollow :boolean ;
   selectedText: any = [];
   selectedStudents: any;   //已選取的學生
   currentDate: string = moment().format("YYYY-MM-DD");
@@ -44,7 +46,20 @@ export class AddBehaviorComponent implements OnInit {
     private gadget: GadgetService,
     private behaviorDataService: BehaviorDataService,
   ) { }
+ 
 
+  onCheckboxChange(selected: string) {
+    if (selected === 'detention') {
+      this.currentGoodBehavior = false;
+      this.currentDaaDsaFollow = false;
+    } else if (selected === 'goodBehavior') {
+      this.currentDetention = false;
+      this.currentDaaDsaFollow = false;
+    } else if (selected === 'currentDaaDsaFollow') {
+      this.currentDetention = false;
+      this.currentGoodBehavior = false;
+    }
+  }
   async ngOnInit() {
 
     this.selectedStudents = [];
@@ -106,7 +121,7 @@ export class AddBehaviorComponent implements OnInit {
     this.loading = true;
     this.currentDetention = false;
     this.currentGoodBehavior = false;
-
+    this.currentDaaDsaFollow =false ;
 
     //如果日期不為空
     if (this.behaviorDataService.addDate !== "") {
@@ -220,6 +235,7 @@ export class AddBehaviorComponent implements OnInit {
                 CourseID: null,
                 Detention: this.currentDetention ? "true" : "false",
                 IsGoodBehavior: this.currentGoodBehavior ? "true" : "false",
+                DaaDsaFollow :this.currentDaaDsaFollow ? "true" : "false",
                 StudentID: data.ID
               }
             }

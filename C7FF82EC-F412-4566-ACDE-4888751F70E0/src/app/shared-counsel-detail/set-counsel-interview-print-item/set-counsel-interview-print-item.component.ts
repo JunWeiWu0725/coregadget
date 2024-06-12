@@ -10,12 +10,13 @@ import { GlobalService } from 'src/app/global.service';
   styleUrls: ['./set-counsel-interview-print-item.component.css']
 })
 export class SetCounselInterviewPrintItemComponent implements OnInit {
-  
-  isCancel: boolean = true;
-  isCheckP1T: boolean = false;
-  isCheckP1F: boolean = false;
-  isCheckP2T: boolean = false;
-  isCheckP2F: boolean = false;
+  OnlyPrintMine :boolean = true ;
+  isAllowSelectPrintAll = false ;
+  isCancel: boolean = true ;
+  isCheckP1T: boolean = false ;
+  isCheckP1F: boolean = false ;
+  isCheckP2T: boolean = false ;
+  isCheckP2F: boolean = false ;
   ModalTitle :  "個人輔導紀錄列印(本人紀錄)" | "個人輔導紀錄列印" ="個人輔導紀錄列印"
   startDate: string = "";
   endDate: string = "";
@@ -23,7 +24,20 @@ export class SetCounselInterviewPrintItemComponent implements OnInit {
 
   constructor(private dsaService: DsaService,
     private router: Router,
-   private globalService : GlobalService) { }
+    private globalService : GlobalService) {
+
+    // 設定權限
+      if(this.globalService.MyCounselTeacherRole =='輔導主任' && this.globalService.currentRole =='輔導老師'){
+
+        this.OnlyPrintMine = false ;  
+        this.isAllowSelectPrintAll = true ;
+      }else {
+
+
+        this.OnlyPrintMine = true ;  
+        this.isAllowSelectPrintAll = false ;
+      }
+     }
   studentID: string = "";
 
   cancel() {
@@ -62,7 +76,7 @@ export class SetCounselInterviewPrintItemComponent implements OnInit {
 
       let a = { studentID: this.studentID, StartDate: StartDate, EndDate: EndDate, P1T: this.isCheckP1T, P1F: this.isCheckP1F, P2T: this.isCheckP2T, P2F: this.isCheckP2F }
       let x = JSON.stringify(a);
-     if(this.globalService.MyCounselTeacherRole =='輔導主任'){
+     if(!this.OnlyPrintMine){
        localStorage.setItem('OnlyPrintMine', 'false');
        window.open('content.htm#/(simple-page:simple-page/print/counsel-interview-doc/' + x + ')', '_blank');
 
@@ -82,7 +96,7 @@ export class SetCounselInterviewPrintItemComponent implements OnInit {
   ngOnInit() {
     // alert("dfddf"+JSON.stringify(this.globalService))
   }
-
+   
   // 設定選項
   setCheckItem(item: string) {
     if (item === '一級輔導公開') {

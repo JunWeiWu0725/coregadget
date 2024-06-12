@@ -13,11 +13,11 @@
   </div>
   <ng-container *ngIf="schoolInfo && sectionInfo  ">
     <ng-container *ngIf="questionSubject">
-      <div class="text-center " style="font-size: 22px; font-weight: 900; color: #7D7979 !important;">
+      <div class="text-center " style="font-size: 22px; font-weight: 900; color: #7D7979 !important; padding-bottom: 15px;">
         <div>{{schoolInfo.SchoolName || '學校名稱未設定'}} {{sectionInfo.SchoolYear}}學年度 第{{sectionInfo.Semester}}學期 綜合表現紀錄表 ( {{sectionInfo.Name}})</div>
       </div>
       
-      <ng-container  *ngIf="isopen else elseBlock">
+      <ng-container  *ngIf="isOpen else elseBlock">
 
       <h4 style="   font-family: PingFang TC;">{{studentInfo.ClassName}}班 {{studentInfo.SeatNo}}號 {{studentInfo.Name}}</h4>
       <ng-container *ngFor="let subject of questionSubject">

@@ -79,8 +79,8 @@
               <td style="text-align: center; vertical-align: middle;">{{item.OccurDate}}</td>
               <td style="text-align: center; vertical-align: middle;">{{item.ContactName}}</td>
               <td style="text-align: center; vertical-align: middle;">{{item.category_text}}</td>
-              <td *ngIf="item.Content"
-                  style="text-align: left; vertical-align: middle;">{{item.Content }}</td>
+              <td *ngIf="item.Content"   [innerHtml]="item.Content"
+                  style="text-align: left; vertical-align: middle;"></td>
               <td *ngIf="!item.Content"></td>
           
               <td style="text-align: center; vertical-align: middle;">{{item.AuthorName}}</td>

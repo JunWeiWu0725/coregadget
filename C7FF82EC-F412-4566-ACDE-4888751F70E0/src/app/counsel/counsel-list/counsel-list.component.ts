@@ -17,6 +17,7 @@ export class CounselListComponent implements OnInit {
   isShowInfo =false;
   public deny: boolean;
   public mod: 'class'|'guidance'|'search'|string;
+  public roleType: 'class'|'guidance'|'search'|string;
   public target: string;
   /**顯示的list <可能有條件塞選>(view use) */ 
   public targetList: CounselStudent[];
@@ -48,6 +49,7 @@ export class CounselListComponent implements OnInit {
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
         this.mod = params.get("mod");
+        this.roleType = params.get("roleType");
         this.target = params.get("target");
 
         this._semesterInfo = [];
@@ -123,6 +125,7 @@ addInterviews(event :any ,counsuleObj :CounselStudent){
       // }
 
       if (this.mod === "class") {
+      this.globalService.currentRole =this.roleType
         if (this.counselStudentService.classMap.has(this.target)) {
           this.targetList = this.counselStudentService.classMap.get(
             this.target
@@ -158,6 +161,7 @@ addInterviews(event :any ,counsuleObj :CounselStudent){
         }
       }
       if (this.mod === "guidance") {
+        this.globalService.currentRole =this.roleType
         if (this.counselComponent != null) {
           if (this.target === "g") {
             this.counselComponent.setSelectItem("認輔學生");

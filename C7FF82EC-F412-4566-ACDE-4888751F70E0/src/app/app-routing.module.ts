@@ -46,7 +46,8 @@ const routes: Routes = [
     component: CounselComponent,
     children: [
       { path: "", pathMatch: "full", component: CounselRoutingComponent },
-      { path: "list/:mod/:target", component: CounselListComponent },
+      { path: "list/:mod/:target/:roleType", component: CounselListComponent },
+      // { path: "list/:mod/:target", component: CounselListComponent },
       {
         path: "detail/:studentID",
         loadChildren: './counsel/counsel-detail/counsel-detail.module#CounselDetailModule'
