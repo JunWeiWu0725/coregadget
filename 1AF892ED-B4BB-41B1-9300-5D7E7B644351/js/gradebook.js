@@ -608,6 +608,7 @@
 
                                         if (tag.Name.includes("成績身分")) {
                                             studentRec.StudentScoreTag = tag.Name;
+                                            studentRec.StudentTag = tag.Name.replace('成績身分:','');
                                         }
                                         // 列出所有類別(沒道理...)
                                         //studentRec.StudentScoreTag += tag.Name;

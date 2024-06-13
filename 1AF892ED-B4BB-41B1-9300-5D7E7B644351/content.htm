@@ -452,9 +452,17 @@
                             <td class="text-center" ng-click="setCurrent(stuRec, current.Exam, true, true)">
                                 {{stuRec.ClassName}}
                             </td>
+                            <!-- <td class="text-center" ng-click="setCurrent(stuRec, current.Exam, true, true)"
+                                 ng-bind-html="stuRec.StudentName+'('+stuRec.SeatNo+')'">
+                            </td> -->
                             <td class="text-center" ng-click="setCurrent(stuRec, current.Exam, true, true)"
-                                ng-bind-html="stuRec.StudentName+'('+stuRec.SeatNo+')'">
+                                ng-bind-html="'<span class=\'small-tag\'>{{stuRec.StudentTag}}</span>' + stuRec.StudentName+'('+stuRec.SeatNo+')'">
                             </td>
+                            <!-- <td class="text-center" ng-click="setCurrent(stuRec, current.Exam, true, true)">
+                                <span class="small-tag">{{stuRec.StudentTag}}</span>
+                                {{stuRec.StudentName}}({{stuRec.SeatNo}})
+                            </td> -->
+
                             <td class="text-center" ng-click="setCurrent(stuRec, current.Exam, true, true)">
                                 {{stuRec.StudentNumber}}
                             </td>
