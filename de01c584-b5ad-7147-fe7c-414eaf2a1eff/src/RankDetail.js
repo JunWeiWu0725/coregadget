@@ -466,6 +466,8 @@ const RankDetail = () => {
 												</tr>
 											</tbody>
 										</table>
+										<div className="text-danger text-start">五標成績顯示小數點後兩位，四捨五入。
+										</div>
 									</div>
 							})}
 
