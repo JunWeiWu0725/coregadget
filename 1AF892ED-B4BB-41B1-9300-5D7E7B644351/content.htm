@@ -386,27 +386,28 @@
                     </tbody>
                 </table>
 
-
                 <table class="table table-bordered table-striped" style="width:260px;" data-offset-top="145" bs-affix>
                     <thead>
                         <tr>
                             <th colspan="3">特殊成績輸入方式及計算規則</th>
                         </tr>
-                        <tr>
-                            <td>項目</td>
-                            <td>分數內容</td>
-                            <td>輸入認定</td>
-                        </tr>
+
                     </thead>
                     <tbody>
+                        <tr>
+                            <td>項目</td>
+                            <td>輸入內容</td>
+                            <td>分數認定</td>
+                        </tr>
+                    </tbody>
+                    <tbody>
                         <tr ng-repeat="item in examExtensionMap">
+                            <td>{{ item.report_value }}</td>
                             <td>{{ item.use_text }}</td>
                             <td>{{ item.score_type }}</td>
-                            <td>{{ item.report_value }}</td>
                         </tr>
                     </tbody>
                 </table>
-                
             </div>
             <!--成績管理Table-->
             <div ng-if="current.mode == '成績管理'" style="margin-right:270px;">
@@ -441,6 +442,7 @@
                                     style="max-height:40px;display:inline-block;overflow:hidden;text-overflow:ellipsis;margin: 0px;">
                                     {{exam.SubName}}
                                 </h6>
+
                             </th>
                         </tr>
                     </thead>
@@ -467,12 +469,12 @@
                                 <!-- {{stuRec['Exam'+exam.ExamID]}}-{{stuRec.PassingStandard}}
                                 {{checkPass(stuRec['Exam'+exam.ExamID], stuRec.PassingStandard)}} -->
                                 <h6 ng-if="exam.Group" style="margin:0px;">
-                                    <small>
-                                        <span
-                                            style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap">
-                                            {{stuRec['Exam'+exam.ExamID]}}
-                                        </span>
-                                    </small>
+                                    <!-- <small> -->
+                                    <span
+                                        style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap; color: gray;">
+                                        {{stuRec['Exam'+exam.ExamID]}}
+                                    </span>
+                                    <!-- </small> -->
                                 </h6>
                                 <span style="overflow:hidden;width:100%;display:inline-block;white-space:nowrap"
                                     ng-if="!exam.Group"
@@ -534,48 +536,49 @@
                 </div>
                 <div class="modal-body" ng-if="!importProcess.ParseValues">
                     <div style="display: flex; justify-content: space-between;">
-                    <div style="margin:15px 0px;">
-                        <span>使用說明</span>
-                        <ol class="">
-                            <li>
-                                <span>從excel中複製成績</span>
-                                <ul>
-                                    <li class="text-danger">請先確認excel中學生的人數及順序皆與系統相符</li>
-                                    <li class="text-danger">複製成績時，僅需圈選成績的部分，不含學生姓名及表頭</li>
-                                </ul>
-                            </li>
-                            <li>於下方文字方塊中貼上</li>
-                            <li>使用"解析"按鈕，進行解析</li>
-                            <li>預覽資料確認成績正確</li>
-                            <li>
-                                <span>使用"匯入"按鈕，進行匯入!</span>
-                                <ul>
-                                    <li class="text-danger">如果輸入資料有錯誤，將無法匯入</li>
-                                </ul>
-                            </li>
-                        </ol>
-                    </div>
+                        <div style="margin:15px 0px;">
+                            <span>使用說明</span>
+                            <ol class="">
+                                <li>
+                                    <span>從excel中複製成績</span>
+                                    <ul>
+                                        <li class="text-danger">請先確認excel中學生的人數及順序皆與系統相符</li>
+                                        <li class="text-danger">複製成績時，僅需圈選成績的部分，不含學生姓名及表頭</li>
+                                    </ul>
+                                </li>
+                                <li>於下方文字方塊中貼上</li>
+                                <li>使用"解析"按鈕，進行解析</li>
+                                <li>預覽資料確認成績正確</li>
+                                <li>
+                                    <span>使用"匯入"按鈕，進行匯入!</span>
+                                    <ul>
+                                        <li class="text-danger">如果輸入資料有錯誤，將無法匯入</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
 
-                    <table class="table table-bordered table-striped" style="width:260px;" data-offset-top="145" bs-affix>
-                        <thead>
-                            <tr>
-                                <th colspan="3">特殊成績輸入方式及計算規則</th>
-                            </tr>
-                            <tr>
-                                <td>項目</td>
-                                <td>分數內容</td>
-                                <td>輸入認定</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="item in examExtensionMap">
-                                <td>{{ item.use_text }}</td>
-                                <td>{{ item.score_type }}</td>
-                                <td>{{ item.report_value }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                        <table class="table table-bordered table-striped" style="width:260px;" data-offset-top="145"
+                            bs-affix>
+                            <thead>
+                                <tr>
+                                    <th colspan="3">特殊成績輸入方式及計算規則</th>
+                                </tr>
+                                <tr>
+                                    <td>項目</td>
+                                    <td>輸入內容</td>
+                                    <td>分數認定</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in examExtensionMap">
+                                    <td>{{ item.report_value }}</td>
+                                    <td>{{ item.use_text }}</td>
+                                    <td>{{ item.score_type }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
 
                     <div class="row" style="margin:20px 0px;">
