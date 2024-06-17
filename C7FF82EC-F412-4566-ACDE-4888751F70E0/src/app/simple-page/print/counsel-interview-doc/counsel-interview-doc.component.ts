@@ -40,10 +40,11 @@ export class CounselInterviewDocComponent implements OnInit {
 
 
   ngOnInit() {
-    this.OnlyPrintMine = JSON.parse(localStorage.getItem('OnlyPrintMine')) =='true';
-    this.teacherID = JSON.parse(localStorage.getItem('teacherID'));
+   
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
+        this.OnlyPrintMine = localStorage.getItem('OnlyPrintMine') =='true';
+        this.teacherID = JSON.parse(localStorage.getItem('teacherID'));
         this.param = JSON.parse(params.get("param"));
         this.getReportData();
       }

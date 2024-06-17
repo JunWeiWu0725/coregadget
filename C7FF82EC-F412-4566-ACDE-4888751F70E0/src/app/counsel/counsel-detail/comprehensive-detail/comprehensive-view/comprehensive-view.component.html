@@ -1,9 +1,12 @@
 <!-- 學生個人 - 綜合紀錄表  查看畫面-->
+ <ng-container *ngIf="globalService.mode" >
+  fa94318e-41c1-4a25-8c29-b2c06bb923fb
+</ng-container>
 <div *ngIf="!isLoading; else tmpLoading">
   <ng-container *ngFor="let subject of fillInData">
     <div class="card mb-2">
       <!-- class="align-middle" -->
-      <div class="com-view-first-title align-middle">{{subject.Subject}}</div>
+      <div class="com-view-first-title align-middle">{{globalService.replaceChineseNum (subject.Subject)}}</div>
       <table class="table table-sm table-bordered">
         <ng-container *ngFor="let group of subject.QuestionGroup">
           <tr>

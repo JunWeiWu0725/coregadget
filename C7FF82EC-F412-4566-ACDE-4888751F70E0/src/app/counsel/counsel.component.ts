@@ -4,6 +4,7 @@ import { RoleService } from "../role.service";
 import { CounselStudentService, CounselClass } from "../counsel-student.service";
 import { AppComponent } from "../app.component";
 import { timeout } from 'q';
+import { GlobalService } from '../global.service';
 
 @Component({
   selector: 'app-counsel',
@@ -11,6 +12,7 @@ import { timeout } from 'q';
   styleUrls: ['./counsel.component.css']
 })
 export class CounselComponent implements OnInit {
+  compoGUID = '0f4d87e4-cdc2-4b56-9f39-1fd19f12bc5e'
   public selectItem: string;
   public baseVisible = false;
 
@@ -21,6 +23,7 @@ export class CounselComponent implements OnInit {
     private router: Router,
     public roleService: RoleService,
     public counselStudentService: CounselStudentService,
+    private globalService :GlobalService,
     @Optional()
     private appComponent: AppComponent
   ) {

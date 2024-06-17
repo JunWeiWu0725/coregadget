@@ -10,6 +10,7 @@ import { GenerateKeyAndSetTimeComponent } from './generate-key-and-set-time/gene
 import { SemesterInfo } from './../counsel-student.service';
 import { HttpClient } from '@angular/common/http';
 import { ConditionalExpr } from '@angular/compiler';
+import { GlobalService } from '../global.service';
 
 @Component({
   selector: 'app-comprehensive',
@@ -17,7 +18,7 @@ import { ConditionalExpr } from '@angular/compiler';
   styleUrls: ['./comprehensive.component.css']
 })
 export class ComprehensiveComponent implements OnInit {
-
+   compoGUID = "0f1e2d3c-4b5a-6d7e-8f9a-0b1c2d3e4f5a"
   @ViewChild("GenerateKeyAndSetTime") GenerateKeyAndSetTime: GenerateKeyAndSetTimeComponent;
   isShowInfo =false ;
   public counselVisible: Boolean = false;
@@ -53,10 +54,11 @@ export class ComprehensiveComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private dsaService: DsaService,
-    public roleService: RoleService,
+    public roleService: RoleService ,
     public changeDetectorRef: ChangeDetectorRef,
     @Optional()
-    private appComponent: AppComponent,
+    private appComponent: AppComponent ,
+    private globalService :GlobalService ,
     private http: HttpClient
   ) {
 
@@ -126,6 +128,8 @@ export class ComprehensiveComponent implements OnInit {
       alert(err);
     }
   }
+
+  
 
   async genSSNKey(fillInSectionID) {
     try {

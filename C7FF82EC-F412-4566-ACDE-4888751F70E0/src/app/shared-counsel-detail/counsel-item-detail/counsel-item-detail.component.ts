@@ -17,6 +17,7 @@ import { ViewCaseInterviewModalComponent } from "./view-case-interview-modal/vie
   styleUrls: ["./counsel-item-detail.component.css"]
 })
 export class CounselItemDetailComponent implements OnInit {
+  comGUID : string ="a3f87d1e-96b2-40d4-8c4a-4a1e8b0e2e3f";
   _semesterInfo: SemesterInfo[] = [];
   caseInterview: CaseInterview[] = [];
   caseViewInfoList: CaseViewInfo[] = [];
@@ -230,6 +231,7 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview._CaseInterview.selectCounselType = caseInterview.CounselType;
     this._addInterview._CaseInterview.selectContactName = caseInterview.ContactName;
     this._addInterview._CaseInterview.AuthorRole = this.globalService.MyCounselTeacherRole;
+    this._addInterview.dayOfWeek = this.globalService.getDayOfWeek(new Date(caseInterview.OccurDate)) // 設定星期
     this._addInterview._CaseInterview.isSaveDisable = true;
     this._addInterview.loadDefaultData();
     this._addInterview.getFile(caseInterview.UID);;
@@ -425,7 +427,9 @@ export class CounselItemDetailComponent implements OnInit {
       rec.Semester = parseInt(counselRec.Semester);
       let dN = Number(counselRec.OccurDate);
       let x = new Date(dN);
-      rec.OccurDate = rec.parseDate(x);
+      rec.OccurDate = rec.parseDate(x); 
+      debugger
+      rec.MeetTime = counselRec.MeetTime ;
       rec.ContactName = counselRec.ContactName;
       rec.ContactNameOther = counselRec.ContactNameOther;
       rec.AuthorName = counselRec.AuthorName;

@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { GlobalService } from 'src/app/global.service';
 
 @Component({
   selector: 'app-comprehensive-fill',
@@ -7,7 +8,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
   styleUrls: ['./comprehensive-fill.component.css']
 })
 export class ComprehensiveFillComponent implements OnInit {
-
+  compoGUID :"d25c27b1-7156-4a10-8f8d-68f3d46f94e2"
   //如果使用者有改變卻沒有儲存，需要提醒使用需要先儲存。 
   isChangeNotSave = false;
   dsns: string;
@@ -42,6 +43,7 @@ export class ComprehensiveFillComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
+    private globalService :GlobalService 
   ) { }
 
   ngOnInit() {

@@ -4,7 +4,7 @@
       <li class="sticky-top">年級</li>
       <li class="sticky-top">班級</li>
       <li *ngFor="let subject of comprehensiveComponent.currentSection.Subject"
-          class="sticky-top">{{subject}}</li>
+          class="sticky-top">{{subject |filterChineseNumbers }}</li>
       <li class="sticky-top">開啟</li>
     </ol>
   </li>

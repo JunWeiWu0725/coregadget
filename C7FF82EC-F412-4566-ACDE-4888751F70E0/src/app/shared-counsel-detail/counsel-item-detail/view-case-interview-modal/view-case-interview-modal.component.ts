@@ -7,8 +7,8 @@ import {DomSanitizer} from '@angular/platform-browser';
   styleUrls: ['./view-case-interview-modal.component.css']
 })
 export class ViewCaseInterviewModalComponent implements OnInit {
+  conPoGUID :string = '123e4567-e89b-12d3-a456-426614174000' 
   _studentName: string;
-
   SchoolYear: number;
   Semester: number;
   OccurDate: string = "";

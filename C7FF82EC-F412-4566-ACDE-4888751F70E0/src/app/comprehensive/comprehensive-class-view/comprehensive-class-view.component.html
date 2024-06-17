@@ -5,7 +5,7 @@
       <li class="sticky-top">姓名</li>
       <li class="sticky-top">填寫代碼</li>
       <li *ngFor="let subject of subjectList"
-          class="sticky-top">{{subject}}</li>
+          class="sticky-top">{{subject |filterChineseNumbers }}</li>
       <li class="sticky-top">連結</li>
     </ol>
   </li>

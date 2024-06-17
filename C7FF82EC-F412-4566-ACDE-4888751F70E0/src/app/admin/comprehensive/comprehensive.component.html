@@ -63,7 +63,7 @@
 
       </ng-container>
       <h4 (click)="selectSubject(subject)" class="hover-a inline mb-2" [ngClass]="{'IsChecked':subject.IsSetDisable }">
-        {{subject.SubjectText}}</h4>
+        {{subject.SubjectText |filterChineseNumbers}}</h4>
         
       <table class="table table-sm table-bordered m-1">
         <ng-container *ngFor="let group of subject.GetQuestionGroups()">

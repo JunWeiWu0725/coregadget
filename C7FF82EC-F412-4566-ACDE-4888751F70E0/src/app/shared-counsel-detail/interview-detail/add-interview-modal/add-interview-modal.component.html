@@ -1,5 +1,6 @@
 <!-- 新增／修改輔導 Modal -->
 
+
 <div *ngIf="true" class="modal fade" id="addInterview" tabindex="-1" role="dialog" aria-labelledby="addInterviewLabel"
   aria-hidden="true">
   <div class="modal-dialog 	modal-xl" role="document">
@@ -15,8 +16,12 @@
         </button>
       </div>
       <div class="modal-body">
+    
+        <ng-container *ngIf="globalService.mode" >
+          c8f4d28b-59a5-4bcd-8101-dc5a65f4c3c7
+        </ng-container>
         <div class="form-row">
-          <div class="form-group col-md-4">
+          <div class="form-group col-md-2">
             <label for="schoolYear" class="col-form-label">
               <span *ngIf="!_currentCounselInterview.isSchoolYearHasValue" class="text-samll text-danger">*</span>
               <b class="modal-sub-title">學年度</b>
@@ -24,7 +29,7 @@
             <input type="text" class="form-control" id="schoolYear" placeholder="請輸入學年度" required
               [(ngModel)]="_currentCounselInterview.SchoolYear" (keyup)="_currentCounselInterview.checkValue()" />
           </div>
-          <div class="form-group col-md-4">
+          <div class="form-group col-md-2">
             <label for="semester" class="col-form-label">
               <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isSemesterHasValue">*</span>
               <b class="modal-sub-title">學期</b>
@@ -32,13 +37,40 @@
             <input type="text" class="form-control" id="semester" placeholder="請輸入學期"
               [(ngModel)]="_currentCounselInterview.Semester" (keyup)="_currentCounselInterview.checkValue()" />
           </div>
-          <div class="form-group col-md-4">
+          <div class="form-group col-md-3">
             <label for="interviewDate" class="col-form-label">
               <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isOccurDateHasValue">*</span>
               <b class="modal-sub-title"> 日期</b>
             </label>
+            
             <input type="date" class="form-control" id="interviewDate" placeholder="請輸入日期"
-              [(ngModel)]="_currentCounselInterview.OccurDate" (keyup)="_currentCounselInterview.checkValue()"
+              [(ngModel)]="_currentCounselInterview.OccurDate" 
+             
+              (keyup)="_currentCounselInterview.checkValue()" 
+              (ngModelChange)="_onDateChange($event)" />
+          
+                <!-- <span  *ngIf="dayOfWeek">星期: {{ dayOfWeek }}</span> -->
+             
+          </div>
+          <div class="form-group col-md-2">
+            <label for="interviewDate" class="col-form-label text-center">
+              <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isOccurDateHasValue">*</span>
+              <b class="modal-sub-title"> 星期 </b> 
+            </label>
+            <label class="form-control" id="recorder">{{
+            '星期' +dayOfWeek 
+              }}</label>
+            <!-- <input type="text" class="form-control"  readonly *ngIf="dayOfWeek"  [value]="'星期' +dayOfWeek "/> -->
+
+          </div>
+          <div class="form-group col-md-3">
+         
+            <label for="interviewDate" class="col-form-label ">
+              <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isOccurDateHasValue">*</span>
+              <b class="modal-sub-title"> 晤談時間</b> 
+            </label>
+            <input type="text" class="form-control" id="interviewDate" placeholder="晤談時間"
+              [(ngModel)]="_currentCounselInterview.MeetTime"
               (ngModelChange)="_currentCounselInterview.checkValue()" />
           </div>
         </div>
@@ -47,7 +79,7 @@
           <div class="form-group ">
             <label class="col-form-label">
               <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isCounselTypeHasValue">*</span>
-              <b class="modal-sub-title">方式JJJ</b>
+              <b class="modal-sub-title">方式</b>
             </label>
             <div class="input-group mb-3">
               <div class="input-group-prepend">

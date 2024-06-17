@@ -1,3 +1,4 @@
+import { GlobalService } from 'src/app/global.service';
 import { Component, OnInit, Optional, ViewChild, TemplateRef } from "@angular/core";
 import {
   ActivatedRoute,
@@ -14,7 +15,7 @@ import { ComprehensiveDetailComponent } from '../comprehensive.component';
   styleUrls: ['./comprehensive-edit.component.css']
 })
 export class ComprehensiveEditComponent implements OnInit {
-
+  compoGUID :"d7a5a2e7-3f1c-4c8d-aaf4-3b6f0a2a0d18"
   isLoading = true;
   isSaving = false;
   studentID: string;
@@ -43,6 +44,7 @@ export class ComprehensiveEditComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private dsaService: DsaService,
+    private globalService :GlobalService,
     @Optional()
     private comprehensiveComponent: ComprehensiveDetailComponent
   ) { }

@@ -32,6 +32,7 @@ export class CounselStudentService {
   public currentSchoolYear: number;
   /**目前學期 */
   public currentSemester: number;
+  public meetTime: string ;
   /** 認輔學生 */ 
   public guidanceStudent: CounselStudent[];
   /** 搜尋學生*/ 
