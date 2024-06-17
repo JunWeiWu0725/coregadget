@@ -20,8 +20,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "1campus": "set PUBLIC_URL=/1campus_gadget/f3f8c84b-a16b-f8fc-0a81-c39d57a3acfa&&react-scripts build",
+    "1campus_hc": "set PUBLIC_URL=/1campus_gadget/f3f8c84b-a16b-f8fc-0a81-c39d57a3acfa-hc&&react-scripts build",
     "firebase": "set PUBLIC_URL=/f3f8c84b-a16b-f8fc-0a81-c39d57a3acfa&&react-scripts build",
-    "prod": "set PUBLIC_URL=/deployment/f3f8c84b-a16b-f8fc-0a81-c39d57a3acfa&&react-scripts build"
+    "prod": "set PUBLIC_URL=/deployment/f3f8c84b-a16b-f8fc-0a81-c39d57a3acfa&&react-scripts build"    
   },
   "eslintConfig": {
     "extends": [

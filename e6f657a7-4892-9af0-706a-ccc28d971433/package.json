@@ -23,6 +23,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "firebase": "set PUBLIC_URL=/e6f657a7-4892-9af0-706a-ccc28d971433&&react-scripts build",
+    "1campus": "set PUBLIC_URL=/1campus_gadget/e6f657a7-4892-9af0-706a-ccc28d971433&&react-scripts build",
     "prod": "set PUBLIC_URL=/deployment/e6f657a7-4892-9af0-706a-ccc28d971433&&react-scripts build"
   },
   "eslintConfig": {

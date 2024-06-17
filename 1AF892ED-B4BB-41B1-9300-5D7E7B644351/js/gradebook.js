@@ -59,6 +59,9 @@
                     }
                 }
             ],
+            examExtensionMap: [{
+                //評量缺考設定
+            }],
             process: [{}]
         };
 
@@ -77,6 +80,8 @@
         $scope.current.mode = '成績管理';
         $scope.connection = gadget.getContract("ta");
         $scope.connection2 = gadget.getContract("1campus.log.teacher");
+        $scope.connection3 = gadget.getContract("1campus.h.gradebook.teacher");
+        $scope.examExtensionMap = [];
 
         // 四捨五入
         function rounding(val, precision) {
@@ -99,6 +104,25 @@
             m = Math.pow(10, Math.max(r1, r2));
             return (arg1 * m + arg2 * m) / m;
         }
+
+        $scope.connection3.send({
+            service: "_.GetExamExtensionMap",
+            autoRetry: true,
+            body: { name: '評量成績缺考暨免試設定' },
+            result: function (response, error, http) {
+
+                if (error) {
+                    alert("1campus.h.gradebook.teacher._.GetExamExtensionMap Error");
+                } else {
+                    console.log('examExtensionMap', { response });
+                    $scope.$apply(function () {
+                        $scope.examExtensionMap = response.ExamExtensionMap;
+                        console.log($scope.examExtensionMap);
+                    });
+
+                }
+            }
+        });
 
         /** 
          * 1. 取得目前學年度學期 GetCurrentSemester
@@ -584,6 +608,7 @@
 
                                         if (tag.Name.includes("成績身分")) {
                                             studentRec.StudentScoreTag = tag.Name;
+                                            studentRec.StudentTag = tag.Name.replace('成績身分:','');
                                         }
                                         // 列出所有類別(沒道理...)
                                         //studentRec.StudentScoreTag += tag.Name;
