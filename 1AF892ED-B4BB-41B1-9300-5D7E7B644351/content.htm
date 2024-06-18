@@ -426,11 +426,12 @@
                             <th ng-if="!exam.Group || exam.SubVisible"
                                 ng-repeat="exam in examList | filter: filterPermission" ng-click="showSubExam(exam)"
                                 class="text-center"
+                                ng-style="checkExamLock(exam)"
                                 style="{{exam.Group?'padding: 8px 2px;border: none':'padding: 8px 2px;cursor:pointer;'}}"
                                 rowspan="{{exam.Group ? 1 : 2}}">
                                 <span ng-if="!exam.Group"
-                                    style="max-height:60px;display:inline-block;overflow:hidden;text-overflow:ellipsis;">
-                                    {{exam.Name==='學期成績'?'課程成績':exam.Name}}
+                                    style="max-height:60px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space: pre-line;">
+                                    {{exam.Name==='學期成績'?'課程成績':exam.Name+'\r\n'+exam.Percentage+'%'}}
                                 </span>
                                 <span ng-if="exam.Group"></span>
                             </th>

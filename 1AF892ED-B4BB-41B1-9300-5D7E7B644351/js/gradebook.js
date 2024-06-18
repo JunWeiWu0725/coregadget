@@ -854,7 +854,14 @@
 
             //   return { 'background-color': 'unset' };
         }
+        // 檢查「課程成績」變色
+        $scope.checkExamLock = function (exam) {
+            var ExamName = exam.Name;
+            var lock = exam.Lock;
 
+            if (ExamName === '學期成績' && lock)
+                return { 'color': '#9d9d9d' };
+        }
         /** 
          * 1. 備份學生原始資料
          * 2. setupCurrent 
