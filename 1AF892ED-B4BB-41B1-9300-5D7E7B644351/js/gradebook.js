@@ -844,7 +844,11 @@
                 return { 'background-color': 'unset' };
             }
 
-            if (+score < pStandard || +score > 100) {
+            if (+score < 0 || +score > 100) {
+                return { 'background-color': '#ffda93' };
+            }
+
+            if (+score < pStandard) {
                 return { 'background-color': 'yellow' };
             }
 
