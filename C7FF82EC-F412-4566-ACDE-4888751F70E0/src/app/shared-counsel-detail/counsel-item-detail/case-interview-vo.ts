@@ -7,6 +7,8 @@ export class CaseInterview {
   SchoolYear: number; //學年度
   Semester: number; //學期
   OccurDate: string; //訪談日期
+  /** meet時間 */
+  MeetTime : string ;
   ContactName: string; //訪談對象姓名
   AuthorName: string; //訪談者姓名
   CounselType: string; //訪談方式

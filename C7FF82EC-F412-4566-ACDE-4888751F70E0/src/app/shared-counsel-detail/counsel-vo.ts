@@ -8,6 +8,7 @@ export class CounselInterview {
   SchoolYear: number; //學年度
   Semester: number; //學期
   OccurDate: string; //訪談日期
+  MeetTime :string ; // 晤談時間 記錄節次
   ContactName: string; //訪談對象姓名
   AuthorName: string; //訪談者姓名
   CounselType: string; //訪談方式
@@ -46,6 +47,7 @@ export class CounselInterview {
   // 是否可以看到
   isCanView: boolean = false;
   ReferralForm?: ReferralForm; //轉介單資訊
+  
 
   public loadCategoryTemplate() {
     debugger 

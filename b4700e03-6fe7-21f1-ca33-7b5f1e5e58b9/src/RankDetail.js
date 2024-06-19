@@ -427,7 +427,10 @@ const RankDetail = () => {
 						</div>
 						{selectedScoreType === '擇優成績' && scoreTypesString !== '' && subjectType === 'subject' ? <>
 							<div className="alert alert-primary text-start" role="alert">
-								{scoreTypesString} 擇優採計。
+								{/* {scoreTypesString} 擇優採計。 */}
+								{/* {scoreTypesString === "原始成績" ?"擇優採計：原始成績。":"擇優採計：原始成績、補考成績、重修成績、手動調整成績、學年調整成績。"} */}
+								擇優採計：{scoreTypesString}。
+
 							</div>
 
 
@@ -560,6 +563,8 @@ const RankDetail = () => {
 												</tr>
 											</tbody>
 										</table>
+										<div className="text-danger text-start">五標成績顯示小數點後兩位，四捨五入。
+										</div>
 									</div>
 							})}
 						</>}

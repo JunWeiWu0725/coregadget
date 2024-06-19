@@ -6,6 +6,7 @@ import { CounselDetailComponent } from "../../counsel-detail.component";
 import { SentenceService } from '../../../render/dissector.service';
 import { debounceTime } from "rxjs/operators";
 import { DomSanitizer } from "@angular/platform-browser";
+import { GlobalService } from "src/app/global.service";
 
 @Component({
   selector: "app-add-interview-modal",
@@ -13,13 +14,15 @@ import { DomSanitizer } from "@angular/platform-browser";
   styleUrls: ["./add-interview-modal.component.css"]
 })
 export class AddInterviewModalComponent implements OnInit {
+  compoGUID : string = 'c8f4d28b-59a5-4bcd-8101-dc5a65f4c3c7'
   constructor(
     private counselStudentService: CounselStudentService,
     private dsaService: DsaService,
     private dissector: SentenceService,
     private sanitizer: DomSanitizer,
     @Optional()
-    private counselDetailComponent: CounselDetailComponent
+    private counselDetailComponent: CounselDetailComponent ,
+    private globalService :GlobalService
   ) { }
   fileSizeLimit: number = 3 * 1024 * 1024
   // 上傳檔案相關
@@ -46,6 +49,18 @@ export class AddInterviewModalComponent implements OnInit {
   _editMode: string = "add";
   editModeString: string = "新增";
   _studentName: string;
+  dayOfWeek: string | null = null;
+  _onDateChange(event: any) {
+    const date = new Date(event);
+    this.dayOfWeek = this.getDayOfWeek(date);
+    this._currentCounselInterview.checkValue();
+  }
+
+  getDayOfWeek(date: Date): string {
+    const daysOfWeek = ['日', '一', '二', '三', '四', '五', '六'];
+    return daysOfWeek[date.getUTCDay()];
+  }
+
   public referralVisible: boolean = false;
 
   /* 學生輔導紀錄*/
@@ -82,6 +97,7 @@ export class AddInterviewModalComponent implements OnInit {
   */
   async loadDefaultData(currentStudent: CounselStudent) {
     this.currentStudentInfo = currentStudent;
+    this.dayOfWeek = this.getDayOfWeek( new Date(this._currentCounselInterview.OccurDate)  );
     if (this.currentStudentInfo) {
       if (this._editMode === "edit" && this._currentCounselInterview) {
         // 修改
@@ -96,9 +112,12 @@ export class AddInterviewModalComponent implements OnInit {
         this._currentCounselInterview.StudentID = this.currentStudentInfo.StudentID; // 學生ID 
         this._currentCounselInterview.SchoolYear = this.counselStudentService.currentSchoolYear; // 學年度 
         this._currentCounselInterview.Semester = this.counselStudentService.currentSemester; // 學期
+        this._currentCounselInterview.MeetTime = this.counselStudentService.meetTime; // 時間 (可以記錄任何文字)
         // 帶入日期與輸入者
         let dt = new Date();
         this._currentCounselInterview.OccurDate = this._currentCounselInterview.parseDate(dt);
+        this.dayOfWeek = this.getDayOfWeek( new Date(this._currentCounselInterview.OccurDate)  );
+       
         // // 班導師
         // if (
         //   this.counselDetailComponent.currentStudent.Role.indexOf("班導師") >=
@@ -264,6 +283,7 @@ export class AddInterviewModalComponent implements OnInit {
       SchoolYear: data.SchoolYear,
       Semester: data.Semester,
       OccurDate: data.OccurDate,
+      MeetTime :data.MeetTime,
       ContactName: data.ContactName,
       AuthorName: data.AuthorName,
       CounselType: data.CounselType,

@@ -25,10 +25,10 @@ export class SetCounselInterviewPrintItemComponent implements OnInit {
   constructor(private dsaService: DsaService,
     private router: Router,
     private globalService : GlobalService) {
-
+   
     // 設定權限
       if(this.globalService.MyCounselTeacherRole =='輔導主任' && this.globalService.currentRole =='輔導老師'){
-
+    
         this.OnlyPrintMine = false ;  
         this.isAllowSelectPrintAll = true ;
       }else {

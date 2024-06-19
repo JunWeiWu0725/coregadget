@@ -16,7 +16,7 @@
                   <td *ngIf="groupIndex==0 && queryIndex==0"
                       [attr.rowspan]="subject.rowCount"
                       style="writing-mode: tb-rl; -webkit-writing-mode: vertical-rl; writing-mode: vertical-rl; width: 1rem">
-                    {{subject.Title}}
+                    {{subject.Title |filterChineseNumbers}}
                   </td>
                   <td *ngIf="group.rowCount==1 || queryIndex==0"
                       [attr.rowspan]="group.rowCount"

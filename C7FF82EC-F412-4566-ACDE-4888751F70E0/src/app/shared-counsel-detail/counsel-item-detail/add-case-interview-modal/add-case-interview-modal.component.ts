@@ -3,6 +3,7 @@ import { DsaService } from '../../../dsa.service';
 import { CaseInterview, QOption } from '../case-interview-vo';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SelectorMatcher } from "@angular/compiler";
+import { GlobalService } from "src/app/global.service";
 @Component({
   selector: "app-add-case-interview-modal",
   templateUrl: "./add-case-interview-modal.component.html",
@@ -13,8 +14,10 @@ export class AddCaseInterviewModalComponent implements OnInit {
   constructor(
     private dsaService: DsaService
     , private sanitizer: DomSanitizer
+    ,private globalService :GlobalService 
   ) { }
   /** 當insert 成功後回傳的ID */
+
   InsertCaseInterViewID = ""
   fileSizeLimit: number = 3 * 1024 * 1024
   isCancel: boolean = true;
@@ -28,7 +31,6 @@ export class AddCaseInterviewModalComponent implements OnInit {
   _CaseInterview: CaseInterview;
 
   ngOnInit() {
-
     this.isCancel = true;
     this._CaseInterview = new CaseInterview();
     
@@ -54,10 +56,21 @@ export class AddCaseInterviewModalComponent implements OnInit {
     }
     // alert(" this._CaseInterview.Content"+JSON.stringify(this._CaseInterview.Content))
   }
-  getWeekDay(date: Date): string {
-    const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-    return days[date.getDay()];
+
+  dayOfWeek: string | null = null;
+  _onDateChange(event: any) {
+    const date = new Date(event);
+    this.dayOfWeek = this.getDayOfWeek(date);
+    this._CaseInterview.checkValue();
   }
+
+  getDayOfWeek(date: Date): string {
+    const daysOfWeek = ['日', '一', '二', '三', '四', '五', '六'];
+    return daysOfWeek[date.getUTCDay()];
+  }
+
+
+
   
   getInnerHTML(val){
     return val.replace(/(<([^>]+)>)/ig,'');
@@ -122,7 +135,6 @@ export class AddCaseInterviewModalComponent implements OnInit {
     try {
       this._CaseInterview.isSaveDisable = true;
       this._CaseInterview.Category = JSON.stringify(this._CaseInterview._category);
-      alert(JSON.stringify(this._CaseInterview))
       await this.SetCaseInterview(this._CaseInterview);
       $("#addCaseInterview").modal("hide");
       document.getElementById('description').style.height = 'auto';
@@ -170,6 +182,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
     let req = {
       UID: data.UID,
       SchoolYear: data.SchoolYear,
+      MeetTime :data.MeetTime ,
       Semester: data.Semester,
       OccurDate: data.OccurDate,
       ContactName: data.ContactName,

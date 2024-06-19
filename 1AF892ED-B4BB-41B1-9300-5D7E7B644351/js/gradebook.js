@@ -608,6 +608,7 @@
 
                                         if (tag.Name.includes("成績身分")) {
                                             studentRec.StudentScoreTag = tag.Name;
+                                            studentRec.StudentTag = tag.Name.replace('成績身分:','');
                                         }
                                         // 列出所有類別(沒道理...)
                                         //studentRec.StudentScoreTag += tag.Name;
@@ -843,7 +844,11 @@
                 return { 'background-color': 'unset' };
             }
 
-            if (+score < pStandard || +score > 100) {
+            if (+score < 0 || +score > 100) {
+                return { 'background-color': '#ffda93' };
+            }
+
+            if (+score < pStandard) {
                 return { 'background-color': 'yellow' };
             }
 
@@ -853,7 +858,14 @@
 
             //   return { 'background-color': 'unset' };
         }
+        // 檢查「課程成績」變色
+        $scope.checkExamLock = function (exam) {
+            var ExamName = exam.Name;
+            var lock = exam.Lock;
 
+            if (ExamName === '學期成績' && lock)
+                return { 'color': '#9d9d9d' };
+        }
         /** 
          * 1. 備份學生原始資料
          * 2. setupCurrent 

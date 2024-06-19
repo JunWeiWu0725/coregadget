@@ -24,6 +24,8 @@ export class CaseStudent {
   TeacherName: string;
   /** 建立個案日期  */
   OccurDate: string; 
+  /** 晤談時間 */
+  MeetTime :string ;
   /** 個案編號 */
   CaseNo: string; 
   /** 轉介概況 */

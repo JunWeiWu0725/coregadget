@@ -1,3 +1,8 @@
+
+<ng-container *ngIf="globalService.mode" >
+{{'0f1e2d3c-4b5a-6d7e-8f9a-0b1c2d3e4f5a'}}
+</ng-container>
+
 <div class="tab-content">
   <app-permission-denied *ngIf="!roleService.isLoading && !roleService.enableComprehensive">
   </app-permission-denied>

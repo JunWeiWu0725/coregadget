@@ -1,3 +1,4 @@
+import { GlobalService } from './../../../../global.service';
 import { RoleService } from 'src/app/role.service';
 import { Component, OnInit, Optional, TemplateRef, ViewChild } from "@angular/core";
 import {
@@ -8,6 +9,7 @@ import {
 } from "@angular/router";
 import { DsaService } from 'src/app/dsa.service';
 import { ComprehensiveDetailComponent } from '../comprehensive.component';
+import { ComprehensiveTemplateService } from 'src/app/comprehensive-template.service';
 
 
 // 教師綜合記錄表 
@@ -19,7 +21,7 @@ import { ComprehensiveDetailComponent } from '../comprehensive.component';
   styleUrls: ['./comprehensive-view.component.css']
 })
 export class ComprehensiveViewComponent implements OnInit {
- 
+  compoGUID :"fa94318e-41c1-4a25-8c29-b2c06bb923fb"
   isEditable =false ;
   isLoading = true;
   isSaving = false;
@@ -40,12 +42,15 @@ export class ComprehensiveViewComponent implements OnInit {
     private route: ActivatedRoute,
     private dsaService: DsaService,
     private roleService:RoleService,
+    private globalService :GlobalService ,
+    private comprehensiveTemplateService :ComprehensiveTemplateService ,
     @Optional()
     private comprehensiveComponent: ComprehensiveDetailComponent
   ) { }
 
   ngOnInit() {
    
+    this.getComphresive()
     this.studentID = this.comprehensiveComponent.studentID;
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
@@ -55,11 +60,15 @@ export class ComprehensiveViewComponent implements OnInit {
         this.comprehensiveComponent.setCurrentSemester(this.schoolYear, this.semester);
         this.comprehensiveComponent.plugin = this.pluginEle;
         this.getFillInData();
+        
       }
     );
   }
 
+async getComphresive(){
 
+
+}
 
   async getFillInData() {
     this.isLoading = true;
@@ -76,6 +85,7 @@ export class ComprehensiveViewComponent implements OnInit {
             Semester: this.semester
           }
         });
+console.log("fillInData",fillInData)
         this.fillInSection = [].concat(fillInData.Section || []);
         fillInData.QuestionSubject = [].concat(fillInData.QuestionSubject || []);
         fillInData.QuestionSubject.forEach((subject) => {
@@ -110,6 +120,7 @@ export class ComprehensiveViewComponent implements OnInit {
         this.fillInData = fillInData.QuestionSubject;
       }
     } catch (error) {
+      alert("發生錯誤" +JSON.stringify(error))
       console.log(error);
     } finally {
       this.isLoading = false;
