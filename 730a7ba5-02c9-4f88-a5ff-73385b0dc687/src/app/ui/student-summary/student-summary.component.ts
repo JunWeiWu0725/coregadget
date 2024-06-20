@@ -167,7 +167,7 @@ export class StudentSummaryComponent implements OnInit {
 
     // 重新排序Map
     this.semesterList.forEach((value) => {
-      debugger
+      // debugger
       this.sortedMappingStatics.set(value, this.studentMappingStatics.get(value));
     });
 

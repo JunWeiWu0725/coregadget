@@ -1,21 +1,20 @@
-
-  <div class="container-fluid cbs d-flex justify-content-between flex-column" style="width:93% ">
-    <div id="index" page >
-      <!-- <nav aria-label="breadcrumb text-nowrap text-truncate">
+<div class="container py-4">
+  <div id="index" page>
+    <!-- <nav aria-label="breadcrumb text-nowrap text-truncate">
         <ol class="breadcrumb">
           <li class="breadcrumb-item active" aria-current="page">缺曠紀錄</li>
         </ol>
       </nav> -->
-      <div id="header">
+    <div id="header">
 
-        <span>缺曠紀錄</span>
+      <span>缺曠紀錄</span>
 
-     </div>
-      <div class="d-flex flex-column flex-sm-row mb-3" *ngIf="classList.length > 0 ;else noClass">
-        <!-- 舊的舊會換掉 -->
+    </div>
+    <div class="d-flex flex-wrap align-items-center gap-3 mb-3" *ngIf="classList.length > 0 ;else noClass">
+      <!-- 舊的舊會換掉 -->
 
 
-        <!-- <mat-form-field appearance="fill" class="mr-0 mr-sm-2">
+      <!-- <mat-form-field appearance="fill" class="mr-0 mr-sm-2">
           <mat-label>選擇班級</mat-label>
           <mat-select #className [(ngModel)]="selectedClass"
                     (selectionChange)="querySemesters()">
@@ -25,22 +24,21 @@
           </mat-select>
         </mat-form-field> -->
 
-        <!-- 選擇班級 新的取代 -->
-        <div class="input-group-prepend">
-          <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
-              {{selectedClass?.ClassName}}
+      <!-- 選擇班級 新的取代 -->
+      <div class="d-flex flex-wrap gap-3">
+        <div class="">
+          <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            {{selectedClass?.ClassName}}
           </button>
           <div class="dropdown-menu">
-              <a class="dropdown-item" *ngFor="let cls of classList"
-
-                  (click)="changeClass(cls)">
-                  {{cls?.ClassName}}
-              </a>
+            <a class="dropdown-item" *ngFor="let cls of classList" (click)="changeClass(cls)">
+              {{cls?.ClassName}}
+            </a>
           </div>
-      </div>
+        </div>
 
-<!--
+        <!--
         <mat-form-field appearance="fill" class="mr-0 mr-sm-2">
           <mat-label>學年度學期</mat-label>
           <mat-select #semester [(ngModel)]="selectedSemester"
@@ -51,22 +49,20 @@
             </mat-option>
           </mat-select>
         </mat-form-field> -->
-<!-- 學年度學期 -->
-<div class="input-group-prepend">
-  <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown"
-      aria-haspopup="true" aria-expanded="false">
-      {{getSemesterString(selectedSemester)}}
-  </button>
-  <div class="dropdown-menu">
-      <a class="dropdown-item" *ngFor="let semester of semesters"
+        <!-- 學年度學期 -->
+        <div class="">
+          <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            {{getSemesterString(selectedSemester)}}
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" *ngFor="let semester of semesters" (click)="changeSemester(semester)">
+              {{getSemesterString(semester)}}
+            </a>
+          </div>
+        </div>
 
-          (click)="changeSemester(semester)">
-          {{getSemesterString(semester)}}
-      </a>
-  </div>
-</div>
-
-<!-- 舊的節次類型 -->
+        <!-- 舊的節次類型 -->
         <!-- <mat-form-field appearance="fill" class="mr-0 mr-sm-2">
           <mat-label>節次類型</mat-label>
           <mat-select #absenceType [(ngModel)]="selectedType"
@@ -79,80 +75,73 @@
           </mat-select>
         </mat-form-field> -->
 
-<!-- 新的節次類型 -->
-<div class="input-group-prepend">
-  <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown"
-      aria-haspopup="true" aria-expanded="false">
-      {{selectedType}}
-  </button>
-  <div class="dropdown-menu">
-      <a class="dropdown-item" *ngFor="let type of typeList"
-
-          (click)="changeType(type)">
-          {{type}}
-      </a>
-  </div>
-</div>
-
-<div>
-
-  <mat-checkbox   [(ngModel)]="showAllStudents" (ngModelChange)="queryStudentAttendance()">
-    <span class ="font-size-18">
-      顯示全部學生
-
-    </span>
-     </mat-checkbox>
-</div>
-
-
-        <div class="dropdown ml-auto mt-5 mt-sm-0">
-          <span class ="mr-2">
-            <a class="font-size-18" style="cursor: pointer;" (click)="exportFile('xls')">
-              <mat-icon class="mr-1 font-size-18"> cloud_download</mat-icon>班級統計(Excel)
+        <!-- 新的節次類型 -->
+        <div class="">
+          <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            {{selectedType}}
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" *ngFor="let type of typeList" (click)="changeType(type)">
+              {{type}}
             </a>
-
-          </span>
-          <span class="mr-2">
-            <a  class="font-size-18" style="cursor: pointer;" (click)="exportFile('html')">
-              <mat-icon  class="mr-1 font-size-18"> cloud_download</mat-icon>班級統計(Html)
-            </a>
-
-          </span>
+          </div>
         </div>
       </div>
 
-      <!-- 缺曠 -->
-      <div class="table-responsive scrollable" #table >
-        <table class="table-rwd table table-bordered table-hover kd-t">
-          <thead class ="sticky">
-            <tr>
-              <th *ngIf="this.ready">座號</th>
-              <th *ngIf="this.ready">姓名</th>
-              <th *ngFor="let leave of absenceName">{{ leave }}</th>
-            </tr>
-          </thead>
-          <tbody *ngFor=" let studentInfo of aryStudents">
-            <tr *ngIf="showAllStudents ||  studentMappingTable.get(studentInfo.seat_no).has_data" class="collapsed" data-toggle="collapse" data-target="#aA" aria-expanded="false" aria-controls="aA">
-              <td data-th="座號" (click) ="nextPage(studentInfo)" routerLink="/student-summary">{{ studentInfo.seat_no}}</td>
-              <td data-th="姓名" (click) ="nextPage(studentInfo)" routerLink="/student-summary" [innerHtml]="studentInfo.name"></td>
-              <td *ngFor="let leave of absenceName;" [attr.data-th]="leave" style="text-align: center" (click) ="nextPage(studentInfo)" routerLink="/student-summary">
-                {{ studentMappingTable.get(studentInfo.seat_no).attendanceMapping.get(leave) }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div>
+        <mat-checkbox [(ngModel)]="showAllStudents" (ngModelChange)="queryStudentAttendance()">
+          <span class="font-size-18">
+            顯示全部學生
+          </span>
+        </mat-checkbox>
       </div>
-      <div *ngIf="ifNoResult">該學期無缺曠紀錄</div>
+
+
+      <div class="d-flex flex-wrap gap-3 ml-auto">
+        <a class="font-size-18" style="cursor: pointer;" (click)="exportFile('xls')">
+          <mat-icon class="font-size-18 h-auto align-middle"> cloud_download</mat-icon>班級統計(Excel)
+        </a>
+        <a class="font-size-18" style="cursor: pointer;" (click)="exportFile('html')">
+          <mat-icon class="font-size-18 h-auto align-middle"> cloud_download</mat-icon>班級統計(Html)
+        </a>
+      </div>
     </div>
-<ng-template #noClass>
 
-  <div class="d-flex justify-content-center " style ="margin-top: 20%;">
-   <span style = "font-size:  20px ; font-weight :900 ;color :rgb(95, 95, 95)">
-     目前沒有班級
-   </span>
+    <!-- 缺曠 -->
+    <div class="table-responsive scrollable" #table>
+      <table class="table-rwd table ntable table-hover whitespace-nowrap">
+        <thead class="sticky">
+          <tr>
+            <th *ngIf="this.ready">座號</th>
+            <th *ngIf="this.ready">姓名</th>
+            <th *ngFor="let leave of absenceName">{{ leave }}</th>
+          </tr>
+        </thead>
+        <tbody *ngFor=" let studentInfo of aryStudents">
+          <tr *ngIf="showAllStudents ||  studentMappingTable.get(studentInfo.seat_no).has_data" class="collapsed cursor-pointer"
+            data-toggle="collapse" data-target="#aA" aria-expanded="false" aria-controls="aA">
+            <td data-th="座號" (click)="nextPage(studentInfo)" routerLink="/student-summary">{{ studentInfo.seat_no}}</td>
+            <td data-th="姓名" (click)="nextPage(studentInfo)" routerLink="/student-summary"
+              [innerHtml]="studentInfo.name"></td>
+            <td *ngFor="let leave of absenceName;" [attr.data-th]="leave" style="text-align: center"
+              (click)="nextPage(studentInfo)" routerLink="/student-summary">
+              {{ studentMappingTable.get(studentInfo.seat_no).attendanceMapping.get(leave) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="ifNoResult">該學期無缺曠紀錄</div>
   </div>
+  <ng-template #noClass>
+
+    <div class="d-flex justify-content-center " style="margin-top: 20%;">
+      <span style="font-size:  20px ; font-weight :900 ;color :rgb(95, 95, 95)">
+        目前沒有班級
+      </span>
+    </div>
 
 
 
-</ng-template>
-
+  </ng-template>

@@ -1,29 +1,28 @@
-<div class="container-fluid cbs d-flex justify-content-between flex-column" style="width :93%">
+<div class="container py-4">
   <div id="index" page>
 
-    <div  aria-label="second-header text-nowrap text-truncate">
-      <ol class="breadcrumb second_header" style="background: none !important;">
+    <div aria-label="second-header text-nowrap text-truncate">
+      <ol class="breadcrumb second_header p-0" style="background: none !important;">
         <li class="breadcrumb-item active" aria-current="page" routerLink="" style="cursor: pointer;">缺曠紀錄</li>
         <li class="breadcrumb-item active" aria-current="page"> 學生缺曠統計</li>
       </ol>
     </div>
 
-    <div class="d-flex flex-column flex-sm-row ">
-      <div class="mr-2" style ="font-size:20px !important; font-weight: 900;" class="d-flex flex-column flex-sm-row mb-3" aria-label="breadcrumb text-nowrap text-truncate" [innerHTML]="this.selectedName">
+    <div class="d-flex flex-wrap gap-3 mb-3 ">
+      <div class="mr-2" style="font-size:20px !important; font-weight: 900;"
+        aria-label="breadcrumb text-nowrap text-truncate" [innerHTML]="this.selectedName">
       </div>
-        <div class="dropdown ml-auto mt-5 mt-sm-0">
-          <span class="  font-size-18">
-            <a style="cursor: pointer;" (click)="exportFile('xls')">
-                <mat-icon  class="mr-1"> cloud_download</mat-icon>學生明細(Excel)
-            </a>
+      <div class="d-flex flex-wrap gap-3 ml-auto">
+        <a class="font-size-18" style="cursor: pointer;" (click)="exportFile('xls')">
+          <mat-icon class="font-size-18 h-auto align-middle">
+            cloud_download</mat-icon>學生明細(Excel)
+        </a>
+        <a class="font-size-18" style="cursor: pointer;" (click)="exportFile('html')">
+          <mat-icon class="font-size-18 h-auto align-middle">
+            cloud_download</mat-icon>學生明細(Html)
+        </a>
+      </div>
 
-          </span>
-          <span class="mr-2  font-size-18">
-            <a style="cursor: pointer;" (click)="exportFile('html')">
-                <mat-icon class="mr-1"> cloud_download</mat-icon>學生明細(Html)
-            </a>
-          </span>
-      </div>
     </div>
 
     <div class="d-flex flex-column">
@@ -31,9 +30,9 @@
 
         <div class="py-2 px-4 semester table-header">{{ data.semester }}</div>
         <div *ngFor="let item of data.statics"
-          class="d-flex flex-row justify-content-between align-items-center py-1 px-4 data-item"
-          style="border-bottom: 1px solid lightgray;">
-          <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" class="mat-elevation-z0" style="width: 100%;">
+          class="d-flex flex-row justify-content-between align-items-center px-0 px-md-4 data-item">
+          <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false"
+            class="mat-elevation-z0" style="width: 100%;">
             <mat-expansion-panel-header>
               <mat-panel-title>
                 <div>{{ item.absenceType }}</div>
@@ -42,8 +41,8 @@
                 <div>{{ item.count }} 節</div>
               </mat-panel-description>
             </mat-expansion-panel-header>
-            <div style="border-top: 1px solid lightgray;" class="py-2" *ngFor="let date of item.detail;"
-                 class ="d-flex flex-row justify-content-between align-items-center py-1 px-4 data-item">
+            <div *ngFor="let date of item.detail;"
+              class="d-flex flex-row justify-content-between align-items-center py-2 px-4 data-item">
               <div>
                 {{ date.date }}
               </div>
