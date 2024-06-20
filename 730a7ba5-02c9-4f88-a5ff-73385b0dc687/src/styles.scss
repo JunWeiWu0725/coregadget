@@ -7791,7 +7791,7 @@ fieldset:disabled a.btn {
 }
 
 .dropdown-toggle::after {
-  content: url('/assets/down.svg');
+  content: url('./assets/down.svg');
   margin-right: -0.2em;
   margin-left: 0.2em;
   vertical-align: middle;
@@ -17721,7 +17721,7 @@ button {
 }
 
 .mat-expansion-indicator::after {
-  content: url('/assets/down.svg') !important;
+  content: url('./assets/down.svg') !important;
   vertical-align: middle !important;
   line-height: 0;
   transform: rotate(180deg) !important;
