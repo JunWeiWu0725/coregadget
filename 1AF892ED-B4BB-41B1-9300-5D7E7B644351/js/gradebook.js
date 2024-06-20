@@ -85,7 +85,8 @@
         $scope.connection3 = gadget.getContract("1campus.h.gradebook.teacher");
         $scope.examExtensionMap = [];
         $scope.isNullAsZeroChecked = true;
-
+        $scope.printCourseScore = false;
+        $scope.printTrialCalculation = false;
         $scope.current.CourseStudentDefaultRound = [];
 
         // 四捨五入
@@ -985,7 +986,6 @@
                                                     if (index > -1) {
                                                         // 處理缺考
                                                         if (!isNaN(examScoreRec.Score)) { //有分數
-                                                            console.log(examScoreRec)
                                                             var skipStudent = false;
                                                             var totalScore = Number(examScoreRec.Score);
 
@@ -999,7 +999,7 @@
                                                                             //視為沒有分數
                                                                             skipStudent = true;
                                                                         }
-                                                                    }else if (!examScoreRec.Extension.Extension.UseText && examScoreRec.Extension.Extension.Score == '缺' && examScoreRec.Score == '-1'){
+                                                                    } else if (!examScoreRec.Extension.Extension.UseText && examScoreRec.Extension.Extension.Score == '缺' && examScoreRec.Score == '-1') {
                                                                         //舊制的缺 視為沒有分數
                                                                         skipStudent = true;
                                                                     }
@@ -2163,9 +2163,33 @@
         }
 
 
+        $scope.isPrintCourseScore = function () {
+            console.log('printCourseScore', $scope.printCourseScore);
+        };
+        $scope.isPrintTrialCalculation = function () {
+            console.log('printTrialCalculation', $scope.printTrialCalculation);
+        };
 
+        $scope.openExportModal = function () {
+            if ($scope.current.Exam.Name === '學期成績' && $scope.current.Exam.Lock) {
+                $scope.printCourseScore = false;
+                $scope.printTrialCalculation = true;
+            }
+            if ($scope.current.Exam.Name === '學期成績' && !$scope.current.Exam.Lock) {
+                $scope.printCourseScore = true;
+                $scope.printTrialCalculation = false;
+            }
+            console.log('openExportModal');
+            $('#exportModal').modal('show');
+        }
+        $scope.closeExportModal = function () {
+            console.log('closeExportModal');
+            $('#exportModal').modal('hide');
+        }
         /**匯出成績單 */
         $scope.exportGradeBook = function () {
+            $('#exportModal').modal('hide');
+
             var data_changed = !$scope.checkAllTable($scope.current.mode);
             if (data_changed) {
                 alert("資料尚未儲存，無法匯出報表。");
@@ -2178,10 +2202,17 @@
                     `<td rowspan='2' width='40px'>班級</td>`,
                     `<td rowspan='2' width='40px'>姓名</td>`,
                     `<td rowspan='2' width='70px'>學號</td>`,
-                    `<td rowspan='2' width='70px'>課程成績</td>`,
-                    `<td rowspan='2' width='70px'>課程成績_試算</td>`
+                    //`<td rowspan='2' width='70px'>課程成績</td>`,
+                    //`<td rowspan='2' width='70px'>課程成績_試算</td>`
                 ];
 
+                if ($scope.printCourseScore) {
+                    thList1.push(`<td rowspan='2' width='70px'>課程成績</td>`);
+                }
+
+                if ($scope.printTrialCalculation) {
+                    thList1.push(`<td rowspan='2' width='70px'>課程成績_試算</td>`);
+                }
                 [].concat($scope.templateList || []).forEach(template => {
                     if (template.Extension) {
                         if (template.Extension.Extension.UseText == '是') {
@@ -2209,9 +2240,10 @@
                         `<td>${student.StudentName}(${student.SeatNo})</td>`,
                         `<td class="text">${student.StudentNumber}</td>`,
                     ];
-
-                    studentData.push(`<td>${student['Exam學期成績']}</td>`);
-                    studentData.push(`<td>${student['Exam學期成績_試算']}</td>`);
+                    if ($scope.printCourseScore)
+                        studentData.push(`<td>${student['Exam學期成績']}</td>`);
+                    if ($scope.printTrialCalculation)
+                        studentData.push(`<td>${student['Exam學期成績_試算']}</td>`);
                     [].concat($scope.templateList || []).forEach(template => {
                         if (template.Extension) {
                             if (template.Extension.Extension.UseText == '是') {
