@@ -452,8 +452,9 @@
                             <th rowspan="2" class="text-center main-th" style="padding: 8px 2px;width: 95px;">
                                 學號
                             </th>
-                            <th rowspan="2" class="text-center main-th" style="padding: 8px 2px;width: 95px;">
-                                及格/補考標準
+                            <th rowspan="2" class="text-center main-th" style="padding: 8px 2px;width: 95px;white-space: pre-line;">
+                                及格/補考
+                                標準
                             </th>
                             <th ng-if="!exam.Group || exam.SubVisible"
                                 ng-repeat="exam in examList | filter: filterPermission" ng-click="showSubExam(exam)"
