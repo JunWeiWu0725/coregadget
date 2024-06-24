@@ -132,7 +132,7 @@ export class PsychologicalQuizSetupComponent implements OnInit {
           mt.UseMappingTable = true;
         this.AllQuizMappingTableList.push(mt);
       });
-
+      this.isLoading = false;
     } catch (err) {
       alert('無法取得心理測驗常模對照表：' + err.dsaError.message);
     }

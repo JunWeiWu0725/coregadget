@@ -1,4 +1,7 @@
-<div *ngIf="!isLoading && adminComponent.isRoleEnable; else tmpLoading">
+
+<!-- {{adminComponent.isRoleEnable}} AS -->
+<div *ngIf="!isLoading && adminComponent.isPsyEnable; else tmpLoading">
+
   <div class="tab-content">
     <div class="d-flex">
       <button class="btn btn-info ml-auto"
@@ -73,7 +76,7 @@
              class="container">
   <div class="row justify-content-center"
        style="margin-top:250px;margin-bottom:200px;">
-    Loading...
+    Loading...ddd
   </div>
 </ng-template>
 

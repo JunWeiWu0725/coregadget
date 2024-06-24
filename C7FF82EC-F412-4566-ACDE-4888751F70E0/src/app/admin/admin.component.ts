@@ -60,14 +60,16 @@ export class AdminComponent implements OnInit {
       this.isRoleEnable = true;
       this.isClassEnable = true;
       this.isPsyEnable = true;
+      this.routeTo('counsel_teacher_role');
     }
     if (this.globalService.MyCounselTeacherRole === '輔導組長') {
       this.currentItem = 'counsel_class';
       this.isClassEnable = true;
       this.isPsyEnable = true;
+      this.routeTo('counsel_class');
     }
 
-    this.routeTo('counsel_teacher_role');
+   
   }
 
   /**  */

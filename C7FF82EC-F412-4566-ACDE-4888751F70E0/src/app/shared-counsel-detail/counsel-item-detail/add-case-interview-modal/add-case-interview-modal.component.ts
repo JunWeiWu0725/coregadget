@@ -14,7 +14,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
   constructor(
     private dsaService: DsaService
     , private sanitizer: DomSanitizer
-    ,private globalService :GlobalService 
+    ,public globalService :GlobalService 
   ) { }
   /** 當insert 成功後回傳的ID */
 

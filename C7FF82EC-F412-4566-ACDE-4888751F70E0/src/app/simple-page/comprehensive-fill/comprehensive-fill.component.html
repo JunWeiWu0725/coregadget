@@ -5,7 +5,7 @@
 
 <div class="p-3">
   <div style="position: fixed;z-index: 1;top: 8px;right: 8px;">
-    <button *ngIf="requireList&&requireList.length"
+    <button *ngIf=" isOpen && requireList&&requireList.length"
             class="btn btn-danger ml-1"
             style="background-color: #FF865E;
             box-shadow: none  !important;"

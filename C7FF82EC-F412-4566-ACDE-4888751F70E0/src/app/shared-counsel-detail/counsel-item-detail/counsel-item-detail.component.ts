@@ -417,7 +417,7 @@ export class CounselItemDetailComponent implements OnInit {
         StudentID: StudentID
       }
     });
-
+      
     [].concat(resp.CaseInterview || []).forEach(counselRec => {
       // 建立認輔資料
       let rec: CaseInterview = new CaseInterview();

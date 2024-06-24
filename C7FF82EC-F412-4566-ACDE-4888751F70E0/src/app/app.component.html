@@ -193,6 +193,9 @@
     currentRole  (目前角色) :{{this.globalService.currentRole}}
     
 
+ <select  *ngIf="mode" [(ngModel)]="selectedRole" (change)="onRoleChange($event)">
+  <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+</select>
   </div>
 
   
