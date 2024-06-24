@@ -3,6 +3,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
     <META HTTP-EQUIV="EXPIRES" CONTENT="0">
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
@@ -11,13 +12,11 @@
     <script>
         init({
             //application: "dev.jh_kh",
-            application: "test.kh.edu.tw",
+            application: "",
             paramValues: {},
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-                account: 'dylan.huang@ischool.com.tw',
-                password: 'poz012'
             }
         });
     </script>
@@ -36,8 +35,8 @@
 <body ng-controller="MainCtrl">
     <div id="gadget" class="my-page">
         <div id="mainMsg"></div>
-        <div ng-init="getClassList()" class="row">
-            <div class="col-md-12">
+        <div ng-init="getClassList()">
+            <div>
                 <h1>
                     <span id="tabName">服務學習時數總覽</span>
                 </h1>
@@ -83,30 +82,34 @@
 
                 </div>
                 -->
-                <div ng-init="getStudentData()" style="overflow-x:hidden;margin-bottom:10px;">
-                    <table class="table table-bordered table-striped table-hover side-animate my-all-list" data-type="all" style="margin-top:10px;">
-                        <thead>
-                            <tr>
-                                <th colspan="3" ng-repeat="header in colHeaderList">{{header}}</th>
-                            </tr>
-                            <tr>
-                                <th class="{{col.Class}}" ng-repeat="col in columnList">{{col.Text}}</th>
-                            </tr>
-                        </thead>
-                        <tbody ng-if="studentList">
-                            <tr ng-repeat="item in studentList" ng-click="selectStudent(item)" ng-class="{'warning':item.selected}">
-                                <td class="{{col.Class}}" ng-repeat="col in columnList">{{item[col.Name]}}</td>
-                            </tr>
-                        </tbody>
-                        <tbody ng-if="!studentList">
-                            <tr>
-                                <td colspan="4">目前無資料</td>
-                            </tr>
-                        </tbody>    
-                    </table>
+                <div ng-init="getStudentData()" style="margin-bottom:10px;">
+                    <div class="relative overflow-auto max-w-full max-h-full w-full h-full mt-0" style="max-height: 60vh;">
+                        <table class="table ctable mx-auto whitespace-nowrap"
+                            data-type="all" style="margin-top:10px;">
+                            <thead>
+                                <tr>
+                                    <th colspan="3" ng-repeat="header in colHeaderList">{{header}}</th>
+                                </tr>
+                                <tr>
+                                    <th class="{{col.Class}}" ng-repeat="col in columnList">{{col.Text}}</th>
+                                </tr>
+                            </thead>
+                            <tbody ng-if="studentList">
+                                <tr ng-repeat="item in studentList" ng-click="selectStudent(item)"
+                                    ng-class="{'warning':item.selected}">
+                                    <td class="{{col.Class}}" ng-repeat="col in columnList">{{item[col.Name]}}</td>
+                                </tr>
+                            </tbody>
+                            <tbody ng-if="!studentList">
+                                <tr>
+                                    <td colspan="4">目前無資料</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div style="overflow-x:hidden;margin-top:10px;margin-bottom:10px;">
-                    <div ng-if="currentStudent">
+                <div style="overflow-x:hidden;margin-top:24px;">
+                    <div ng-if="currentStudent" class="relative overflow-auto max-w-full max-h-full w-full h-full mt-0">
                         <!--
                         <button class="btn btn-default btn-sm pull-right" style="margin-bottom:10px;" type="button" data-type="return" ng-click="removeCurrentStudent()">返回 <i class="fa fa-angle-right"></i>
                         </button>    
@@ -127,16 +130,16 @@
                                 </tr>
                             </tbody>
                         </table>-->
-                        <table class="table table-bordered table-striped" data-type="detail">
+                        <table class="table ntable mx-auto whitespace-nowrap" data-type="detail">
                             <thead>
                                 <tr>
-                                    <th style="width:70px;">學年度</th>
-                                    <th style="width:60px;">學期</th>
-                                    <th style="width:120px;">日期</th>
-                                    <th>服務內容</th>
-                                    <th style="width:60px;">時數</th>
+                                    <th>學年度</th>
+                                    <th>學期</th>
+                                    <th>日期</th>
+                                    <th style="min-width: 130px;">服務內容</th>
+                                    <th>時數</th>
                                     <th>主辦單位</th>
-                                    <th style="width:80px;">校內/校外</th>
+                                    <th>校內/校外</th>
                                     <th>備註</th>
                                 </tr>
                             </thead>
@@ -145,7 +148,7 @@
                                     <td class="text-center">{{item.SchoolYear}}</td>
                                     <td class="text-center">{{item.Semester}}</td>
                                     <td>{{item.OccurDate}}</td>
-                                    <td>{{item.Reason}}</td>
+                                    <td style="white-space: normal;">{{item.Reason}}</td>
                                     <td class="text-center">{{item.Hours}}</td>
                                     <td>{{item.Organizers}}</td>
                                     <td>{{item.InternalOrExternal}}</td>

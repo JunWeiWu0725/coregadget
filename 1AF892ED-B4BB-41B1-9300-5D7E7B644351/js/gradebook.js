@@ -71,7 +71,9 @@
             Value: "",
             Student: null,
             Exam: null,
-            Course: null
+            Course: null,
+            SchoolYear: "",
+            Semester: "",
         };
         $scope.params = gadget.params;
         $scope.params.DefaultRound = gadget.params.DefaultRound || '2';
@@ -82,6 +84,10 @@
         $scope.connection2 = gadget.getContract("1campus.log.teacher");
         $scope.connection3 = gadget.getContract("1campus.h.gradebook.teacher");
         $scope.examExtensionMap = [];
+        $scope.isNullAsZeroChecked = true;
+        $scope.printCourseScore = false;
+        $scope.printTrialCalculation = false;
+        $scope.current.CourseStudentDefaultRound = [];
 
         // 四捨五入
         function rounding(val, precision) {
@@ -105,23 +111,56 @@
             return (arg1 * m + arg2 * m) / m;
         }
 
-        $scope.connection3.send({
-            service: "_.GetExamExtensionMap",
-            autoRetry: true,
-            body: { name: '評量成績缺考暨免試設定' },
-            result: function (response, error, http) {
+        /** 
+         * 取得評量缺考設定 examExtensionMap
+         */
+        new Promise((r, j) => {
+            $scope.connection3.send({
+                service: "_.GetExamExtensionMap",
+                autoRetry: true,
+                result: function (response, error, http) {
 
-                if (error) {
-                    alert("1campus.h.gradebook.teacher._.GetExamExtensionMap Error");
-                } else {
-                    console.log('examExtensionMap', { response });
-                    $scope.$apply(function () {
-                        $scope.examExtensionMap = response.ExamExtensionMap;
-                        console.log($scope.examExtensionMap);
-                    });
-
+                    if (error) {
+                        alert("1campus.h.gradebook.teacher._.GetExamExtensionMap Error");
+                        j(false);
+                    } else {
+                        $scope.$apply(function () {
+                            $scope.examExtensionMap = response.ExamExtensionMap;
+                        });
+                        r(true);
+                    }
                 }
-            }
+            });
+
+        });
+        /** 
+         * 取得試算成績未輸入以0分計算設定 GetSetting
+         */
+        new Promise((r, j) => {
+            $scope.connection3.send({
+                service: "_.GetSetting",
+                autoRetry: true,
+                result: function (response, error, http) {
+
+                    if (error) {
+                        alert("1campus.h.gradebook.teacher._.GetSetting Error");
+                        $scope.isNullAsZeroChecked = true;
+                        j(false);
+                    } else {
+                        $scope.$apply(function () {
+                            var asZero = true;
+                            if (response.Response.is_null_as_zero == 'f') {
+                                //有資料，且不勾
+                                $scope.isNullAsZeroChecked = false;
+                            } else {
+                                //沒有資料，或是有資料勾
+                                console.log('true', response.Response.is_null_as_zero);
+                            }
+                        });
+                        r(true);
+                    }
+                }
+            });
         });
 
         /** 
@@ -147,6 +186,15 @@
         }).then((rsp) => {
             var schoolYear = rsp.Current.SchoolYear;
             var semester = rsp.Current.Semester;
+
+            $scope.current.SchoolYear = schoolYear;
+            $scope.current.Semester = semester;
+
+            //當前學年度學期
+            $scope.currentSemester = `${schoolYear}學年度 第${semester}學期`;
+            //選擇的學年度學期
+            $scope.selectedSemester = `${schoolYear}學年度 第${semester}學期`;
+
             $scope.connection.send({
                 service: "TeacherAccess.GetMyCourses",
                 autoRetry: true,
@@ -161,27 +209,73 @@
                         alert("TeacherAccess.GetMyCourses Error");
                     } else {
                         $scope.$apply(function () {
+                            $scope.allCourses = [].concat(response.Courses.Course || []);
+                            if ($scope.allCourses.length == 0)
+                                $scope.HasNoCourse = true;
+                            $scope.semesterList = Array.from(new Set($scope.allCourses.map(course => `${course.SchoolYear}學年度 第${course.Semester}學期`)));
 
-                            $scope.courseList = [];
-                            $scope.HasNoCourse = false;
+                            // $scope.semesterList = $scope.allCourses
+                            //     .map(course => `${course.SchoolYear}學年度 第${course.Semester}學期`)
+                            //     .reduce((unique, item) => {
+                            //         if (unique.indexOf(item) === -1) {
+                            //             unique.push(item);
+                            //         }
+                            //         return unique;
+                            //     }, []);
 
-                            [].concat(response.Courses.Course || []).forEach(function (courseRec, index) {
-                                if (courseRec.SchoolYear == schoolYear && courseRec.Semester == semester) {
-                                    $scope.courseList.push(courseRec);
+                            // 對學期列表進行排序
+                            $scope.semesterList.sort((a, b) => {
+                                var [aYear, aSemester] = a.match(/(\d+)學年度 第(\d)學期/).slice(1, 3).map(Number);
+                                var [bYear, bSemester] = b.match(/(\d+)學年度 第(\d)學期/).slice(1, 3).map(Number);
+                                if (aYear !== bYear) {
+                                    return bYear - aYear; // 學年度由大到小排序
+                                } else {
+                                    return bSemester - aSemester; // 學期由大到小排序
                                 }
                             });
-
-                            if ($scope.courseList.length == 0) {
-                                // 本學期沒有任何課程
-                                $scope.HasNoCourse = true;
-                            } else {
-                                $scope.setCurrentCourse($scope.courseList[0]);
-                            }
+                            $scope.filterCoursesBySemester($scope.currentSemester);
                         });
+
+                        // 原先的邏輯 先註解
+                        // $scope.$apply(function () {
+                        //     $scope.courseList = [];
+                        //     $scope.HasNoCourse = false;
+
+                        //     [].concat(response.Courses.Course || []).forEach(function (courseRec, index) {
+                        //         if (courseRec.SchoolYear == schoolYear && courseRec.Semester == semester) {
+                        //             $scope.courseList.push(courseRec);
+                        //         }
+                        //     });
+
+                        //     if ($scope.courseList.length == 0) {
+                        //         // 本學期沒有任何課程
+                        //         $scope.HasNoCourse = true;
+                        //     } else {
+                        //         $scope.setCurrentCourse($scope.courseList[0]);
+                        //     }
+                        // });
                     }
                 }
             });
         });
+
+        // 新增過濾課程的函數
+        $scope.filterCoursesBySemester = function (semester) {
+            var [schoolYear, semesterPart] = semester.match(/(\d+)學年度 第(\d)學期/).slice(1, 3);
+            $scope.courseList = $scope.allCourses.filter(course => course.SchoolYear == schoolYear && course.Semester == semesterPart);
+            if ($scope.courseList.length == 0) {
+                $scope.HasNoCourse = true;
+            } else {
+                $scope.HasNoCourse = false;
+                $scope.setCurrentCourse($scope.courseList[0]);
+            }
+        };
+        // 新增設定當前學期的函數
+        $scope.setSelectedSemester = function (semester) {
+            $scope.selectedSemester = semester;
+            $scope.filterCoursesBySemester(semester);
+        };
+
 
         /**
          * 設定目前課程
@@ -294,6 +388,30 @@
 
                 }
 
+                /** 
+                 * * 取得課程學生的成績計算規則，學期科目成績計算至小數點後..位數
+                 * */
+                const getStudentByCourseID = new Promise((r, j) => {
+                    $scope.connection3.send({
+                        service: "_.GetStudentByCourseID",
+                        autoRetry: true,
+                        body: { CourseID: $scope.current.Course.CourseID },
+                        result: function (response, error, http) {
+
+                            if (error) {
+                                alert("1campus.h.gradebook.teacher._.GetStudentByCourseID Error");
+
+                                j(false);
+                            } else {
+                                studentMapping = [];
+                                $scope.$apply(function () {
+                                    $scope.current.CourseStudentDefaultRound = response.CourseStudent;
+                                });
+                                r(true);
+                            }
+                        }
+                    });
+                });
 
                 // 課程評分樣板：定期評量清單
                 $scope.templateList = [];
@@ -332,22 +450,146 @@
                         Fn: function (stu) {
                             // 處理試算，新增判斷是否需要評分
                             var total = 0, base = 0, seed = 10000;
-                            [].concat(course.Scores.Score || []).forEach(function (examRec, index) {
-                                // 需要評分才試算
+
+                            var totalPercentage = 0; // 記錄評量群組內的總比重
+                            var exemptedPercentage = 0; // 記錄免試評量的比重
+                            var useGroupExams = []; // 記錄屬於同一評量群組的所有評量
+                            var exemptedExams = []; // 記錄屬於同一評量群組的免試評量
+
+                            // 遍歷所有評量，計算總比重和免試評量比重
+                            [].concat(course.Scores.Score || []).forEach(function (examRec) {
                                 if (examRec.UseScore === "是") {
                                     var p = Number(examRec.Percentage) || 0;
-                                    var s = stu['Exam' + examRec.ExamID];
-                                    if (stu['Exam' + examRec.ExamID] != '缺')
-                                        if (stu['Exam' + examRec.ExamID] || stu['Exam' + examRec.ExamID] == '0') {
-                                            total += seed * p * Number(stu['Exam' + examRec.ExamID]);
-                                            base += p;
+                                    if (examRec.Extension.Extension.UseGroup === "是") {
+                                        totalPercentage += p;
+                                        useGroupExams.push(examRec);
+
+                                        //沒勾的話，沒成績=免試
+                                        if (stu['Exam' + examRec.ExamID + 'score_type'] == '免試' || (!$scope.isNullAsZeroChecked && !stu['Exam' + examRec.ExamID])) {
+                                            exemptedPercentage += p;
+                                            exemptedExams.push(examRec);
                                         }
+                                    }
                                 }
                             });
 
+                            // 計算需要分配的比重 免試的評量比重均分給 同群組非免試的評量
+                            var distributedPercentage = exemptedPercentage / (useGroupExams.length - exemptedExams.length);
+                            // 遍歷所有評量，計算總分
+                            [].concat(course.Scores.Score || []).forEach(function (examRec) {
+                                if (examRec.UseScore === "是") {
+                                    var p = Number(examRec.Percentage) || 0;
+                                    var s = stu['Exam' + examRec.ExamID];
+
+                                    if (examRec.Extension.Extension.UseGroup === "是") {
+                                        if (isNaN(Number(stu['Exam' + examRec.ExamID]))) {
+                                            if (stu['Exam' + examRec.ExamID + 'score_type'] == '0分') { // 0分設定
+                                                p += distributedPercentage
+                                                total += seed * p * 0;
+                                                base += p;
+                                            }
+
+                                        } else if ($scope.isNullAsZeroChecked || (stu['Exam' + examRec.ExamID] || stu['Exam' + examRec.ExamID] == '0')) {
+                                            // 新比重
+                                            p += distributedPercentage;
+                                            total += seed * p * Number(s);
+                                            base += p;
+                                        }
+                                    } else {
+                                        if (isNaN(Number(stu['Exam' + examRec.ExamID]))) {
+                                            if (stu['Exam' + examRec.ExamID + 'score_type'] == '0分') { // 0分設定
+                                                total += seed * p * 0;
+                                                base += p;
+                                            }
+                                        } else if ($scope.isNullAsZeroChecked || (stu['Exam' + examRec.ExamID] || stu['Exam' + examRec.ExamID] == '0')) {
+                                            total += seed * p * Number(s);
+                                            base += p;
+                                        }
+
+                                    }
+                                    // if (examRec.Extension.Extension.UseGroup === "是") {
+                                    //     if (stu['Exam' + examRec.ExamID + 'score_type'] == '免試') {
+                                    //         // 免試，不計入總分
+                                    //     } else {
+                                    //         // 新比重
+                                    //         p += distributedPercentage;
+                                    //         if (isNaN(Number(stu['Exam' + examRec.ExamID]))) {
+                                    //             if (stu['Exam' + examRec.ExamID + 'score_type'] == '0分') {
+                                    //                 total += seed * p * 0;
+                                    //                 base += p;
+                                    //             }
+                                    //         } else if ($scope.isNullAsZeroChecked) { // 試算成績未輸入以0分計算
+                                    //             total += seed * p * Number(stu['Exam' + examRec.ExamID]);
+                                    //             base += p;
+                                    //         } else if (stu['Exam' + examRec.ExamID] || stu['Exam' + examRec.ExamID] == '0') { // 有分數才算
+                                    //             total += seed * p * Number(stu['Exam' + examRec.ExamID]);
+                                    //             base += p;
+                                    //         }
+                                    //     }
+                                    // } else {
+                                    //     if (isNaN(Number(stu['Exam' + examRec.ExamID]))) {
+                                    //         if (stu['Exam' + examRec.ExamID + 'score_type'] == '0分') {
+                                    //             total += seed * p * 0;
+                                    //             base += p;
+                                    //         } else {
+                                    //             // 不計分
+                                    //         }
+                                    //     } else if ($scope.isNullAsZeroChecked) { // 試算成績未輸入以0分計算
+                                    //         total += seed * p * Number(stu['Exam' + examRec.ExamID]);
+                                    //         base += p;
+                                    //     } else if (stu['Exam' + examRec.ExamID] || stu['Exam' + examRec.ExamID] == '0') { // 有分數才算
+                                    //         total += seed * p * Number(stu['Exam' + examRec.ExamID]);
+                                    //         base += p;
+                                    //     }
+                                    // }
+                                }
+                            });
+
+                            // {
+                            //     [].concat(course.Scores.Score || []).forEach(function (examRec, index) {
+                            //         // 需要評分才試算
+                            //         if (examRec.UseScore === "是") {
+                            //             var p = Number(examRec.Percentage) || 0;
+                            //             var s = stu['Exam' + examRec.ExamID];
+
+                            //             if (stu['Exam' + examRec.ExamID] != '缺')
+                            //                 if (stu['Exam' + examRec.ExamID] || stu['Exam' + examRec.ExamID] == '0') {
+                            //                     total += seed * p * Number(stu['Exam' + examRec.ExamID]);
+                            //                     base += p;
+                            //                 }
+                            //         }
+                            //     });
+                            // }
+
+                            // 依照成績計算規則
+                            var digit = 2;
+                            var math_type = '';
+                            [].concat($scope.current.CourseStudentDefaultRound || []).forEach(function (drl) {
+                                if (drl['student_id'] == stu['StudentID']) {
+                                    //debugger;
+                                    digit = drl['digit'] || 2;
+
+                                    if (drl['is_floor'] == 't')
+                                        math_type = 'is_floor';
+                                    if (drl['is_round'] == 't')
+                                        math_type = 'is_round';
+                                    if (drl['is_ceil'] == 't')
+                                        math_type = 'is_ceil';
+                                }
+                            });
+
+
                             if (base) {
-                                var round = Math.pow(10, $scope.params[finalScorePreview.Name + 'Round'] || $scope.params.DefaultRound);
-                                stu['Exam' + finalScorePreview.ExamID] = Math.round((Math.floor(total / base) / seed) * round) / round;
+                                var round = Math.pow(10, $scope.params[finalScorePreview.Name + 'Round'] || digit);
+                                if (math_type === 'is_floor')
+                                    stu['Exam' + finalScorePreview.ExamID] = (Math.floor((Math.floor(total / base) / seed) * round) / round).toFixed(digit);
+                                else if (math_type === 'is_ceil')
+                                    stu['Exam' + finalScorePreview.ExamID] = (Math.ceil((Math.floor(total / base) / seed) * round) / round).toFixed(digit);
+                                else
+                                    stu['Exam' + finalScorePreview.ExamID] = (Math.round((Math.floor(total / base) / seed) * round) / round).toFixed(digit);
+
+                                // var round = Math.pow(10, $scope.params[finalScorePreview.Name + 'Round'] || $scope.params.DefaultRound);
+                                // stu['Exam' + finalScorePreview.ExamID] = Math.round((Math.floor(total / base) / seed) * round) / round;
                             } else {
                                 stu['Exam' + finalScorePreview.ExamID] = "";
                             }
@@ -391,10 +633,15 @@
                     });
 
                     $scope.templateList.forEach(function (examRec) {
+                        var useGroup = false;
+                        if (examRec.Extension)
+                            if (examRec.Extension.Extension.UseGroup == "是")
+                                useGroup = true;
                         // 定期評量
                         var exam = {
                             ExamID: examRec.ExamID,
                             Name: examRec.Name,
+                            Percentage: examRec.Percentage,
                             Type: 'Number',
                             Permission: 'Editor',
                             Lock: examRec.Lock,
@@ -406,7 +653,8 @@
                             isSubScoreMode: false,
                             SubVisible: true,
                             UseText: examRec.UseText,
-                            UseScore: examRec.UseScore
+                            UseScore: examRec.UseScore,
+                            UseGroup: useGroup,
                         };
                         $scope.examList.push(exam);
                         $scope.current.VisibleExam.push(examRec.Name);
@@ -579,7 +827,7 @@
             });
             // 取得課程學生
             $scope.connection.send({
-                service: "TeacherAccess.GetCourseStudents2020",
+                service: "TeacherAccess.GetCourseStudents2024",
                 autoRetry: true,
                 body: {
                     Content: {
@@ -592,7 +840,7 @@
                 },
                 result: function (response, error, http) {
                     if (error) {
-                        alert("TeacherAccess.GetCourseStudents Error");
+                        alert("TeacherAccess.GetCourseStudents2024 Error");
                     } else {
                         var studentMapping = {};
                         $scope.$apply(function () {
@@ -608,7 +856,7 @@
 
                                         if (tag.Name.includes("成績身分")) {
                                             studentRec.StudentScoreTag = tag.Name;
-                                            studentRec.StudentTag = tag.Name.replace('成績身分:','');
+                                            studentRec.StudentTag = tag.Name.replace('成績身分:', '');
                                         }
                                         // 列出所有類別(沒道理...)
                                         //studentRec.StudentScoreTag += tag.Name;
@@ -619,6 +867,9 @@
                                 if (!studentRec.PassingStandard) {
                                     studentRec.PassingStandard = 60; // 預設
                                 }
+                                // if (!studentRec.MakeupStandard) {
+                                //     studentRec.MakeupStandard = 40; // 2024.06.18 取不到值，content改讀stuRec.Exam_MakeupStandard
+                                // }
 
                                 studentRec.index = index;
                                 // studentRec Init
@@ -634,6 +885,8 @@
                                 $scope.OrginStudentList.push(Object.assign({}, studentRec));
                                 studentMapping[studentRec.StudentID] = studentRec;
                             });
+
+
 
 
                             // 已透過 Service 處理，這段不需要
@@ -666,7 +919,7 @@
                             // 取得定期評量成績
                             var getCourseExamScore = new Promise((r, j) => {
                                 $scope.connection.send({
-                                    service: "TeacherAccess.GetCourseExamScore2020",
+                                    service: "TeacherAccess.GetCourseExamScore2024",//2020
                                     autoRetry: true,
                                     body: {
                                         Content: {
@@ -677,20 +930,44 @@
                                     },
                                     result: function (response, error, http) {
                                         if (error) {
-                                            alert("TeacherAccess.GetCourseExamScore2020 Error");
+                                            alert("TeacherAccess.GetCourseExamScore2024 Error");
                                             j(false);
                                         } else {
                                             $scope.$apply(function () {
                                                 [].concat(response.Scores.Item || []).forEach(function (examScoreRec) {
+
                                                     // 評量分數
                                                     studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID] = examScoreRec.Score;
+                                                    studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID + 'score_type'] = '';
+
+                                                    //Cynthia new
+                                                    $scope.examExtensionMap.forEach(function (map) {
+                                                        if (examScoreRec.Extension && examScoreRec.Extension.Extension) {
+                                                            if (map.use_value == examScoreRec.Score && map.use_text == examScoreRec.Extension.Extension.UseText) {
+                                                                studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID] = examScoreRec.Extension.Extension.UseText;
+                                                                studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID + 'score_type'] = map.score_type;
+                                                            } else if (!examScoreRec.Extension.Extension.UseText && examScoreRec.Extension.Extension.Score == '缺' && examScoreRec.Score == '-1') {
+                                                                ////ext.use_text==undefined && ext.Score =='缺' && Score =='-1'  >>>> 舊制的缺
+                                                                studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID] = examScoreRec.Extension.Extension.Score;
+                                                            } else {
+                                                                // console.log(examScoreRec.Extension.Extension.UseText);
+                                                                // console.log(examScoreRec.Extension.Extension.Score);
+                                                                // console.log(examScoreRec.Score);
+                                                            }
+                                                        }
+
+                                                    });
 
                                                     // 2020/3/27 新增學生及格標準，如果沒有以60分算
                                                     if (!examScoreRec.PassingStandard) {
                                                         examScoreRec.PassingStandard = 60;
                                                     }
+                                                    if (!examScoreRec.MakeupStandard) {
+                                                        examScoreRec.MakeupStandard = 40;
+                                                    }
                                                     // 及格標準
                                                     studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID + 'PassingStandard'] = examScoreRec.PassingStandard;
+                                                    studentMapping[examScoreRec.StudentID]['Exam' + '_' + 'MakeupStandard'] = examScoreRec.MakeupStandard;
 
                                                     if (examScoreRec.Extension.Extension) {
                                                         // 文字評量
@@ -708,10 +985,30 @@
                                                     var index = $scope.examList.findIndex((exam) => exam.ExamID == examScoreRec.ExamID);
                                                     if (index > -1) {
                                                         // 處理缺考
-                                                        if (!isNaN(examScoreRec.Score)) {
+                                                        if (!isNaN(examScoreRec.Score)) { //有分數
+                                                            var skipStudent = false;
                                                             var totalScore = Number(examScoreRec.Score);
-                                                            $scope.examList[index].totalStudent += 1;
-                                                            $scope.examList[index].totalScore += totalScore;
+
+                                                            $scope.examExtensionMap.forEach(function (map) {
+                                                                if (examScoreRec.Extension && examScoreRec.Extension.Extension) {
+                                                                    if (map.use_value == examScoreRec.Score && map.use_text == examScoreRec.Extension.Extension.UseText) {
+                                                                        if (map.score_type === "0分") {
+                                                                            //視為0分
+                                                                            totalScore = 0;
+                                                                        } else if (map.score_type === "免試") {
+                                                                            //視為沒有分數
+                                                                            skipStudent = true;
+                                                                        }
+                                                                    } else if (!examScoreRec.Extension.Extension.UseText && examScoreRec.Extension.Extension.Score == '缺' && examScoreRec.Score == '-1') {
+                                                                        //舊制的缺 視為沒有分數
+                                                                        skipStudent = true;
+                                                                    }
+                                                                }
+                                                            });
+                                                            if (!skipStudent) {
+                                                                $scope.examList[index].totalStudent += 1;
+                                                                $scope.examList[index].totalScore += totalScore;
+                                                            }
                                                         }
 
                                                     }
@@ -844,7 +1141,11 @@
                 return { 'background-color': 'unset' };
             }
 
-            if (+score < pStandard || +score > 100) {
+            if (+score < 0 || +score > 100) {
+                return { 'background-color': '#ffda93' };
+            }
+
+            if (+score < pStandard) {
                 return { 'background-color': 'yellow' };
             }
 
@@ -854,7 +1155,15 @@
 
             //   return { 'background-color': 'unset' };
         }
+        // 檢查「課程成績」變色
+        $scope.checkExamLock = function (exam) {
+            var ExamName = exam.Name;
+            var lock = exam.Lock;
 
+            if (ExamName === '學期成績' && lock)
+                return { 'color': '#9d9d9d' };
+            //return { 'background-color': 'yellow', 'color': 'gray' };
+        }
         /** 
          * 1. 備份學生原始資料
          * 2. setupCurrent 
@@ -1075,16 +1384,40 @@
                     && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Max && $scope.current.Exam.Range.Max !== 0) || temp <= $scope.current.Exam.Range.Max)
                     && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Min && $scope.current.Exam.Range.Min !== 0) || temp >= $scope.current.Exam.Range.Min)) {
                     flag = true;
+
                     if (!$scope.current.Exam.Group) {
                         var round = Math.pow(10, $scope.params[$scope.current.Exam.Name + 'Round'] || $scope.params.DefaultRound);
                         temp = Math.round(temp * round) / round;
                     }
                 }
-                if ($scope.current.Value == "缺" || $scope.current.Value == "-") {
+                // if ($scope.current.Value == "缺" || $scope.current.Value == "-") {
+                //     flag = true;
+                // }
+
+                if ($scope.current.Value == "-") {
                     flag = true;
                 }
+
+                var tempMapText = '';
+
+                if ($scope.current.Exam.ExamID !== '學期成績')
+                    $scope.examExtensionMap.forEach(function (map) {
+                        if (map.use_text == $scope.current.Value) {
+                            tempMapText = map.use_text;
+                            flag = true;
+                        }
+                    });
+
+
+                // if (flag) {
+                //     if ($scope.current.Value != "" && $scope.current.Value != "缺" && $scope.current.Value != "-") {
+                //         $scope.current.Value = temp;
+                //     } else if ($scope.current.Value === "-") {
+                //         $scope.current.Value = '';
+                //     }
+                // }
                 if (flag) {
-                    if ($scope.current.Value != "" && $scope.current.Value != "缺" && $scope.current.Value != "-") {
+                    if ($scope.current.Value != "" && $scope.current.Value != tempMapText && $scope.current.Value != "-") {
                         $scope.current.Value = temp;
                     } else if ($scope.current.Value === "-") {
                         $scope.current.Value = '';
@@ -1101,8 +1434,16 @@
 
         $scope.submitGrade = function (matchNext) {
             if ($scope.current.mode === '成績管理') {
-
+                console.log('$scope.current.Value', $scope.current.Value);
                 $scope.current.Student['Exam' + $scope.current.Exam.ExamID] = $scope.current.Value;
+                $scope.current.Student['Exam' + $scope.current.Exam.ExamID + 'score_type'] = '';
+                //Cynthia new
+                if ($scope.current.Exam.ExamID !== '學期成績')
+                    $scope.examExtensionMap.forEach(function (map) {
+                        if (map.use_text == $scope.current.Value) {
+                            $scope.current.Student['Exam' + $scope.current.Exam.ExamID + 'score_type'] = map.score_type;
+                        }
+                    });
 
                 if ($scope.current.Exam.Group) {
                     var examRec = $scope.current.Exam.Group;
@@ -1159,6 +1500,35 @@
          * 儲存學期成績(課程成績) SetCourseSemesterScore
          */
         $scope.saveAll = function () {
+            let invalidScore = false;
+
+            //檢查評量成績
+            $scope.templateList.forEach(function (examRec, index) {
+                if (!examRec.Lock) {
+                    [].concat($scope.studentList || []).forEach(function (studentRec) {
+                        var score = studentRec['Exam' + examRec.ExamID];
+                        if (score > 100 || score < 0) {
+                            console.log('評量成績「' + score + '」輸入有誤，請確認後再儲存。');
+                            invalidScore = true;
+                            return;
+                        }
+
+                    });
+                }
+            });
+            //檢查學期成績
+            [].concat($scope.studentList || []).forEach(function (studentRec) {
+                if (studentRec['Exam學期成績'] > 100 || studentRec['Exam學期成績'] < 0) {
+                    console.log('學期成績「' + studentRec['Exam學期成績'] + '」輸入有誤，請確認後再儲存。');
+                    invalidScore = true;
+                    return;
+                }
+            });
+
+            if (invalidScore) {
+                alert('成績輸入有誤，請確認後再儲存。');
+                return;
+            }
 
             // 儲存定期評量成績
             var SetCourseExamScoreWithExtension = function () {
@@ -1174,7 +1544,6 @@
                     };
                     $scope.templateList.forEach(function (examRec, index) {
 
-
                         if (!examRec.Lock) {
                             var eItem = {
                                 '@ExamID': examRec.ExamID,
@@ -1182,18 +1551,31 @@
                             };
                             [].concat($scope.studentList || []).forEach(function (studentRec) {
                                 var text = '' + studentRec['Exam' + examRec.ExamID + '_文字評量'];
+                                var score = studentRec['Exam' + examRec.ExamID];
+                                var score_type = studentRec['Exam' + examRec.ExamID + 'score_type'];
+                                var use_text = '';
 
+                                if (score_type == '0分') {
+                                    score = -1;
+                                    use_text = studentRec['Exam' + examRec.ExamID];
+                                }
+                                if (score_type == '免試') {
+                                    score = -2;
+                                    use_text = studentRec['Exam' + examRec.ExamID];
+                                }
+                                //ext.use_text=='' && ext.Score =='缺' && Score =='-1'  >>>> 舊制的缺
                                 var data = {
                                     '@StudentID': studentRec.StudentID,
-                                    '@Score': studentRec['Exam' + examRec.ExamID],
+                                    '@Score': score,
                                     Extension: {
                                         Extension: {
                                             Score: studentRec['Exam' + examRec.ExamID]
+                                            , UseText: use_text
                                             , Text: text.replace(/'/g, "''")
                                         }
                                     }
                                 };
-
+                                console.log(examRec.Name, { data, score, score_type });
                                 if (studentRec['Exam' + examRec.ExamID] != studentRec['Exam' + examRec.ExamID + 'Origin']) {
                                     isChange = true;
                                     if (logManangers.length == 0 || !(logManangers.find(x => { return x.key == `Exam_${examRec.ExamID}` }))) { //第一次
@@ -1252,6 +1634,7 @@
                         }
                     });
 
+
                     /**log */
                     if (isChange) {
                         $scope.connection2.send({
@@ -1280,7 +1663,7 @@
             var SetCourseSemesterScore = function () {
 
                 var isChange = false;
-                var descriptString = `修改 ${$scope.current.Course.CourseName} 【學期成績】 \n`;
+                var descriptString = `修改 ${$scope.current.Course.CourseName} 【課程成績】 \n`;
 
                 return new Promise((r, j) => {
                     var body = {
@@ -1292,6 +1675,7 @@
                         }
                     };
                     [].concat($scope.studentList || []).forEach(function (studentRec) {
+
                         // log用
                         if (studentRec['Exam學期成績'] != studentRec['Exam學期成績Origin']) {
                             descriptString += `  ${studentRec.ClassName}班 ${studentRec.SeatNo}號  ${studentRec.StudentName}  ,${studentRec['Exam學期成績Origin']} => ${studentRec['Exam學期成績']} \n`
@@ -1303,7 +1687,10 @@
                             '@Score': studentRec['Exam學期成績']
                         };
                         body.Content.Course.Student.push(obj);
+                        console.log({ obj });
+
                     });
+                    console.log({ body });
                     $scope.connection.send({
                         service: "TeacherAccess.SetCourseSemesterScore",
                         autoRetry: true,
@@ -1342,6 +1729,7 @@
             }
 
             if (!$scope.current.Course.Lock) {
+
                 Promise.all([SetCourseSemesterScore(), SetCourseExamScoreWithExtension()]).then(() => {
                     $scope.dataReload();
                     alert("儲存完成。");
@@ -1775,9 +2163,33 @@
         }
 
 
+        $scope.isPrintCourseScore = function () {
+            console.log('printCourseScore', $scope.printCourseScore);
+        };
+        $scope.isPrintTrialCalculation = function () {
+            console.log('printTrialCalculation', $scope.printTrialCalculation);
+        };
 
+        $scope.openExportModal = function () {
+            if ($scope.current.Exam.Name === '學期成績' && $scope.current.Exam.Lock) {
+                $scope.printCourseScore = false;
+                $scope.printTrialCalculation = true;
+            }
+            if ($scope.current.Exam.Name === '學期成績' && !$scope.current.Exam.Lock) {
+                $scope.printCourseScore = true;
+                $scope.printTrialCalculation = false;
+            }
+            console.log('openExportModal');
+            $('#exportModal').modal('show');
+        }
+        $scope.closeExportModal = function () {
+            console.log('closeExportModal');
+            $('#exportModal').modal('hide');
+        }
         /**匯出成績單 */
         $scope.exportGradeBook = function () {
+            $('#exportModal').modal('hide');
+
             var data_changed = !$scope.checkAllTable($scope.current.mode);
             if (data_changed) {
                 alert("資料尚未儲存，無法匯出報表。");
@@ -1790,10 +2202,17 @@
                     `<td rowspan='2' width='40px'>班級</td>`,
                     `<td rowspan='2' width='40px'>姓名</td>`,
                     `<td rowspan='2' width='70px'>學號</td>`,
-                    `<td rowspan='2' width='70px'>學期成績</td>`,
-                    `<td rowspan='2' width='70px'>學期成績_試算</td>`
+                    //`<td rowspan='2' width='70px'>課程成績</td>`,
+                    //`<td rowspan='2' width='70px'>課程成績_試算</td>`
                 ];
 
+                if ($scope.printCourseScore) {
+                    thList1.push(`<td rowspan='2' width='70px'>課程成績</td>`);
+                }
+
+                if ($scope.printTrialCalculation) {
+                    thList1.push(`<td rowspan='2' width='70px'>課程成績_試算</td>`);
+                }
                 [].concat($scope.templateList || []).forEach(template => {
                     if (template.Extension) {
                         if (template.Extension.Extension.UseText == '是') {
@@ -1821,9 +2240,10 @@
                         `<td>${student.StudentName}(${student.SeatNo})</td>`,
                         `<td class="text">${student.StudentNumber}</td>`,
                     ];
-
-                    studentData.push(`<td>${student['Exam學期成績']}</td>`);
-                    studentData.push(`<td>${student['Exam學期成績_試算']}</td>`);
+                    if ($scope.printCourseScore)
+                        studentData.push(`<td>${student['Exam學期成績']}</td>`);
+                    if ($scope.printTrialCalculation)
+                        studentData.push(`<td>${student['Exam學期成績_試算']}</td>`);
                     [].concat($scope.templateList || []).forEach(template => {
                         if (template.Extension) {
                             if (template.Extension.Extension.UseText == '是') {
@@ -2033,17 +2453,17 @@
             if ($scope.examList && $scope.examList.length > 0 && $scope.examList[0].ExamID == '學期成績') {
                 var process = [
                     {
-                        Name: '學期成績',
+                        Name: '課程成績',
                         Type: 'Header'
                     },
                     {
-                        Name: '代入試算成績->學期成績',
+                        Name: '代入試算成績->課程成績',
                         Type: 'Function',
                         Fn: function () {
                             [].concat($scope.studentList || []).forEach(function (studentRec, index) {
                                 studentRec['Exam學期成績'] = studentRec['Exam學期成績_試算'];
                             });
-                            alert('學期成績已代入');
+                            alert('課程成績已代入');
                         },
                         Disabled: $scope.examList[0].Lock
                     }
@@ -2057,7 +2477,7 @@
                 [].concat($scope.examList).forEach(function (examRec, index) {
                     if (examRec.Type == 'Number' && examRec.Permission == "Editor") {
                         var importProcess = {
-                            Name: '匯入' + examRec.Name,
+                            Name: '匯入' + (examRec.Name === '學期成績' ? '課程成績' : examRec.Name),
                             Type: 'Function',
                             Fn: function () {
                                 delete importProcess.ParseString;
@@ -2083,10 +2503,19 @@
                                     if (importProcess.ParseValues[i] == "-") {
                                         flag = true;
                                         importProcess.ParseValues[i] = '';
-                                    } else if (importProcess.ParseValues[i] == "缺") {
-                                        // importProcess.ParseValues[i] = -1;
-                                        flag = true;
                                     }
+                                    // else if (importProcess.ParseValues[i] == "缺") {
+                                    //     // importProcess.ParseValues[i] = -1;
+                                    //     flag = true;
+                                    // }
+
+                                    if (examRec.Name !== '學期成績')
+                                        $scope.examExtensionMap.forEach(function (map) {
+                                            if (map.use_text == importProcess.ParseValues[i]) {
+                                                flag = true;
+                                            }
+                                        });
+
 
                                     if (flag) {
                                         if (!isNaN(temp) && importProcess.ParseValues[i] != "")
@@ -2095,8 +2524,12 @@
                                             importProcess.ParseValues[i] = '';
                                     }
                                     else {
-                                        importProcess.ParseValues[i] = '錯誤';
+
                                         importProcess.HasError = true;
+                                        if (temp > 100 || temp < 0)
+                                            importProcess.ParseValues[i] = '超過';
+                                        else
+                                            importProcess.ParseValues[i] = '錯誤';
                                     }
                                 }
 
@@ -2117,11 +2550,18 @@
                                 $scope.studentList.forEach(function (stuRec, index) {
                                     if (!importProcess.ParseValues[index] && importProcess.ParseValues[index] !== 0) {
                                         stuRec['Exam' + examRec.ExamID] = '';
-                                    } else if (importProcess.ParseValues[index] == '缺') {
-                                        stuRec['Exam' + examRec.ExamID] = '缺';
+                                        // } else if (importProcess.ParseValues[index] == '缺') {
+                                        //     stuRec['Exam' + examRec.ExamID] = '缺';
                                     }
                                     else {
                                         stuRec['Exam' + examRec.ExamID] = importProcess.ParseValues[index];
+
+                                        if (examRec.Name !== '學期成績')
+                                            $scope.examExtensionMap.forEach(function (map) {
+                                                if (map.use_text == importProcess.ParseValues[index]) {
+                                                    stuRec['Exam' + examRec.ExamID + 'score_type'] = map.score_type;
+                                                }
+                                            });
 
                                         if (examRec.Group) {
                                             // stuRec['Exam' + examRec.Group.ExamID] = stuRec['Exam' + examRec.Group.ExamID + 'CScore'] * 1 + stuRec['Exam' + examRec.Group.ExamID + 'PScore'] * 1;
@@ -2187,9 +2627,14 @@
                                         flag = true;
                                         importProcess.ParseValues[i] = '';
                                     }
-                                    if (importProcess.ParseValues[i] == '缺') {
-                                        flag = true;
-                                    }
+                                    // if (importProcess.ParseValues[i] == '缺') {
+                                    //     flag = true;
+                                    // }
+                                    $scope.examExtensionMap.forEach(function (map) {
+                                        if (map.use_text == importProcess.ParseValues[i]) {
+                                            flag = true;
+                                        }
+                                    });
 
                                     if (flag) {
                                         if (!isNaN(temp) && importProcess.ParseValues[i] != '') {
@@ -2197,8 +2642,11 @@
                                         }
                                     }
                                     else {
-                                        importProcess.ParseValues[i] = '錯誤';
                                         importProcess.HasError = true;
+                                        if (temp > 100 || temp < 0)
+                                            importProcess.ParseValues[i] = '超過';
+                                        else
+                                            importProcess.ParseValues[i] = '錯誤';
                                     }
                                 }
                                 $scope.studentList.forEach(function (stuRec, index) {
@@ -2221,6 +2669,12 @@
                                     }
                                     else {
                                         stuRec[item.ExamID] = importProcess.ParseValues[index];
+
+                                        $scope.examExtensionMap.forEach(function (map) {
+                                            if (map.use_text == importProcess.ParseValues[index]) {
+                                                stuRec[item.ExamID + 'score_type'] = map.score_type;
+                                            }
+                                        });
                                     }
                                 });
 
@@ -2615,6 +3069,14 @@
 
                     var score = Number(student[item.ExamID]);
                     var weight = Number(item.Weight);
+
+                    $scope.examExtensionMap.forEach(function (map) {
+                        if (map.use_text == student[item.ExamID]) {
+                            if (map.score_type == '0分')
+                                score = 0;
+                        }
+                    });
+
                     if (!isNaN(score) && !isNaN(weight)) {
                         //處理javascript精度問題
                         score = score * 100000;
@@ -2635,6 +3097,35 @@
             }
         }
 
+        /**儲存 試算成績未輸入以0分計算設定 SetSetting*/
+        $scope.isNullAsZero = function () {
+            $scope.isNullAsZeroChecked = !$scope.isNullAsZeroChecked;
+            if ($scope.isNullAsZeroChecked) {
+                console.log('勾選了，沒有輸入成績視為0分。', $scope.isNullAsZeroChecked);
+            } else {
+                console.log('未勾選，沒有輸入成績忽略比例。', $scope.isNullAsZeroChecked);
+            }
+
+            //試算需要重新跑一次
+            $scope.setCurrentCourse($scope.current.Course)
+
+            new Promise((r, j) => {
+                $scope.connection3.send({
+                    service: "_.SetSetting",
+                    autoRetry: true,
+                    body: { IsNullAsZero: $scope.isNullAsZeroChecked },
+                    result: function (response, error, http) {
+
+                        if (error) {
+                            alert("1campus.h.gradebook.teacher._.SetSetting Error");
+                            j(false);
+                        } else {
+                            r(true);
+                        }
+                    }
+                });
+            });
+        };
     }
     ])
     .provider('$affix', function () {

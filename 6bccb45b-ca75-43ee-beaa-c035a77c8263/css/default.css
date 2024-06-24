@@ -24,7 +24,7 @@
     color: white;
 }*/
 
-th{
+th {
     text-align: center;
 }
 
@@ -32,6 +32,146 @@ th{
     width: 60px;
     text-align: center;
 }
-.default{
 
+.relative {
+    position: relative;
+}
+
+.max-w-full {
+    max-width: 100%;
+}
+
+.max-h-full {
+    max-height: 100%;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.h-full {
+    height: 100%;
+}
+
+.mt-0 {
+    margin-top: 0px;
+}
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.overflow-auto {
+    overflow: auto;
+}
+
+.ctable th, .ctable td,
+.ntable th, .ntable td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.whitespace-nowrap {
+    white-space: nowrap;
+}
+
+.ctable tbody tr:nth-child(odd),
+.ntable tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+.ctable tbody tr:hover td,
+.ntable tbody tr:hover td {
+    background-color: #f5f5f5 !important;
+}
+
+.table {
+    display: table;
+    position: relative;
+    width: 100%;
+    text-align: left;
+    line-height: 1.25rem;
+}
+
+.ctable td:first-child,
+.ntable td:first-child {
+    position: sticky;
+    left: -1px;
+    z-index: 1;
+    background: #fff;
+}
+
+.ctable thead tr:nth-child(2) th:nth-child(1) {
+    left: -1px;
+    z-index: 10;
+    /* top: 37px !important; */
+}
+
+.ctable thead tr:nth-child(2) th:nth-child(3) {
+    left: 43px;
+    /* z-index: 10; */
+    /* top: 37px !important; */
+}
+.ntable thead tr:nth-child(1) th:nth-child(2) {
+    position: sticky;
+    left: 57px;
+}
+
+.ntable td:nth-child(2) {
+    position: sticky;
+    left: 57px;
+    background: #fff;
+}
+
+/* td:nth-child(2), thead tr:nth-child(2) th:nth-child(2) {
+    position: sticky;
+    left: 43px;
+    z-index: 1;
+    background: #fff;
+} */
+
+.ctable td:nth-child(3), .ctable thead tr:nth-child(2) th:nth-child(3) {
+    position: sticky;
+    left: 43px;
+    /* z-index: 10; */
+    background: #fff;
+}
+
+.ctable thead tr:nth-child(1) th:nth-child(1),
+.ntable thead tr:nth-child(1) th:nth-child(1) {
+    position: sticky;
+    left: -1px;
+    top: 0;
+    z-index: 10;
+    background: #eee;
+}
+
+
+.ctable tr:nth-child(odd) td:first-child, .ctable tr:nth-child(odd) td:nth-child(3),
+.ntable tr:nth-child(odd) td:first-child, .ntable tr:nth-child(odd) td:nth-child(2) {
+    background-color: #f9f9f9;
+}
+
+.ctable>tbody>tr.warning>td {
+    background-color: #fcf8e3 !important;
+}
+
+.ctable thead tr:nth-child(2) th:nth-child(1), .ctable thead tr:nth-child(2) th:nth-child(3) {
+    background-color: #eee;
+    z-index: 100;
+}
+
+.ctable thead tr th {
+    position: sticky;
+    top: 0;
+}
+
+.ctable thead tr:nth-child(2) th {
+    position: sticky !important;
+    top: 33px !important;
+}
+
+.ctable thead th {
+    z-index: 10;
 }
