@@ -500,7 +500,7 @@
                                 {{stuRec.StudentNumber}}
                             </td>
                             <td class="text-center" ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                {{stuRec.PassingStandard}}/{{stuRec.Exam_MakeupStandard}}
+                                {{stuRec.PassingStandard}}/{{stuRec.Course_MakeupStandard}}
                             </td>
                             <td ng-repeat="exam in examList | filter: filterPermission" class="text-center"
                                 style="position:relative;"
