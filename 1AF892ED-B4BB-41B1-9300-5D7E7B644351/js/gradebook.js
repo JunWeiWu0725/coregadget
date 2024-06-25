@@ -2706,6 +2706,7 @@
                                 Fn: function () {
                                     $scope.studentList.forEach(function (stuRec) {
                                         stuRec['Exam' + examRec.ExamID] = stuRec['QuizResult_' + examRec.ExamID]
+                                        stuRec['Exam' + examRec.ExamID + 'score_type'] = '';
                                     });
                                 },
                                 Disabled: examRec.Lock
