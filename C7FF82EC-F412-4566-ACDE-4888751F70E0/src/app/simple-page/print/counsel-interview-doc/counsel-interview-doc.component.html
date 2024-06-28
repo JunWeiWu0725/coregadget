@@ -21,7 +21,6 @@
           <td style="text-align: center; vertical-align: middle;width: 20%"><strong>類別</strong></td>
           <td style="text-align: center; vertical-align: middle;width: 30%"><strong>輔導內容</strong></td>
           <td  style="text-align: center; vertical-align: middle;width: 10%"><strong>記錄者</strong></td>
-          <!-- <td style="text-align: center; vertical-align: middle;width: 5%"><strong>公開</strong></td> -->
         </tr>
         <ng-container *ngFor="let item of CounselInterview">
           <ng-container *ngIf="item.isDisplay == true">
@@ -33,25 +32,14 @@
               <td style="text-align: center; vertical-align: middle;">{{item.ContactName}}</td>
               <td style="text-align: center; vertical-align: middle;">{{item.category_text}}</td>
               <td *ngIf="item.Content"
-                  style="text-align: left; vertical-align: middle;">{{item.Content }}</td>
+                  style="text-align: left; vertical-align: middle;"  [innerHtml]="item.Content">{{item.Content }}</td>
               <td *ngIf="!item.Content"></td>
           
               <td style="text-align: center; vertical-align: middle;">{{item.AuthorName}}</td>
-              <!-- <td style="text-align: center; vertical-align: middle;">{{item.isPublic}}</td> -->
             </tr>
           </ng-container>
         </ng-container>
-        <!-- <ng-container *ngFor="let item of addBlank">
-          <tr style="height: 30px">
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-        </ng-container> -->
+
       </table>
     </ng-container>
     
@@ -68,7 +56,6 @@
           <td style="text-align: center; vertical-align: middle;width: 20%"><strong>類別</strong></td>
           <td style="text-align: center; vertical-align: middle;width: 30%"><strong>內容說明</strong></td>
           <td style="text-align: center; vertical-align: middle;width: 10%"><strong>記錄者</strong></td>
-          <!-- <td style="text-align: center; vertical-align: middle;width: 5%"><strong>公開</strong></td> -->
         </tr>
         <ng-container *ngFor="let item of CaseInterview">
           <ng-container *ngIf="item.isDisplay == true">
@@ -88,17 +75,7 @@
             </tr>
           </ng-container>
         </ng-container>
-        <!-- <ng-container *ngFor="let item of addBlank">
-          <tr style="height: 30px">
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-        </ng-container> -->
+        
       </table>
         
     </ng-container>

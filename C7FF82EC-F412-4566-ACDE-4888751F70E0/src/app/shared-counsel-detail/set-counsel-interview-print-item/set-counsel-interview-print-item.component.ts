@@ -1,3 +1,4 @@
+import { RoleService } from 'src/app/role.service';
 import { Component, OnInit } from '@angular/core';
 import { DsaService } from "../../dsa.service";
 import * as moment from 'moment';
@@ -24,11 +25,12 @@ export class SetCounselInterviewPrintItemComponent implements OnInit {
 
   constructor(private dsaService: DsaService,
     private router: Router,
-    private globalService : GlobalService) {
+    private RoleService :RoleService ,
+    private globalService : GlobalService,
+  ) {
    
     // 設定權限
       if(this.globalService.MyCounselTeacherRole =='輔導主任' && this.globalService.currentRole =='輔導老師'){
-    
         this.OnlyPrintMine = false ;  
         this.isAllowSelectPrintAll = true ;
       }else {
@@ -76,7 +78,7 @@ export class SetCounselInterviewPrintItemComponent implements OnInit {
 
       let a = { studentID: this.studentID, StartDate: StartDate, EndDate: EndDate, P1T: this.isCheckP1T, P1F: this.isCheckP1F, P2T: this.isCheckP2T, P2F: this.isCheckP2F }
       let x = JSON.stringify(a);
-     if(!this.OnlyPrintMine){
+     if(this.globalService.MyCounselTeacherRole&&this.RoleService.role.indexOf('輔導老師') >= 0){
        localStorage.setItem('OnlyPrintMine', 'false');
        window.open('content.htm#/(simple-page:simple-page/print/counsel-interview-doc/' + x + ')', '_blank');
 

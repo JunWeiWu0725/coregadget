@@ -17,7 +17,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
     ,public globalService :GlobalService 
   ) { }
   /** 當insert 成功後回傳的ID */
-
+  comPoGUID ="a6f0f1e4-9f7d-4a7e-a6d3-b9d1d6d9e2f5"
   InsertCaseInterViewID = ""
   fileSizeLimit: number = 3 * 1024 * 1024
   isCancel: boolean = true;
@@ -32,8 +32,9 @@ export class AddCaseInterviewModalComponent implements OnInit {
 
   ngOnInit() {
     this.isCancel = true;
-    this._CaseInterview = new CaseInterview();
-    
+    this._CaseInterview = new CaseInterview(this.globalService.isCaseInterviewOpenDefault);
+    this._CaseInterview.isPublic = !this.globalService.isCaseInterviewOpenDefault ;
+   
   }
   decodeHtml(html: string): string {
     const txt = document.querySelector('textarea');

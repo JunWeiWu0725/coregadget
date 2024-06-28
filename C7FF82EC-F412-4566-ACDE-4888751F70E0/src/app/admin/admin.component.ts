@@ -15,6 +15,7 @@ export class AdminComponent implements OnInit {
   currentItem: string = "";
   isRoleEnable: boolean = false;
   isClassEnable: boolean = false;
+  isSettingEnable:boolean = false ;
   isPsyEnable: boolean = false;
   public counselVisible: boolean = false;
 
@@ -59,6 +60,7 @@ export class AdminComponent implements OnInit {
       this.currentItem = 'counsel_teacher_role';
       this.isRoleEnable = true;
       this.isClassEnable = true;
+      this.isSettingEnable = true ;
       this.isPsyEnable = true;
       this.routeTo('counsel_teacher_role');
     }
@@ -66,6 +68,7 @@ export class AdminComponent implements OnInit {
       this.currentItem = 'counsel_class';
       this.isClassEnable = true;
       this.isPsyEnable = true;
+      this.isSettingEnable = true ;
       this.routeTo('counsel_class');
     }
 

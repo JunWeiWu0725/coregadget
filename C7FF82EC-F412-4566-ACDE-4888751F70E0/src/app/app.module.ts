@@ -99,6 +99,7 @@ import { ServiceItemStatisticsComponent } from './service-item-statistics/servic
 import { ServiceItemsStatisticsComponent } from './counsel-statistics/reports/service-items-statistics/service-items-statistics.component';
 import { StudentInfoComponent } from './comprehensive/student-info/student-info.component';
 import { FilterChineseNumbersPipe } from './filter-chinese-numbers.pipe';
+import { SettingComponent } from './admin/setting/setting.component';
 
 @NgModule({
   declarations: [
@@ -160,6 +161,7 @@ import { FilterChineseNumbersPipe } from './filter-chinese-numbers.pipe';
     ServiceItemsStatisticsComponent,
     StudentInfoComponent,
     FilterChineseNumbersPipe,
+    SettingComponent,
     // MatSnackBarModule
     
     

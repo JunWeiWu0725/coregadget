@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DsaService } from "../../../dsa.service";
 import { CaseInterview } from "../case-interview-vo";
+import { GlobalService } from 'src/app/global.service';
 @Component({
   selector: 'app-del-case-interview-modal',
   templateUrl: './del-case-interview-modal.component.html',
@@ -10,10 +11,10 @@ export class DelCaseInterviewModalComponent implements OnInit {
 
   caseInterview: CaseInterview;
   isCancel: boolean = true;
-  constructor(private dsaService: DsaService) { }
+  constructor(private dsaService: DsaService,private globalService:GlobalService) { }
 
   ngOnInit() {
-    this.caseInterview = new CaseInterview();
+    this.caseInterview = new CaseInterview(this.globalService.isCaseInterviewOpenDefault);
     this.isCancel = true;
   }
 

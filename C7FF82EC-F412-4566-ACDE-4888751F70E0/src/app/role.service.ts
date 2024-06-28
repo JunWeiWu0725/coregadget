@@ -108,7 +108,7 @@ export class RoleService {
     await this.loadLoginTeacherData();
     this._isLoading = true;
     let resp = await this.dsaService.send("GetRole", {});
-
+    
     this._enableCounsel.permitted = false;
     this._enableCounselStatistics.permitted = false;
     this._enableReferral.permitted = false;
@@ -116,7 +116,7 @@ export class RoleService {
     this._enableInterviewStatistics.permitted = false;
 
     this._role = [].concat(resp.Role || []);
-
+// alert(JSON.stringify( this._role))
     if (
       this._role.indexOf("輔導老師") >= 0 ||
       this._role.indexOf("認輔老師") >= 0 ||

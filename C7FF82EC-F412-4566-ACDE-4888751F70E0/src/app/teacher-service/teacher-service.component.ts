@@ -32,6 +32,22 @@ export class TeacherServiceComponent implements OnInit {
   }
 
 
+  decodeHtml(html: string ,action :'修改'|'新增'): string {
+    if(action=='修改'){
+
+      const txt = document.querySelector('textarea');
+      console.log(txt)
+      txt.innerHTML = html;
+      return txt.value;
+    }else{
+      const txt = document.querySelector('textarea');
+      console.log(txt)
+      txt.innerHTML = "";
+      return txt.value;
+    }
+  }
+
+  
   /** 取得服務項目 */
   async getServiceItem() {
     try {
@@ -63,6 +79,7 @@ export class TeacherServiceComponent implements OnInit {
   Add() {
     this._addServiceModal.mode = 'add'
     this._addServiceModal.currentServiceItem = new ServiceItemInfo();
+
     $("#addServiceModal").modal({ backdrop: 'static' });
     $("#addServiceModal").modal("show");
 
@@ -94,6 +111,7 @@ export class TeacherServiceComponent implements OnInit {
   edit(item: ServiceItemInfo) {
     this._addServiceModal.mode = 'edit'
     this._addServiceModal.currentServiceItem = item;
+    this._addServiceModal.decodeHtml(    this._addServiceModal.currentServiceItem.ServiceDescription,'修改')
     $("#addServiceModal").modal({ backdrop: 'static' });
     $("#addServiceModal").on('shown.bs.modal', () => {
       this.resize();

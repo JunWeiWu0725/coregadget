@@ -1,8 +1,16 @@
+import { GlobalService } from 'src/app/global.service';
 // import { ReferralForm } from './counsel-vo';
 import { ReferralStudent } from './../referral/referral-student';
 // 輔導資料
 export class CounselInterview {
-  constructor() { }
+  constructor(isPublic?  :boolean) { 
+    // alert('isPublic'+isPublic)
+  this.isPublic =isPublic ;
+  }
+  setIsPrivate(isPublic :boolean){
+
+    this.isPublic =isPublic ;
+  }
   UID: string;
   StudentName: string; // 姓名
   SchoolYear: number; //學年度
@@ -13,7 +21,7 @@ export class CounselInterview {
   AuthorName: string; //訪談者姓名
   CounselType: string; //訪談方式
   CounselTypeOther: string; //其他訪談方式
-  isPublic: boolean; // 和 isPrivate相反，資料庫內是存在 isPrivate
+   isPublic: boolean; // 和 isPrivate相反，資料庫內是存在 isPrivate
   isPrivate: string; //是否僅有自己(以及輔導老師)能看見
   StudentID: string; //學生系統編號
   isReferral: string; //是否轉介

@@ -1,5 +1,4 @@
 <!-- 輔導學生打開學生的頁面 -->
-
 <div *ngIf="!counselStudentService.isLoading; else tmpLoading">
   <app-permission-denied *ngIf="deny"></app-permission-denied>
   <div *ngIf="!deny">
@@ -25,12 +24,12 @@
                 " >
               <div class="text-nowrap mr-2" > 
                 {{ currentStudent.ClassName }}
-        
                ({{ currentStudent.SeatNo +' 號' }})
               </div>
               <div class=" text-nowrap">
                 {{ currentStudent.StudentName }}
               </div>
+             
               </div>
                 
             

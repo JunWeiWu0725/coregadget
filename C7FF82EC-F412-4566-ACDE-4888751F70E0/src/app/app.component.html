@@ -1,205 +1,214 @@
 
-
-<router-outlet name="simple-page"></router-outlet>
-
-
-<div  id="appcomponent" class="cbs d-flex justify-content-between flex-column" >
-  <!-- <div hidden id="userInfo"
-    style ="display: float ;
-          z-index: 99;
-           width :300px;
-           height: 320px ;
-           background: rgb(219, 235, 230);
-           position: fixed;
-           border-radius: 0px 50px 50px 0px;
-           bottom:0px;
-          left:0px;">
-目前權限 :
-{{roleService.role}}
-  </div> -->
-  <div id="index" page>
- 
-      <!-- <ol class="breadcrumb">
-        <li class="breadcrumb-item active"
-            aria-current="page">輔導紀錄</li>
-      </ol> -->
-
-    <ul class="nav nav-justified nav-tabs mb-3 header-base ">
-     <div>
-      <!-- <button (click)="mode='permissionShow'" >
-            查詢權限
-     </button> -->
-     </div>
-    </ul>
-    <!-- TAB NAV -->
-    <ul  class="nav nav-justified nav-tabs mb-3 header ">
-      <ng-container *ngIf="counselVisable === true">
-        <li class="nav-item">
-          <a #permissionTag class="nav-link" [attr.data-code]="A1D56201-ADEB-40E1-B51C-F2635EDEE167" [attr.data-toggle]="roleService.enableCounsel?'tab':null"
-            (click)="!roleService.enableCounsel || routeTo('/counsel')"
-            [ngClass]="{'active': currentComponent == 'counsel', 'disabled': !roleService.enableCounsel}">
-            <b>{{counselStudentStr}} </b>
-         
-          </a>
-        </li>
-      </ng-container>
-      <!-- 增加管理頁簽 -->
-      <ng-container *ngIf=" false">
-        <li class="nav-item">
-          <a #permissionTag class="nav-link" [attr.data-toggle]="roleService.enableCounsel?'tab':null"
-            (click)="!roleService.enableCounsel || routeTo('/work_service')"
-            [ngClass]="{'active': currentComponent == 'work_service', 'disabled': !roleService.enableCounsel}">
-            <b>工作管理 </b></a>
-        </li>
-     
-      </ng-container>
-      <ng-container *ngIf="counsel_statisticsVisable === true">
-        <li class="nav-item">
-          <a #permissionTag class="nav-link" [attr.data-toggle]="roleService.enableCounselStatistics?'tab':null"
-            (click)="!roleService.enableCounselStatistics || routeTo('/counsel_statistics')"
-            [ngClass]="{'active': currentComponent == 'counsel_statistics', 'disabled': !roleService.enableCounselStatistics}">
-            <b> 輔導統計 </b></a>
-      
-        </li>
-      </ng-container>
-      <ng-container *ngIf="referralVisable === true">
-        <li class="nav-item">
+<ng-container *ngIf="!isLoading  else tmpLoading">
+  <router-outlet name="simple-page"></router-outlet>
 
 
-          <a #permissionTag class="nav-link" [attr.data-toggle]="roleService.enableReferral?'tab':null"
-            (click)="!roleService.enableReferral || routeTo('/referral')"
-            [ngClass]="{'active': currentComponent == 'referral', 'disabled': !roleService.enableReferral}">
-
-
-            <!-- <b *ngIf="!refferalNotDealCount"> 轉介學生 </b> -->
-<ng-container >
-              <div  class ="d-flex justify-content-center">
-                   <div  *ngIf="refferalNotDealCount &&roleService.enableReferral " class ="align-baseline"  style="position: relative;
-                                top: -10px;
-                                left: 1px;
-                                font-size :9px ;
-                                padding:17 px;
-                                float:left;
-                                width: 17px;
-                                height: 17px;
-                                animation: mymove 1s ;
-                                animation-iteration-count: 2;
-                                text-align: center;
-                                background: #FF5C58 ;border-radius: 50%; color :white ;padding: 2px;" >{{refferalNotDealCount}}</div>
-              <b >轉介學生</b>
-              </div>
-            </ng-container>
-
-
-            <!-- <span class="d-none badge badge-pill badge-danger">1</span> -->
-          </a>
-        </li>
-      </ng-container>
-      <ng-container *ngIf="caseVisable === true">
-        <li class="nav-item">
-          <a  #permissionTag class="nav-link" [attr.data-toggle]="globalService.enableCase?'tab':null"
-            (click)="!globalService.enableCase || routeTo('/case')"
-            [ngClass]="{'active': currentComponent == 'case', 'disabled': !globalService.enableCase}">
-            <b> 個案資料 </b></a>
-        
-        </li>
-      </ng-container>
-
-      <!-- <li class="nav-item">
-        <a class="nav-link"
-           [attr.data-toggle]="roleService.enableInterviewStatistics?'tab':null"
-           (click)="!roleService.enableInterviewStatistics || routeTo('/interview_statistics')"
-           [ngClass]="{'active': currentComponent == 'interview_statistics', 'disabled': !roleService.enableInterviewStatistics}">
-          輔導填寫狀況</a>
-      </li> -->
-      <ng-container *ngIf="comprehensiveVisable === true">
-        <li class="nav-item">
-          <a  #permissionTag class="nav-link" [attr.data-toggle]="roleService.enableComprehensive?'tab':null"
-            (click)="!roleService.enableComprehensive || routeTo('/comprehensive')"
-            [ngClass]="{'active': currentComponent == 'comprehensive', 'disabled': !roleService.enableComprehensive}">
-            <b> {{comprehensiveStr}}</b></a>
-        </li>
-      </ng-container>
-
-      <ng-container *ngIf="transferStudentVisable">
-        <li class="nav-item" *ngIf="adminVisable === true">
-          <a #permissionTag class="nav-link" [attr.data-toggle]="roleService.enableTransferStudents?'tab':null"
-            (click)="!roleService.enableTransferStudents || routeTo('/transfer_students')"
-            [ngClass]="{'active': currentComponent == 'transfer-students', 'disabled': !roleService.enableTransferStudents}">
-            <div class="position-relative">
-              <div *ngIf="hasNewTransfer"
-                class="align-baseline"
-                style="position: absolute;
-                  top: -10px;
-                  left: 1px;
-                  width: 8px;
-                  height: 8px;
-                  animation: mymove 1s;
-                  animation-iteration-count: 2;
-                  background: #FF5C58;
-                  border-radius: 50%;">
-              </div>
-              <b>線上轉學</b>
-            </div>
-          </a>
-        </li>
-      </ng-container>
-
-      <ng-container *ngIf="psychologicalTestVisable === true">
-        <li class="nav-item ">
-          <a class="nav-link" [attr.data-toggle]="roleService.enableCase?'tab':null"
-            (click)="!roleService.enablePsychologicalTest || routeTo('/psychological_test')"
-            [ngClass]="{'active': currentComponent == ' ', 'disabled': !roleService.enablePsychologicalTest}">
-            <b> 心理測驗</b></a>
-        </li>
-      </ng-container>
-
-            <!-- todo -->
-            <ng-container *ngIf="adminVisable === true">
-              <li class="nav-item">
-                <a #permissionTag class="nav-link"
-                   [attr.data-toggle]="roleService.enableTeacherService?'tab':null"
-                   (click)="!roleService.enableTeacherService|| routeTo('/teacher-service')"
-                   [ngClass]="{'active': currentComponent == 'teacher-service', 'disabled': !roleService.enableTeacherService}">
-                  <b> 相關服務</b>
-                </a>
-              </li>
-            </ng-container>
-      <ng-container *ngIf="adminVisable === true">
-        <li class="nav-item">
-          <a  #permissionTag class="nav-link" [attr.data-toggle]="roleService.enableAdmin?'tab':null"
-            (click)="!roleService.enableAdmin || routeTo('/admin')"
-            [ngClass]="{'active': currentComponent == 'admin', 'disabled': !roleService.enableAdmin}">
-            <b> 系統管理</b></a>
-        </li>
-      </ng-container>
-
-
-
-
-    </ul>
-
-    <!-- style="margin-top: 0px; padding: left 20px;; -->
-    <div style ="padding-left :10px; padding-right: 10px; ">
-      <router-outlet></router-outlet>
-    </div>
-  </div>
-
-  <div  *ngIf="isOpenUserInfo  " class="fixed-bottom-left">
-    MyCounselTeacherRole(權限 ) :{{this.globalService.MyCounselTeacherRole}} 
-    <br>
-    teacherName(老師名稱) {{this.globalService.teacherName}}
-    <br>
-    currentRole  (目前角色) :{{this.globalService.currentRole}}
-    
-
- <select  *ngIf="mode" [(ngModel)]="selectedRole" (change)="onRoleChange($event)">
-  <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
-</select>
-  </div>
-
+  <div  id="appcomponent" class="cbs d-flex justify-content-between flex-column" >
+    <!-- <div hidden id="userInfo"
+      style ="display: float ;
+            z-index: 99;
+             width :300px;
+             height: 320px ;
+             background: rgb(219, 235, 230);
+             position: fixed;
+             border-radius: 0px 50px 50px 0px;
+             bottom:0px;
+            left:0px;">
+  目前權限 :
+  {{roleService.role}}
+    </div> -->
+    <div id="index" page>
+   
+        <!-- <ol class="breadcrumb">
+          <li class="breadcrumb-item active"
+              aria-current="page">輔導紀錄</li>
+        </ol> -->
   
-  <footer class="text-center p-2 mt-auto">
-    Powered By ischool
-  </footer>
-</div>
+      <ul class="nav nav-justified nav-tabs mb-3 header-base ">
+       <div>
+        <!-- <button (click)="mode='permissionShow'" >
+              查詢權限
+       </button> -->
+       </div>
+      </ul>
+      <!-- TAB NAV -->
+      <ul  class="nav nav-justified nav-tabs mb-3 header ">
+        <ng-container *ngIf="counselVisable === true">
+          <li class="nav-item">
+            <a #permissionTag class="nav-link" [attr.data-code]="A1D56201-ADEB-40E1-B51C-F2635EDEE167" [attr.data-toggle]="roleService.enableCounsel?'tab':null"
+              (click)="!roleService.enableCounsel || routeTo('/counsel')"
+              [ngClass]="{'active': currentComponent == 'counsel', 'disabled': !roleService.enableCounsel}">
+              <b>{{counselStudentStr}} </b>
+           
+            </a>
+          </li>
+        </ng-container>
+        <!-- 增加管理頁簽 -->
+        <ng-container *ngIf=" false">
+          <li class="nav-item">
+            <a #permissionTag class="nav-link" [attr.data-toggle]="roleService.enableCounsel?'tab':null"
+              (click)="!roleService.enableCounsel || routeTo('/work_service')"
+              [ngClass]="{'active': currentComponent == 'work_service', 'disabled': !roleService.enableCounsel}">
+              <b>工作管理 </b></a>
+          </li>
+       
+        </ng-container>
+        <ng-container *ngIf="counsel_statisticsVisable === true">
+          <li class="nav-item">
+            <a #permissionTag class="nav-link" [attr.data-toggle]="roleService.enableCounselStatistics?'tab':null"
+              (click)="!roleService.enableCounselStatistics || routeTo('/counsel_statistics')"
+              [ngClass]="{'active': currentComponent == 'counsel_statistics', 'disabled': !roleService.enableCounselStatistics}">
+              <b> 輔導統計 </b></a>
+        
+          </li>
+        </ng-container>
+        <ng-container *ngIf="referralVisable === true">
+          <li class="nav-item">
+  
+  
+            <a #permissionTag class="nav-link" [attr.data-toggle]="roleService.enableReferral?'tab':null"
+              (click)="!roleService.enableReferral || routeTo('/referral')"
+              [ngClass]="{'active': currentComponent == 'referral', 'disabled': !roleService.enableReferral}">
+  
+  
+              <!-- <b *ngIf="!refferalNotDealCount"> 轉介學生 </b> -->
+  <ng-container >
+                <div  class ="d-flex justify-content-center">
+                     <div  *ngIf="refferalNotDealCount &&roleService.enableReferral " class ="align-baseline"  style="position: relative;
+                                  top: -10px;
+                                  left: 1px;
+                                  font-size :9px ;
+                                  padding:17 px;
+                                  float:left;
+                                  width: 17px;
+                                  height: 17px;
+                                  animation: mymove 1s ;
+                                  animation-iteration-count: 2;
+                                  text-align: center;
+                                  background: #FF5C58 ;border-radius: 50%; color :white ;padding: 2px;" >{{refferalNotDealCount}}</div>
+                <b >轉介學生</b>
+                </div>
+              </ng-container>
+  
+  
+              <!-- <span class="d-none badge badge-pill badge-danger">1</span> -->
+            </a>
+          </li>
+        </ng-container>
+        <ng-container *ngIf="caseVisable === true">
+          <li class="nav-item">
+            <a  #permissionTag class="nav-link" [attr.data-toggle]="globalService.enableCase?'tab':null"
+              (click)="!globalService.enableCase || routeTo('/case')"
+              [ngClass]="{'active': currentComponent == 'case', 'disabled': !globalService.enableCase}">
+              <b> 個案資料 </b></a>
+          
+          </li>
+        </ng-container>
+  
+        <!-- <li class="nav-item">
+          <a class="nav-link"
+             [attr.data-toggle]="roleService.enableInterviewStatistics?'tab':null"
+             (click)="!roleService.enableInterviewStatistics || routeTo('/interview_statistics')"
+             [ngClass]="{'active': currentComponent == 'interview_statistics', 'disabled': !roleService.enableInterviewStatistics}">
+            輔導填寫狀況</a>
+        </li> -->
+        <ng-container *ngIf="comprehensiveVisable === true">
+          <li class="nav-item">
+            <a  #permissionTag class="nav-link" [attr.data-toggle]="roleService.enableComprehensive?'tab':null"
+              (click)="!roleService.enableComprehensive || routeTo('/comprehensive')"
+              [ngClass]="{'active': currentComponent == 'comprehensive', 'disabled': !roleService.enableComprehensive}">
+              <b> {{comprehensiveStr}}</b></a>
+          </li>
+        </ng-container>
+  
+        <ng-container *ngIf="transferStudentVisable">
+          <li class="nav-item" *ngIf="adminVisable === true">
+            <a #permissionTag class="nav-link" [attr.data-toggle]="roleService.enableTransferStudents?'tab':null"
+              (click)="!roleService.enableTransferStudents || routeTo('/transfer_students')"
+              [ngClass]="{'active': currentComponent == 'transfer-students', 'disabled': !roleService.enableTransferStudents}">
+              <div class="position-relative">
+                <div *ngIf="hasNewTransfer"
+                  class="align-baseline"
+                  style="position: absolute;
+                    top: -10px;
+                    left: 1px;
+                    width: 8px;
+                    height: 8px;
+                    animation: mymove 1s;
+                    animation-iteration-count: 2;
+                    background: #FF5C58;
+                    border-radius: 50%;">
+                </div>
+                <b>線上轉學</b>
+              </div>
+            </a>
+          </li>
+        </ng-container>
+  
+        <ng-container *ngIf="psychologicalTestVisable === true">
+          <li class="nav-item ">
+            <a class="nav-link" [attr.data-toggle]="roleService.enableCase?'tab':null"
+              (click)="!roleService.enablePsychologicalTest || routeTo('/psychological_test')"
+              [ngClass]="{'active': currentComponent == ' ', 'disabled': !roleService.enablePsychologicalTest}">
+              <b> 心理測驗</b></a>
+          </li>
+        </ng-container>
+  
+              <!-- todo -->
+              <ng-container *ngIf="adminVisable === true">
+                <li class="nav-item">
+                  <a #permissionTag class="nav-link"
+                     [attr.data-toggle]="roleService.enableTeacherService?'tab':null"
+                     (click)="!roleService.enableTeacherService|| routeTo('/teacher-service')"
+                     [ngClass]="{'active': currentComponent == 'teacher-service', 'disabled': !roleService.enableTeacherService}">
+                    <b> 相關服務</b>
+                  </a>
+                </li>
+              </ng-container>
+        <ng-container *ngIf="adminVisable === true">
+          <li class="nav-item">
+            <a  #permissionTag class="nav-link" [attr.data-toggle]="roleService.enableAdmin?'tab':null"
+              (click)="!roleService.enableAdmin || routeTo('/admin')"
+              [ngClass]="{'active': currentComponent == 'admin', 'disabled': !roleService.enableAdmin}">
+              <b> 系統管理</b></a>
+          </li>
+        </ng-container>
+  
+  
+  
+  
+      </ul>
+  
+      <!-- style="margin-top: 0px; padding: left 20px;; -->
+      <div style ="padding-left :10px; padding-right: 10px; ">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  
+    <div  *ngIf="isOpenUserInfo  " class="fixed-bottom-left">
+      MyCounselTeacherRole(權限 ) :{{this.globalService.MyCounselTeacherRole}} 
+      <br>
+      teacherName(老師名稱) {{this.globalService.teacherName}}
+      <br>
+      currentRole  (目前角色) :{{this.roleService.role}}
+      
+  
+   <!-- <select  *ngIf="mode" [(ngModel)]="selectedRole" (change)="onRoleChange($event)">
+    <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+  </select> -->
+    </div>
+  
+    
+    <footer class="text-center p-2 mt-auto">
+      Powered By ischool
+    </footer>
+  </div>
+
+</ng-container>
+<ng-template #tmpLoading class="container">
+  <div class="row justify-content-center" style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>
+
+<!-- <router-outlet name="simple-page"></router-outlet> -->

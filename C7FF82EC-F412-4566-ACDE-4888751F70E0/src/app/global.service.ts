@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { DsaService } from './dsa.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +16,14 @@ export class GlobalService {
   public teacherName: string = '';
   public teacherID: string = ''
   public currentRole: '班導師' | '認輔老師' | '輔導老師' | string = ''
+  public settingLists : any[] = []
+  public isCaseInterviewOpenDefault :boolean 
+  public isCounselOpenDefault :boolean 
   // currentTeacherRole : '' 
-  constructor() {
+  constructor(private dsaService: DsaService) {
 
-    this.mode = gadget.params.mode
+    this.mode = gadget.params.mode 
+    this.loadingSettingList() ;
   }
 
   /** 取得老師 的 紀錄 */
@@ -58,6 +63,31 @@ export class GlobalService {
   getDayOfWeek(date: Date): string {
     const daysOfWeek = ['日', '一', '二', '三', '四', '五', '六'];
     return daysOfWeek[date.getUTCDay()];
+  }
+
+  getDayOfWeekByString(date: string): string {
+    
+    const daysOfWeek = ['日', '一', '二', '三', '四', '五', '六'];
+    return daysOfWeek[new Date(date).getUTCDay()];
+  }
+
+
+
+
+  /** */
+ public async loadingSettingList () {
+    try {
+      let resp = await this.dsaService.send("Admin.GetSetting", {});
+      this.settingLists = [].concat(resp.result || []);
+
+      this.isCaseInterviewOpenDefault = this.settingLists.find(x=>x.functionality_code == 'case_counsel_is_private_default').content=='true' 
+      this.isCounselOpenDefault = this.settingLists.find(x=>x.functionality_code == 'interview_is_private_default').content=='true' 
+      
+      console.log("isCounselOpenDefault", this.isCounselOpenDefault)
+    } catch (ex) {
+      alert(JSON.stringify(ex))
+    }
+
   }
 
 }

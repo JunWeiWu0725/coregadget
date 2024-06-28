@@ -1,0 +1,82 @@
+
+<p> 
+  {{comPoGUID}}
+</p>
+<div *ngIf="!isLoading && true; else tmpLoading">
+  <div class="tab-content">
+    <button class="btn btn-light"
+    data-toggle="modal"
+    (click)="save(item)"
+    [disabled]="item.SetClassButtonDisable">
+儲存
+</button>
+    <ul class="rwd-table">
+      <li class="thead">
+        <ol class="tr">
+          <li class="sticky-top"> 功能名稱 </li>
+          <li class="sticky-top">設定內容</li>
+          <li class="sticky-top">說明</li>
+      
+        </ol>
+      </li>
+      <!-- 
+      uid: '83870722', last_update: '2024-06-24 10:11:27.396761', functionality_code: 'case_counsel_is_private_default', content: 'false', functionality_name: ''}
+1
+: 
+{uid: '83870780', last_update: '2024-06-24 11:19:59.443524', functionality_code: 'interview_is_private_default', content: 'true', functionality_name: ''}
+length
+: 
+2
+[[Prototype]]
+: 
+Array(0)
+[[Prototype]]
+: 
+Object
+ -->
+      <li class="tbody">
+        <ol class="tr"
+            *ngFor="let item of settingLists ; let i = index">
+          <li data-title="身分">{{item.functionality_name}}</li>
+          <li data-title="姓名">
+            <!-- {{ item.content }}   -->
+          <div>
+            
+            <input type="radio"   [attr.id]="'open'+i"  [name]="'open'+i" [checked]="item.content=='true'" value="公開"   (click)="onclick(item ,'true')" />
+            <label [for]="'open'+i" style="margin-right:15px ;">公開</label>
+
+            <input type="radio"   [attr.id]="'notOpen'+i"  [name]="'notOpen'+i"  [checked]="!(item.content=='true')" value="不公開" (click)="onclick(item,'false')"  />
+            <label [for]="'notOpen'+i">不公開 </label>
+       </div>
+            </li>
+          <li class="text-left text-normal"
+              data-title="輔導班級">
+            <div class="container">
+              <div class="row">
+                
+                <!-- <span *ngIf="item.ClassNames.length > 0">共{{item.ClassNames.length}}班</span> -->
+              </div>
+            </div>
+
+          </li>
+          <!-- <li data-title="edit">
+            <button class="btn btn-light"
+                    data-toggle="modal"
+                    (click)="save(item)"
+                    [disabled]="item.SetClassButtonDisable">
+               儲存
+            </button>
+          </li> -->
+        </ol>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<ng-template #tmpLoading
+             class="container">
+  <div class="row justify-content-center"
+       style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>

@@ -1,4 +1,5 @@
 import { GlobalService } from './../../../global.service';
+import { RoleService } from "./../../../role.service";
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { DsaService } from 'src/app/dsa.service';
@@ -34,21 +35,22 @@ export class CounselInterviewDocComponent implements OnInit {
   constructor(private activatedRoute: ActivatedRoute,
     private router: Router,
     private dsaService: DsaService,
+    private RoleService : RoleService ,
     private globalService :GlobalService) {
   }
 
 
 
-  ngOnInit() {
+  async ngOnInit() {
    
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
         this.OnlyPrintMine = localStorage.getItem('OnlyPrintMine') =='true';
         this.teacherID = JSON.parse(localStorage.getItem('teacherID'));
         this.param = JSON.parse(params.get("param"));
-        this.getReportData();
       }
     );
+    await this.getReportData();
   }
 
   // 取得報表資料
@@ -56,22 +58,27 @@ export class CounselInterviewDocComponent implements OnInit {
     this.isLoading = true;
     this.isDisplayCounsel = false;
     this.isDisplayCase = false;
-
+  //  alert("sss"+JSON.stringify(this.RoleService.role))
+  //  alert("globalService"+JSON.stringify( this.globalService.MyCounselTeacherRole))
     try {
-      if( !this.OnlyPrintMine ){
-        this.reportData = await this.dsaService.send("GetPrintCounselData12ByStudentID", {
+      console.log("gloableService")
+      if( this.globalService.MyCounselTeacherRole=='輔導主任' && (this.RoleService.role.indexOf('輔導老師') >= 0 )){
+          debugger
+          this.reportData = await this.dsaService.send("GetPrintCounselData12ByStudentID", {
           StudentID: this.param.studentID,
           StartDate: this.param.StartDate,
           EndDate: this.param.EndDate ,
         
         });
-      }else {
+      }else if(this.RoleService.role.indexOf('輔導老師') >= 0) {
+        debugger
         this.reportData = await this.dsaService.send("GetPrintCounselData12ByStudentIDandTeacherID", {
           StudentID: this.param.studentID,
           StartDate: this.param.StartDate,
           EndDate: this.param.EndDate ,
-          TeacherID : this.teacherID
         });
+      console.log("only my self  ")
+
 
       }
 
@@ -205,7 +212,7 @@ export class CounselInterviewDocComponent implements OnInit {
 
 
     } catch (error) {
-      alert("發生錯誤!")
+      alert("發生錯誤!" +JSON.stringify(error))
       console.log(error);
     } finally {
       this.isLoading = false;

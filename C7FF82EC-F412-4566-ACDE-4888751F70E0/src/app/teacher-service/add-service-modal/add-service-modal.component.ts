@@ -29,8 +29,29 @@ export class AddServiceModalComponent implements OnInit {
   async ngOnInit() {
     this.initModal();
   }
+  onChange(event: Event ,targetID :'#contactMatter1'|'#description') {
+    const textarea = event.target as HTMLTextAreaElement;
+    const value = textarea.value;
+    // if( this.editModeString == "修改"){
+    // this._currentCounselInterview.ContactItem = this.decodeHtml(value,targetID);
+   
+    // }else{
+    //   this._currentCounselInterview.ContactItem =this.decodeHtml(value,targetID);
+    // }
+    // alert(" this._CaseInterview.Content"+JSON.stringify(this._CaseInterview.Content))
+  }
+  decodeHtml(html: string ,action :'修改'|'新增'): string {
 
-
+    if(action=='修改'){
+      const txt = document.querySelector('textarea');
+      txt.innerHTML = html;
+      return txt.value;
+    }else{
+      const txt = document.querySelector('textarea');
+      txt.innerHTML = "";
+      return txt.value;
+    }
+  }
   /** 取得該筆service 資料*/
   async GetServiceItemByUID(serviceID: string) {
 

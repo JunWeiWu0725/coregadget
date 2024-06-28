@@ -71,10 +71,12 @@ export class CounselItemDetailComponent implements OnInit {
 
   /** 新增 */
   addInterviewModal(item: CaseStudent) {
-
+  //  alert("sss")
+  //  debugger
     this._addInterview._editMode = "add";
     this._addInterview.editModeString = "新增";
     this._addInterview.fileUpladed = {};
+    this._addInterview._CaseInterview = new CaseInterview(this.globalService.isCaseInterviewOpenDefault);
     this._addInterview._CaseInterview.CaseID = item.UID;
     this._addInterview._CaseInterview.CaseNo = item.CaseNo;
     this._addInterview._CaseInterview.StudentID = item.StudentID;
@@ -94,11 +96,13 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview._CaseInterview.selectContactName = "請選擇對象";
     this._addInterview._CaseInterview.AuthorName = "";
     // 預設不公開
-    this._addInterview._CaseInterview.isPublic = false;
+    this._addInterview._CaseInterview.isPublic =   this.globalService.isCaseInterviewOpenDefault ;
     this._addInterview._CaseInterview.isSaveDisable = true;
     // 帶入日期與輸入者
     let dt = new Date();
     this._addInterview._CaseInterview.OccurDate = this.parseDate(dt);
+    this._addInterview.dayOfWeek = this.globalService.getDayOfWeek(new Date()) // 設定星期
+
     this._addInterview._CaseInterview.useQuestionOptionTemplate(this.transferStatus);
     this._addInterview.loadDefaultData();
     this._addInterview._CaseInterview.checkValue();
@@ -161,14 +165,13 @@ export class CounselItemDetailComponent implements OnInit {
     this._viewCaseInterview.Semester = caseInterview.Semester;
     this._viewCaseInterview.UID = caseInterview.UID;
     this._viewCaseInterview.OccurDate = caseInterview.OccurDate;
+    this._viewCaseInterview.MeetTime = caseInterview.MeetTime;
     this._viewCaseInterview.CaseNo = caseInterview.CaseNo;
     this._viewCaseInterview.CounselType = caseInterview.CounselType;
     this._viewCaseInterview.CounselTypeOther = caseInterview.CounselTypeOther;
     this._viewCaseInterview.ContactName = caseInterview.ContactName;
     this._viewCaseInterview.Content = caseInterview.Content;
-
     this._viewCaseInterview.getFile(caseInterview.UID);
-
     this._viewCaseInterview.AuthorName = caseInterview.AuthorName;
     this._viewCaseInterview.CaseID = caseInterview.CaseID;
 
@@ -185,21 +188,14 @@ export class CounselItemDetailComponent implements OnInit {
     if(action=='修改'){
 
       const txt = document.querySelector('textarea');
-      // alert('inner'+JSON.stringify(txt))
       console.log(txt)
       txt.innerHTML = html;
-      // txt.value = html
       return txt.value;
-
     }else{
       const txt = document.querySelector('textarea');
-      // alert('inner'+JSON.stringify(txt))
       console.log(txt)
       txt.innerHTML = "";
-      // txt.value = html
       return txt.value;
-
-
     }
   }
 
@@ -420,7 +416,7 @@ export class CounselItemDetailComponent implements OnInit {
       
     [].concat(resp.CaseInterview || []).forEach(counselRec => {
       // 建立認輔資料
-      let rec: CaseInterview = new CaseInterview();
+      let rec: CaseInterview = new CaseInterview(this.globalService.isCaseInterviewOpenDefault);
       rec.UID = counselRec.UID;
       rec.StudentName = counselRec.StudentName;
       rec.SchoolYear = parseInt(counselRec.SchoolYear);

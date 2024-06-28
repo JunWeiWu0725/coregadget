@@ -30,7 +30,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
   // } 
   roles: string[] = ['輔導主任', '輔導組長'];
   selectedRole: string;
-
+  isLoading : boolean  = true 
   mode ="";
   public refferalNotDealCount: number | undefined;
   public counselStudentStr: string = "輔導學生";
@@ -63,6 +63,10 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
       this.refferalNotDealCount = data ;
       deetect.detectChanges();
     })
+   }
+   getJSON() {
+
+
    }
    ngAfterViewInit() {
     console.log('After View Init',this.myLinks);
@@ -157,7 +161,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
       this.comprehensiveStr = "填報資料"
     }
     if (gadget.params.system_counsel_position === 'referral') {
-      this.getRefList();
+      await this.getRefList();
 
     }
     //console.log(gadget.params.system_counsel_position);
@@ -165,8 +169,9 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
     // 只有線上轉學
     if (gadget.params.trans_tag_name) {
       this.transferStudentVisable = true;
-      this.checkHasNewTransfer();
+      await this.checkHasNewTransfer();
     }
+    this.isLoading =false 
   }
   /** 取得轉借學生 */
   async getRefList() {

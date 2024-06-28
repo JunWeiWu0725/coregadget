@@ -1,3 +1,4 @@
+import { GlobalService } from 'src/app/global.service';
 import { DsaService } from './../../../dsa.service';
 import { Component, OnInit } from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
@@ -12,6 +13,7 @@ export class ViewCaseInterviewModalComponent implements OnInit {
   SchoolYear: number;
   Semester: number;
   OccurDate: string = "";
+  MeetTime :string =""
   CaseNo: string = "";
   CounselType: string = "";
   CounselTypeOther: string = "";
@@ -27,7 +29,8 @@ export class ViewCaseInterviewModalComponent implements OnInit {
 
   isCancel: boolean = true;
   constructor(
-    private DsaService: DsaService
+    public globalService :GlobalService ,
+    public DsaService: DsaService
     ,private sanitizer:DomSanitizer) 
     { 
       

@@ -11,7 +11,7 @@
       <div class="modal-header">
         <h5 class="modal-title"
             id="addInterviewLabel">
-          檢視輔導紀錄 - {{ _CounselInterview.StudentName }}
+          檢視一級輔導紀錄 - {{ _CounselInterview.StudentName }}
         </h5>
         <button type="button"
                 class="close"
@@ -21,39 +21,33 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <!-- <div class="modal-header">
-        <h5 class="modal-title"
-            id="viewInterviewLabel">
-          {{_CounselInterview.StudentName}}（{{_CounselInterview.OccurDate | date: "yyyy-MM-dd" }}
-          {{_CounselInterview.SchoolYear}}學年度 第{{_CounselInterview.Semester}}學期）
-        </h5>
-        <button type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div> -->
+
       <div class="modal-body">
 
         <div class="form-row">
-          <div class="form-group col-md-4">
+          <div class="form-group col-md-3">
             <label class="col-form-label">
            <b class ="modal-sub-title">學年度 </b>   
             </label>
             <label class="form-control">{{ _CounselInterview.SchoolYear }}</label>
           </div>
-          <div class="form-group col-md-4">
+          <div class="form-group col-md-3">
             <label class="col-form-label">
              <b  class ="modal-sub-title" >學期 </b>  
             </label>
             <label class="form-control">{{ _CounselInterview.Semester }}</label>
           </div>
-          <div class="form-group col-md-4">
+          <div class="form-group col-md-3">
             <label class="col-form-label">
              <b class ="modal-sub-title">日期 </b> 
             </label>
-            <label class="form-control">{{ _CounselInterview.OccurDate }}</label>
+            <label class="form-control">{{ _CounselInterview.OccurDate }}({{globalService.getDayOfWeekByString(_CounselInterview.OccurDate)}})</label>
+          </div>
+          <div class="form-group col-md-3">
+            <label class="col-form-label">
+             <b class ="modal-sub-title">晤談時間 </b> 
+            </label>
+            <label class="form-control">{{ _CounselInterview.MeetTime }}</label>
           </div>
         </div>
 
@@ -63,7 +57,7 @@
               聯絡事項
             </b> 
           </label>
-          <label class="form-control multi_label">{{ _CounselInterview.ContactItem || ' ' }}</label>
+          <label class="form-control multi_label"  [innerHtml]="_CounselInterview.ContactItem || ' ' "></label>
         </div>
 
         <div class="form-group">
@@ -72,7 +66,7 @@
             輔導內容
           </b>
           </label>
-          <label class="form-control multi_label">{{ _CounselInterview.Content || ' ' }}</label>
+          <label class="form-control multi_label" [innerHtml]=" _CounselInterview.Content || ' ' "></label>
         </div>
 
         <ng-container *ngIf="referralVisible === true">
@@ -105,16 +99,6 @@
       </div>
       <div class="modal-footer">
         <div class="dropdown">
-          <!-- <button
-        aria-expanded="false"
-        aria-haspopup="true"
-        class="btn btn-dark"
-        data-toggle="dropdown"
-        id="dropdownMenuButton1"
-        type="button"
-      >
-        <i class="material-icons">print</i>
-      </button> -->
           <div aria-labelledby="dropdownMenuButton1"
                class="dropdown-menu menu">
             <a class="dropdown-item"

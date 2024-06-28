@@ -66,12 +66,44 @@ export class AddInterviewModalComponent implements OnInit {
   /* 學生輔導紀錄*/
   _currentCounselInterview: CounselInterview;
 
+  onChange(event: Event ,targetID :'#contactMatter1'|'#description') {
+    const textarea = event.target as HTMLTextAreaElement;
+    const value = textarea.value;
+    if( this.editModeString == "修改"){
+    this._currentCounselInterview.ContactItem = this.decodeHtml(value,targetID);
+   
+    }else{
+      this._currentCounselInterview.ContactItem =this.decodeHtml(value,targetID);
+    }
+    // alert(" this._CaseInterview.Content"+JSON.stringify(this._CaseInterview.Content))
+  }
+  decodeHtml(html: string ,targetID:'#contactMatter1'|'#description'): string {
+    if(targetID =='#contactMatter1'){
+
+      const txt = document.querySelector('#contactMatter1')  as HTMLTextAreaElement;
+      txt.innerHTML = html;
+      console.log(txt)
+      return txt.value;
+    
+    }if
+    (targetID =='#description'){
+      const txt = document.querySelector('#description')  as HTMLTextAreaElement;
+      txt.innerHTML = html;
+      console.log(txt)
+      return txt.value;
+    }
+    }
+    // alert('inner'+JSON.stringify(txt))
+    
+
+
+    // txt.value = html
   async ngOnInit() {
     this.referralVisible = false;
     if (gadget.params.system_counsel_position === 'referral') {
       this.referralVisible = true;
     }
-    this._currentCounselInterview = new CounselInterview();
+    this._currentCounselInterview = new CounselInterview(this.globalService.isCounselOpenDefault);
 
     if (this.counselDetailComponent) {
       await this.loadDefaultData(this.counselDetailComponent.currentStudent);
@@ -107,7 +139,7 @@ export class AddInterviewModalComponent implements OnInit {
         }
       } else {
         // 新增
-        this._currentCounselInterview = new CounselInterview();
+        this._currentCounselInterview = new CounselInterview(this.globalService.isCounselOpenDefault);
         this._studentName = this.currentStudentInfo.StudentName; // 學生姓名
         this._currentCounselInterview.StudentID = this.currentStudentInfo.StudentID; // 學生ID 
         this._currentCounselInterview.SchoolYear = this.counselStudentService.currentSchoolYear; // 學年度 
@@ -178,7 +210,7 @@ export class AddInterviewModalComponent implements OnInit {
 
   /** 載入新學生 */
   loadNowStudentInfo(currentStudent: CounselStudent) {
-    this._currentCounselInterview = new CounselInterview();
+    this._currentCounselInterview = new CounselInterview(this.globalService.isCounselOpenDefault);
     this._studentName = currentStudent.StudentName; // 學生姓名
     this._currentCounselInterview.StudentID = currentStudent.StudentID; // 學生ID 
     this._currentCounselInterview.SchoolYear = this.counselStudentService.currentSchoolYear; // 學年度 
