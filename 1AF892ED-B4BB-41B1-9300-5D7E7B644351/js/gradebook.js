@@ -507,41 +507,6 @@
                                         }
 
                                     }
-                                    // if (examRec.Extension.Extension.UseGroup === "是") {
-                                    //     if (stu['Exam' + examRec.ExamID + 'score_type'] == '免試') {
-                                    //         // 免試，不計入總分
-                                    //     } else {
-                                    //         // 新比重
-                                    //         p += distributedPercentage;
-                                    //         if (isNaN(Number(stu['Exam' + examRec.ExamID]))) {
-                                    //             if (stu['Exam' + examRec.ExamID + 'score_type'] == '0分') {
-                                    //                 total += seed * p * 0;
-                                    //                 base += p;
-                                    //             }
-                                    //         } else if ($scope.isNullAsZeroChecked) { // 試算成績未輸入以0分計算
-                                    //             total += seed * p * Number(stu['Exam' + examRec.ExamID]);
-                                    //             base += p;
-                                    //         } else if (stu['Exam' + examRec.ExamID] || stu['Exam' + examRec.ExamID] == '0') { // 有分數才算
-                                    //             total += seed * p * Number(stu['Exam' + examRec.ExamID]);
-                                    //             base += p;
-                                    //         }
-                                    //     }
-                                    // } else {
-                                    //     if (isNaN(Number(stu['Exam' + examRec.ExamID]))) {
-                                    //         if (stu['Exam' + examRec.ExamID + 'score_type'] == '0分') {
-                                    //             total += seed * p * 0;
-                                    //             base += p;
-                                    //         } else {
-                                    //             // 不計分
-                                    //         }
-                                    //     } else if ($scope.isNullAsZeroChecked) { // 試算成績未輸入以0分計算
-                                    //         total += seed * p * Number(stu['Exam' + examRec.ExamID]);
-                                    //         base += p;
-                                    //     } else if (stu['Exam' + examRec.ExamID] || stu['Exam' + examRec.ExamID] == '0') { // 有分數才算
-                                    //         total += seed * p * Number(stu['Exam' + examRec.ExamID]);
-                                    //         base += p;
-                                    //     }
-                                    // }
                                 }
                             });
 
@@ -566,7 +531,9 @@
                             var math_type = '';
                             [].concat($scope.current.CourseStudentDefaultRound || []).forEach(function (drl) {
                                 if (drl['student_id'] == stu['StudentID']) {
-                                    //debugger;
+
+                                    stu['Course_MakeupStandard'] = drl['makeup_standard'] || 40;
+
                                     digit = drl['digit'] || 2;
 
                                     if (drl['is_floor'] == 't')
@@ -868,7 +835,7 @@
                                     studentRec.PassingStandard = 60; // 預設
                                 }
                                 // if (!studentRec.MakeupStandard) {
-                                //     studentRec.MakeupStandard = 40; // 2024.06.18 取不到值，content改讀stuRec.Exam_MakeupStandard
+                                //     studentRec.MakeupStandard = 40; // 2024.06.18 取不到值，content.htm改讀stuRec.Course_MakeupStandard
                                 // }
 
                                 studentRec.index = index;
@@ -962,12 +929,12 @@
                                                     if (!examScoreRec.PassingStandard) {
                                                         examScoreRec.PassingStandard = 60;
                                                     }
-                                                    if (!examScoreRec.MakeupStandard) {
-                                                        examScoreRec.MakeupStandard = 40;
-                                                    }
+                                                    // if (!examScoreRec.MakeupStandard) {
+                                                    //     examScoreRec.MakeupStandard = 40;
+                                                    // }
                                                     // 及格標準
                                                     studentMapping[examScoreRec.StudentID]['Exam' + examScoreRec.ExamID + 'PassingStandard'] = examScoreRec.PassingStandard;
-                                                    studentMapping[examScoreRec.StudentID]['Exam' + '_' + 'MakeupStandard'] = examScoreRec.MakeupStandard;
+                                                    //studentMapping[examScoreRec.StudentID]['Exam' + '_' + 'MakeupStandard'] = examScoreRec.MakeupStandard;
 
                                                     if (examScoreRec.Extension.Extension) {
                                                         // 文字評量
@@ -1550,6 +1517,7 @@
                                 Student: []
                             };
                             [].concat($scope.studentList || []).forEach(function (studentRec) {
+
                                 var text = '' + studentRec['Exam' + examRec.ExamID + '_文字評量'];
                                 var score = studentRec['Exam' + examRec.ExamID];
                                 var score_type = studentRec['Exam' + examRec.ExamID + 'score_type'];
@@ -1575,7 +1543,7 @@
                                         }
                                     }
                                 };
-                                console.log(examRec.Name, { data, score, score_type });
+
                                 if (studentRec['Exam' + examRec.ExamID] != studentRec['Exam' + examRec.ExamID + 'Origin']) {
                                     isChange = true;
                                     if (logManangers.length == 0 || !(logManangers.find(x => { return x.key == `Exam_${examRec.ExamID}` }))) { //第一次
@@ -2706,6 +2674,7 @@
                                 Fn: function () {
                                     $scope.studentList.forEach(function (stuRec) {
                                         stuRec['Exam' + examRec.ExamID] = stuRec['QuizResult_' + examRec.ExamID]
+                                        stuRec['Exam' + examRec.ExamID + 'score_type'] = '';
                                     });
                                 },
                                 Disabled: examRec.Lock
@@ -2729,6 +2698,7 @@
                                         stuRec['Exam' + examRec.ExamID] = stuRec['QuizResult_' + examRec.Group.ExamID];
                                         // 更新定期評量成績：定期評量成績 = 讀卡 + 試卷
                                         stuRec['Exam' + examRec.Group.ExamID] = score;
+
                                     });
                                 },
                                 Disabled: examRec.Lock

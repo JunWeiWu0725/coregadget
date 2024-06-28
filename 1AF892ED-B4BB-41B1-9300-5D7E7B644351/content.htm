@@ -327,7 +327,7 @@
                     <tbody>
                         <tr>
                             <td>
-                                <span>{{current.Exam?current.Exam.SubName||current.Exam.Name:''}}</span>
+                                <span>{{current.Exam ? (current.Exam.Name === '學期成績' ? '課程成績' : (current.Exam.SubName || current.Exam.Name)) : ''}}</span>
                             </td>
                             <td ng-if="current.Exam && current.Student&&selectedSemester === currentSemester">
                                 <div ng-if="current.Exam.Lock || !current.Student || current.Exam.Type == 'Program' || current.Exam.Permission !== 'Editor'"
@@ -393,7 +393,7 @@
                                 </div> -->
                                 <div ng-if="current.Exam.InputStartTime && current.Exam.SubName !='讀卡'" style="">
                                     <small class="text-danger" style="width: 260px;">
-                                        <b>「{{current.Exam.Name}}」輸入開放時間:</b> {{current.Exam.InputStartTime}} ~
+                                        <b>「{{current.Exam.Name === '學期成績' ? '課程成績' : current.Exam.Name}}」輸入開放時間:</b> {{current.Exam.InputStartTime}} ~
                                         {{current.Exam.InputEndTime}}
                                     </small>
                                 </div>
@@ -407,7 +407,7 @@
                                 </div>
                                 <div ng-if="!current.Exam.SubName && current.mode == '成績管理'" style="">
                                     <small class="text-danger" style="width: 260px;">
-                                        <b>{{current.Exam.Name}}全班平均:</b> {{current.Exam.avgScore}}
+                                        <b>{{current.Exam.Name === '學期成績' ? '課程成績' : current.Exam.Name}}全班平均:</b> {{current.Exam.avgScore}}
                                     </small>
                                 </div>
                             </td>
@@ -500,7 +500,7 @@
                                 {{stuRec.StudentNumber}}
                             </td>
                             <td class="text-center" ng-click="setCurrent(stuRec, current.Exam, true, true)">
-                                {{stuRec.PassingStandard}}/{{stuRec.Exam_MakeupStandard}}
+                                {{stuRec.PassingStandard}}/{{stuRec.Course_MakeupStandard}}
                             </td>
                             <td ng-repeat="exam in examList | filter: filterPermission" class="text-center"
                                 style="position:relative;"
