@@ -200,6 +200,7 @@ export class InterviewDetailComponent implements OnInit {
     this._addInterview.loadDefaultData(this.counselDetailComponent.currentStudent);
     this._addInterview._currentCounselInterview.isSaveDisable = true;
     this._addInterview.getFile(counselView.UID);
+    debugger
     this.decodeHtml(this._addInterview._currentCounselInterview.Content,'修改','#description')
     this.decodeHtml(this._addInterview._currentCounselInterview.ContactItem,'修改','#contactMatter1')
     $("#addInterview").modal({ backdrop: 'static' });

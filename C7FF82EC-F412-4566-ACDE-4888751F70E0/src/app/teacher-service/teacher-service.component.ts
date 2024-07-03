@@ -111,7 +111,7 @@ export class TeacherServiceComponent implements OnInit {
   edit(item: ServiceItemInfo) {
     this._addServiceModal.mode = 'edit'
     this._addServiceModal.currentServiceItem = item;
-    this._addServiceModal.decodeHtml(    this._addServiceModal.currentServiceItem.ServiceDescription,'修改')
+    this._addServiceModal.decodeHtml(  item.ServiceDescription,'修改')
     $("#addServiceModal").modal({ backdrop: 'static' });
     $("#addServiceModal").on('shown.bs.modal', () => {
       this.resize();

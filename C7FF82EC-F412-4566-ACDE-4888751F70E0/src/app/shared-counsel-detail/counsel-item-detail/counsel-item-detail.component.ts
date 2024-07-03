@@ -1,3 +1,4 @@
+import { ServiceItemInfo, ServiceItemDetail } from './../../teacher-service/vo';
 import { AddServiceModalComponent } from './../../teacher-service/add-service-modal/add-service-modal.component';
 import { Component, OnInit, Optional, ViewChild } from "@angular/core";
 import { CaseStudent } from "../../case/case-student";

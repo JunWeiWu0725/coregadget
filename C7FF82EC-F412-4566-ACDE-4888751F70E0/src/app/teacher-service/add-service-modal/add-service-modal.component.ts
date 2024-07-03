@@ -1,3 +1,4 @@
+
 import { ServiceDetailDB, ServiceItemDetail, ServiceItemInfo } from './../vo';
 import { Component, OnInit } from '@angular/core';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
@@ -29,9 +30,10 @@ export class AddServiceModalComponent implements OnInit {
   async ngOnInit() {
     this.initModal();
   }
-  onChange(event: Event ,targetID :'#contactMatter1'|'#description') {
+  onChange(event: Event ) {
     const textarea = event.target as HTMLTextAreaElement;
     const value = textarea.value;
+    this.currentServiceItem.ServiceDescription = value
     // if( this.editModeString == "修改"){
     // this._currentCounselInterview.ContactItem = this.decodeHtml(value,targetID);
    
@@ -40,16 +42,16 @@ export class AddServiceModalComponent implements OnInit {
     // }
     // alert(" this._CaseInterview.Content"+JSON.stringify(this._CaseInterview.Content))
   }
-  decodeHtml(html: string ,action :'修改'|'新增'): string {
-
+  decodeHtml(html: string ,action :'修改'|'新增') {
+    this.currentServiceItem.ServiceDescription = html
     if(action=='修改'){
-      const txt = document.querySelector('textarea');
+      const txt = document.querySelector('#serviceDescription');
       txt.innerHTML = html;
-      return txt.value;
+
     }else{
-      const txt = document.querySelector('textarea');
-      txt.innerHTML = "";
-      return txt.value;
+      const txt = document.querySelector('#serviceDescription');
+      // txt.innerHTML = "";
+
     }
   }
   /** 取得該筆service 資料*/
@@ -77,6 +79,8 @@ export class AddServiceModalComponent implements OnInit {
 
     })
     this.currentServiceItem = this.serviceDataList[0];
+    
+    this.decodeHtml(this.currentServiceItem.ServiceDescription ,"修改")
     console.log("rsp", this.serviceDataList[0]);
 
   }
@@ -134,7 +138,7 @@ export class AddServiceModalComponent implements OnInit {
 
 
     } else if (this.mode == 'edit') {
-
+      
 
 
     }
@@ -176,6 +180,7 @@ export class AddServiceModalComponent implements OnInit {
 
 
     try {
+      alert("SS"+JSON.stringify(this.currentServiceItem))
       let resp = await this.dsaService.send("TeacherService.SetTeacherService", {
         Request: {
           ServiceItem: this.currentServiceItem

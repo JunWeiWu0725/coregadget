@@ -20,7 +20,7 @@ export class AddPsychologicalQuizDataComponent implements OnInit {
   isCancel: boolean = true;
   isQuizNameHasValue: boolean = false;
   isSaveButtonDisable: boolean = false;
-
+  deleteList :string [] =[]
   MappingTableList: MappingTable[] = [];
 
   constructor(private dsaService: DsaService) { }
@@ -44,8 +44,7 @@ export class AddPsychologicalQuizDataComponent implements OnInit {
     this.QuizData.parseXML();
 
     // 檢查欄位是否重複
-    if(this.QuizData.CheckQuizItemSame())
-    {
+    if (this.QuizData.CheckQuizItemSame()) {
       alert("測驗項目有重覆無法儲存");
       this.isCancel = true;
       return;
@@ -135,7 +134,7 @@ export class AddPsychologicalQuizDataComponent implements OnInit {
     if (this.QuizData.QuizName && this.QuizData.QuizName.length > 0) {
       this.isSaveButtonDisable = false;
     } else
-      this.isSaveButtonDisable = true;        
+      this.isSaveButtonDisable = true;
   }
 
   export(item: MappingTable) {

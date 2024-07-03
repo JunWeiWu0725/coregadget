@@ -66,9 +66,9 @@
             <b class="question_title mr-2 question-title-size ml-3" > 內容描述 :</b>
           </label>
           <div class="px-3">
-            <textarea id="contactMatter" (input)="autoResize($event.target)"
+            <textarea id="serviceDescription" (input)="autoResize($event.target)"
               class="form-control" placeholder="請輸入 400 字以內結案說明(非必填)"
-             (change)="decodeHtml(currentServiceItem.ServiceDescription,'修改')"
+             (change)="onChange($event)"
               ></textarea>
           </div>
         </div>

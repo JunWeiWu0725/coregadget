@@ -69,15 +69,16 @@ export class AddInterviewModalComponent implements OnInit {
   onChange(event: Event ,targetID :'#contactMatter1'|'#description') {
     const textarea = event.target as HTMLTextAreaElement;
     const value = textarea.value;
-    if( this.editModeString == "修改"){
-    this._currentCounselInterview.ContactItem = this.decodeHtml(value,targetID);
-   
-    }else{
-      this._currentCounselInterview.ContactItem =this.decodeHtml(value,targetID);
-    }
+    
+    if(targetID =='#contactMatter1') 
+    this._currentCounselInterview.ContactItem = value 
+    if(targetID =='#description') //**內容 */
+    this._currentCounselInterview.Content = value
+
     // alert(" this._CaseInterview.Content"+JSON.stringify(this._CaseInterview.Content))
   }
   decodeHtml(html: string ,targetID:'#contactMatter1'|'#description'): string {
+    
     if(targetID =='#contactMatter1'){
 
       const txt = document.querySelector('#contactMatter1')  as HTMLTextAreaElement;
@@ -186,7 +187,8 @@ export class AddInterviewModalComponent implements OnInit {
   }
   /** Click 後儲存 */
   async save() {
-
+    alert("sss")
+    debugger
     // 檢查內容是否有填寫
     try {
       this.isCancel = false;

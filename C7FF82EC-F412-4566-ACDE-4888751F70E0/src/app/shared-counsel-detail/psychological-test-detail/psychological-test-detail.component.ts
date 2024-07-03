@@ -12,6 +12,8 @@ import { CounselDetailComponent } from "../counsel-detail.component";
 export class PsychologicalTestDetailComponent implements OnInit {
   // 心測資料
   isLoading = false;
+  /**從 設定檔有的題目 */
+  QuizData :any []
   _QuizDataList: QuizData[];
   constructor(
     private counselStudentService: CounselStudentService,
@@ -29,9 +31,42 @@ export class PsychologicalTestDetailComponent implements OnInit {
     }
   }
 
+  getStudentItemByTextID(resTestUID: string) {
+    debugger
+    if (this.QuizData) {
+      let rsp = this.QuizData.find(x => x.uid == resTestUID);
+      console.log("quizData",rsp) 
+      // let rsp = this.QuizDataAnswer.find(x => x.QuizUid == resTestUID); 
+      return rsp.Field
+    }
+    
+  }
+
+  /** 取得物件  */
+  getStudentItemByTestID( quizFieldList: any [] ,colName :string ){
+
+    if(quizFieldList)
+      {
+      return quizFieldList.find(x=>x.Name == colName )
+
+      }
+    
+  }
+
+
+  /**  */
+  getJSON(obj :any){
+   return JSON.stringify(obj)
+
+  }
   // 取得學生心理測驗題目
   async GetQuizDataByStudentID(StudentID: string) {
     try {
+      let rspQuestion = await this.dsaService.send("GetQuizDataByStudentID", {
+        StudentID: StudentID
+        // _.GetQuizStudentDataByQuizID
+      });
+      this.QuizData = [].concat(rspQuestion.Quiz || []);
       let resp = await this.dsaService.send("GetQuizDataByStudentID", {
         Request: {
           StudentID: StudentID
