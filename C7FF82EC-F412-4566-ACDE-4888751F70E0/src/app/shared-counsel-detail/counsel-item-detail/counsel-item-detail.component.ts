@@ -64,7 +64,8 @@ export class CounselItemDetailComponent implements OnInit {
     await this.loadData();
   }
 
-  async loadData() {
+  async loadData() { 
+    alert(2)
     await this.GetStudentCase();
     // await this.getTransferStateOptionsList();
     await this.GetCaseInterviewByStudentID(this._StudentID);
@@ -186,14 +187,16 @@ export class CounselItemDetailComponent implements OnInit {
   }
 
   decodeHtml(html: string ,action :'修改'|'新增'): string {
+    alert('html'+html)
     if(action=='修改'){
 
-      const txt = document.querySelector('textarea');
+      const txt = document.querySelector('#contentdescription')  as HTMLTextAreaElement;;
       console.log(txt)
       txt.innerHTML = html;
+      alert("sss"+txt.innerHTML)
       return txt.value;
     }else{
-      const txt = document.querySelector('textarea');
+      const txt = document.querySelector('#contentdescription')  as HTMLTextAreaElement;;
       console.log(txt)
       txt.innerHTML = "";
       return txt.value;
@@ -216,15 +219,16 @@ export class CounselItemDetailComponent implements OnInit {
 
   /** 編輯 */
   editInterviewModal(caseInterview: CaseInterview) {
+    debugger
     if (caseInterview.isEditDisable) // 不能編編輯 
     {
       return
     }
-
+    alert("sss")
     this._addInterview._editMode = "edit";
     this._addInterview.editModeString = "修改";
     this._addInterview._CaseInterview = caseInterview;
-    this.decodeHtml(caseInterview.Content ,"修改")
+    
     this._addInterview._CaseInterview.selectCounselType = caseInterview.CounselType;
     this._addInterview._CaseInterview.selectContactName = caseInterview.ContactName;
     this._addInterview._CaseInterview.AuthorRole = this.globalService.MyCounselTeacherRole;
@@ -233,6 +237,7 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview.loadDefaultData();
     this._addInterview.getFile(caseInterview.UID);;
     this._addInterview._CaseInterview.checkValue();
+    this._addInterview.decodeHtml(caseInterview.Content ,"修改")
     // 服務項目相關
     this._addServiceModal.CaseInterviewID = caseInterview.UID;
     $("#addCaseInterview").modal({ backdrop: 'static' });
@@ -425,7 +430,7 @@ export class CounselItemDetailComponent implements OnInit {
       let dN = Number(counselRec.OccurDate);
       let x = new Date(dN);
       rec.OccurDate = rec.parseDate(x); 
-      debugger
+  
       rec.MeetTime = counselRec.MeetTime ;
       rec.ContactName = counselRec.ContactName;
       rec.ContactNameOther = counselRec.ContactNameOther;

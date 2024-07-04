@@ -180,7 +180,6 @@ export class AddServiceModalComponent implements OnInit {
 
 
     try {
-      alert("SS"+JSON.stringify(this.currentServiceItem))
       let resp = await this.dsaService.send("TeacherService.SetTeacherService", {
         Request: {
           ServiceItem: this.currentServiceItem

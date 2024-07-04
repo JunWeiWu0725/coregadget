@@ -36,26 +36,27 @@ export class AddCaseInterviewModalComponent implements OnInit {
     this._CaseInterview.isPublic = !this.globalService.isCaseInterviewOpenDefault ;
    
   }
-  decodeHtml(html: string): string {
-    const txt = document.querySelector('textarea');
-    // alert('inner'+JSON.stringify(txt))
-    console.log(txt)
-    txt.innerHTML = html;
-  
-    // txt.value = html
-    return txt.value;
+  decodeHtml(html: string ,action :string ): string {
+    if(action == '修改'){
+      debugger
+      const txt = document.querySelector('#contentdescription') as   HTMLTextAreaElement;;
+      // alert('html'+JSON.stringify(html))
+      console.log(txt)
+      txt.innerHTML = html;
+    
+      // txt.value = html
+      return txt.value;
+    }
+   
   }
 
   onChange(event: Event) {
     const textarea = event.target as HTMLTextAreaElement;
     const value = textarea.value;
     if( this.editModeString == "修改"){
-    this._CaseInterview.Content = this.decodeHtml(value);
-   
-    }else{
-      this._CaseInterview.Content =this.decodeHtml(value);
+    this._CaseInterview.Content = value ;
     }
-    // alert(" this._CaseInterview.Content"+JSON.stringify(this._CaseInterview.Content))
+
   }
 
   dayOfWeek: string | null = null;

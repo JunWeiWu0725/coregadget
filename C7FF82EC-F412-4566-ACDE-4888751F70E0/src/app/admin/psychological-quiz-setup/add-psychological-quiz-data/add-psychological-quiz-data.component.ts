@@ -206,7 +206,9 @@ export class AddPsychologicalQuizDataComponent implements OnInit {
     this.checkValue();
   }
 
-  delItem(item: QuizItem) {
+  delItem(item: QuizItem) { 
+   
+  
     let tmp: QuizItem[] = [];
     if (this.QuizData.QuizItemList.length > 1) {
       this.QuizData.QuizItemList = this.QuizData.QuizItemList.filter(x => x.QuizName !== item.QuizName);
