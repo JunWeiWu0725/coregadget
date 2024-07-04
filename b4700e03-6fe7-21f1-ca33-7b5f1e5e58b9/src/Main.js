@@ -400,8 +400,7 @@ function Main() {
   //   setSubjectType(Number(e.target.value));
   // }
 
-  const handleShowRankDetail = (e) => {
-    
+  const handleShowRankDetail = (e) => {    
     var subject = e.subject;
     var subjectType = 'subject';
 
@@ -755,8 +754,15 @@ function Main() {
 
                 <div className="card-body">
 
-                  <Link className={disabledCursor} to={show} key={sss.index} onClick={() => {                   
-                    handleShowRankDetail(sss);
+                  <Link className={showNow ? 'card-block stretched-link text-decoration-none link-dark' : 'card-block stretched-link text-decoration-none link-dark disabledCursor'}
+ to={showNow ? show : null} key={sss.index} onClick={() => { 
+                    if (showNow) {
+                      handleShowRankDetail(sss);
+                    }else
+                    {
+                    
+                      return;
+                    }
                   }}>
                     <div className='d-flex'>
                       <div className='d-flex me-auto pb-2 align-items-center'>
