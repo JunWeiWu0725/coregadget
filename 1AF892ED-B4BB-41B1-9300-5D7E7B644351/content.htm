@@ -391,6 +391,11 @@
                                         <b>學生補考標準:</b> {{current.Student.Exam_MakeupStandard}}
                                     </small>
                                 </div> -->
+                                <div ng-if="current.Student&&current.Student.Remark" style="">
+                                    <small class="text-danger" style="width: 260px; ">
+                                        <b>修課備註:</b> {{current.Student.Remark}}
+                                    </small>
+                                </div>
                                 <div ng-if="current.Exam.InputStartTime && current.Exam.SubName !='讀卡'" style="">
                                     <small class="text-danger" style="width: 260px;">
                                         <b>「{{current.Exam.Name === '學期成績' ? '課程成績' : current.Exam.Name}}」輸入開放時間:</b> {{current.Exam.InputStartTime}} ~
@@ -488,8 +493,12 @@
                             <!-- <td class="text-center" ng-click="setCurrent(stuRec, current.Exam, true, true)"
                                  ng-bind-html="stuRec.StudentName+'('+stuRec.SeatNo+')'">
                             </td> -->
-                            <td class="text-center" ng-click="setCurrent(stuRec, current.Exam, true, true)"
+                            <!-- 姓名上的藍色成績身分tag -->
+                            <!-- <td class="text-center" ng-click="setCurrent(stuRec, current.Exam, true, true)"
                                 ng-bind-html="'<span class=\'small-tag\'>{{stuRec.StudentTag}}</span>' + stuRec.StudentName+'('+stuRec.SeatNo+')'">
+                            </td> -->
+                            <td class="text-center" ng-click="setCurrent(stuRec, current.Exam, true, true)"
+                                ng-bind-html="stuRec.StudentName+'('+stuRec.SeatNo+')'">
                             </td>
                             <!-- <td class="text-center" ng-click="setCurrent(stuRec, current.Exam, true, true)">
                                 <span class="small-tag">{{stuRec.StudentTag}}</span>
