@@ -2,10 +2,10 @@ import { Injectable } from "@angular/core";
 import { ITeacher } from "./case/vo";
 import { DsaService } from "./dsa.service";
 interface  IPermissions {
-  code? : string  
-  permittedRole : string 
+  code? : string
+  permittedRole : string
   permitted :Boolean
-  functionName? :string  
+  functionName? :string
 }
 @Injectable({
   providedIn: "root"
@@ -14,11 +14,11 @@ interface  IPermissions {
 
 export class RoleService {
 
-  private _loginTeacher  :ITeacher 
+  private _loginTeacher  :ITeacher
   private _loginTeacherName ="" ;
   private _role: string[];
 
-  private _isLoading: boolean;
+  private _isLoading = true;
   /** 輔導老師 認輔老師 班導師*/
   private _enableCounsel: IPermissions = {code :"A1D56201-ADEB-40E1-B51C-F2635EDEE167",permittedRole :"輔導老師 認輔老師 班導師" ,permitted :false ,functionName: "個案認輔"};
   /** 統計資訊 */
@@ -45,10 +45,10 @@ export class RoleService {
   }
   /** 取得目前教師資料 */
   public get loginTeacher(){
-    
+
     return this._loginTeacher ;
    }
-   
+
   /** 取得目前登入教師之特 */
   public get loginTeacherName()
   {
@@ -100,15 +100,14 @@ export class RoleService {
   }
 
   constructor(private dsaService: DsaService) {
-    this.reload();
   }
 
   async reload() {
 
-    await this.loadLoginTeacherData();
     this._isLoading = true;
+    await this.loadLoginTeacherData();
     let resp = await this.dsaService.send("GetRole", {});
-    
+
     this._enableCounsel.permitted = false;
     this._enableCounselStatistics.permitted = false;
     this._enableReferral.permitted = false;
@@ -125,7 +124,7 @@ export class RoleService {
       this._enableCounsel.permitted = true;
     }
     if (
-      this._role.indexOf("管理者") >= 0 
+      this._role.indexOf("管理者") >= 0
     ) {
       this._enableCounselStatistics.permitted = true;
     }
@@ -144,8 +143,8 @@ export class RoleService {
     if (
       this._role.indexOf("管理者") >= 0 ||
       this._role.indexOf("輔導老師") >= 0 ||
-      this._role.indexOf("認輔老師") >= 0 
-      // this._role.indexOf("校外心理師") >= 0 
+      this._role.indexOf("認輔老師") >= 0
+      // this._role.indexOf("校外心理師") >= 0
 
     ) {
       this._enableInterviewStatistics.permitted = true;
