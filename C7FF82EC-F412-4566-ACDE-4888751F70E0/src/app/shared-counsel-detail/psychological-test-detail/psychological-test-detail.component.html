@@ -9,12 +9,12 @@
     <ng-container *ngIf="_QuizDataList.length === 0">
       <div class="row justify-content-center">沒有資料。</div>
     </ng-container>
-
+   
     <ng-container *ngFor="let qItem of _QuizDataList">
       <div class="font-weight-bold mb-2">
         實施日期：{{ qItem.ImplementationDate }}
       </div>
-      <div class="font-weight-bold mb-2">測驗名稱：{{ qItem.QuizName }}</div>
+      <div class="font-weight-bold mb-2">測驗名稱：{{ qItem?.QuizName }}</div>
       <ul class="rwd-table">
         <li class="thead table-hreder">
           <ol class="tr table-hreder">
@@ -22,12 +22,12 @@
             <li>測驗結果</li>
           </ol>
         </li>
-        <!-- <li class="tbody point" *ngFor="let item of qItem.QuizFieldList"> -->
-          <li class="tbody point" *ngFor="let item of getStudentItemByTextID(qItem.QuizUid)">
+        <li class="tbody point" *ngFor="let item of qItem.QuizFieldList">
           <ol class="tr" data-toggle="modal">
-      <!-- {{getJSON(qItem)}} -->
-            <li class="text-normal" data-title="項目名稱">{{ getStudentItemByTestID( qItem.QuizFieldList,item.Name)?.Name }}</li>
-            <li class="text-normal" data-title="測驗結果">{{ getStudentItemByTestID( qItem.QuizFieldList,item.Name)?.Value }}</li>
+            <!-- <li class="text-normal" data-title="項目名稱">{{item?. }}</li> -->
+            <li class="text-normal" data-title="項目名稱">{{item?.Name }}</li>
+            <li class="text-normal" data-title="測驗結果">{{item?.Value }}</li>
+            
           </ol>
         </li>
       </ul>

@@ -15,9 +15,10 @@ export class CounselStudentService {
 
   public teacherInfo: TeacherInfo = new TeacherInfo();
 
+  /** */
   public getCounselClass(targetRole: string) {
     // debugger
-    console.log("CounselClass",this.counselClass)
+    // console.log("CounselClass333",this.counselClass)
     let list: CounselClass[] = [];
     this.counselClass.forEach((item) => {
       if (item.Role.indexOf(targetRole) >= 0)

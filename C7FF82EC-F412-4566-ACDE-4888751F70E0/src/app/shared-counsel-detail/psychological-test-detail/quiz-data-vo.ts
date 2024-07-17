@@ -4,6 +4,7 @@ export class QuizData {
   ImplementationDate: string;
   AnalysisDate: string;
   QuizName: string;
+  
 
   QuizFieldList: QuizField[];
   public parseDate(dt: Date) {
@@ -26,4 +27,5 @@ export class QuizField {
   Name: string;
   Order: number;
   Value: string;
+  TempFieldName :string ;
 }

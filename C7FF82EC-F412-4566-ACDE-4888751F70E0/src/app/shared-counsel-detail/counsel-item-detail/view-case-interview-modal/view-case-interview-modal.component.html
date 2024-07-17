@@ -107,7 +107,7 @@
                            <b class ="modal-sub-title">內容說明 </b>
                         <span class="text-muted"></span>
                     </label>
-                    <label class="form-control multi_label">{{ Content || ' ' }}</label>
+                    <label class="form-control multi_label" [innerHTML]="Content"></label>
                     <!-- <textarea readonly class="form-control"
                               id="description"
                               [rows]="(Content.split('\n').length>1)?Content.split('\n').length : 2" 

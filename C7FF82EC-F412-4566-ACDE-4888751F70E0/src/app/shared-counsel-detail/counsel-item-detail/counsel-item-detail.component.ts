@@ -65,7 +65,6 @@ export class CounselItemDetailComponent implements OnInit {
   }
 
   async loadData() { 
-    alert(2)
     await this.GetStudentCase();
     // await this.getTransferStateOptionsList();
     await this.GetCaseInterviewByStudentID(this._StudentID);
@@ -186,14 +185,13 @@ export class CounselItemDetailComponent implements OnInit {
 
   }
 
-  decodeHtml(html: string ,action :'修改'|'新增'): string {
-    alert('html'+html)
-    if(action=='修改'){
 
+
+  decodeHtml(html: string ,action :'修改'|'新增'): string {
+    if(action=='修改'){
       const txt = document.querySelector('#contentdescription')  as HTMLTextAreaElement;;
       console.log(txt)
       txt.innerHTML = html;
-      alert("sss"+txt.innerHTML)
       return txt.value;
     }else{
       const txt = document.querySelector('#contentdescription')  as HTMLTextAreaElement;;
@@ -219,12 +217,10 @@ export class CounselItemDetailComponent implements OnInit {
 
   /** 編輯 */
   editInterviewModal(caseInterview: CaseInterview) {
-    debugger
     if (caseInterview.isEditDisable) // 不能編編輯 
     {
       return
     }
-    alert("sss")
     this._addInterview._editMode = "edit";
     this._addInterview.editModeString = "修改";
     this._addInterview._CaseInterview = caseInterview;
@@ -238,6 +234,8 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview.getFile(caseInterview.UID);;
     this._addInterview._CaseInterview.checkValue();
     this._addInterview.decodeHtml(caseInterview.Content ,"修改")
+    this._addInterview._CaseInterview.Content = this._addInterview.decodeHtmlEntities(caseInterview.Content);
+
     // 服務項目相關
     this._addServiceModal.CaseInterviewID = caseInterview.UID;
     $("#addCaseInterview").modal({ backdrop: 'static' });
@@ -532,7 +530,7 @@ export class CounselItemDetailComponent implements OnInit {
   }
 
   resize(){
-    const textArea = document.getElementById('description');
+    const textArea = document.getElementById('contentdescription');
     textArea.style.overflow = 'hidden';
     textArea.style.height = 'auto';
     textArea.style.height = textArea.scrollHeight + 'px';

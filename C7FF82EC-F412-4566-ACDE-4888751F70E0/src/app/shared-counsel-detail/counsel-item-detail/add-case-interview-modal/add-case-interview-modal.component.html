@@ -155,7 +155,7 @@
               <span class=" text-muted"></span>
             </label>
             <textarea id="contentdescription" (input)="autoResize($event.target)"
-              (input)="onChange($event)"
+              [(ngModel)]="_CaseInterview.Content"
               class="form-control my-3 p-3" rows="8" 
               placeholder="請輸入內容說明" 
               (keyup)="_CaseInterview.checkValue()"></textarea>

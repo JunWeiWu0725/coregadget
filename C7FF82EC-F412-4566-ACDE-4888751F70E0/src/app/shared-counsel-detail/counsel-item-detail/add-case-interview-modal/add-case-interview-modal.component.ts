@@ -36,6 +36,12 @@ export class AddCaseInterviewModalComponent implements OnInit {
     this._CaseInterview.isPublic = !this.globalService.isCaseInterviewOpenDefault ;
    
   }
+
+  decodeHtmlEntities(text: string): string {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = text;
+    return textarea.value;
+  }
   decodeHtml(html: string ,action :string ): string {
     if(action == '修改'){
       debugger
@@ -139,7 +145,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
       this._CaseInterview.Category = JSON.stringify(this._CaseInterview._category);
       await this.SetCaseInterview(this._CaseInterview);
       $("#addCaseInterview").modal("hide");
-      document.getElementById('description').style.height = 'auto';
+      document.getElementById('contentdescription').style.height = 'auto';
       
       this._CaseInterview.isSaveDisable = false;
     } catch (error) {

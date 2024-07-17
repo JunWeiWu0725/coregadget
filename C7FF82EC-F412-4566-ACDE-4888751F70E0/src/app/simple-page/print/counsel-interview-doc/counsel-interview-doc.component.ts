@@ -212,7 +212,7 @@ export class CounselInterviewDocComponent implements OnInit {
 
 
     } catch (error) {
-      alert("發生錯誤!" +JSON.stringify(error))
+      alert("發生錯誤!AA" +JSON.stringify(error))
       console.log(error);
     } finally {
       this.isLoading = false;
