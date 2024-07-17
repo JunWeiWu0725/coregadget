@@ -33,12 +33,11 @@ export class PsychologicalTestDetailComponent implements OnInit {
   }
 
   getStudentItemByTextID(resTestUID: string) {
-       debugger
        console.log("debugger",resTestUID)
     if (this.QuizData) {
       let rsp = this.QuizData.find(x => x.uid == resTestUID);
         console.log("quizData", rsp)
-      // let rsp = this.QuizDataAnswer.find(x => x.QuizUid == resTestUID); 
+      // let rsp = this.QuizDataAnswer.find(x => x.QuizUid == resTestUID);
       return rsp
     }
 
@@ -47,7 +46,7 @@ export class PsychologicalTestDetailComponent implements OnInit {
 
   /** 取得物件  */
   getStudentItemByTestID(quizFieldList: any[], colName: string) {
-  
+
     if (quizFieldList) {
       return quizFieldList.find(x => x.Name == colName)
     } else {
@@ -72,12 +71,11 @@ export class PsychologicalTestDetailComponent implements OnInit {
       });
       // this._QuizDataList = [].concat(resp.Quiz || []) ;
       // 解析題目
-      debugger
       console.log("resp.Quiz 1 ", resp.Quiz );
       [].concat(resp.Quiz || []).forEach(data => {
-  
 
-      
+
+
         this._QuizDataList.forEach(data1 => {
           // 使用題目 uid 比對
           if (data1.QuizUid === data.uid) {
@@ -104,7 +102,6 @@ export class PsychologicalTestDetailComponent implements OnInit {
           }
         });
       });
-      debugger
       console.log("resp.Quiz ", resp.Quiz );
 
     } catch (err) {

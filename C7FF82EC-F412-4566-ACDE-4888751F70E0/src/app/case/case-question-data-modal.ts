@@ -8,7 +8,6 @@ export class QOption {
   answer_checked: boolean;
 
   public setAnswerCheck() {
-  //  debugger
-    this.answer_checked = !this.answer_checked;   
+    this.answer_checked = !this.answer_checked;
   }
 }

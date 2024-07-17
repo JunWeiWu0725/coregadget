@@ -37,10 +37,10 @@ export class CounselHistoryPsychologicaltestComponent implements OnInit {
 
   /**  */
   getStudentItemBy(resTestUID: string) {
-    
+
     if (this.QuizData) {
       let rsp = this.QuizData.find(x => x.uid == resTestUID);
-      // let rsp = this.QuizDataAnswer.find(x => x.QuizUid == resTestUID); 
+      // let rsp = this.QuizDataAnswer.find(x => x.QuizUid == resTestUID);
       return rsp
     }
   }
@@ -146,7 +146,6 @@ export class CounselHistoryPsychologicaltestComponent implements OnInit {
 
   /**取得答案 */
   getQuizTime(quizUID: string) {
-    debugger
     let rsp = this.QuizDataAnswer.find(x => x.QuizUid == quizUID);
     let dateString = this.formatDate(rsp.ImplementationDate);
 
