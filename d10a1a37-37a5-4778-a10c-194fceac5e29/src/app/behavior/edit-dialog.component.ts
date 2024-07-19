@@ -19,6 +19,23 @@ export class EditDialogComponent implements OnInit {
 
   }
 
+
+  onCheckboxChange(selected: string) {
+    // alert('selected '+selected)
+    if (selected === 'detention') {
+      this.isGoodBehavior = false;
+      this.daaDsaFollow = false;
+    
+    } else if (selected === 'goodBehavior') {
+
+      this.detention = false;
+      this.daaDsaFollow = false;
+    } else if (selected === 'daaDsaFollow') {
+
+      this.detention = false;
+      this.isGoodBehavior = false;
+    }
+  }
   ngOnInit() {
     this.comment = this.data.comment;
     this.detention = this.data.detention == true;

@@ -8,6 +8,7 @@ const routes: Routes = [
   { path: 'behavior', loadChildren: './behavior/behavior.module#BehaviorModule' },
   { path: 'weekly_report', loadChildren: './weekly-report/weekly-report.module#WeeklyReportModule' },
   { path: 'attendance', loadChildren: './attendance/attendance.module#AttendanceModule' },
+  { path: 'gradebook', loadChildren: './gradebook/gradebook.module#GradebookModule' },
   { path: 'sub' , component: SubstituteComponent},
   { path: 'course' , component: CourseSelcComponent}
   
