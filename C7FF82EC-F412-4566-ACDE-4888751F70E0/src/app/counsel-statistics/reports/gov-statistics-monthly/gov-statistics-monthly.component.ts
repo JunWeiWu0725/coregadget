@@ -66,7 +66,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     console.log("以下皆非", this.maping.StudentStatusMaps.get("以下皆非"))
 
     // console.log("mapping",mapping.StudentStatusMaps);
-    // 取得教師編碼 
+    // 取得教師編碼
     await this.getTeacherConNumbr();
     let scType: string;
     this.dsnsName = gadget.getApplication().accessPoint;
@@ -288,7 +288,6 @@ export class GovStatisticsMonthlyComponent implements OnInit {
 
     // try {
     //   await workbook.xlsx.readFile(filePath);
-    //   debugger
 
     //   const worksheet = workbook.getWorksheet(1); // 获取第一个工作表
 
@@ -434,13 +433,13 @@ export class GovStatisticsMonthlyComponent implements OnInit {
 
       }
 
-      // 處理轉借概況 
+      // 處理轉借概況
       if (rspRec.ReportedReferralStatus) {
         rec.ReportReferal = this.maping.ReteralStatus.get(rspRec.ReportedReferralStatus)
 
       }
 
-      // 新案舊案 
+      // 新案舊案
       if (rspRec.CaseStatus) {
         rec.Status = this.maping.NewOrOldCase.get(rspRec.CaseStatus)
 
@@ -497,14 +496,14 @@ export class GovStatisticsMonthlyComponent implements OnInit {
 
         // let item = {
         //   '教師編碼': da.TeacherCounselNumber,
-        //   '身分': this.maping.ReportTeacherRole.get(da.TeacherReportRole), // 新欄位 
-        //   '學生代號': da.CaseNo, // 新欄位(個案編號) 
+        //   '身分': this.maping.ReportTeacherRole.get(da.TeacherReportRole), // 新欄位
+        //   '學生代號': da.CaseNo, // 新欄位(個案編號)
         //   '學生年級': this.parseGradeYear(da.GradeYear),
         //   '學生性別': da.StudentGender,
-        //   '學生身分': da.StudentStatusList.length > 0 ? da.StudentStatusList.join(',') : '', // 新欄位 
-        //   '個案來源': da.CaseSourceList.join(','), // 新欄位 
-        //   '輔導概況': da.Status, // 新案舊案 
-        //   '轉介概況 ': da.ReportReferal, // 新欄位 
+        //   '學生身分': da.StudentStatusList.length > 0 ? da.StudentStatusList.join(',') : '', // 新欄位
+        //   '個案來源': da.CaseSourceList.join(','), // 新欄位
+        //   '輔導概況': da.Status, // 新案舊案
+        //   '轉介概況 ': da.ReportReferal, // 新欄位
         //   '個案類別(主)': da.MainCategoryValueList.length > 0 ? da.MainCategoryValueList.join(',') : '',
         //   '個案類別(主) 其他說明': da.CaseMainCategoryOther || 0,
         //   '個案類別(副)': da.CategoryValue.join(',') || 0,
@@ -517,14 +516,14 @@ export class GovStatisticsMonthlyComponent implements OnInit {
 
         let item = [
           da.TeacherCounselNumber,
-          this.maping.ReportTeacherRole.get(da.TeacherReportRole), // 新欄位 
-          da.CaseNo, // 新欄位(個案編號) 
+          this.maping.ReportTeacherRole.get(da.TeacherReportRole), // 新欄位
+          da.CaseNo, // 新欄位(個案編號)
           this.parseGradeYear(da.GradeYear),
           da.StudentGender,
-          da.StudentStatusList.length > 0 ? da.StudentStatusList.join(',') : '', // 新欄位 
-          da.CaseSourceList.join(','), // 新欄位 
-          da.Status, // 新案舊案 
-          da.ReportReferal, // 新欄位 
+          da.StudentStatusList.length > 0 ? da.StudentStatusList.join(',') : '', // 新欄位
+          da.CaseSourceList.join(','), // 新欄位
+          da.Status, // 新案舊案
+          da.ReportReferal, // 新欄位
           da.MainCategoryValueList.length > 0 ? da.MainCategoryValueList.join(',') : '',
           da.CaseMainCategoryOther || 0,
           da.CategoryValue.join(',') || 0,
@@ -584,17 +583,17 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       ws["!merges"] = [{ s: { c: 0, r: 0 }, e: { c: 6, r: 0 } }];
       var wscols = [
         { hpx: 18 }
-      ]; // 設定第一版 
+      ]; // 設定第一版
 
       ws['!rows'] = wscols;
 
       const ws1 = XLSX.utils.table_to_sheet(this.sheet1.nativeElement);
-      // 增加資料 
+      // 增加資料
 
 
 
       XLSX.utils.sheet_add_json(ws1, data1, { skipHeader: true, origin: { r: 5, c: 0 } });// 寫入資料 從第二列開始
-      // sheet 2 
+      // sheet 2
 
       const ws2 = XLSX.utils.table_to_sheet(this.sheet2.nativeElement);
 
@@ -899,7 +898,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       rec.StudentGender = rspRec.StudentGender;
       rec.Status = rspRec.CaseStatus;
       rec.Count = parseInt(rspRec.Count);
-      // 處理數字對應 
+      // 處理數字對應
       if (rspRec.Category != "") {
         let Category = JSON.parse(rspRec.Category);
         Category.forEach(proRec => {

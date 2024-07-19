@@ -3,18 +3,18 @@
 <div *ngIf="!isLoading; else tmpLoading">
   <div class="tab-pane fade-in" id="listTwo">
     <div class="d-md-flex align-items-center sub-title mb-3 base-class-header">
-      <h4 class="mb-0 mr-auto"><b>心理測驗</b></h4>
+      <h4 class="mb-0 mr-auto"><b>心理測驗</b></h4> 
     </div>
 
     <ng-container *ngIf="_QuizDataList.length === 0">
       <div class="row justify-content-center">沒有資料。</div>
     </ng-container>
-
+   
     <ng-container *ngFor="let qItem of _QuizDataList">
       <div class="font-weight-bold mb-2">
         實施日期：{{ qItem.ImplementationDate }}
       </div>
-      <div class="font-weight-bold mb-2">測驗名稱：{{ qItem.QuizName }}</div>
+      <div class="font-weight-bold mb-2">測驗名稱：{{ qItem?.QuizName }}</div>
       <ul class="rwd-table">
         <li class="thead table-hreder">
           <ol class="tr table-hreder">
@@ -24,8 +24,10 @@
         </li>
         <li class="tbody point" *ngFor="let item of qItem.QuizFieldList">
           <ol class="tr" data-toggle="modal">
-            <li class="text-normal" data-title="項目名稱">{{ item.Name }}</li>
-            <li class="text-normal" data-title="測驗結果">{{ item.Value }}</li>
+            <!-- <li class="text-normal" data-title="項目名稱">{{item?. }}</li> -->
+            <li class="text-normal" data-title="項目名稱">{{item?.Name }}</li>
+            <li class="text-normal" data-title="測驗結果">{{item?.Value }}</li>
+            
           </ol>
         </li>
       </ul>

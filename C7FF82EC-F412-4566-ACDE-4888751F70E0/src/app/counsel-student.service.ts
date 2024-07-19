@@ -15,9 +15,9 @@ export class CounselStudentService {
 
   public teacherInfo: TeacherInfo = new TeacherInfo();
 
+  /** */
   public getCounselClass(targetRole: string) {
-    // debugger
-    console.log("CounselClass",this.counselClass)
+    // console.log("CounselClass333",this.counselClass)
     let list: CounselClass[] = [];
     this.counselClass.forEach((item) => {
       if (item.Role.indexOf(targetRole) >= 0)
@@ -25,7 +25,7 @@ export class CounselStudentService {
         // console.log('item',item);
     });
     return list;
-    
+
   }
 
   /**目前學年度*/
@@ -33,9 +33,9 @@ export class CounselStudentService {
   /**目前學期 */
   public currentSemester: number;
   public meetTime: string ;
-  /** 認輔學生 */ 
+  /** 認輔學生 */
   public guidanceStudent: CounselStudent[];
-  /** 搜尋學生*/ 
+  /** 搜尋學生*/
   public searchStudent: CounselStudent[];
 
   // public currentStudent: CounselStudent;

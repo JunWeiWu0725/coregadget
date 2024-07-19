@@ -1,3 +1,4 @@
+import { GlobalService } from 'src/app/global.service';
 import { Component, OnInit } from "@angular/core";
 import { DsaService } from "src/app/dsa.service";
 import { CounselStudentService } from "../../../counsel-student.service";
@@ -16,6 +17,7 @@ export class ViewInterviewModalComponent implements OnInit {
   _CounselInterview: CounselInterview;
   _id = "viewInterview";
   constructor(private counselStudentService: CounselStudentService
+    ,public globalService :GlobalService
     ,private dsaService:DsaService
     , private sanitizer:DomSanitizer) {}
 
@@ -25,7 +27,7 @@ export class ViewInterviewModalComponent implements OnInit {
     if (gadget.params.system_counsel_position === 'referral') {
       this.referralVisible = true;
     }
-    this._CounselInterview = new CounselInterview();
+    this._CounselInterview = new CounselInterview(this.globalService.isCounselOpenDefault);
   }
 
   // 取消

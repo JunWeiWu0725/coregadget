@@ -25,7 +25,7 @@
             </div>
             <div class="modal-body">
                 <div class="form-row">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-3">
                         <label for="schoolYear"
                                class="col-form-label">
                            <b class ="modal-sub-title"> 學年度</b>
@@ -34,7 +34,7 @@
                             {{SchoolYear}}
                         </div>
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-3">
                         <label for="semester"
                                class="col-form-label">
                                <b class ="modal-sub-title">  學期 </b>
@@ -43,13 +43,23 @@
                             {{Semester}}
                         </div>
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-3">
                         <label for="interviewDate"
                                class="col-form-label">
                                <b class ="modal-sub-title">   晤談日期 </b>
                         </label>
                         <div class="ml-3">
-                            {{OccurDate}}
+                            {{OccurDate}} ({{globalService.getDayOfWeekByString(OccurDate )}})
+                        </div>
+
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="interviewDate"
+                               class="col-form-label">
+                               <b class ="modal-sub-title">   晤談時間 </b>
+                        </label>
+                        <div class="ml-3">
+                            {{MeetTime}}
                         </div>
 
                     </div>
@@ -97,7 +107,7 @@
                            <b class ="modal-sub-title">內容說明 </b>
                         <span class="text-muted"></span>
                     </label>
-                    <label class="form-control multi_label">{{ Content || ' ' }}</label>
+                    <label class="form-control multi_label" [innerHTML]="Content"></label>
                     <!-- <textarea readonly class="form-control"
                               id="description"
                               [rows]="(Content.split('\n').length>1)?Content.split('\n').length : 2" 

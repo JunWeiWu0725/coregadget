@@ -1,3 +1,4 @@
+import { mode } from './admin/vo';
 import { AfterContentInit, AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, HostListener, OnInit, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, Router, RoutesRecognized } from "@angular/router";
 import { RoleService } from "./role.service";
@@ -27,6 +28,9 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
   //   console.log("scrolling");
   //   // alert(1234)
   // } 
+  roles: string[] = ['輔導主任', '輔導組長'];
+  selectedRole: string;
+  isLoading : boolean  = true 
   mode ="";
   public refferalNotDealCount: number | undefined;
   public counselStudentStr: string = "輔導學生";
@@ -59,6 +63,10 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
       this.refferalNotDealCount = data ;
       deetect.detectChanges();
     })
+   }
+   getJSON() {
+
+
    }
    ngAfterViewInit() {
     console.log('After View Init',this.myLinks);
@@ -97,9 +105,16 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
     // 在这里添加您希望执行的操作
   }
 
+  /** */
+  onRoleChange(event:any){
+    this.globalService.MyCounselTeacherRole = event.target.value;
 
+
+  }
 
   async ngOnInit() {
+    this.mode = gadget.params.mode
+    this.selectedRole = this.roles[0]; // 默認選擇第一個角色
     // 預設功能畫面文字
     this.counselStudentStr = "輔導學生";
     this.comprehensiveStr = "綜合紀錄表";
@@ -146,7 +161,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
       this.comprehensiveStr = "填報資料"
     }
     if (gadget.params.system_counsel_position === 'referral') {
-      this.getRefList();
+      await this.getRefList();
 
     }
     //console.log(gadget.params.system_counsel_position);
@@ -154,8 +169,9 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
     // 只有線上轉學
     if (gadget.params.trans_tag_name) {
       this.transferStudentVisable = true;
-      this.checkHasNewTransfer();
+      await this.checkHasNewTransfer();
     }
+    this.isLoading =false 
   }
   /** 取得轉借學生 */
   async getRefList() {

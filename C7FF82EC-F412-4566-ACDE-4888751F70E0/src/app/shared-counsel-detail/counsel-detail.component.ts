@@ -50,10 +50,11 @@ export class CounselDetailComponent implements OnInit {
     @Optional()
     private counselComponent: CounselComponent
   ) { }
-  getJSON (anyThing :any ){
-      return JSON.stringify(this.counselStudentService)
+  public getJSON (anyThing :any ){
+      return JSON.stringify(anyThing)
 
   }
+
 
   ngOnInit() {
     this.baseVisible = false;

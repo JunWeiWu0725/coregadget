@@ -38,7 +38,6 @@ export class CounselRoutingComponent implements OnInit {
           skipLocationChange: true
         });
       } else {
-        debugger
         if (this.counselStudentService.counselClass.length > 0) {
           if (!this.globalService.selectTarget) {
             classID = this.counselStudentService.counselClass[0].ClassID;

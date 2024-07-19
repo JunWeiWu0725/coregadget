@@ -16,7 +16,7 @@ export class CounselHistoryPsychologicaltestComponent implements OnInit {
   StudentName: string;
   addBlank: number[] = [];
   reportData: any;
-  QuizData: { QuizUid }[];
+  QuizData: { uid }[];
   QuizDataAnswer: { QuizUid, Field: any[], ImplementationDate }[];
   CounselInterview: any[] = [];
   constructor(private activatedRoute: ActivatedRoute,
@@ -37,8 +37,10 @@ export class CounselHistoryPsychologicaltestComponent implements OnInit {
 
   /**  */
   getStudentItemBy(resTestUID: string) {
-    if (this.QuizDataAnswer) {
-      let rsp = this.QuizDataAnswer.find(x => x.QuizUid == resTestUID);
+
+    if (this.QuizData) {
+      let rsp = this.QuizData.find(x => x.uid == resTestUID);
+      // let rsp = this.QuizDataAnswer.find(x => x.QuizUid == resTestUID);
       return rsp
     }
   }
@@ -144,7 +146,6 @@ export class CounselHistoryPsychologicaltestComponent implements OnInit {
 
   /**取得答案 */
   getQuizTime(quizUID: string) {
-    debugger
     let rsp = this.QuizDataAnswer.find(x => x.QuizUid == quizUID);
     let dateString = this.formatDate(rsp.ImplementationDate);
 

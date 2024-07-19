@@ -9,7 +9,7 @@ import { GlobalService } from 'src/app/global.service';
 })
 export class ComprehensiveFillComponent implements OnInit {
   compoGUID :"d25c27b1-7156-4a10-8f8d-68f3d46f94e2"
-  //如果使用者有改變卻沒有儲存，需要提醒使用需要先儲存。 
+  //如果使用者有改變卻沒有儲存，需要提醒使用需要先儲存。
   isChangeNotSave = false;
   dsns: string;
   fillInKey: string;
@@ -43,7 +43,7 @@ export class ComprehensiveFillComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
-    private globalService :GlobalService 
+    private globalService :GlobalService
   ) { }
 
   ngOnInit() {
@@ -60,7 +60,7 @@ export class ComprehensiveFillComponent implements OnInit {
 
   /** */
   async getSectionOpenDate() {
-  
+
     try {
 
       let rs = await this.send(this.dsns + "/1campus.counsel.public", "GetSecrionOpenDate", { FillInKey: this.fillInKey });
@@ -80,7 +80,7 @@ export class ComprehensiveFillComponent implements OnInit {
     this.schoolInfo = await this.send(this.dsns + "/1campus.counsel.public", "GetSchoolInfo");
     if (this.fillInKey) {
       this.getFillInData(false);
-     
+
     }
     else {
       $("#modal-key").modal({ show: true, backdrop: false, keyboard: false, focus: true });
@@ -95,8 +95,8 @@ export class ComprehensiveFillComponent implements OnInit {
     if(rs.result){
         console.log("rs.result",rs.result)
       this.isOpen=rs.result.isopen =='t'
-      this.startTime=rs.result.start_time 
-      this.endTime=rs.result.end_time 
+      this.startTime=rs.result.start_time
+      this.endTime=rs.result.end_time
     }
 
     if (this.loadingFillInData) return;
@@ -225,7 +225,7 @@ export class ComprehensiveFillComponent implements OnInit {
       this.sectionInfo = rsp.Section;
       this.studentInfo = rsp.Student;
       this.questionSubject = rsp.QuestionSubject;
-      // debugger
+
       this.refreshMark('');
     }
     else {

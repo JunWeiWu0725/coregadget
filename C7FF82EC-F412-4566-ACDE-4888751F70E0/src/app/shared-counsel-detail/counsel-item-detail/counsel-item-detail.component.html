@@ -1,15 +1,18 @@
 
+
 <ng-container *ngIf="globalService.mode" >
-  a3f87d1e-96b2-40d4-8c4a-4a1e8b0e2e3f (二級輔導)
+  b0d1f7e5-1234-4a6d-9a7e-98f3b6c7d8f9 
 </ng-container>
+
 <div class= "ml-2" class="">
 <div *ngIf="!isLoading; else tmpLoading">
   <!-- Tab 晤談紀錄 -->
   <!-- 學生個人 - 輔導紀錄 -->
   <div class="tab-pane fade-in sub-title" id="listOne">
     <div class="d-md-flex align-items-center sub-title base-class-header ">
-      <h4 class="mb-0 mr-auto"><b>晤談紀錄</b></h4>
+      <h4 class="mb-0 mr-auto"><b>個案晤談紀錄</b></h4>
     </div>
+    
 <!-- 第二頁 -->
     <!-- <div class="card" style="width: 18rem;">
       <div class="card-body">
@@ -176,7 +179,7 @@
 
                             <mat-icon aria-hidden="false" aria-label="Example home icon"
                             [ngClass] ="casseitem.isEditDisable ? 'word_gray':'word_blue'"
-                           (click)="editInterviewModal(casseitem)">
+                            (click)="editInterviewModal(casseitem)">
                               mode_edit
                             </mat-icon>
                             <mat-icon class="ml-4" aria-hidden="false" aria-label="Example home icon"

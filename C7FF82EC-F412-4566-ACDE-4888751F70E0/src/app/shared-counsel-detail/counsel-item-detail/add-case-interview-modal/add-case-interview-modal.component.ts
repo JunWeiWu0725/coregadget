@@ -14,10 +14,10 @@ export class AddCaseInterviewModalComponent implements OnInit {
   constructor(
     private dsaService: DsaService
     , private sanitizer: DomSanitizer
-    ,private globalService :GlobalService 
+    ,public globalService :GlobalService
   ) { }
   /** 當insert 成功後回傳的ID */
-
+  comPoGUID ="a6f0f1e4-9f7d-4a7e-a6d3-b9d1d6d9e2f5"
   InsertCaseInterViewID = ""
   fileSizeLimit: number = 3 * 1024 * 1024
   isCancel: boolean = true;
@@ -25,36 +25,43 @@ export class AddCaseInterviewModalComponent implements OnInit {
   _editMode: string = "add";
   editModeString: string = "新增";
   // _studentName: string;
-  // 上檔案相關變數  
+  // 上檔案相關變數
   fileContent: any
   fileUpladed: { FileName, FileContent, TargetID, href, BelongTable } | any = {};
   _CaseInterview: CaseInterview;
 
   ngOnInit() {
     this.isCancel = true;
-    this._CaseInterview = new CaseInterview();
-    
+    this._CaseInterview = new CaseInterview(this.globalService.isCaseInterviewOpenDefault);
+    this._CaseInterview.isPublic = !this.globalService.isCaseInterviewOpenDefault ;
+
   }
-  decodeHtml(html: string): string {
-    const txt = document.querySelector('textarea');
-    // alert('inner'+JSON.stringify(txt))
-    console.log(txt)
-    txt.innerHTML = html;
-  
-    // txt.value = html
-    return txt.value;
+
+  decodeHtmlEntities(text: string): string {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = text;
+    return textarea.value;
+  }
+  decodeHtml(html: string ,action :string ): string {
+    if(action == '修改'){
+      const txt = document.querySelector('#contentdescription') as   HTMLTextAreaElement;;
+      // alert('html'+JSON.stringify(html))
+      console.log(txt)
+      txt.innerHTML = html;
+
+      // txt.value = html
+      return txt.value;
+    }
+
   }
 
   onChange(event: Event) {
     const textarea = event.target as HTMLTextAreaElement;
     const value = textarea.value;
     if( this.editModeString == "修改"){
-    this._CaseInterview.Content = this.decodeHtml(value);
-   
-    }else{
-      this._CaseInterview.Content =this.decodeHtml(value);
+    this._CaseInterview.Content = value ;
     }
-    // alert(" this._CaseInterview.Content"+JSON.stringify(this._CaseInterview.Content))
+
   }
 
   dayOfWeek: string | null = null;
@@ -71,7 +78,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
 
 
 
-  
+
   getInnerHTML(val){
     return val.replace(/(<([^>]+)>)/ig,'');
   }
@@ -110,7 +117,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
       this._CaseInterview.AuthorName = tea.Name;
 
     });
-    // 
+    //
     // this._CaseInterview.checkValue();
 
   }
@@ -118,7 +125,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
   // click 取消
   cancel() {
     let isLeave = confirm("尚未儲存，確定離開?")
-    // debugger
+
     if (!isLeave) {
       return
     } else { // 確定要離開
@@ -137,8 +144,8 @@ export class AddCaseInterviewModalComponent implements OnInit {
       this._CaseInterview.Category = JSON.stringify(this._CaseInterview._category);
       await this.SetCaseInterview(this._CaseInterview);
       $("#addCaseInterview").modal("hide");
-      document.getElementById('description').style.height = 'auto';
-      
+      document.getElementById('contentdescription').style.height = 'auto';
+
       this._CaseInterview.isSaveDisable = false;
     } catch (error) {
       alert(error);
@@ -170,7 +177,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
       data.isPrivate = "true";
     }
 
-    // 方式,對象 不是選其他，其他內容需要被清空
+    // 方式,對象 不是選其他，其他內容需要被清空
     if (data.CounselType !== "其他") {
       data.CounselTypeOther = '';
     }
@@ -260,7 +267,7 @@ export class AddCaseInterviewModalComponent implements OnInit {
 
     this.fileUpladed = {};
   }
-  
+
   autoResize(textarea: any): void {
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight + 'px';

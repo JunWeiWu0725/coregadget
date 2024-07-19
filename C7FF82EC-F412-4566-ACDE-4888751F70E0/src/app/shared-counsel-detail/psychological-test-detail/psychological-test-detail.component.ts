@@ -12,6 +12,9 @@ import { CounselDetailComponent } from "../counsel-detail.component";
 export class PsychologicalTestDetailComponent implements OnInit {
   // 心測資料
   isLoading = false;
+  /**從 設定檔有的題目 */
+  QuizData: any[]
+  /** 學生  */
   _QuizDataList: QuizData[];
   constructor(
     private counselStudentService: CounselStudentService,
@@ -29,26 +32,61 @@ export class PsychologicalTestDetailComponent implements OnInit {
     }
   }
 
+  getStudentItemByTextID(resTestUID: string) {
+       console.log("debugger",resTestUID)
+    if (this.QuizData) {
+      let rsp = this.QuizData.find(x => x.uid == resTestUID);
+        console.log("quizData", rsp)
+      // let rsp = this.QuizDataAnswer.find(x => x.QuizUid == resTestUID);
+      return rsp
+    }
+
+  }
+
+
+  /** 取得物件  */
+  getStudentItemByTestID(quizFieldList: any[], colName: string) {
+
+    if (quizFieldList) {
+      return quizFieldList.find(x => x.Name == colName)
+    } else {
+      return '--'
+    }
+  }
+
+
+  /**  */
+  getJSON(obj: any) {
+    return JSON.stringify(obj)
+
+  }
   // 取得學生心理測驗題目
   async GetQuizDataByStudentID(StudentID: string) {
     try {
+
       let resp = await this.dsaService.send("GetQuizDataByStudentID", {
         Request: {
           StudentID: StudentID
         }
       });
+      // this._QuizDataList = [].concat(resp.Quiz || []) ;
       // 解析題目
+      console.log("resp.Quiz 1 ", resp.Quiz );
       [].concat(resp.Quiz || []).forEach(data => {
+
+
 
         this._QuizDataList.forEach(data1 => {
           // 使用題目 uid 比對
           if (data1.QuizUid === data.uid) {
+
             // 填入題目名稱
             data1.QuizName = data.QuizName;
             // 細項比對填入 Order
             data1.QuizFieldList.forEach(field => {
               data.Field.forEach(f1 => {
-                if (f1.Name === field.Name) {
+                if (f1.Name === field.Name)
+                   {
                   let or = Number(f1.Order);
                   if (or) {
                     field.Order = f1.Order;
@@ -64,6 +102,8 @@ export class PsychologicalTestDetailComponent implements OnInit {
           }
         });
       });
+      console.log("resp.Quiz ", resp.Quiz );
+
     } catch (err) {
       alert('無法取得學生心理測驗題目：' + err.dsaError.message);
     }

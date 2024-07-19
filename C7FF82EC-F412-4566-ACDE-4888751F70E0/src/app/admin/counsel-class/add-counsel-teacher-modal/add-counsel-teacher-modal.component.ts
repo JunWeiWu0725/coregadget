@@ -127,7 +127,7 @@ export class AddCounselTeacherModalComponent implements OnInit {
     }
   }
 
-  save() {
+  save() { 
     this.selectClassIDs = [];
     this.SelectGradeYearList.forEach(item => {
       item.ClassItems.forEach(classItem => {
@@ -137,7 +137,7 @@ export class AddCounselTeacherModalComponent implements OnInit {
       });
     });
 
-    if (this.selectClassIDs.length > 0) {
+    if (true) {
       this.SetCounselClasses();
     }
   }
@@ -162,7 +162,7 @@ export class AddCounselTeacherModalComponent implements OnInit {
       //  console.log(resp);
       $("#addCounselTeacher").modal("hide");
     } catch (err) {
-      alert(err);
+      alert(JSON.stringify(err));
     }
   }
 

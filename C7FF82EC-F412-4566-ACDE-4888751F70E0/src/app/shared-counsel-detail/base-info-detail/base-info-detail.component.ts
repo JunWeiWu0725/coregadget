@@ -21,7 +21,6 @@ export class BaseInfoDetailComponent implements OnInit {
 
   async ngOnInit() {
     this.counselDetailComponent.setCurrentItem('base_info_detail');
-    // debugger
     console.log(' this.counselDetailComponent', this.counselDetailComponent.currentStudent)
     this.isLoading = true;
     // 取得學制
@@ -67,7 +66,7 @@ export class BaseInfoDetailComponent implements OnInit {
 
       let Data = [].concat(resp.Student || []);
       Data.forEach(item => {
-     
+
         let studInfo: StudentBaseInfo = new StudentBaseInfo();
         studInfo.StudentID = item.StudentID;
         studInfo.Name = item.Name;

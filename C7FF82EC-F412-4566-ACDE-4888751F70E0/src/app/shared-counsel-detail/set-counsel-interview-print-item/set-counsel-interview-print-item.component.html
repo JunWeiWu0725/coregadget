@@ -17,9 +17,9 @@
       <div class="modal-body">
 
         <div class="d-flex flex-row justify-content-around">
-          <div class="d-flex ml-auto flex-row align-self-center ">
+          <div class="d-flex flex-row align-self-center ">
             <div style="font-size: 18px;padding-top: 8px;"> 開始日期</div>
-            <div style="margin-left: 10px;">
+            <div style="margin-left: 5px;">
               <input required
                      type="date"
                      class="form-control"
@@ -103,25 +103,13 @@
               </label>
             </div>
           </div>
-  
-        </div>
 
-
-        <div class="custom-control custom-checkbox w-80">
-          <input type="checkbox"
-                 class="custom-control-input"
-                 [id]="'onlyMyself'"
-                 [disabled] ="!isAllowSelectPrintAll"
-                 [checked]="OnlyPrintMine"
-                 [(ngModel)]="OnlyPrintMine"
-              
-                  />
-          <label class="custom-control-label " style=" color: gray;"
-                 [for]="'onlyMyself'">
-                 僅列印本教師紀錄 
-                 <!-- {{OnlyPrintMine}} -->
-          </label>
         </div>
+        <br>
+        <span style="font-size:14px"> 
+          * 非輔導主任權限，二級輔導紀錄僅列印本人紀錄
+        </span>
+
 
         <div class="modal-footer">
           <button type="button"

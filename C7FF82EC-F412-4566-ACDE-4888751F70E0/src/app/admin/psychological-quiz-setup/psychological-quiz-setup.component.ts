@@ -106,11 +106,11 @@ export class PsychologicalQuizSetupComponent implements OnInit {
 
     // 關閉畫面
     $("#addPsychologicalQuizData").on("hide.bs.modal", () => {
-      if (!this._addPsychologicalQuizData.isCancel) {
+
         // 重整資料
         this.loadData();
-      }
-      $("#addPsychologicalQuizData").off("hide.bs.modal");
+   
+      $("#addPsychologicalQuizData").off("hide.bs.modal" );
     });
   }
 
@@ -132,7 +132,7 @@ export class PsychologicalQuizSetupComponent implements OnInit {
           mt.UseMappingTable = true;
         this.AllQuizMappingTableList.push(mt);
       });
-
+      this.isLoading = false;
     } catch (err) {
       alert('無法取得心理測驗常模對照表：' + err.dsaError.message);
     }

@@ -1,4 +1,7 @@
-<div *ngIf="!isLoading && adminComponent.isRoleEnable; else tmpLoading">
+
+<!-- {{adminComponent.isRoleEnable}} AS -->
+<div *ngIf="!isLoading && adminComponent.isPsyEnable; else tmpLoading">
+
   <div class="tab-content">
     <div class="d-flex">
       <button class="btn btn-info ml-auto"
@@ -11,7 +14,7 @@
     <ul class="rwd-table">
       <li class="thead">
         <ol class="tr">
-          <li class="sticky-top">測驗名稱</li>
+          <li class="sticky-top">測驗名稱s</li>
           <li class="sticky-top">測驗項目</li>
           <li class="sticky-top">測驗類型</li>
           <li class="sticky-top"></li>   

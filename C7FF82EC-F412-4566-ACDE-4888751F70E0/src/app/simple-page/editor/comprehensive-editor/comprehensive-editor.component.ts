@@ -9,7 +9,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
   styleUrls: ['./comprehensive-editor.component.css']
 })
 export class ComprehensiveEditorComponent implements OnInit {
-
+  
   questionSubject: any[] = [];
   requireList: any[];
   optionCodeMapping: any = {};

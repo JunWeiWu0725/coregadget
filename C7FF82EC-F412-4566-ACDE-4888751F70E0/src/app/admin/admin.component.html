@@ -39,7 +39,7 @@
               </ng-container>
             </ng-container>
 
-            <ng-container *ngIf="counselVisible === true">
+            <!-- <ng-container *ngIf="counselVisible === true">
               <ng-container *ngIf="isClassEnable">
                 <a class="list-group-item list-group-item-action d-flex"
                    data-toggle="list"
@@ -47,6 +47,17 @@
                    
                    (click)="routeTo('admin_comprehensive')"> 
                    設定綜合紀錄表題目
+                </a>
+              </ng-container>
+            </ng-container> -->
+            <!-- <ng-container *ngIf="false"> -->
+             <ng-container *ngIf="counselVisible === true">
+              <ng-container *ngIf="isSettingEnable">
+                <a class="list-group-item list-group-item-action d-flex"
+                   data-toggle="list"
+                   [ngClass]="{ 'active show': currentItem == 'setting' }"
+                   (click)="routeTo('setting')">
+                    系統設定 
                 </a>
               </ng-container>
             </ng-container>

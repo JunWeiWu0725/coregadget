@@ -6,7 +6,7 @@
   <div class="tab-pane fade-in" id="listOne">
     <div class="d-md-flex align-items-center sub-title base-class-header ">
       <h4 class="mb-0 mr-auto">
-        <b>輔導紀錄 </b>
+        <b>一級輔導紀錄 </b>
       </h4>
     </div>
 
@@ -86,10 +86,10 @@
               <li class="text-left text-normal align-middle" data-title="聯絡事項及內容"
                 (click)="viewInterviewModal(counselRec)">
                 <div *ngIf="counselRec.ContactItem" class="align-middle row2">
-                  <strong>聯絡事項：</strong>{{ counselRec.ContactItem }}
+                  <strong>聯絡事項：</strong> <div  [innerHtml]=" counselRec.ContactItem" ></div>
                 </div>
                 <div *ngIf="counselRec.Content" class="mt-2 row2">
-                  <strong>內容：</strong>{{ counselRec.Content }}
+                  <strong>內容：</strong><div  [innerHtml]=" counselRec.Content" ></div>
                 </div>
               </li>
               <ng-container *ngIf="referralVisible === true">

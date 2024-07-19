@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -99,6 +99,10 @@ import { ServiceItemStatisticsComponent } from './service-item-statistics/servic
 import { ServiceItemsStatisticsComponent } from './counsel-statistics/reports/service-items-statistics/service-items-statistics.component';
 import { StudentInfoComponent } from './comprehensive/student-info/student-info.component';
 import { FilterChineseNumbersPipe } from './filter-chinese-numbers.pipe';
+import { SettingComponent } from './admin/setting/setting.component';
+import { RoleService } from './role.service';
+import { appInitializerFactory } from './app-initializer';
+
 
 @NgModule({
   declarations: [
@@ -160,9 +164,10 @@ import { FilterChineseNumbersPipe } from './filter-chinese-numbers.pipe';
     ServiceItemsStatisticsComponent,
     StudentInfoComponent,
     FilterChineseNumbersPipe,
+    SettingComponent,
     // MatSnackBarModule
-    
-    
+
+
 
 
     // AddReferralFormComponent
@@ -200,7 +205,14 @@ import { FilterChineseNumbersPipe } from './filter-chinese-numbers.pipe';
     //  AddInterviewModalComponent
     DSUtilNgModule, // DSA 自定連線。
   ],
-  providers: [ ],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitializerFactory,
+      deps: [RoleService],
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 
 })

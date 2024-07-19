@@ -37,7 +37,7 @@
 
       </div> -->
 
-<!-- 
+    <!-- 
       ServiceID
 : 
 "5361474"
@@ -83,20 +83,20 @@ length
             <li data-title="服務日期" style="width: 25% !important;"><b>{{ item.ServiceDate }}</b> </li>
             <li data-title="服務項目" style="width: 25% !important;">{{ item.ServiceItem }}</li>
 
-            <li data-title=""  style="width: 25% !important;">
-              <div class="desc row2">{{ item.ServiceDescription}}</div> 
+            <li data-title="" style="width: 25% !important;">
+              <div class="desc row2" [innerHtml]="item.ServiceDescription"></div>
             </li>
             <li data-title="對象-性別(人次)" style="width: 25% !important;">
               <div class="teacherNumber">
-               {{item.getTargetDetailString()}} 
+                {{item.getTargetDetailString()}}
               </div>
-    
+
               <div>{{ item.TeacherReportRole}}</div>
             </li>
 
 
             <li data-title="來自晤談紀錄" style="width: 25% !important;">
-                 {{item.CaseInterviewID}}
+              {{item.CaseInterviewID}}
             </li>
             <li data-title="輔導人力身分" *ngIf="Mode.isEditMode()" style="width: 25% !important;">
               <div class="teacherNumber">
@@ -105,7 +105,7 @@ length
                     <button class="btn btn-light dropdown-toggle brad-5" style="border-radius: 5px  !important;"
                       type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
                       aria-expanded="false">
-                      {{item?.TeacherReportRole  || '    --    ' }} 
+                      {{item?.TeacherReportRole || ' -- ' }}
                     </button>
                     <div class="dropdown-menu brad-5 " aria-labelledby="dropdownMenuButton">
                       <a class="dropdown-item cuser" (click)="setSelectReportRoleOption(item ,role)"
@@ -124,14 +124,14 @@ length
               刪除
            
             </button> -->
-            <mat-icon aria-hidden="false" aria-label="Example home icon"
-            style="color:  #4d94ff; cursor:pointer ;font-size: 17px; " (click)="edit(item)">
-            mode_edit
-          </mat-icon>
-              <mat-icon style=" color:  #E05D5D !important; font-size: 17px;" class="" aria-hidden="false" aria-label="Example home icon"
-              (click)="delete(item)">
-              highlight_off
-            </mat-icon>
+              <mat-icon aria-hidden="false" aria-label="Example home icon"
+                style="color:  #4d94ff; cursor:pointer ;font-size: 17px; " (click)="edit(item)">
+                mode_edit
+              </mat-icon>
+              <mat-icon style=" color:  #E05D5D !important; font-size: 17px;" class="" aria-hidden="false"
+                aria-label="Example home icon" (click)="delete(item)">
+                highlight_off
+              </mat-icon>
             </li>
 
           </ng-container>
@@ -195,7 +195,7 @@ length
 </ng-template>
 
 
-<app-add-service-modal  #addServiceModal></app-add-service-modal>
+<app-add-service-modal #addServiceModal></app-add-service-modal>
 
 <app-del-service-modal #delServiceModal></app-del-service-modal>
 <!-- <app-add-counsel-teacher-role-modal #addCounselTeacherRole></app-add-counsel-teacher-role-modal>

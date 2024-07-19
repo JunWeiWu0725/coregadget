@@ -37,6 +37,7 @@ import { TeacherServiceComponent } from './teacher-service/teacher-service.compo
 import { CounselHistoryPsychologicaltestComponent } from './simple-page/print/counsel-history-psychologicaltest/counsel-history-psychologicaltest.component';
 import { StudentInfoComponent } from './comprehensive/student-info/student-info.component';
 import { ComprehensiveComponent as AdminComprehensiveComponent } from './admin/comprehensive/comprehensive.component';
+import { SettingComponent } from './admin/setting/setting.component';
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
   { path: "pd", component: PermissionDeniedComponent },
@@ -87,7 +88,8 @@ const routes: Routes = [
       { path: "counsel_teacher_role", component: CounselTeacherRoleComponent },
       { path: "counsel_class", component: CounselClassComponent },
       { path: "psychological_quiz_setup", component: PsychologicalQuizSetupComponent },
-      { path: "admin_comprehensive", component: AdminComprehensiveComponent }
+      { path: "admin_comprehensive", component: AdminComprehensiveComponent },
+      { path: "setting", component: SettingComponent },
     ]
   },{
     path: "teacher-service",

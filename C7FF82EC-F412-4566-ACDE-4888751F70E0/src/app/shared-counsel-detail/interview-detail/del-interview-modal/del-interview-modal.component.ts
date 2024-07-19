@@ -14,7 +14,7 @@ export class DelInterviewModalComponent implements OnInit {
   constructor(private dsaService: DsaService) { }
 
   ngOnInit() {
-    this._CounselInterview = new CounselInterview();
+    // this._CounselInterview = new CounselInterview();
 
   }
 

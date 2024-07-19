@@ -1,7 +1,10 @@
 
 // 認輔資料
 export class CaseInterview {
-  constructor() { }
+  constructor(isPublic :boolean) {
+
+    this.isPublic =isPublic
+   }
   UID: string;
   StudentName: string; // 姓名
   SchoolYear: number; //學年度

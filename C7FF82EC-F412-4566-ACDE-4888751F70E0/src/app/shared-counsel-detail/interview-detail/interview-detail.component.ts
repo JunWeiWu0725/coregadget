@@ -19,7 +19,7 @@ import { AddInterviewModalComponent } from "./add-interview-modal/add-interview-
   styleUrls: ["./interview-detail.component.css"]
 })
 export class InterviewDetailComponent implements OnInit {
-  comPoGUID :string  = "f1a09a1e-8a6b-4311-ae07-79a61a9e1762" 
+  comPoGUID :string  = "f1a09a1e-8a6b-4311-ae07-79a61a9e1762"
   enableReferal: boolean = false;
   _semesterInfo: SemesterInfo[] = [];
   _counselInterview: CounselInterview[] = [];
@@ -73,6 +73,27 @@ export class InterviewDetailComponent implements OnInit {
     this.communicationService.emitChange(this.refferalNotDealCount)
 
 
+  }
+  decodeHtml(html: string ,action :'修改'|'新增' ,targetID :'#contactMatter1' |'#description'): string {
+    if(action=='修改'){
+    if(targetID =='#contactMatter1'){
+      const txt = document.querySelector('#contactMatter1')  as HTMLTextAreaElement;
+      txt.innerHTML = html;
+      return txt.value;
+
+    }
+     if(targetID =='#description'){
+      const txt = document.querySelector('#description')  as HTMLTextAreaElement;
+      txt.innerHTML = html;
+      return txt.value;
+
+    }
+    }else{
+      const txt = document.querySelector('textarea');
+      console.log(txt)
+      txt.innerHTML = "";
+      return txt.value;
+    }
   }
 
   async getRefList() {
@@ -144,13 +165,14 @@ export class InterviewDetailComponent implements OnInit {
     this._addInterview._currentCounselInterview.useQuestionOptionTemplate();
     this._addInterview._currentCounselInterview.selectCounselType = "請選擇方式";
     this._addInterview._currentCounselInterview.selectContactName = "請選擇對象";
-
+    this.decodeHtml('','新增','#contactMatter1')
+    this.decodeHtml('','新增','#description')
     // 其他清空
     this._addInterview._currentCounselInterview.ContactNameOther = '';
     this._addInterview._currentCounselInterview.CounselTypeOther = '';
 
     // 新增預設不公開
-    this._addInterview._currentCounselInterview.isPublic = false;
+    // this._addInterview._currentCounselInterview.isPublic = false;
     this._addInterview._currentCounselInterview.isSaveDisable = true;
     $("#addInterview").modal("show");
 
@@ -165,6 +187,8 @@ export class InterviewDetailComponent implements OnInit {
       $("#addInterview").off("hide.bs.modal");
     });
   }
+
+
   /** 修改 */
   editInterviewModal(counselView: CounselInterview) {
     this._addInterview._editMode = "edit";
@@ -176,6 +200,9 @@ export class InterviewDetailComponent implements OnInit {
     this._addInterview.loadDefaultData(this.counselDetailComponent.currentStudent);
     this._addInterview._currentCounselInterview.isSaveDisable = true;
     this._addInterview.getFile(counselView.UID);
+
+    this.decodeHtml(this._addInterview._currentCounselInterview.Content,'修改','#description')
+    this.decodeHtml(this._addInterview._currentCounselInterview.ContactItem,'修改','#contactMatter1')
     $("#addInterview").modal({ backdrop: 'static' });
     // $("#addInterview").modal("show");
     $("#addInterview").on('shown.bs.modal', () => {
@@ -253,7 +280,7 @@ export class InterviewDetailComponent implements OnInit {
         let dN = Number(counselRec.OccurDate);
         let x = new Date(dN);
         rec.OccurDate = rec.parseDate(x);
-        rec.MeetTime = counselRec.MeetTime 
+        rec.MeetTime = counselRec.MeetTime
         rec.ContactName = counselRec.ContactName;
         rec.AuthorName = counselRec.AuthorName;
         rec.CounselType = counselRec.CounselType;

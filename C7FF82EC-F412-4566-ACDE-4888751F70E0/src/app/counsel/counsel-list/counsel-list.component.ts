@@ -86,7 +86,7 @@ addInterviews(event :any ,counsuleObj :CounselStudent){
     this._addInterview._currentCounselInterview.CounselTypeOther = '';
     
     // 新增預設不公開
-    this._addInterview._currentCounselInterview.isPublic = false;
+    // this._addInterview._currentCounselInterview.isPublic = this.globalService.isCaseInterviewOpenDefault;
     this._addInterview._currentCounselInterview.isSaveDisable = true;
     $("#addInterview").modal("show");
     
