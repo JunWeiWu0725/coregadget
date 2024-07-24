@@ -111,6 +111,7 @@ export class CaseMonthlyStatistics2 {
     CLevel: string; // 一級或二級輔導
     BoyCount: number = 0;
     GirlCount: number = 0;
+    GenderOther :number = 0
 }
 
 export class CaseMonthlyItemCount {
