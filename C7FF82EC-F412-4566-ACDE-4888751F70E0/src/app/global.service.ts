@@ -75,7 +75,7 @@ export class GlobalService {
 
 
   /** */
- public async loadingSettingList () {
+  async loadingSettingList () {
     try {
       let resp = await this.dsaService.send("Admin.GetSetting", {});
       this.settingLists = [].concat(resp.result || []);
@@ -90,4 +90,12 @@ export class GlobalService {
 
   }
 
+  /** 轉換日期格式 */
+  public   formatToTaiwanDate(date: Date): string {
+    const westernYear = date.getFullYear();
+    const taiwanYear = westernYear - 1911 ;
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // getMonth() 從 0 開始計算，所以需要加 1
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${taiwanYear}-${month}-${day}`;
+  }
 }
