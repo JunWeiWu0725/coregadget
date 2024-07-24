@@ -125,7 +125,7 @@ export class AddServiceModalComponent implements OnInit {
       '家長',
       '專業人員'
     ];
-    this.GenderList = ['男', '女']
+    this.GenderList = ['男', '女','其他']
     this.currentServiceDetail = new ServiceItemDetail();
     if (this.mode == 'add') {
 
