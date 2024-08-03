@@ -59,11 +59,6 @@
                   <a class="dropdown-item" *ngFor="let grade of curMode.GradeItemList" href="javascript:;"
                     [class.disabled]="!canEdit" (click)="openBatchImport(grade)">{{grade}}</a>
                 </ng-container>
-                <ng-container *ngIf="curMode.Title==='德行評語'">
-                  <h6 class="dropdown-header" href="javascript:;">匯入</h6>
-                  <a class="dropdown-item" href="javascript:;" [class.disabled]="!canEdit"
-                    (click)="openBatchImport('德行評語')">德行評語</a>
-                </ng-container>
               </div>
             </div>
             <div class="dropdown mr-1" *ngIf="!dropdowndisplay" style="pointer-events: none;">
