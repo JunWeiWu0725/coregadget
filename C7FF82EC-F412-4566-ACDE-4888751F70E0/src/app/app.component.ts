@@ -27,10 +27,10 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
   //   console.log($event);
   //   console.log("scrolling");
   //   // alert(1234)
-  // } 
+  // }
   roles: string[] = ['輔導主任', '輔導組長'];
   selectedRole: string;
-  isLoading : boolean  = true 
+  isLoading : boolean  = true
   mode ="";
   public refferalNotDealCount: number | undefined;
   public counselStudentStr: string = "輔導學生";
@@ -46,6 +46,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
   public transferStudentVisable: boolean = false;
   public hasNewTransfer = false;
   isOpenUserInfo =false
+  isTeacher = false;
 
   constructor(
     private activeRoute: ActivatedRoute,
@@ -101,7 +102,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
   onCtrlKPressed() {
     // console.log('Ctrl + K pressed!');
     this.isOpenUserInfo =!  this.isOpenUserInfo
-    
+
     // 在这里添加您希望执行的操作
   }
 
@@ -113,7 +114,15 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
   }
 
   async ngOnInit() {
-    this.mode = gadget.params.mode
+    if (this.roleService.isTeacher) {
+      this.isTeacher = true;
+    } else {
+      this.isTeacher = false;
+      this.isLoading = false;
+      return;
+    }
+
+    this.mode = gadget.params.mode;
     this.selectedRole = this.roles[0]; // 默認選擇第一個角色
     // 預設功能畫面文字
     this.counselStudentStr = "輔導學生";
@@ -171,7 +180,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
       this.transferStudentVisable = true;
       await this.checkHasNewTransfer();
     }
-    this.isLoading =false 
+    this.isLoading = false;
   }
   /** 取得轉借學生 */
   async getRefList() {
@@ -202,19 +211,19 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
       let resp = await this.dsaService.send("GetMyCounselTeacherRole", {
         Request: {}
       });
-      
+
       [].concat(resp.CounselTeacherRole || []).forEach(TeacherRole => {
         this.globalService.MyCounselTeacherRole = TeacherRole.Role;
         this.globalService.teacherName = TeacherRole.TeacherName
         this.globalService.teacherID = TeacherRole.TeacherID
       });
-  
+
       // alert(""+this.globalService.MyCounselTeacherRole)
       if (this.globalService.MyCounselTeacherRole != '' && this.globalService.MyCounselTeacherRole != '認輔老師' && this.globalService.MyCounselTeacherRole != '校外心理師'  ) {
         this.globalService.enableCase = true;
       } else
         this.globalService.enableCase = false;
-      
+
     }catch(ex){
         alert('取得基本資料發生錯誤 : '+JSON.stringify(ex))
 

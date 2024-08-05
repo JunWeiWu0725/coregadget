@@ -13,6 +13,8 @@ interface IPermissions {
 
 
 export class RoleService {
+  private _isTeacher = false;
+  private _isStudent = false;
 
   private _loginTeacher: ITeacher;
   private _loginTeacherName = '';
@@ -43,6 +45,23 @@ export class RoleService {
   public get isLoading() {
     return this._isLoading;
   }
+
+  public set isTeacher(isTeacher: boolean) {
+    this._isTeacher = isTeacher;
+  }
+
+  public get isTeacher() {
+    return this._isTeacher;
+  }
+
+  public set isStudent(isStudent: boolean) {
+    this._isStudent = isStudent;
+  }
+
+  public get isStudent() {
+    return this._isStudent;
+  }
+
   /** 取得目前教師資料 */
   public get loginTeacher() {
     return this._loginTeacher;
@@ -100,6 +119,7 @@ export class RoleService {
   }
 
   async reload() {
+    if (!this._isTeacher) return;
 
     this._isLoading = true;
     await this.loadLoginTeacherData();

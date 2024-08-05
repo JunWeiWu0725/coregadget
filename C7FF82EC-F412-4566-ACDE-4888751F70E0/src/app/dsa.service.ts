@@ -37,8 +37,7 @@ export class DsaService {
   }
 
   public async send(serviceName: string, body: any = {}): Promise<any> {
-  //  alert(contractName)
-    let conn = await this.getContract();
+    const conn = await this.getContract();
     return new Promise<any>((r, j) => {
       conn.send({
         service: serviceName,
