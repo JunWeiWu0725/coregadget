@@ -25,6 +25,7 @@ export class GlobalService {
     private dsaService: DsaService,
     private roleService: RoleService
   ) {
+    if (!gadget) return;
     this.mode = gadget.params.mode;
     if (this.roleService.isTeacher) this.loadingSettingList();
   }

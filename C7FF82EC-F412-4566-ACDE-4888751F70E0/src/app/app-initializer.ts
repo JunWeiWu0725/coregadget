@@ -4,8 +4,8 @@ import { RoleService } from "./role.service";
 export function appInitializerFactory(roleSrv: RoleService) {
 
   const getContract = async (contractName: string): Promise<any> => {
-    const contract = gadget.getContract(contractName);
     const connection = await new Promise<any>((r, j) => {
+      const contract = gadget.getContract(contractName);
       contract.ready(() => {
         r(contract);
       });
@@ -53,7 +53,7 @@ export function appInitializerFactory(roleSrv: RoleService) {
         r();
       } catch (error) {
         console.log(error);
-        j();
+        r();
       }
     });
   }
