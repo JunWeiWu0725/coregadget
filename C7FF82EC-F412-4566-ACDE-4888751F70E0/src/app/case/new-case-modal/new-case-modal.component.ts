@@ -149,6 +149,15 @@ export class NewCaseModalComponent implements OnInit {
     }
 
   }
+  /** 確認學生代號是否重複 */
+  checkStuCounselNumber(caseInfo: CounselStudent) {
+    let target = this.caseList.find(x => (x.StuCounselNumber == caseInfo.StuCounselNumber)&&(x.StudentID !== caseInfo.StudentID) );
+    if (target) {
+      alert('學生代號重複，請重新輸入')
+      caseInfo.StuCounselNumber = ""
+    }
+
+  }
   /** 選擇年級 */
   selectGrade(grade: string) {
     this.selectGradeValue = grade;
@@ -186,7 +195,7 @@ export class NewCaseModalComponent implements OnInit {
 
   //設定座號
   setSeatNo(item: CounselStudent) {
-
+    console.log('item...counselStudent',item)
     this.selectSeatNoValue = item.SeatNo;
     this.selectStudentName = item.StudentName;
     // this.caseStudent = new CaseStudent();
@@ -197,6 +206,7 @@ export class NewCaseModalComponent implements OnInit {
     this.caseStudent.Gender = item.Gender;
     this.caseStudent.StudentID = item.StudentID;
     this.caseStudent.StudentIdentity = item.Status;
+    this.caseStudent.StuCounselNumber = item.StuCounselNumber;
 
 
 
@@ -398,7 +408,7 @@ export class NewCaseModalComponent implements OnInit {
       this.caseStudent.isSaveButtonDisable = true;
       try {
         // 新增個案
-
+        console.log("this.caseStudent",this.caseStudent)
         await this.AddCase(this.caseStudent);
         $("#newCase").modal("hide");
         this.caseStudent.isSaveButtonDisable = false;
@@ -658,7 +668,8 @@ export class NewCaseModalComponent implements OnInit {
       CaseLevel: data.CaseLevel,
       CaseTeacher: reqCaseTeacher,
       StudentStatus: data.StudentStatus,
-      TeacherCounselLevels: data.TeacherCounselLevels
+      TeacherCounselLevels: data.TeacherCounselLevels,
+      StuCounselNumber :data.StuCounselNumber
     };
     try {
       let resp = await this.dsaService.send("AddCase", {
@@ -721,7 +732,8 @@ export class NewCaseModalComponent implements OnInit {
         CaseLevel: data.CaseLevel,
         CaseTeacher: reqCaseTeacher,
         StudentStatus: data.StudentStatus,
-        TeacherCounselLevels: data.TeacherCounselLevels
+        TeacherCounselLevels: data.TeacherCounselLevels,
+        StuCounselNumber :data.StuCounselNumber
       };
 
 

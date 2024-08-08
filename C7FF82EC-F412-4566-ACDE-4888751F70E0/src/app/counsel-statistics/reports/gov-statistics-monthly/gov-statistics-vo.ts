@@ -46,7 +46,7 @@ export class CaseMonthlyStatistics {
     TeacherID: string;
     TeacherNickName: string;
     TeacherRole: string;   
-    CaseNo :string  ;
+    StuCounselNumber :string  ;
 
     // 取得單項其他數量
     GetOtherDetailCount(name: string) {

@@ -340,7 +340,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         IsPrivate: this.currentRange.dbIsPrivate
       }
     });
-
+     console.log("resp",resp) ;
     // sheet1
     [].concat(resp.Statistics || []).forEach(rspRec => {
       // 輔導當月個案
@@ -354,8 +354,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       rec.StudentID = rspRec.StudentID;
       rec.TeacherName = rspRec.TeacherName;
       rec.ReportReferal = rspRec.ReportedReferralStatus; //202209 增加轉借狀況
-      rec.CaseNo = rspRec.CaseNo; // 20220907 需求增加
-
+      rec.StuCounselNumber = rspRec.StuCounselNumber; // 20220907 需求增加
       rec.CaseSource = rspRec.CaseSource      // 202209增加個案來源 (複選)
       rec.TeacherCounselNumber = this.getTeacherConNumberByTeacherID(rspRec),
         rec.GradeYear = rspRec.GradeYear;

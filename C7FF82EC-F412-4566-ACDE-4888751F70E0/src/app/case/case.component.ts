@@ -293,6 +293,7 @@ export class CaseComponent implements OnInit {
         rec.CaseCount = caseRec.CaseCount;
         rec.StudentStatus = caseRec.StudentStatus;
         rec.TeacherCounselLevels = caseRec.TeacherCounselLevels;
+        rec.StuCounselNumber =caseRec.StuCounselNumber;
         rec.PhotoUrl = `${this.dsaService.AccessPoint
           }/GetStudentPhoto?stt=Session&sessionid=${this.dsaService.SessionID
           }&parser=spliter&content=StudentID:${rec.StudentID}`;

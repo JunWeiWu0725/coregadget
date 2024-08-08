@@ -73,7 +73,9 @@ export class CounselStudentService {
     this.dsaService.getSessionIDAndAccessPoint();
 
     // 班導師，輔導老師，會讀取目前學年度學期
-    let resp = await this.dsaService.send("GetCounselStudent", {});
+    let resp = await this.dsaService.send("GetCounselStudent", {}); 
+    // dev_mod_console 
+    console.log("GetCounselStudent",resp ) ;
     [].concat(resp.Student || []).forEach(stuRec => {
       //建立學生
       if (!this.studentMap.has(stuRec.StudentID)) {
@@ -106,7 +108,8 @@ export class CounselStudentService {
             LastUpdateVg: stuRec.LastUpdateVg,
             VGCount: stuRec.VGCount,
             InterviewContentCount: stuRec.InterviewContentCount,
-            InterviewContactItemCount: stuRec.InterviewContactItemCount
+            InterviewContactItemCount: stuRec.InterviewContactItemCount,
+            StuCounselNumber: stuRec.StuCounselNumber
           } as CounselStudent);
       }
       let stu = this.studentMap.get(stuRec.StudentID);
@@ -212,6 +215,7 @@ export class CounselStudent {
       this.StudentID =counselStudent.StudentID ;
       this.StudentName =counselStudent .StudentName;
   }
+  StuCounselNumber :string ;
   StudentID: string;
   SchoolYear: number;
   Semester: number;
