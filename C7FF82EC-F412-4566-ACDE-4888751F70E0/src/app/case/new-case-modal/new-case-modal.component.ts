@@ -532,16 +532,16 @@ export class NewCaseModalComponent implements OnInit {
         });
       }
 
-
       // 取得輔導班級
       this.canSelectClassList = [];
+      this.canSelectClassByMap = new Map();
       this.counselStudentService.counselClass.forEach(data => {
         if (data.Role.indexOf("輔導老師") > -1) {
           this.canSelectClassList.push(data);
           console.log("data", data)
           // 依年級 放入 Map
           if (!this.canSelectClassByMap.has(data.GradeYear)) {
-            console.log("dat22", data)
+
             // 1 .如果沒有就放入
             this.canSelectClassByMap.set(data.GradeYear, []);
             this.canSelectGradeYear.push(data.GradeYear);
