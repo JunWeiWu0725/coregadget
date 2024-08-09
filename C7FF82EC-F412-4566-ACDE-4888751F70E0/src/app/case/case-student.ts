@@ -113,7 +113,7 @@ export class CaseStudent {
   teacher_counsel_level: QOption[]; // 參與輔導教師層級
   isOccurDateHasValue: boolean = false;
   // isCaseNoHasValue: boolean = false;
-  isGuidanceTeacherHasValue
+  isGuidanceTeacherHasValue: boolean = false;
   isStuCounselNumberHasValue: boolean = false;
   isReportReferralStatusHasValue: boolean = false;
   isCaseSourceHasValue: boolean = false;
@@ -636,7 +636,7 @@ export class CaseStudent {
       this.isStuCounselNumberHasValue = false;
     }
 
-    if (this.StuCounselNumber.length > 0) {
+    if (this.selectCaseTeacers.length > 0) {
       this.isGuidanceTeacherHasValue = true;
     } else {
       this.isGuidanceTeacherHasValue = false;
