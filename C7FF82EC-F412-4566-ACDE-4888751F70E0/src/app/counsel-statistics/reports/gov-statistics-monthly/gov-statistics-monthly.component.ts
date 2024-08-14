@@ -489,6 +489,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         if (da.TeacherNickName != '')
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
 
+// TODO:測試
 
         // let item = {
         //   '教師編碼': da.TeacherCounselNumber,
@@ -513,7 +514,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         const item = [
           da.TeacherCounselNumber,
           this.maping.ReportTeacherRole.get(da.TeacherReportRole), // 新欄位
-          da.CaseNo, // 新欄位(個案編號)
+          da.StuCounselNumber = da.StuCounselNumber,
           this.parseGradeYear(da.GradeYear),
           da.StudentGender,
           '', // 因為系統目前沒有其他選項 故先填入空字串
