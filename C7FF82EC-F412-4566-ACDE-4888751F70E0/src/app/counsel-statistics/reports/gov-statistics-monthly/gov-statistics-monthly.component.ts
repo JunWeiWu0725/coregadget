@@ -489,26 +489,6 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         if (da.TeacherNickName != '')
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
 
-// TODO:測試
-
-        // let item = {
-        //   '教師編碼': da.TeacherCounselNumber,
-        //   '身分': this.maping.ReportTeacherRole.get(da.TeacherReportRole), // 新欄位
-        //   '學生代號': da.CaseNo, // 新欄位(個案編號)
-        //   '學生年級': this.parseGradeYear(da.GradeYear),
-        //   '學生性別': da.StudentGender,
-        //   '學生身分': da.StudentStatusList.length > 0 ? da.StudentStatusList.join(',') : '', // 新欄位
-        //   '個案來源': da.CaseSourceList.join(','), // 新欄位
-        //   '輔導概況': da.Status, // 新案舊案
-        //   '轉介概況 ': da.ReportReferal, // 新欄位
-        //   '個案類別(主)': da.MainCategoryValueList.length > 0 ? da.MainCategoryValueList.join(',') : '',
-        //   '個案類別(主) 其他說明': da.CaseMainCategoryOther || 0,
-        //   '個案類別(副)': da.CategoryValue.join(',') || 0,
-        //   '個案類別(副) 其他說明': da.CategoryOther || 0,
-        //   // '新案舊案': da.Status, // 新規格暫時住借
-        //   '晤談次數': da.Count
-        //   // '其他服務次數': 0
-        // };
 
         // sheet1
         const item = [

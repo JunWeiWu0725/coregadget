@@ -76,7 +76,7 @@ export class NewCaseModalComponent implements OnInit {
   // 輔導老師清單
   CounselTeacherList: CounselTeacher[];
 
-  ngOnInit() {
+  ngOnInit() { 
     this.caseStudent = new CaseStudent();
     //  this.loadData();
   }
@@ -498,7 +498,6 @@ export class NewCaseModalComponent implements OnInit {
 
   // 取得預設資料
   async GetDefault() {
-
     // 取得個案可以使用教師
     this.CounselTeacherList = [];
     let dataList: CounselTeacher[] = [];
@@ -530,11 +529,12 @@ export class NewCaseModalComponent implements OnInit {
 
       // 取得輔導班級
       this.canSelectClassList = [];
+      this.canSelectGradeYear = [];
       this.canSelectClassByMap = new Map();
+      await this.counselStudentService.reload();
       this.counselStudentService.counselClass.forEach(data => {
         if (data.Role.indexOf("輔導老師") > -1) {
           this.canSelectClassList.push(data);
-          console.log("data", data)
           // 依年級 放入 Map
           if (!this.canSelectClassByMap.has(data.GradeYear)) {
 

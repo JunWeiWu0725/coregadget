@@ -49,6 +49,7 @@ export class CounselStudentService {
     this.studentMap = new Map<string, CounselStudent>();
     this.classMap = new Map<string, CounselClass>();
     this.counselClass = [];
+
     this.guidanceStudent = [];
 
     this.classMap = new Map<string, CounselClass>();
