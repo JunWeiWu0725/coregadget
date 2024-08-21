@@ -475,10 +475,10 @@ amdefine@>=0.0.4:
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
   integrity sha1-SlKCrBZHKek2Gbz9OtFR+BfOkfU=
 
-angular-i18next@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/angular-i18next/-/angular-i18next-3.0.0.tgz#0897dedc0712946be9c1c43de149a6fff02106f6"
-  integrity sha512-fb4hvK2zf8OxLmXBHazUrgDvW+8uiYV4VBCJB8RBntAGVGF6MzcurW0hLhHwrR3Fj8xYpKRljgDGPENausdn2w==
+angular-i18next@3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/angular-i18next/-/angular-i18next-3.2.0.tgz#57cba9ad3a8663fd4605138cf17d46cd79034f4f"
+  integrity sha512-SYO9rg2Ez0rir6O1E+JczKFzhdv4LQQsIsIM8kR+fGZKjI/LntJj626qgQYSSL+hr10CZFn9dewGpoASyPFxfw==
 
 ansi-colors@^3.0.0:
   version "3.1.0"

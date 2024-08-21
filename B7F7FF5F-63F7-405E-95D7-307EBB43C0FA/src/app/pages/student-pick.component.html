@@ -5,7 +5,7 @@
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
         <a href="#"
-           [routerLink]="['/main']">{{ 'roll-call' | i18next }}</a>
+           [routerLink]="['/main']"><ng-container *ngIf="studentChecks">{{ 'roll-call' | i18next }}</ng-container></a>
       </li>
       <ng-container *ngIf="!studentChecks; else titleText">
         <li class="breadcrumb-item active"

@@ -22,13 +22,6 @@ export class AppComponent implements OnInit {
 
   async ngOnInit() {
     
-    this.i18next.events.languageChanged.subscribe(() => {
-      this.reloading = true;
-      this.cdr.detectChanges();
-      this.reloading = false;
-      this.cdr.detectChanges();
-      this.cdr.markForCheck();
-    });
 
     const language = this.gadget.getLanguage();
     console.log("gadget.getLanguage:" + language)
