@@ -1,13 +1,14 @@
 import { ConfigService, AbsenceConf, PeriodConf } from './../service/config.service';
 import { AlertService } from './../service/alert.service';
 import { DSAService, Student, AttendanceItem, PeriodStatus, GroupType, RollCallCheck } from './../service/dsa.service';
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MenuPositionX } from '@angular/material/menu';
 import { StudentCheck } from '../student-check';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { GadgetService } from '../service/gadget.service';
 import { debounceTime } from 'rxjs-compat/operator/debounceTime';
+import { I18NEXT_SERVICE, ITranslationService } from 'angular-i18next';
 
 @Component({
   selector: 'gd-student-pick',
@@ -45,7 +46,8 @@ export class StudentPickComponent implements OnInit {
     private config: ConfigService,
     private change: ChangeDetectorRef,
     private router: Router,
-    private gadget: GadgetService
+    private gadget: GadgetService,
+    @Inject(I18NEXT_SERVICE) private i18next: ITranslationService
   ) {
   }
 
@@ -182,12 +184,12 @@ export class StudentPickComponent implements OnInit {
   changeAttendance(stu: StudentCheck) {
 
     if (!this.selectedAbsence) {
-      this.alert.snack('請選擇假別！');
+      this.alert.snack(this.i18next.t('please-select-absence-type', { defaultValue: '請選擇假別！' }));
       return;
     }
 
     if (!stu.acceptChange()) {
-      this.alert.snack('此學生無法調整缺曠。');
+      this.alert.snack(this.i18next.t('unable-to-adjust-absence', { defaultValue: '此學生無法調整缺曠。' }));
       return;
     }
 
@@ -289,7 +291,7 @@ export class StudentPickComponent implements OnInit {
       items.push(check.getCheckData());
     }
 
-    const dialog = this.alert.waiting("儲存中...");
+    const dialog = this.alert.waiting(this.i18next.t('saving', { defaultValue: "儲存中..." }));
 
     var saved = false;
     try {

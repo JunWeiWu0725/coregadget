@@ -5,7 +5,7 @@
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
         <a href="#"
-           [routerLink]="['/main']">課堂點名</a>
+           [routerLink]="['/main']">{{ 'roll-call' | i18next }}</a>
       </li>
       <ng-container *ngIf="!studentChecks; else titleText">
         <li class="breadcrumb-item active"
@@ -35,7 +35,7 @@
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false">
-          <span *ngIf="!selectedAbsence">選擇假別</span>
+          <span *ngIf="!selectedAbsence">{{ 'select-absence-type' | i18next }}</span>
           <span *ngIf="selectedAbsence">{{selectedAbsence}}</span>
         </button>
         <mat-menu #menu="matMenu">
@@ -127,7 +127,7 @@
   <ng-template #save>
     <button (click)="saveRollCall()"
             type="button"
-            class="btn btn-lg btn-info mb-2">{{checkSummary? '儲存 (' + checkSummary +')': '儲存'}}</button>
+            class="btn btn-lg btn-info mb-2 text-capitalize">{{checkSummary?  ('save' | i18next) +' (' + checkSummary +')': 'save' | i18next }}</button>
   </ng-template>
 </div>
 
@@ -145,7 +145,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title"
-            id="modal-title">授課教師確認</h5>
+            id="modal-title">{{ 'teacher-confirmation' | i18next }}</h5>
         <button type="button"
                 class="close"
                 data-dismiss="modal"
@@ -156,14 +156,14 @@
       <div class="modal-body">
         <div class="form-group">
           <label for="teacherName"
-                 class="col-form-label">授課教師</label>
+                 class="col-form-label">{{ 'teacher' | i18next }}</label>
           <input id="teacherName"
                  type="text"
                  [(ngModel)]="teacherIdentity.teacherName" />
         </div>
         <div class="form-group">
           <label for="teacherKey"
-                 class="col-form-label">點名密碼</label>
+                 class="col-form-label">{{ 'roll-call-pw' | i18next }}</label>
           <input id="teacherKey"
                  type="password"
                  autocomplete="off"
@@ -182,11 +182,11 @@
         <button type="button"
                 class="btn btn-info"
                 [ngClass]="{'disabled': teacherIdentity.saving}"
-                (click)="teacherIdentity.saving || teacherIdentity.ignore()">略過</button>
+                (click)="teacherIdentity.saving || teacherIdentity.ignore()">{{ 'skip' | i18next }}</button>
         <button type="button"
                 class="btn btn-info"
                 [ngClass]="{'disabled': teacherIdentity.saving || !teacherIdentity.teacherKey}"
-                (click)="teacherIdentity.saving || teacherIdentity.save()">確定</button>
+                (click)="teacherIdentity.saving || teacherIdentity.save()">{{ 'confirm' | i18next }}</button>
       </div>
     </div>
   </div>
