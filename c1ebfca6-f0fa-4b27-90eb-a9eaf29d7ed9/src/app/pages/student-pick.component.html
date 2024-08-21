@@ -5,7 +5,7 @@
     <ol class="breadcrumb header-top second-page-header ">
       <li class="breadcrumb-item">
         <a class=""  href="#"
-           [routerLink]="['/main']">課堂點名</a>
+           [routerLink]="['/main']">{{ 'roll-call' | i18next }}</a>
       </li>
       <ng-container *ngIf="!studentChecks; else titleText">
         <li class="breadcrumb-item active"
@@ -33,7 +33,7 @@
   <ng-template #studentSection>
     <ng-container *ngIf="(studentChecks.length==0); else  elseTemplate">
       <div class=" w-90 h-90"  style="position:absolute;top:50%;left: 0px;right: 0px;text-align: center;color: #00000061;">
-        還沒有可點名的學生!
+        {{ 'no-students-for-roll-call' | i18next }}
       </div>
     </ng-container>
   </ng-template>
@@ -62,7 +62,7 @@
                   data-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false">
-            <span *ngIf="!selectedAbsence">選擇假別</span>
+            <span *ngIf="!selectedAbsence">{{ 'select-absence-type' | i18next }}</span>
             <span *ngIf="selectedAbsence">{{selectedAbsence}}</span>
         
           </button>
@@ -177,7 +177,7 @@
 
                 <span *ngIf="isShowCheckInTime" style="font-size: 13px; color: rgb(75, 83, 97);"><b>
 
-                  到校時間 : {{getCheckInTime(student.data.StudentID)?.checkin_only_time||'  --  '}}
+                  {{ 'arrival-time' | i18next }} : {{getCheckInTime(student.data.StudentID)?.checkin_only_time||'  --  '}}
                 </b> 
                 
               </span>
@@ -201,7 +201,7 @@
 
   <button *ngIf="studentChecks.length!==0"(click)="saveRollCall()"
           type="button"
-          class="btn btn-lg btn-info">{{checkSummary? '送出 ( ' + checkSummary +' )': '全到 ( 送出 )'}}</button>
+          class="btn btn-lg btn-info text-capitalize">{{checkSummary?  ( 'send' | i18next ) + ' ( ' + checkSummary +' )': 'all-present-send' | i18next }}</button>
 
   </ng-template>
 

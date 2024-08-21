@@ -1,7 +1,7 @@
 import { ConfigService, AbsenceConf, PeriodConf } from './../service/config.service';
 import { AlertService } from './../service/alert.service';
 import { DSAService, Student, AttendanceItem, PeriodStatus, GroupType, RollCallCheck } from './../service/dsa.service';
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MenuPositionX } from '@angular/material/menu';
 import { StudentCheck } from '../student-check';
@@ -10,6 +10,7 @@ import { GadgetService } from '../service/gadget.service';
 import { RollCallRateDenominator } from './vo';
 import { Console } from '@angular/core/src/console';
 import { HttpClient } from '@angular/common/http';
+import { I18NEXT_SERVICE, ITranslationService } from 'angular-i18next';
 
 @Component({
   selector: 'gd-student-pick',
@@ -60,7 +61,8 @@ export class StudentPickComponent implements OnInit {
     private change: ChangeDetectorRef,
     private router: Router,
     private gadget: GadgetService,
-    private http: HttpClient
+    private http: HttpClient,
+    @Inject(I18NEXT_SERVICE) private i18next: ITranslationService
   ) {
   }
 
@@ -179,19 +181,23 @@ getCheckInTime(studentID,date) :any{
       let denominator: RollCallRateDenominator = await this.dsa.getAbsenRateDenominator(this.groupInfo.id);
       if (denominator.IsUseWeeks == 'true') {
         if ((denominator.Period == "0" || denominator.Period == "")) {
-          this.explainMessage = "出席率分母採用 上課週數 * 節數， \n但節數為0或未設定，無法計算出席率 。"
+          // this.explainMessage = "出席率分母採用 上課週數 * 節數， \n但節數為0或未設定，無法計算出席率 。"
+          this.explainMessage = this.i18next.t('assistant_rate_weeks_nosessions')
         } else // 如果 節數設定正常 
         {
           if (denominator.WeeksFromCourse) {
-            this.explainMessage = `出席率分母採用 上課週數 * 節數  為  (${denominator.WeeksFromCourse}週*${denominator.Period}節) ${denominator.CourseDe} 堂`
+            // this.explainMessage = `出席率分母採用 上課週數 * 節數  為  (${denominator.WeeksFromCourse}週*${denominator.Period}節) ${denominator.CourseDe} 堂`
+            this.explainMessage = this.i18next.t('assistant_rate_weeks', { week: denominator.WeeksFromCourse, period: denominator.Period, course: denominator.CourseDe })
   
           } else {
-            this.explainMessage = `出席率分母採用 上課週數 * 節數  為  (${denominator.DefaultWeeks}週*${denominator.Period}節) ${denominator.DefaultDe} 堂`
+            // this.explainMessage = `出席率分母採用 上課週數 * 節數  為  (${denominator.DefaultWeeks}週*${denominator.Period}節) ${denominator.DefaultDe} 堂`
+            this.explainMessage = this.i18next.t('assistant_rate_weeks', { week: denominator.DefaultWeeks, period: denominator.Period, course: denominator.DefaultDe })
           }
         }
   
       } else { // 不採用上課週數 => 實際點名
-        this.explainMessage = `出席率分母採用 教師實際點名次數 為 ${denominator.ActualRollcallTime} 堂`
+        // this.explainMessage = `出席率分母採用 教師實際點名次數 為 ${denominator.ActualRollcallTime} 堂`
+        this.explainMessage = this.i18next.t('assistant_rate_called', { called: denominator.ActualRollcallTime })
       }
 
     }
@@ -217,12 +223,12 @@ getCheckInTime(studentID,date) :any{
   changeAttendance(stu: StudentCheck) {
 
     if (!this.selectedAbsence) {
-      this.alert.snack('請選擇假別！');
+      this.alert.snack(this.i18next.t('please-select-absence-type', { defaultValue: '請選擇假別！' }));
       return;
     }
 
     if (!stu.acceptChange()) {
-      this.alert.snack('此學生無法調整缺曠。');
+      this.alert.snack(this.i18next.t('unable-to-adjust-absence', { defaultValue: '此學生無法調整缺曠。' }));
       return;
     }
 
@@ -344,7 +350,7 @@ getCheckInTime(studentID,date) :any{
       items.push(check.getCheckData());
     }
 
-    const dialog = this.alert.waiting("儲存中...");
+    const dialog = this.alert.waiting(this.i18next.t('saving', { defaultValue: "儲存中..." }));
 
     try {
       await this.dsa.setRollCall(this.groupInfo.type, this.groupInfo.id, this.periodConf.Name, items);

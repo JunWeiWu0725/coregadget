@@ -3,7 +3,7 @@ import { AppMaterialModule } from './app-material.module';
 import { AppRoutingModule } from './app-routing.module';
 import { GadgetService } from './service/gadget.service';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
@@ -28,6 +28,42 @@ import { FormsModule } from '@angular/forms';
 import {MatRadioModule} from '@angular/material/radio';
 import { ClassSubstituteComponent } from './pages/class-substitute.component';
 import { HttpClientModule } from '@angular/common/http';
+import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18next';
+import i18nextXHRBackend from 'i18next-xhr-backend';
+
+export function appInit(i18next: ITranslationService) {
+  return () => i18next
+    .use(i18nextXHRBackend)
+    .init({
+      whitelist: ['en', 'zh-TW'],
+      fallbackLng: 'zh-TW',
+      debug: false,
+      returnEmptyString: false,
+      ns: ['translation', 'validation', 'error'],
+      backend: {
+        loadPath: './assets/locales/{{lng}}.json'
+      },
+    });
+ }
+ 
+ export function localeIdFactory(i18next: ITranslationService) {
+  return i18next.language;
+ }
+ 
+ export const I18N_PROVIDERS = [
+  {
+    provide: APP_INITIALIZER,
+    useFactory: appInit,
+    deps: [I18NEXT_SERVICE],
+    multi: true
+  },
+  {
+    provide: LOCALE_ID,
+    deps: [I18NEXT_SERVICE],
+    useFactory: localeIdFactory
+ }
+];
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -55,9 +91,10 @@ import { HttpClientModule } from '@angular/common/http';
     MatCheckboxModule,
     FormsModule,
     MatRadioModule,
-    HttpClientModule
+    HttpClientModule,
+    I18NextModule.forRoot()
   ],
-  providers: [GadgetService, DSAService, ConfigService, AlertService],
+  providers: [GadgetService, DSAService, ConfigService, AlertService, I18N_PROVIDERS],
   bootstrap: [AppComponent],
   entryComponents: [
     PeriodChooserComponent,
