@@ -1,0 +1,145 @@
+<div class="flex justify-between items-center">
+  <span class="gadget_bigtitle">選擇列印邀請函的範圍</span>
+  <button class="btn ml-auto" mat-dialog-close>
+    <span
+      class="iconify close-window"
+      data-icon="eva:close-fill"
+      data-inline="false"
+    ></span>
+  </button>
+</div>
+<mat-dialog-content>
+  <div class="grid grid-cols-2">
+    <div class="">
+      <div class="nav">
+        <ul>
+          <li *ngFor="let gradeYear of gradeYears">
+            <label>
+              <input
+                type="checkbox"
+                (change)="
+                  toggleGradeSelection(gradeYear, $event.target.checked)
+                "
+                [checked]="isGradeSelected(gradeYear)"
+                class="cursor-pointer"
+              />
+              <button
+                (click)="gradeYear.open = !gradeYear.open"
+                class="btn inline-flex items-center rounded text-left font-semibold px-2 ml-1"
+              >
+                <span>
+                  {{ gradeYear.title ? gradeYear.title + "年級" : "未分年級" }}
+                  ({{ gradeYear.studentsCount }})
+                </span>
+                <svg
+                  fill="currentColor"
+                  class="transition-transform duration-200 transform ml-2 -mt-1"
+                  [ngClass]="{
+                    '-rotate-90': gradeYear.open,
+                    'rotate-90': !gradeYear.open
+                  }"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  focusable="false"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill="#4f4f4f"
+                    d="M10 19a1 1 0 0 1-.64-.23a1 1 0 0 1-.13-1.41L13.71 12L9.39 6.63a1 1 0 0 1 .15-1.41a1 1 0 0 1 1.46.15l4.83 6a1 1 0 0 1 0 1.27l-5 6A1 1 0 0 1 10 19z"
+                  />
+                </svg>
+              </button>
+            </label>
+            <div [hidden]="!gradeYear.open" class="ml-8">
+              <ul>
+                <li *ngFor="let item of gradeYear.classes">
+                  <label class="mt-2 rounded inline-flex p-2 items-center">
+                    <input
+                      type="checkbox"
+                      (change)="
+                        toggleClassSelection(item, $event.target.checked)
+                      "
+                      [checked]="isClassSelected(item)"
+                      class="cursor-pointer"
+                    />
+                    <span class="ml-2">
+                      {{ item.ClassName || "未分班級" }} ({{
+                        item.Students.length
+                      }})
+                    </span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="check-data bg-gray-200 p-6" id="check-info">
+      <div>
+        <p *ngIf="!dsns" class="text-red-500">無學校dsns資料，QR Code將留空</p>
+        <p *ngIf="!schoolName" class="text-red-500">
+          無學校名稱資料，校名將留空
+        </p>
+        <p *ngIf="!checkCompleted">選擇範圍後，請點擊左下檢查按鈕</p>
+        <p
+          *ngIf="checkCompleted && missingParentCodeStudents.length === 0"
+          class="text-green-500"
+        >
+          檢查無誤，請點擊下方按鈕列印邀請函
+        </p>
+        <p
+          class="text-red-500 text-lg"
+          *ngIf="checkCompleted && missingParentCodeStudents.length > 0"
+        >
+          注意！選取範圍內有
+          {{ missingParentCodeStudents.length }}
+          位學生未設定家長代碼。
+        </p>
+      </div>
+      <div *ngIf="checkCompleted && missingParentCodeStudents.length > 0">
+        <p>若無家長代碼，該筆邀請函的QR Code將留空，請確認。</p>
+        <br />
+        <p class="mb-2">未設定家長代碼的學生資料如下：</p>
+        <ul class="columns-2">
+          <li *ngFor="let student of missingParentCodeStudents">
+            {{ student.ClassName || "未分班級" }} {{ student.SeatNo }}
+            {{ student.StudentName }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <div class="w-full flex justify-between items-center">
+    <div class="flex items-center flex-wrap gap-2">
+      <button
+        class="btn btn-primary rounded-full"
+        (click)="checkSelection()"
+        [disabled]="selectedStudentsCount === 0"
+      >
+        檢查
+      </button>
+      <p *ngIf="selectedStudentsCount > 0">
+        已選擇 {{ selectedStudentsCount }} 位學生
+      </p>
+    </div>
+    <div
+      *ngIf="checkCompleted"
+      class="flex items-center flex-wrap gap-2 justify-end"
+    >
+      <p>若選取筆數較多則列印讀取時間較久，建議分批處理</p>
+      <button
+        *ngIf="checkCompleted"
+        class="btn btn-primary rounded-full"
+        [disabled]="!checkCompleted"
+        (click)="confirmSelection()"
+      >
+        列印邀請函
+      </button>
+    </div>
+  </div>
+</mat-dialog-actions>

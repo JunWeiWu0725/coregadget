@@ -13,6 +13,9 @@ import { EditModalComponent } from './edit-modal/edit-modal.component';
 import { EditParentComponent } from './edit-parent/edit-parent.component';
 import { StatusPipe } from './shared/pipes/status.pipe';
 import { StudentManage } from './student-manage';
+import { inviteLetterBody, inviteLetterStyle } from './shared/invite-letter-template';
+import { InviteLettersModalComponent } from './invite-letters-modal/invite-letters-modal.component';
+import { ParentCodeModalComponent } from './parent-code-modal/parent-code-modal.component';
 
 @Component({
   selector: 'app-root',
@@ -136,6 +139,59 @@ export class AppComponent implements OnInit {
     if (this.curStudent && this.curStudent.StudentId) {
       this.openModifyStudentDialog({ ... this.curStudent });
     }
+  }
+
+  SingleInviteLetter() {
+    const dsns =  this.sm.getDsns();
+    const schoolName = this.sm.getSchoolName();
+    const QRcode = (this.curStudent.ParentCode && dsns)
+        ? `<img src="https://devapi.1campus.net/api/code/qrcode/img?chld=M&chs=120x120&cht=qr&choe=UTF-8&chl=${this.curStudent.ParentCode}@${dsns}"  style="width: 120px; height: 120px">`
+        : "<div style='width: 120px; height: 120px'>  </div>";
+    const studentHtml = inviteLetterBody
+    .replace(/{{學校名稱}}/g, schoolName)
+    .replace(/{{學生姓名}}/g, this.curStudent.StudentName)
+    .replace(/{{家長代碼}}/g, this.curStudent.ParentCode)
+    .replace(/{{QRcode}}/g, QRcode)
+    .replace(/{{年級}}/g, this.curStudent.GradeYear ? this.curStudent.GradeYear + " 年級" : "")
+    .replace(/{{班級名稱}}/g, this.curStudent.ClassName)
+    .replace(/{{座號}}/g, this.curStudent.SeatNo);
+      const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>${this.curStudent.StudentName}邀請函</title>
+          ${inviteLetterStyle}
+        </head>
+      <body>
+          ${studentHtml}
+      </body>
+      </html>`;
+    
+    const newWin = window.open('', `邀請函-${this.curStudent.StudentName}`);
+    newWin.document.body.innerHTML = html
+  }
+
+  openInviteLetterDialog(): void {
+    const dialogRef = this.dialog.open(InviteLettersModalComponent, {
+      width: "80vw",
+      maxWidth: "1050px",
+    });
+  }
+
+  openParentCodeDialog(): void {
+    const dialogRef = this.dialog.open(ParentCodeModalComponent, {
+      width: "80vw",
+      maxWidth: "600px",
+    });
+    
+    dialogRef.afterClosed().subscribe(async result => {
+      if (result && result.state === 'refresh') {
+        this.loading = true;
+        await this.getStudents();
+        this.colForStudent(this.keywordCtrl.value);
+        this.loading = false;
+      }
+    });
   }
 
   openModifyParentDialog(student: StudentRec, parent: StudentParent): void {

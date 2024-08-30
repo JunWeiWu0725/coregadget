@@ -1,0 +1,9 @@
+.columns-2 {
+  column-count: 2;
+}
+
+@media screen and (max-width: 800px) {
+  .columns-2 {
+    column-count: 1;
+  }
+}
