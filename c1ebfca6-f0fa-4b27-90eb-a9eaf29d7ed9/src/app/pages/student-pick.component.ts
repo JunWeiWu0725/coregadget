@@ -236,6 +236,8 @@ getCheckInTime(studentID,date) :any{
 
     this.calcSummaryText();
 
+    // 移除懸浮預覽效果
+    this.hideCurrentAbsType(stu);
     //因為只是調整陣列中的某個元件資料，並不會引發畫面更新。
     // this.change.markForCheck();
   }
