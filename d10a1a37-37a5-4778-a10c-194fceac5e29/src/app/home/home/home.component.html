@@ -1,20 +1,20 @@
 <div *ngIf="contract;else Loading"
      class="main-menu d-flex flex-wrap justify-content-center">
     <div (click)="goGradebook()" *ngIf="display('gradebook')">
-        <img src="assets/img/gradebook.png">
+        <img class="show-icon" src="assets/img/gradebook.svg">
         <div>Gradebook</div>
     </div>
     <div [routerLink]="['/behavior']" *ngIf="display('behavior')">
-        <img src="assets/img/behavior.png">
+        <img class="show-icon" src="assets/img/behavior.svg">
         <div>Behavior</div>
     </div>
     <div [routerLink]="['/attendance']" *ngIf="display('attendence')">
-        <img src="assets/img/attendence.png">
+        <img class="show-icon" src="assets/img/attendence.svg">
         <div>Attendance</div>
     </div>
     <div [routerLink]="['/weekly_report']" *ngIf="display('weekly-report')">
-        <img src="assets/img/weekly-report.png">
-        <div>Weekly Report</div>
+        <img  class="show-icon" src="assets/img/routineReport.svg">
+        <div>Routine Report</div>
     </div>
 </div>
 <ng-template #Loading>
@@ -23,4 +23,4 @@
     </div>
 </ng-template>
 <!-- <button class="ml-auto btn btn-dark m-3" [routerLink]="['/behavior']">Behavior</button>
-<button class="ml-auto btn btn-dark m-3" [routerLink]="['/weekly_report']">Weekly Report</button> -->
+<button class="ml-auto btn btn-dark m-3" [routerLink]="['/weekly_report']">Routine Report</button> -->

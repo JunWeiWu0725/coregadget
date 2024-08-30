@@ -23,3 +23,7 @@ router-outlet{
   .modal {
   z-index: 1000 !important;
   }
+
+  .show-icon {
+    width: 139px;
+  }
