@@ -117,9 +117,10 @@ export class InviteLettersModalComponent {
     // console.log("已選擇的學生:", this.selectedClasses);
     let html = "";
     this.selectedStudents.forEach((student) => {
+      const QRcodeString = student.ParentCode && this.dsns ? encodeURIComponent(`${student.ParentCode}@${this.dsns}`) : "";
       const QRcode =
         student.ParentCode && this.dsns
-          ? `<img src="https://devapi.1campus.net/api/code/qrcode/img?chld=M&chs=120x120&cht=qr&choe=UTF-8&chl=${student.ParentCode}@${this.dsns}"  style="width: 120px; height: 120px">`
+          ? `<img src="https://devapi.1campus.net/api/code/qrcode/img?chld=M&chs=120x120&cht=qr&choe=UTF-8&chl=${QRcodeString}"  style="width: 120px; height: 120px">`
           : "<div style='width: 120px; height: 120px'>  </div>";
       const studentHtml = inviteLetterBody
         .replace(/{{學校名稱}}/g, this.schoolName)

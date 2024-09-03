@@ -144,8 +144,9 @@ export class AppComponent implements OnInit {
   SingleInviteLetter() {
     const dsns =  this.sm.getDsns();
     const schoolName = this.sm.getSchoolName();
+    const QRcodeString = this.curStudent.ParentCode && dsns ? encodeURIComponent(`${this.curStudent.ParentCode}@${dsns}`) : "";
     const QRcode = (this.curStudent.ParentCode && dsns)
-        ? `<img src="https://devapi.1campus.net/api/code/qrcode/img?chld=M&chs=120x120&cht=qr&choe=UTF-8&chl=${this.curStudent.ParentCode}@${dsns}"  style="width: 120px; height: 120px">`
+        ? `<img src="https://devapi.1campus.net/api/code/qrcode/img?chld=M&chs=120x120&cht=qr&choe=UTF-8&chl=${QRcodeString}"  style="width: 120px; height: 120px">`
         : "<div style='width: 120px; height: 120px'>  </div>";
     const studentHtml = inviteLetterBody
     .replace(/{{學校名稱}}/g, schoolName)
