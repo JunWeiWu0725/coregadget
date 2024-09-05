@@ -65,17 +65,15 @@ export const inviteLetterStyle = `
 export const inviteLetterBody = `
   <div class="student-page">
     <h1 style="text-align: center">{{學校名稱}}</h1>
-    <h1 style="text-align: center">1Campus Next APP家長行動應用邀請函</h1>
+    <h1 style="text-align: center">{{APPName}} 家長行動應用邀請函</h1>
     <br />
       <div style="display: flex; justify-content: space-between; gap: 10px">
         <div style="flex: grow">
           <p>親愛的 {{學生姓名}} 同學的家長您好，</p>
-          <p class="text-indent">隨著新學期的開始，我們誠摯邀請您透過智慧手機下載「1Campus Next App」。透過1Campus Next App，您將能即時掌握您孩子的在校表現及便利地使用校園行動應用服務。這將有助於您時刻關注孩子的學習進展並支持他們的成長。</p>
-          <p style="text-align: center"><strong>手機掃描右方QR code</strong><strong>・</strong><strong>立即免費安裝1Campus Next App</strong></p>
+          <p class="text-indent">隨著新學期的開始，我們誠摯邀請您透過智慧手機下載「{{APPName}}」。透過{{APPName}}，您將能即時掌握您孩子的在校表現及便利地使用校園行動應用服務。這將有助於您時刻關注孩子的學習進展並支持他們的成長。</p>
+          <p style="text-align: center"><strong>手機掃描右方QR code</strong><strong>・</strong><strong>立即免費安裝{{APPName}}</strong></p>
         </div>
-        <div >
-        <img src="https://1campus.net/assets/img/qr_next.png" style="width: 120px; height: 120px">
-        </div>
+        {{AppQRcode}}
       </div>
     <br />
     <table>
@@ -107,22 +105,26 @@ export const inviteLetterBody = `
           </td>
         </tr>
         <tr>
-          <td colspan="6" style="border-bottom: 0px solid black">
-            <p class="text-indent">1Campus Next App 是由澔學學習股份有限公司提供的智慧校園行動應用，詳細的登入及親子綁定操作說明請<strong>掃描下方QR Code或連結</strong>查看。如果您在使用過程中有任何意見或安裝問題等，歡迎透過電子郵件與我們聯繫：support@ischool.com.tw，或<strong>掃描下方QR Code，使用Line加入我們為您提供的1Campus線上客服</strong>，獲得即時協助。 祝您使用愉快！</p>
+          <td colspan="6">
+            <p class="text-indent">{{支援資訊}}</p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="6">
             <div style="display: flex; justify-content: space-between;">
               <div style="width: 50%; text-align: center">
                 <p><strong>操作說明</strong></p>
-                <p>https://reurl.cc/5dp41q</p>
-                <img src="https://devapi.1campus.net/api/code/qrcode/img?chld=M&chs=232x232&cht=qr&choe=UTF-8&chl=https://reurl.cc/5dp41q"  style="width: 120px; height: 120px">
+                <p>{{操作說明URL}}</p>
+                <img src="https://devapi.1campus.net/api/code/qrcode/img?chld=M&chs=232x232&cht=qr&choe=UTF-8&chl={{操作說明URL}}"  style="width: 120px; height: 120px">
               </div>
               <div style="width: 50%; text-align: center">
                 <p><strong>Line客服</strong></p>
-                <p>https://lin.ee/WnRTX6M</p>
-                <img src="https://devapi.1campus.net/api/code/qrcode/img?chld=M&chs=232x232&cht=qr&choe=UTF-8&chl=https://lin.ee/WnRTX6M"  style="width: 120px; height: 120px">
+                <p>{{Line客服URL}}</p>
+                <img src="https://devapi.1campus.net/api/code/qrcode/img?chld=M&chs=232x232&cht=qr&choe=UTF-8&chl={{Line客服URL}}"  style="width: 120px; height: 120px">
               </div>
             </div>
             <p style="text-align: end"><strong>{{學校名稱}}</strong></p>
-            <p>*1Campus Next App最低系統需求為 iOS 13.0 或 Android 10 以上</p>
+            <p>*{{APPName}} 最低系統需求為 iOS 13.0 或 Android 10 以上</p>
           </td>
         </tr>
       </tbody>
@@ -130,7 +132,7 @@ export const inviteLetterBody = `
     <br />
     <hr />
     <br />
-    <h2>1Campus Next APP安裝確認回執聯</h2>
+    <h2>{{APPName}} 安裝確認回執聯</h2>
     <table>
       <tbody>
         <tr>
@@ -158,12 +160,12 @@ export const inviteLetterBody = `
 export const inviteLetterBodyWithStyle = `
   <div class="student-page" style="font-family: "標楷體",  DFKai-sb, BiauKai;">
     <h1 style="margin: 0; font-size: 20px; font-weight: bold; line-height: 1.5; text-align: center;">{{學校名稱}}</h1>
-    <h1 style="margin: 0; font-size: 20px; font-weight: bold; line-height: 1.5; text-align: center;">1Campus Next APP家長行動應用邀請函</h1>
+    <h1 style="margin: 0; font-size: 20px; font-weight: bold; line-height: 1.5; text-align: center;">{{APPName}}家長行動應用邀請函</h1>
     <table style="display: flex; justify-content: space-between; gap: 10px">
       <td style="flex: grow">
         <p style="margin: 0; font-size: 16px; line-height: 1.5;">親愛的 {{學生姓名}} 同學的家長您好，</p>
-        <p class="text-indent" style="margin: 0; font-size: 16px; line-height: 1.5; text-indent: 2em;">隨著新學期的開始，我們誠摯邀請您透過智慧手機下載「1Campus Next App」。透過1Campus Next App，您將能即時掌握您孩子的在校表現及便利地使用校園行動應用服務。這將有助於您時刻關注孩子的學習進展並支持他們的成長。</p>
-        <p style="margin: 0; font-size: 16px; line-height: 1.5; text-align: center;"><strong>手機掃描右方QR code</strong><strong>・</strong><strong>立即免費安裝1Campus Next App</strong></p>
+        <p class="text-indent" style="margin: 0; font-size: 16px; line-height: 1.5; text-indent: 2em;">隨著新學期的開始，我們誠摯邀請您透過智慧手機下載「{{APPName}}」。透過{{APPName}}，您將能即時掌握您孩子的在校表現及便利地使用校園行動應用服務。這將有助於您時刻關注孩子的學習進展並支持他們的成長。</p>
+        <p style="margin: 0; font-size: 16px; line-height: 1.5; text-align: center;"><strong>手機掃描右方QR code</strong><strong>・</strong><strong>立即免費安裝{{APPName}}</strong></p>
       </td>
       <td>
       <img src="https://1campus.net/assets/img/qr_next.png" width="120" height="120">
@@ -199,32 +201,32 @@ export const inviteLetterBodyWithStyle = `
         </tr>
         <tr>
           <td colspan="6" style="padding: 10px; border: 1px solid black; border-bottom: 0px solid black;">
-            <p class="text-indent" style="margin: 0; font-size: 16px; line-height: 1.5; text-indent: 2em;">1Campus Next App 是由澔學學習股份有限公司提供的智慧校園行動應用，詳細的登入及親子綁定操作說明請<strong>掃描下方QR Code或連結</strong>查看。如果您在使用過程中有任何意見或安裝問題等，歡迎透過電子郵件與我們聯繫：support@ischool.com.tw，或<strong>掃描下方QR Code，使用Line加入我們為您提供的1Campus線上客服</strong>，獲得即時協助。 祝您使用愉快！</p>
+            <p class="text-indent" style="margin: 0; font-size: 16px; line-height: 1.5; text-indent: 2em;">{{APPName}} 是由澔學學習股份有限公司提供的智慧校園行動應用，詳細的登入及親子綁定操作說明請<strong>掃描下方QR Code或連結</strong>查看。如果您在使用過程中有任何意見或安裝問題等，歡迎透過電子郵件與我們聯繫：support@ischool.com.tw，或<strong>掃描下方QR Code，使用Line加入我們為您提供的1Campus線上客服</strong>，獲得即時協助。 祝您使用愉快！</p>
           </td>
         </tr>
         <tr style="display: flex; justify-content: space-between;">
           <td colspan="3" text-align: center" align="center">
             <p style="margin: 0; font-size: 16px; line-height: 1.5;"><strong>操作說明</strong></p>
-            <p style="margin: 0; font-size: 16px; line-height: 1.5;">https://reurl.cc/5dp41q</p>
-            <img src="https://devapi.1campus.net/api/code/qrcode/img?chld=M&chs=120x120&cht=qr&choe=UTF-8&chl=https://reurl.cc/5dp41q" style="width: 120px; height: 120px">
+            <p style="margin: 0; font-size: 16px; line-height: 1.5;">{{操作說明URL}}</p>
+            <img src="https://devapi.1campus.net/api/code/qrcode/img?chld=M&chs=120x120&cht=qr&choe=UTF-8&chl={{操作說明URL}}" style="width: 120px; height: 120px">
           </td>
           <td colspan="3" text-align: center" align="center">
             <p style="margin: 0; font-size: 16px; line-height: 1.5;"><strong>Line客服</strong></p>
-            <p style="margin: 0; font-size: 16px; line-height: 1.5;">https://lin.ee/WnRTX6M</p>
-            <img src="https://devapi.1campus.net/api/code/qrcode/img?chld=M&chs=120x120&cht=qr&choe=UTF-8&chl=https://lin.ee/WnRTX6M" style="width: 120px; height: 120px">
+            <p style="margin: 0; font-size: 16px; line-height: 1.5;">{{Line客服URL}}</p>
+            <img src="https://devapi.1campus.net/api/code/qrcode/img?chld=M&chs=120x120&cht=qr&choe=UTF-8&chl={{Line客服URL}}" style="width: 120px; height: 120px">
           </td>
         </tr>
         <tr>
           <td colspan="6" align="right">
             <p style="margin: 0; font-size: 16px; line-height: 1.5; text-align: end;"><strong>{{學校名稱}}</strong></p>
-            <p style="margin: 0; font-size: 16px; line-height: 1.5;">*1Campus Next App最低系統需求為 iOS 13.0 或 Android 10 以上</p>
+            <p style="margin: 0; font-size: 16px; line-height: 1.5;">*{{APPName}}最低系統需求為 iOS 13.0 或 Android 10 以上</p>
           </td>
         </tr>
       </tbody>
     </table>
     <hr>
     <br>
-    <h2 style="margin: 0; text-align: center; font-size: 18px; font-weight: bold; line-height: 1.5;">1Campus Next APP安裝確認回執聯</h2>
+    <h2 style="margin: 0; text-align: center; font-size: 18px; font-weight: bold; line-height: 1.5;">{{APPName}}安裝確認回執聯</h2>
     <table style="border-collapse: collapse; border-spacing: 0px; width: 100%; padding: 10px; border: 1px solid black;" width="100%">
       <tbody>
         <tr>

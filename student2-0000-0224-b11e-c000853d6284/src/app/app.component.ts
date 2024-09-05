@@ -13,7 +13,6 @@ import { EditModalComponent } from './edit-modal/edit-modal.component';
 import { EditParentComponent } from './edit-parent/edit-parent.component';
 import { StatusPipe } from './shared/pipes/status.pipe';
 import { StudentManage } from './student-manage';
-import { inviteLetterBody, inviteLetterStyle } from './shared/invite-letter-template';
 import { InviteLettersModalComponent } from './invite-letters-modal/invite-letters-modal.component';
 import { ParentCodeModalComponent } from './parent-code-modal/parent-code-modal.component';
 
@@ -141,36 +140,6 @@ export class AppComponent implements OnInit {
     }
   }
 
-  SingleInviteLetter() {
-    const dsns =  this.sm.getDsns();
-    const schoolName = this.sm.getSchoolName();
-    const QRcodeString = this.curStudent.ParentCode && dsns ? encodeURIComponent(`${this.curStudent.ParentCode}@${dsns}`) : "";
-    const QRcode = (this.curStudent.ParentCode && dsns)
-        ? `<img src="https://devapi.1campus.net/api/code/qrcode/img?chld=M&chs=120x120&cht=qr&choe=UTF-8&chl=${QRcodeString}"  style="width: 120px; height: 120px">`
-        : "<div style='width: 120px; height: 120px'>  </div>";
-    const studentHtml = inviteLetterBody
-    .replace(/{{學校名稱}}/g, schoolName)
-    .replace(/{{學生姓名}}/g, this.curStudent.StudentName)
-    .replace(/{{家長代碼}}/g, this.curStudent.ParentCode)
-    .replace(/{{QRcode}}/g, QRcode)
-    .replace(/{{年級}}/g, this.curStudent.GradeYear ? this.curStudent.GradeYear + " 年級" : "")
-    .replace(/{{班級名稱}}/g, this.curStudent.ClassName)
-    .replace(/{{座號}}/g, this.curStudent.SeatNo);
-      const html = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>${this.curStudent.StudentName}邀請函</title>
-          ${inviteLetterStyle}
-        </head>
-      <body>
-          ${studentHtml}
-      </body>
-      </html>`;
-    
-    const newWin = window.open('', `邀請函-${this.curStudent.StudentName}`);
-    newWin.document.body.innerHTML = html
-  }
 
   openInviteLetterDialog(): void {
     const dialogRef = this.dialog.open(InviteLettersModalComponent, {

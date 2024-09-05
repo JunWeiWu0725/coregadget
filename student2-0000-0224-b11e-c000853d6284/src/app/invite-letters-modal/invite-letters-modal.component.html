@@ -9,8 +9,16 @@
   </button>
 </div>
 <mat-dialog-content>
-  <div class="grid grid-cols-2">
+  <div class="grid grid-cols-2 gap-1">
     <div class="">
+      <div class="overflow-hidden">
+        <select name="appSelect" id="" [(ngModel)]="appType" class="appSelect">
+          <option value="1Campus" [defaultSelected]="true">
+            1Campus Next APP
+          </option>
+          <option value="hcpts">竹市校園智慧通 APP</option>
+        </select>
+      </div>
       <div class="nav">
         <ul>
           <li *ngFor="let gradeYear of gradeYears">

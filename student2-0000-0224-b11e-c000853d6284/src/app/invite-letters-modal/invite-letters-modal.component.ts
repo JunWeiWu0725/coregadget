@@ -5,7 +5,7 @@ import {
   inviteLetterBody,
   inviteLetterStyle,
   inviteLetterBodyWithStyle,
-} from "../shared/invite-letter-template";
+} from "./invite-letter-template";
 import { SchoolClassRec } from "../data/school-class";
 import { StudentRec } from "../data/student";
 
@@ -31,6 +31,7 @@ export class InviteLettersModalComponent {
   ClassIdOrder: string[] = [];
   dsns: string = "";
   schoolName: string = "";
+  appType: string = "1Campus";
 
   constructor(
     public dialogRef: MatDialogRef<InviteLettersModalComponent>,
@@ -115,15 +116,44 @@ export class InviteLettersModalComponent {
   confirmSelection() {
     if (!this.checkCompleted) return; // 如果未檢查則返回
     // console.log("已選擇的學生:", this.selectedClasses);
+    const appData =
+      this.appType === "1Campus"
+        ? {
+            appName: "1Campus Next App",
+            appQRcode: `<div>
+                        <img src="https://1campus.net/assets/img/qr_next.png" style="width: 120px; height: 120px">
+                      </div>`,
+            supportInfo: `1Campus Next App 是由澔學學習股份有限公司提供的智慧校園行動應用，詳細的登入及親子綁定操作說明請<strong>掃描下方QR Code或連結</strong>查看。如果您在使用過程中有任何意見或安裝問題等，歡迎透過電子郵件與我們聯繫：support@ischool.com.tw，或<strong>掃描下方QR Code，使用Line加入我們為您提供的1Campus線上客服</strong>，獲得即時協助。祝您使用愉快！`,
+            infoLink: "https://reurl.cc/5dp41q",
+            lineLink: "https://lin.ee/WnRTX6M",
+          }
+        : {
+            appName: "竹市校園智慧通APP",
+            appQRcode: `<div style="display: flex; gap: 10px">
+                        <img src="https://pts.hc.edu.tw/assets/img/qr_code_app.png" style="width: 120px;">
+                        <img src="https://pts.hc.edu.tw/assets/img/qr_code_and.png" style="width: 120px;">
+                      </div>`,
+            supportInfo: `竹市校園智慧通APP 是新竹市政府教育處提供的智慧校園行動應用，詳細的親子綁定操作說明請<strong>掃描下方QR Code 或連結</strong>查看。如果您在使用過程中有任何意見或安裝問題等，<strong>掃描下方QR Code，使用Line加入為您提供的竹市校園智慧通APP客服</strong>，獲得即時協助。祝您使用愉快！`,
+            infoLink: "https://reurl.cc/MjOybK",
+            lineLink: "https://lin.ee/E8FYj9r",
+          };
     let html = "";
     this.selectedStudents.forEach((student) => {
-      const QRcodeString = student.ParentCode && this.dsns ? encodeURIComponent(`${student.ParentCode}@${this.dsns}`) : "";
+      const QRcodeString =
+        student.ParentCode && this.dsns
+          ? encodeURIComponent(`${student.ParentCode}@${this.dsns}`)
+          : "";
       const QRcode =
         student.ParentCode && this.dsns
           ? `<img src="https://devapi.1campus.net/api/code/qrcode/img?chld=M&chs=120x120&cht=qr&choe=UTF-8&chl=${QRcodeString}"  style="width: 120px; height: 120px">`
           : "<div style='width: 120px; height: 120px'>  </div>";
       const studentHtml = inviteLetterBody
         .replace(/{{學校名稱}}/g, this.schoolName)
+        .replace(/{{APPName}}/g, appData.appName)
+        .replace(/{{AppQRcode}}/g, appData.appQRcode)
+        .replace(/{{支援資訊}}/g, appData.supportInfo)
+        .replace(/{{操作說明URL}}/g, appData.infoLink)
+        .replace(/{{Line客服URL}}/g, appData.lineLink)
         .replace(/{{學生姓名}}/g, student.StudentName)
         .replace(/{{家長代碼}}/g, student.ParentCode)
         .replace(/{{QRcode}}/g, QRcode)
@@ -136,9 +166,18 @@ export class InviteLettersModalComponent {
       html += studentHtml;
     });
 
-    let title = `${this.selectedClasses[0].ClassName ?? "未分班級"}${
-      this.selectedClasses.length > 1 ? "等" : ""
-    }學生邀請函`;
+    const title = `家長行動應用邀請函${new Date()
+      .toLocaleString("zh-TW", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      })
+      .replace(/\//g, "-")
+      .replace(/ /g, "-")
+      .replace(/:/g, "")}`;
 
     const newWin = window.open("");
     newWin.document.body.innerHTML = `
@@ -151,9 +190,8 @@ export class InviteLettersModalComponent {
           ${html}
         </body>
       </html>
-      `;
+    `;
 
-    // 下載word=>把上面的inviteLetterBody換成inviteLetterBodyWithStyle
     // this.Export2Word(html, title);
   }
 

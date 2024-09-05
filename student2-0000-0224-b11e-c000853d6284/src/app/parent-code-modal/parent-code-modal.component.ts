@@ -3,6 +3,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { StudentManage } from "../student-manage";
 import { SchoolClassRec } from "../data/school-class";
 import { CoreService } from "../core.service";
+import { ConfirmDialogService } from "../shared/dialog/confirm-dialog.service";
+import { ModalSize } from "../shared/dialog/confirm-dialog/confirm-dialog";
 
 interface GradeYear {
   title: string;
@@ -26,7 +28,8 @@ export class ParentCodeModalComponent {
     public dialogRef: MatDialogRef<ParentCodeModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private sm: StudentManage,
-    private coreSrv: CoreService
+    private coreSrv: CoreService,
+    public confirmSrv: ConfirmDialogService
   ) {
     this.gradeYears = this.sm.getGradeYearList().map((gradeYear) => ({
       ...gradeYear,
@@ -67,7 +70,12 @@ export class ParentCodeModalComponent {
     });
   }
 
-  async updateParentCode(classIds: string[]) {
+  async updateParentCode() {
+    if (this.saving) {
+      return;
+    }
+    // 取得所有選取的 ClassID
+    const classIds = this.selectedClasses.map((v) => v.ClassId || "none"); // 如果 ClassId 為空字串則替換為 "none"
     try {
       this.saving = true;
       // 後端需求：有效的 ClassID和"none"需要分開呼叫
@@ -123,8 +131,24 @@ export class ParentCodeModalComponent {
     // 取得所有選取的 ClassID
     const classIds = this.selectedClasses.map((v) => v.ClassId || "none"); // 如果 ClassId 為空字串則替換為 "none"
 
-    await this.updateParentCode(classIds);
+    await this.updateParentCode();
     this.dialogRef.close({ state: "refresh" });
+    this.showUpdateResult();
+  }
+
+  showUpdateResult() {
+    this.confirmSrv.show({
+      message: "家長代碼產生完成！",
+      header: "",
+      acceptLabel: "確定",
+      rejectLabel: "",
+      accept: () => {
+        this.confirmSrv.hide();
+      },
+      acceptButtonStyleClass: "bg-primary",
+      rejectButtonStyleClass: "hidden",
+      modalSize: ModalSize.MD,
+    });
   }
 
   // 測試以年級為單位產生家長代碼，(因直接傳送ClassID即可，故無需呼叫年級)

@@ -113,10 +113,6 @@
         <div>學生資訊</div>
         <div class="">
         <button [disabled]="!curStudent.StudentId"
-        [title]="!curStudent.ParentCode ? '無家長代碼QR Code留空' : ''"
-          class="btn btn-secondary rounded mr-2" (click)="SingleInviteLetter()">
-          列印邀請函</button>
-        <button [disabled]="!curStudent.StudentId"
           class="btn btn-secondary rounded"
           (click)="editStudent()">
           編輯</button>
