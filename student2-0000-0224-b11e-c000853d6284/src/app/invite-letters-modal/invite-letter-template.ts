@@ -138,7 +138,7 @@ export const inviteLetterBody = `
         <tr>
           <td>
             <p>請勾選：</p>
-            <p>☐ 已下載安裝</p>
+            <p>☐ 已下載並完成親子綁定</p>
             <p>☐ 未下載安裝</p>
           </td>
           <td>
