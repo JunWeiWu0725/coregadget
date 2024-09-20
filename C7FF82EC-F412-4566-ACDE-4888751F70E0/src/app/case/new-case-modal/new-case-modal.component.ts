@@ -287,13 +287,11 @@ export class NewCaseModalComponent implements OnInit {
     this.selectClassNameValue = this.caseStudent.ClassName;
     this.selectSeatNoValue = this.caseStudent.SeatNo;
     this.caseStudent.setIsCloseNo();
-    this.isAddMode = false;
     this.editModeString = "新增";
     this.isCanSetClass = false;
     // 個案輔導預設初級
     this.caseStudent.isCaseLevel1Checked = true;
     this.caseStudent.CaseLevel = '初級';
-    this.setCaseSource({ name: '導師轉介', checked: true });
   }
 
 

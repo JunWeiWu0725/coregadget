@@ -116,11 +116,12 @@ export class ReferralListComponent implements OnInit {
     );
   }
 
-  setNewCaseMmodal(refStudent: ReferralStudent) {
-    this.case_modal.loadData();
+  async setNewCaseMmodal(refStudent: ReferralStudent) {
     this.case_modal.setCaseFromReferral(refStudent);
+    await this.case_modal.loadData();
     this.case_modal.isAddMode = true;
     this.case_modal.caseStudent.checkValue();
+    {
       $("#newCase").modal("show");
       // 關閉畫面
       $("#newCase").on("hide.bs.modal", () => {
@@ -130,6 +131,7 @@ export class ReferralListComponent implements OnInit {
         $("#newCase").off("hide.bs.modal");
       });
     }
+  }
 
   setGrantModal(refStudent: ReferralStudent) {
     // console.log("refStudent",refStudent);
