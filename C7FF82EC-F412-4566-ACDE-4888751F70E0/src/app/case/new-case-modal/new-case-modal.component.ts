@@ -262,6 +262,7 @@ export class NewCaseModalComponent implements OnInit {
     this.caseStudent.TeacherName = refData.TeacherName;
     this.caseStudent.RefCounselInterviewID = refData.UID;
     this.caseStudent.PhotoUrl = refData.PhotoUrl;
+    this.caseStudent.StuCounselNumber = refData.StuCounselNumber;
     // 使用預設問題樣板
     this.caseStudent.useQuestionOptionTemplate();
     this.selectClassNameValue = this.caseStudent.ClassName;
