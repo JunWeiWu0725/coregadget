@@ -11,8 +11,8 @@
         oAuth: {
             clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
             clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-            // account: 'bubu@debug.ischool.com.tw',
-            // password: '1234'
+            account: 'bubu@debug.ischool.com.tw',
+            password: '1234'
         }
     });
     </script>
@@ -616,7 +616,7 @@
                                     <!--<div class="input-group" ng-class="{'has-error': !myInfo.StudentInfo.SMSPhone}">-->
                                     <div class="input-group">
                                         <!--<input type="text" class="form-control" target="sms-phone1" name="sms-phone1" placeholder="必填" ng-model="myInfo.StudentInfo.SMSPhone">-->
-                                        <input type="text" class="form-control" target="sms-phone1" name="sms-phone1" ng-model="myInfo.StudentInfo.SMSPhone">
+                                        <input id="SMSPhone1" maxlength="20" type="text" class="form-control" target="sms-phone1" name="sms-phone1" ng-model="myInfo.StudentInfo.SMSPhone" ng-change="onChangeSMSPhone()">
                                         <span class="input-group-addon" target="data-sharing" ng-click="myInfo.DataSharing.DataSharing.SMSPhone=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.SMSPhone)">
                                             <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-sms-phone1" ng-class="{notshare: myInfo.DataSharing.DataSharing.SMSPhone!='true'}"></span>
                                         </span>
@@ -624,7 +624,7 @@
                                 </td>
                                 <td>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" target="sms-phone2" name="sms-phone2" ng-model="myInfo.StudentInfo.OtherPhones.PhoneList.PhoneNumber[1]">
+                                        <input id="SMSPhone2" maxlength="20" type="text" class="form-control" target="sms-phone2" name="sms-phone2" ng-model="myInfo.StudentInfo.OtherPhones.PhoneList.PhoneNumber[1]" ng-change="onChangeSMSPhone2()">
                                         <span class="input-group-addon" target="data-sharing" ng-click="myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[1]['@text']=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[1]['@text'])">
                                             <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-sms-phone2" ng-class="{notshare: myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[1]['@text']!='true'}"></span>
                                         </span>
@@ -653,41 +653,41 @@
                             <tr>
                                 <td>
                                     <!--<div class="input-group" ng-class="{'has-error': !myInfo.StudentBrief2.EmailList.email1 || !myInfo.validEmail(myInfo.StudentBrief2.EmailList.email1)}">-->
-                                    <div class="input-group" ng-class="{'has-error': !myInfo.validEmail(myInfo.StudentBrief2.EmailList.email1)}">
+                                    <div class="input-group" ng-class="{'has-error': !myInfo.validEmail(originalEmail1Input)}">
                                         <!--<input type="text" class="{email:true} form-control" target="email1" name="email1" placeholder="必填" ng-model="myInfo.StudentBrief2.EmailList.email1">-->
-                                        <input type="text" class="{email:true} form-control" target="email1" name="email1" ng-model="myInfo.StudentBrief2.EmailList.email1">
+                                        <input id="email1" type="text" maxlength="50" class="{email:true} form-control" target="email1" name="email1" ng-model="myInfo.StudentBrief2.EmailList.email1" ng-change="onChangeEmail1()">
                                         <span class="input-group-addon" target="data-sharing" ng-click="myInfo.DataSharing.DataSharing.EmailList.Email1=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email1)">
                                             <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-email1" ng-class="{notshare: myInfo.DataSharing.DataSharing.EmailList.Email1!='true'}"></span>
                                         </span>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="input-group" ng-class="{'has-error': !myInfo.validEmail(myInfo.StudentBrief2.EmailList.email2)}">
-                                        <input type="text" class="{email:true} form-control" target="email2" name="email2" ng-model="myInfo.StudentBrief2.EmailList.email2">
+                                    <div class="input-group" ng-class="{'has-error': !myInfo.validEmail(originalEmail2Input)}">
+                                        <input id="email2" type="text" maxlength="50" class="{email:true} form-control" target="email2" name="email2" ng-model="myInfo.StudentBrief2.EmailList.email2" ng-change="onChangeEmail2()">
                                         <span class="input-group-addon" target="data-sharing" ng-click="myInfo.DataSharing.DataSharing.EmailList.Email2=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email2)">
                                             <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-email2" ng-class="{notshare: myInfo.DataSharing.DataSharing.EmailList.Email2!='true'}"></span>
                                         </span>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="input-group" ng-class="{'has-error': !myInfo.validEmail(myInfo.StudentBrief2.EmailList.email3)}">
-                                        <input type="text" class="{email:true} form-control" target="email3" name="email3" ng-model="myInfo.StudentBrief2.EmailList.email3">
+                                    <div class="input-group" ng-class="{'has-error': !myInfo.validEmail(originalEmail3Input)}">
+                                        <input id="email3" type="text" maxlength="50" class="{email:true} form-control" target="email3" name="email3" ng-model="myInfo.StudentBrief2.EmailList.email3" ng-change="onChangeEmail3()">
                                         <span class="input-group-addon" target="data-sharing" ng-click="myInfo.DataSharing.DataSharing.EmailList.Email3=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email3)">
                                             <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-email3" ng-class="{notshare: myInfo.DataSharing.DataSharing.EmailList.Email3!='true'}"></span>
                                         </span>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="input-group" ng-class="{'has-error': !myInfo.validEmail(myInfo.StudentBrief2.EmailList.email4)}">
-                                        <input type="text" class="{email:true} form-control" target="email4" name="email4" ng-model="myInfo.StudentBrief2.EmailList.email4">
+                                    <div class="input-group" ng-class="{'has-error': !myInfo.validEmail(originalEmail4Input)}">
+                                        <input id="email4" type="text" maxlength="50" class="{email:true} form-control" target="email4" name="email4" ng-model="myInfo.StudentBrief2.EmailList.email4">
                                         <span class="input-group-addon" target="data-sharing" ng-click="myInfo.DataSharing.DataSharing.EmailList.Email4=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email4)">
                                             <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-email4" ng-class="{notshare: myInfo.DataSharing.DataSharing.EmailList.Email4!='true'}"></span>
                                         </span>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="input-group" ng-class="{'has-error': !myInfo.validEmail(myInfo.StudentBrief2.EmailList.email5)}">
-                                        <input type="text" class="{email:true} form-control" target="email5" name="email5" ng-model="myInfo.StudentBrief2.EmailList.email5">
+                                    <div class="input-group" ng-class="{'has-error': !myInfo.validEmail(originalEmail5Input)}">
+                                        <input id="email5" type="text" maxlength="50" class="{email:true} form-control" target="email5" name="email5" ng-model="myInfo.StudentBrief2.EmailList.email5">
                                         <span class="input-group-addon" target="data-sharing" ng-click="myInfo.DataSharing.DataSharing.EmailList.Email5=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email5)">
                                             <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-email5" ng-class="{notshare: myInfo.DataSharing.DataSharing.EmailList.Email5!='true'}"></span>
                                         </span>
