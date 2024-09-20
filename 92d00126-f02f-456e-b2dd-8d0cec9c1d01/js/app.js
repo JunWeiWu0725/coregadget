@@ -300,6 +300,38 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
 
                         $scope.myInfo.StudentInfo.saveing = false;
 
+                        originalSMSPhoneInput = $scope.myInfo.StudentInfo.SMSPhone; // 用於存儲使用者的原始輸入
+                        previousSMSPhoneValue = maskStar($scope.myInfo.StudentInfo.SMSPhone); // 上一次的值，用於比對變化
+
+                        $scope.myInfo.StudentInfo.SMSPhone = previousSMSPhoneValue;
+
+                        originalSMSPhone2Input = $scope.myInfo.StudentInfo.OtherPhones.PhoneList.PhoneNumber[1]; // 用於存儲使用者的原始輸入
+                        previousSMSPhone2Value = maskStar($scope.myInfo.StudentInfo.OtherPhones.PhoneList.PhoneNumber[1]); // 上一次的值，用於比對變化
+                        $scope.myInfo.StudentInfo.OtherPhones.PhoneList.PhoneNumber[1] = previousSMSPhone2Value;
+
+                        $scope.originalEmail1Input = $scope.myInfo.StudentBrief2.EmailList.email1;
+                        $scope.previousEmail1Value = maskStar($scope.myInfo.StudentBrief2.EmailList.email1);
+                        $scope.myInfo.StudentBrief2.EmailList.email1 = $scope.previousEmail1Value;
+
+                        $scope.originalEmail2Input = $scope.myInfo.StudentBrief2.EmailList.email2;
+                        $scope.previousEmail2Value = maskStar($scope.myInfo.StudentBrief2.EmailList.email2);
+                        $scope.myInfo.StudentBrief2.EmailList.email2 = $scope.previousEmail2Value;
+
+                        $scope.originalEmail3Input = $scope.myInfo.StudentBrief2.EmailList.email3;
+                        $scope.previousEmail3Value = maskStar($scope.myInfo.StudentBrief2.EmailList.email3);
+                        $scope.myInfo.StudentBrief2.EmailList.email3 = $scope.previousEmail3Value;
+
+                        $scope.originalEmail4Input = $scope.myInfo.StudentBrief2.EmailList.email4;
+                        $scope.previousEmail4Value = maskStar($scope.myInfo.StudentBrief2.EmailList.email4);
+                        $scope.myInfo.StudentBrief2.EmailList.email4 = $scope.previousEmail4Value;
+
+                        $scope.originalEmail5Input = $scope.myInfo.StudentBrief2.EmailList.email5;
+                        $scope.previousEmail5Value = maskStar($scope.myInfo.StudentBrief2.EmailList.email5);
+                        $scope.myInfo.StudentBrief2.EmailList.email5 = $scope.previousEmail5Value;
+
+
+
+
                         $scope.$apply();
                     }
                 }
@@ -345,11 +377,11 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
         // if ($scope.myInfo.Willingness.IsVenture && !$scope.myInfo.Willingness.DescriptionVenture) return;
         // if ($scope.myInfo.Willingness.IsEntrepreneurialTeam && !$scope.myInfo.Willingness.DescriptionEntrpreneurial) return;
 
-        if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email1) == false) return;
-        if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email2) == false) return;
-        if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email3) == false) return;
-        if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email4) == false) return;
-        if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email5) == false) return;
+        if ($scope.myInfo.validEmail($scope.originalEmail1Input) == false) return;
+        if ($scope.myInfo.validEmail($scope.originalEmail2Input) == false) return;
+        if ($scope.myInfo.validEmail($scope.originalEmail3Input) == false) return;
+        if ($scope.myInfo.validEmail($scope.originalEmail4Input) == false) return;
+        if ($scope.myInfo.validEmail($scope.originalEmail5Input) == false) return;
         if ($scope.myInfo.validEmail($scope.myInfo.Publicist.PublicistEmail) == false) return;
 
         // if (!$scope.stu_additionals.result['my_ExternalOrganization_desc']) return;
@@ -374,14 +406,28 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
 
         var requestStudentInfo = {
             Request: {
-                Content: $scope.myInfo.StudentInfo
+                Content: {...$scope.myInfo.StudentInfo}
             }
         };
+
+        requestStudentInfo.Request.Content.SMSPhone = originalSMSPhoneInput;
+        requestStudentInfo.Request.Content.OtherPhones.PhoneList.PhoneNumber[1] = originalSMSPhone2Input;
+
+        console.log({requestStudentInfo});
+
         var requestStudentBrief2 = {
             Request: {
-                Content: $scope.myInfo.StudentBrief2
+                Content: {...$scope.myInfo.StudentBrief2}
             }
         };
+
+
+        requestStudentBrief2.EmailList.email1 = $scope.originalEmail1Input;
+        requestStudentBrief2.EmailList.email2 = $scope.originalEmail2Input;
+        requestStudentBrief2.EmailList.email3 = $scope.originalEmail3Input;
+        requestStudentBrief2.EmailList.email4 = $scope.originalEmail4Input;
+        requestStudentBrief2.EmailList.email5 = $scope.originalEmail5Input;
+
         requestStudentBrief2.Request.Content.DataSharing = $scope.myInfo.DataSharing;
         var requestWillingness = {
             Request: {
@@ -989,6 +1035,8 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
             };
             delete body_content.Request.Experience.$$hashKey;
 
+            console.log({body_content});
+
             $scope.connection.send({
                 service: service_name,
                 body: body_content,
@@ -1107,7 +1155,7 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
             $scope.experiences.current.menu.Domain = tmp;
             $scope.experiences.current.menu.Category = null;
             $scope.experiences.current.menu.Item = null;
-            
+
             $scope.experiences.current.result.IndustryID = null;
             $scope.experiences.current.result.Industry = null;
             $scope.experiences.current.result.IndustryDesc = null;
@@ -1123,12 +1171,12 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
             var tmp = $scope.experiences.current.menu.Domain['C_'+category];
             $scope.experiences.current.menu.Category = tmp;
             $scope.experiences.current.menu.Item = null;
-            
+
             $scope.experiences.current.result.IndustryID = null;
             $scope.experiences.current.result.Industry = null;
             $scope.experiences.current.result.IndustryDesc = null;
             $scope.experiences.current.result.IndustryOther = null;
-            
+
             if (tmp.Items.length == 0) {
                 $scope.experiences.current.result.Industry = tmp.Category;
                 $scope.experiences.current.result.IndustryID = tmp.UID;
@@ -1509,6 +1557,133 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
         $scope.getDataSource(function () {
             $scope.stu_additionals.load(); // 興趣/參加台大EMBA團體/參加校外組織
             $scope.experiences.load(); // 經歷
-        }); 
+        });
     });
+
+    var originalSMSPhoneInput = ""; // 用於存儲使用者的原始輸入
+    var previousSMSPhoneValue = ""; // 上一次的值，用於比對變化
+
+    var originalSMSPhone2Input = ""; // 用於存儲使用者的原始輸入
+    var previousSMSPhone2Value = ""; // 上一次的值，用於比對變化
+
+    $scope.originalEmail1Input = ""; // 用於存儲使用者的原始輸入
+    $scope.previousEmail1Value = ""; // 上一次的值，用於比對變化
+
+    $scope.originalEmail2Input = ""; // 用於存儲使用者的原始輸入
+    $scope.previousEmail2Value = ""; // 上一次的值，用於比對變化
+
+    $scope.originalEmail3Input = ""; // 用於存儲使用者的原始輸入
+    $scope.previousEmail3Value = ""; // 上一次的值，用於比對變化
+
+    $scope.originalEmail4Input = ""; // 用於存儲使用者的原始輸入
+    $scope.previousEmail4Value = ""; // 上一次的值，用於比對變化
+
+    $scope.originalEmail5Input = ""; // 用於存儲使用者的原始輸入
+    $scope.previousEmail5Value = ""; // 上一次的值，用於比對變化
+
+    $scope.onChangeSMSPhone = function() {
+
+      console.log($scope.myInfo.StudentInfo.SMSPhone)
+      const temp = maskInput(originalSMSPhoneInput, previousSMSPhoneValue, "SMSPhone1");
+      console.log({temp});
+      originalSMSPhoneInput = temp[0];
+      previousSMSPhoneValue = temp[1];
+    };
+
+    $scope.onChangeSMSPhone2 = function() {
+
+      console.log($scope.myInfo.StudentInfo.OtherPhones.PhoneList.PhoneNumber[1])
+      const temp = maskInput(originalSMSPhone2Input, previousSMSPhone2Value, "SMSPhone2");
+      console.log({temp});
+      originalSMSPhone2Input = temp[0];
+      previousSMSPhone2Value = temp[1];
+    };
+
+    $scope.onChangeEmail1 = function() {
+
+      console.log($scope.myInfo.StudentBrief2.EmailList.email1)
+      const temp = maskInput($scope.originalEmail1Input, $scope.previousEmail1Value, "email1");
+      console.log({temp});
+      $scope.originalEmail1Input = temp[0];
+      $scope.previousEmail1Value = temp[1];
+    };
+
+    $scope.onChangeEmail2 = function() {
+
+      console.log($scope.myInfo.StudentBrief2.EmailList.email2)
+      const temp = maskInput($scope.originalEmail1Input, $scope.previousEmail2Value, "email2");
+      console.log({temp});
+      $scope.originalEmail2Input = temp[0];
+      $scope.previousEmail2Value = temp[1];
+    };
+
+    $scope.onChangeEmail3 = function() {
+
+      console.log($scope.myInfo.StudentBrief2.EmailList.email3)
+      const temp = maskInput($scope.originalEmail1Input, $scope.previousEmail3Value, "email3");
+      console.log({temp});
+      $scope.originalEmail3Input = temp[0];
+      $scope.previousEmail3Value = temp[1];
+    };
+
+    $scope.onChangeEmail4 = function() {
+
+      console.log($scope.myInfo.StudentBrief2.EmailList.email4)
+      const temp = maskInput($scope.originalEmail1Input, $scope.previousEmail4Value, "email4");
+      console.log({temp});
+      $scope.originalEmail4Input = temp[0];
+      $scope.previousEmail4Value = temp[1];
+    };
+
+    $scope.onChangeEmail5 = function() {
+
+      console.log($scope.myInfo.StudentBrief2.EmailList.email5)
+      const temp = maskInput($scope.originalEmail1Input, $scope.previousEmail5Value, "email5");
+      console.log({temp});
+      $scope.originalEmail5Input = temp[0];
+      $scope.previousEmail5Value = temp[1];
+    };
+
+    function maskInput(originalInput , previousValue , elementID) {
+
+      var input = document.getElementById(elementID);
+      var currentValue = input.value;
+      var cursorPosition = input.selectionStart;
+
+      // 比較上一次的值與當前的值，找出變化
+      if (currentValue.length > previousValue.length) {
+        // 插入操作
+        var addedChar = currentValue.slice(cursorPosition - (currentValue.length - previousValue.length), cursorPosition); // 找出新增的字符
+        originalInput = originalInput.slice(0, cursorPosition - 1) + addedChar + originalInput.slice(cursorPosition - 1);
+      } else if (currentValue.length < previousValue.length) {
+        // 刪除操作
+        originalInput = originalInput.slice(0, cursorPosition) + originalInput.slice(cursorPosition + (previousValue.length - currentValue.length));
+      }
+
+      previousValue = currentValue; // 更新上次的值
+
+      // 更新顯示部分：顯示最後4個字符，隱藏其餘部分
+      if (currentValue.length > 4) {
+        var visiblePart = originalInput.slice(-4);  // 取最後4個字符
+        var maskedPart = "*".repeat(currentValue.length - 4);  // 其餘字符顯示為星號
+        input.value = maskedPart + visiblePart;  // 更新輸入框的值
+
+        // 恢復游標位置
+        input.setSelectionRange(cursorPosition, cursorPosition);
+      }
+
+      return [originalInput,previousValue];
+
+
+    }
+
+    function maskStar(currentValue){
+      if (currentValue.length > 4) {
+        var visiblePart = currentValue.slice(-4);  // 取最後4個字符
+        var maskedPart = "*".repeat(currentValue.length - 4);  // 其餘字符顯示為星號
+        return (maskedPart + visiblePart);  // 更新輸入框的值
+      } else {
+        return (currentValue);
+      }
+    }
 }]);
