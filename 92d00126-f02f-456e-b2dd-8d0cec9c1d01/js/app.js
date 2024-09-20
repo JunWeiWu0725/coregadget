@@ -1,8 +1,6 @@
 var app = angular.module("app", ["checklist-model"]);
 
 app.controller('MainCtrl', ['$scope', function ($scope) {
-    // $scope.txt = "hello";
-    // console.log({ txt: $scope.txt })
     $scope.connection = gadget.getContract("emba.student");
 
     $scope.myInfo = {};
@@ -224,6 +222,10 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
         $scope.maskedField = {};
         $scope.maskedField.smsPhone1 = { eyeIcon: 'eyec.png', inputType: 'password' };
         $scope.maskedField.smsPhone2 = { ...($scope.maskedField.smsPhone1) };
+        $scope.maskedField.contactPhone = { ...($scope.maskedField.smsPhone1) }
+        $scope.maskedField.homePhone = { ...($scope.maskedField.smsPhone1) }
+        $scope.maskedField.companyPhone = { ...($scope.maskedField.smsPhone1) };
+        $scope.maskedField.secretaryPhone = { ...($scope.maskedField.smsPhone1) };
         $scope.maskedField.email1 = { ...($scope.maskedField.smsPhone1) };
         $scope.maskedField.email2 = { ...($scope.maskedField.smsPhone1) };
         $scope.maskedField.email3 = { ...($scope.maskedField.smsPhone1) };
@@ -241,6 +243,13 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
         // console.log({ name: 'resetMaskedFields()', maskedField: $scope.maskedField});
     }
     resetMaskedFields();
+
+    $scope.cleanPhoneNo = (rawPhoneNo) => {
+        // console.log({ rawPhoneNo })
+        const result =  rawPhoneNo.replace(/\D/g, '');
+        // console.log({result});
+        return result ;
+    }
 
 
     // 將地址合併成字串
