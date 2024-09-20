@@ -11,6 +11,8 @@ export class StudentManage {
   gradeYears: GradeYearRec[] = [];
   classes: SchoolClassRec[] = [];
   students: StudentRec[] = [];
+  dsns: string = '';
+  schoolName: string = '';
 
   gradeYears$ = new BehaviorSubject([] as GradeYearRec[]);
   curClass$ = new BehaviorSubject({} as SchoolClassRec);
@@ -32,6 +34,9 @@ export class StudentManage {
       GradeYear: '',
       Students: [],
     });
+    
+    this.dsns = this.coreSrv.getDsns() || '';
+    this.setSchoolName();
   }
 
   initStudents(data: StudentRec[]) {
@@ -134,6 +139,20 @@ export class StudentManage {
     } else {
       return 0;
     }
+  }
+
+  getDsns() {
+    return this.dsns;
+  }
+
+  setSchoolName() {
+    this.coreSrv.getSchoolName().then((schoolName) => {
+      this.schoolName = schoolName || '';
+    });
+  }
+
+  getSchoolName() {
+    return this.schoolName;
   }
 
   public get classMap() {

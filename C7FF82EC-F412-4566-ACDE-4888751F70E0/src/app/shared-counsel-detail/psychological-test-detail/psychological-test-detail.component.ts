@@ -33,14 +33,10 @@ export class PsychologicalTestDetailComponent implements OnInit {
   }
 
   getStudentItemByTextID(resTestUID: string) {
-       console.log("debugger",resTestUID)
     if (this.QuizData) {
       let rsp = this.QuizData.find(x => x.uid == resTestUID);
-        console.log("quizData", rsp)
-      // let rsp = this.QuizDataAnswer.find(x => x.QuizUid == resTestUID);
       return rsp
     }
-
   }
 
 

@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { DSAService, Student, AttendanceItem, PeriodStatus, GroupType, RollCallCheck } from './../service/dsa.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GadgetService } from '../service/gadget.service';
 import { AlertService } from './../service/alert.service';
+import { I18NEXT_SERVICE, ITranslationService } from 'angular-i18next';
 
 @Component({
   selector: 'gd-teacher-helper',
@@ -30,6 +31,7 @@ export class TeacherHelperComponent implements OnInit {
     private gadget: GadgetService,
     private alert: AlertService,
     private router: Router,
+    @Inject(I18NEXT_SERVICE) private i18next: ITranslationService
   ) {
   }
 
@@ -88,7 +90,7 @@ export class TeacherHelperComponent implements OnInit {
   }
 
   getTeacherHelperText(stu: Student) {
-    return (stu.StudentID == this.teacherHelper.StudentID) ? '小幫手' : '- -';
+    return (stu.StudentID == this.teacherHelper.StudentID) ? this.i18next.t('assistant', { defaultValue: '小幫手' }) : '- -';
   }
 
   getTeacherHelperStyle(stu: Student) {

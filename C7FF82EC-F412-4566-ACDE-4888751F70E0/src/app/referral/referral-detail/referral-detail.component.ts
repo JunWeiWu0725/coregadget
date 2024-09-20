@@ -44,10 +44,10 @@ export class ReferralDetailComponent implements OnInit {
     await this.GetReferralStudentByUid();
   }
 
-  setNewCaseMmodal(refStudent: ReferralStudent) {
-    this.case_modal.loadData();
+  async setNewCaseMmodal(refStudent: ReferralStudent) {
     this.case_modal.setCaseFromReferral(refStudent);
     this.case_modal.isAddMode = true;
+    await this.case_modal.loadData();
     $("#newCase").modal("show");
     // 關閉畫面
     $("#newCase").on("hide.bs.modal", () => {

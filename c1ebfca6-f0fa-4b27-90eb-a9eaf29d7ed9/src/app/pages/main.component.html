@@ -4,15 +4,15 @@
             <li class="breadcrumb-item active d-flex"
                 aria-current="page"
                 style="width: 100%">
-                <div class="header-top" >課堂點名<span *ngIf="today">&nbsp;(&nbsp;{{today}}&nbsp;)</span></div>
+                <div class="header-top" ><ng-container *ngIf="!loading">{{ 'roll-call' | i18next }}</ng-container><span *ngIf="today">&nbsp;(&nbsp;{{today}}&nbsp;)</span></div>
                 <div style="flex: 1"></div>
                 <a routerLink="/setting"
-                   class="btn btn-sm btn-default">
+                   class="btn btn-sm btn-default text-capitalize">
                    <!-- <i class="material-icons material-icons-outlined"
                    style="color:#C9C9C9">
                    settings_applications
                 </i> -->
-                   設定</a>
+                <ng-container *ngIf="!loading">{{ 'setting' | i18next }}</ng-container></a>
                  
                 <!-- <button (click)=openSubstitute() type="button" class="btn btn-lg btn-info">代課課程</button> -->
             </li>
@@ -25,10 +25,10 @@
     <ul class="list-group mb-3"
         *ngIf="!loading;else Loading">
         <li class="grid grid-cols-5 lg:grid-cols-7 items-center list-group-item active py-2  main-bg-color">
-            <div class="col-span-2 lg:col-span-3 text-nowrap"><b>今日點名</b></div>
-            <div class="col-span-1 lg:col-span-2 text-nowrap text-center"><b>節次</b></div>
-            <div class="text-center px-1" style="min-width: 45px;"><b>教師已點名</b></div>
-            <div class="text-center px-1" style="min-width: 45px;"><b>小幫手點名</b></div>
+            <div class="col-span-2 lg:col-span-3 text-nowrap"><b>{{ 'roll-call-today' | i18next }}</b></div>
+            <div class="col-span-1 lg:col-span-2 text-nowrap text-center"><b>{{ 'session' | i18next }}</b></div>
+            <div class="text-center px-1" style="min-width: 45px;"><b>{{ 'teacher-called' | i18next }}</b></div>
+            <div class="text-center px-1" style="min-width: 45px;"><b>{{ 'assistant-called' | i18next }}</b></div>
         </li>
         <ng-container *ngIf="conf&&conf.Schedule&&conf.Schedule.length; else noSchedule">
             <li class="list-group-item point"
@@ -62,7 +62,7 @@
             <li class="list-group-item point">
                 <div class="row">
                     <div class="col-8 text-nowrap">
-                        <span class="pr-3 text-muted">沒有點名紀錄</span>
+                        <span class="pr-3 text-muted">{{ 'no-roll-call-record' | i18next }}</span>
                     </div>
                     <div class="col-2 text-nowrap text-center"></div>
                     <div class="col-1 text-center">
@@ -79,16 +79,16 @@
             <button (click)=openSubstitute()
                     type="button"
                     style="float:right"
-                    class="btn btn-sm btn-info">代課點名</button>
+                    class="btn btn-sm btn-info text-capitalize">{{ 'sub-teacher-call' | i18next }}</button>
             <button (click)=openClassSubstitute()
                     type="button"
                     style="float:right"
-                    class="btn btn-sm btn-info mr-1">代班導師點名</button>
+                    class="btn btn-sm btn-info mr-1 text-capitalize">{{ 'sub-hr-teacher-call' | i18next }}</button>
         </div>
         <li class="list-group-item active d-flex align-items-center py-2  main-bg-color">
          
-                <div class="col-8 col-lg-10 text-nowrap"> <b>我的課程</b></div>
-                <div class="col-4 col-lg-2 text-nowrap"> <b class="ml-2">小幫手</b></div>
+                <div class="col-8 col-lg-10 text-nowrap"> <b>{{ 'my-courses' | i18next }}</b></div>
+                <div class="col-4 col-lg-2 text-nowrap"> <b class="ml-2">{{ 'assistant' | i18next }}</b></div>
           
           
         
@@ -114,7 +114,7 @@
             <li class="list-group-item point">
                 <div class="d-flex justify-content-between align-items-center row">
                     <div class="col-11 text-nowrap">
-                        <span class="pr-3 text-muted">沒有教授課程</span>
+                        <span class="pr-3 text-muted">{{ 'no-teaching-course' | i18next }}</span>
                     </div>
                     <div class="col-1 text-nowrap">
                     </div>

@@ -75,18 +75,32 @@ export class NewCaseModalComponent implements OnInit {
   photoIsShow: boolean = true;
   // 輔導老師清單
   CounselTeacherList: CounselTeacher[];
+  caseliteList: { StudentID: string, UID: string, StuCounselNumber: string, CaseNo: string }[] = []; // 現有所有學生代號及個案編號之陣列
 
-  ngOnInit() {
+
+  async ngOnInit() {
     this.caseStudent = new CaseStudent();
+    await this.GetCase();
     //  this.loadData();
   }
-  sayHi() {
 
-    alert("Hey sss");
+  /** 取得所有現有個案 並整理至 個案編號及學生代號清單 */
+  async GetCase() {
+    try {
+      let resp = await this.dsaService.send("GetCase", {
+        Request: {}
+      });
+      [].concat(resp.Case || []).forEach(caseRec => {
+        this.caseliteList.push( { StudentID: caseRec.StudentID, UID: caseRec.UID, StuCounselNumber: caseRec.StuCounselNumber, CaseNo: caseRec.CaseNo }); 
+      });
+    } catch (ex) {
+      console.log("取得個案資料發生錯誤",ex);
+    }
 
   }
-  async loadData() {
 
+
+  async loadData() {
     this.CounselTeacherList = [];
     this.selectGradeValue = "請選擇年級";
     this.selectClassNameValue = "請選擇班級";
@@ -99,8 +113,8 @@ export class NewCaseModalComponent implements OnInit {
     this.loadUpdateCataTerm();//載入有修正
 
 
-    await this.GetDefault();
 
+    await this.GetDefault();
     if (!this.caseStudent) this.caseStudent = new CaseStudent();
 
     // 檢查狀態
@@ -136,16 +150,26 @@ export class NewCaseModalComponent implements OnInit {
 
   setCaseSource(item: { name, checked }) {
 
-
     this.caseStudent.checkValue();
   }
 
   /** 確認CaseNum 是否重複  */
   checkCaseNum(caseInfo: any) {
-    let target = this.caseList.find(x => x.CaseNo == caseInfo.CaseNo);
+    if (!caseInfo.CaseNo) return;
+    let target = this.caseliteList.find(x => ( x.CaseNo == caseInfo.CaseNo ) && ( x.UID !== caseInfo.UID ) );
     if (target) {
-      alert('個案編號重複，請重新輸入')
-      caseInfo.CaseNo = ""
+      alert('個案編號重複，請重新輸入');
+      caseInfo.CaseNo = "";
+    }
+
+  }
+  /** 確認學生代號是否重複 */
+  checkStuCounselNumber(caseInfo: CounselStudent) {
+    if (!caseInfo.StuCounselNumber) return;
+    let target = this.caseliteList.find(x => (x.StuCounselNumber == caseInfo.StuCounselNumber) && (x.StudentID !== caseInfo.StudentID));
+    if (target) {
+      alert('學生代號重複，請重新輸入');
+      caseInfo.StuCounselNumber = "";
     }
 
   }
@@ -186,7 +210,7 @@ export class NewCaseModalComponent implements OnInit {
 
   //設定座號
   setSeatNo(item: CounselStudent) {
-
+    console.log('item...counselStudent', item)
     this.selectSeatNoValue = item.SeatNo;
     this.selectStudentName = item.StudentName;
     // this.caseStudent = new CaseStudent();
@@ -197,6 +221,7 @@ export class NewCaseModalComponent implements OnInit {
     this.caseStudent.Gender = item.Gender;
     this.caseStudent.StudentID = item.StudentID;
     this.caseStudent.StudentIdentity = item.Status;
+    this.caseStudent.StuCounselNumber = item.StuCounselNumber;
 
 
 
@@ -227,7 +252,7 @@ export class NewCaseModalComponent implements OnInit {
         }
 
         // 清除結案日期
-        this.caseStudent.CloseDate ="";
+        this.caseStudent.CloseDate = "";
         // 清除結案教師名稱
         this.closedTeacherName = ""
         // 清除結案教師
@@ -256,18 +281,17 @@ export class NewCaseModalComponent implements OnInit {
     this.caseStudent.TeacherName = refData.TeacherName;
     this.caseStudent.RefCounselInterviewID = refData.UID;
     this.caseStudent.PhotoUrl = refData.PhotoUrl;
+    this.caseStudent.StuCounselNumber = refData.StuCounselNumber;
     // 使用預設問題樣板
     this.caseStudent.useQuestionOptionTemplate();
     this.selectClassNameValue = this.caseStudent.ClassName;
     this.selectSeatNoValue = this.caseStudent.SeatNo;
     this.caseStudent.setIsCloseNo();
-    this.isAddMode = false;
     this.editModeString = "新增";
     this.isCanSetClass = false;
     // 個案輔導預設初級
     this.caseStudent.isCaseLevel1Checked = true;
     this.caseStudent.CaseLevel = '初級';
-    this.setCaseSource({ name: '導師轉介', checked: true });
   }
 
 
@@ -398,7 +422,7 @@ export class NewCaseModalComponent implements OnInit {
       this.caseStudent.isSaveButtonDisable = true;
       try {
         // 新增個案
-
+        console.log("this.caseStudent", this.caseStudent)
         await this.AddCase(this.caseStudent);
         $("#newCase").modal("hide");
         this.caseStudent.isSaveButtonDisable = false;
@@ -492,7 +516,6 @@ export class NewCaseModalComponent implements OnInit {
 
   // 取得預設資料
   async GetDefault() {
-
     // 取得個案可以使用教師
     this.CounselTeacherList = [];
     let dataList: CounselTeacher[] = [];
@@ -522,16 +545,17 @@ export class NewCaseModalComponent implements OnInit {
         });
       }
 
-
       // 取得輔導班級
       this.canSelectClassList = [];
+      this.canSelectGradeYear = [];
+      this.canSelectClassByMap = new Map();
+      await this.counselStudentService.reload();
       this.counselStudentService.counselClass.forEach(data => {
         if (data.Role.indexOf("輔導老師") > -1) {
           this.canSelectClassList.push(data);
-          console.log("data", data)
           // 依年級 放入 Map
           if (!this.canSelectClassByMap.has(data.GradeYear)) {
-            console.log("dat22", data)
+
             // 1 .如果沒有就放入
             this.canSelectClassByMap.set(data.GradeYear, []);
             this.canSelectGradeYear.push(data.GradeYear);
@@ -654,11 +678,12 @@ export class NewCaseModalComponent implements OnInit {
       CaseSource: data.changeCaseSourceToString(),
       RefCounselInterviewID: data.RefCounselInterviewID,
       IsClosed: data.IsClosed,
-      CloseDate: data.CloseDate ,
+      CloseDate: data.CloseDate,
       CaseLevel: data.CaseLevel,
       CaseTeacher: reqCaseTeacher,
       StudentStatus: data.StudentStatus,
-      TeacherCounselLevels: data.TeacherCounselLevels
+      TeacherCounselLevels: data.TeacherCounselLevels,
+      StuCounselNumber: data.StuCounselNumber
     };
     try {
       let resp = await this.dsaService.send("AddCase", {
@@ -684,8 +709,8 @@ export class NewCaseModalComponent implements OnInit {
     data.EvaluationResult = JSON.stringify(data.evaluation_result);
     data.StudentStatus = JSON.stringify(data.student_status); //2022 新版跟格 學生狀態
     data.TeacherCounselLevels = JSON.stringify(data.teacher_counsel_level);
-    
-    data.CloseDate = data.CloseDate ? data.CloseDate.replace("/", "-").replace("/", "-"):null;
+
+    data.CloseDate = data.CloseDate ? data.CloseDate.replace("/", "-").replace("/", "-") : null;
 
 
     let reqCaseTeacher = [];
@@ -721,7 +746,8 @@ export class NewCaseModalComponent implements OnInit {
         CaseLevel: data.CaseLevel,
         CaseTeacher: reqCaseTeacher,
         StudentStatus: data.StudentStatus,
-        TeacherCounselLevels: data.TeacherCounselLevels
+        TeacherCounselLevels: data.TeacherCounselLevels,
+        StuCounselNumber: data.StuCounselNumber
       };
 
 

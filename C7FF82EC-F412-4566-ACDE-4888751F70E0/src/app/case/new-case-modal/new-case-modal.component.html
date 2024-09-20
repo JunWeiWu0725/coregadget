@@ -88,6 +88,8 @@
                     }} {{item.StudentName}}</a>
                 </div>
               </div>
+    
+              
             </div>
 
           </ng-container>
@@ -103,13 +105,29 @@
 
 
           <div class="form-row mt-3 ml-1  ">
+            <div class="form-group col-md-3 ">
+              
+              <label for="stuCounselNum" class="col-form-label "> 
+                <span class="text-samll text-danger" style="width:10px; height: 10px; display: inline-block; ">
+                  <ng-container *ngIf="!caseStudent.isStuCounselNumberHasValue">*</ng-container>
+                  <!-- {{caseStudent.isStuCounselNumberHasValue}} -->
+                </span>
+                <div *ngTemplateOutlet="icon"></div>
+                <b class="question_title">學生代號</b>
+              </label>
+            
+                <input type="text" class="form-control" id="stuCounselNum" placeholder="學生代號"
+                  [(ngModel)]="caseStudent.StuCounselNumber" (keyup)="caseStudent.checkValue()"
+                  (focusout)="checkStuCounselNumber(caseStudent)" />
+            
+            </div>
             <div class="form-group col-md-3">
               <label for="schoolYear" class="col-form-label ">
                 <!-- <span class="text-samll text-danger"
                     *ngIf="!caseStudent.isCaseNoHasValue">*</span> -->
 
                 <div *ngTemplateOutlet="icon"></div>
-                <b class="question_title"> 個案編號(學生代號)</b>
+                <b class="question_title"> 個案編號</b>
 
               </label>
               <input type="text" class="form-control" id="schoolYear" placeholder="請輸入個案編號"

@@ -12,9 +12,15 @@
           <span class="pr-1">匯入名單</span>
           <span class="iconify text-2xl" data-icon="uil:import" data-inline="false"></span>
         </button>
-        <button class="btn btn-primary rounded-full mt-2 md:mt-0 md:mr-auto" (click)="exportStudent()">
+        <button class="btn btn-primary rounded-full mt-2 md:mt-0 md:mr-2" (click)="exportStudent()">
           <span class="pr-1">匯出名單</span>
           <span class="iconify text-2xl" data-icon="uil:export" data-inline="false"></span>
+        </button>
+        <button class="btn btn-primary rounded-full mt-2 md:mt-0 md:mr-2">
+          <span class="pr-1" (click)="openParentCodeDialog()">產生家長代碼</span>
+        </button>
+        <button class="btn btn-primary rounded-full mt-2 md:mt-0 md:mr-auto" (click)="openInviteLetterDialog()">
+          <span class="pr-1">批次列印邀請函</span>
         </button>
       </div>
     </div>
@@ -105,10 +111,12 @@
       <div class="border-2 border-primary h-11 mr-4 rounded-full"></div>
       <div class="flex items-center justify-between w-full">
         <div>學生資訊</div>
+        <div class="">
         <button [disabled]="!curStudent.StudentId"
           class="btn btn-secondary rounded"
           (click)="editStudent()">
           編輯</button>
+        </div>
       </div>
     </div>
     <div>

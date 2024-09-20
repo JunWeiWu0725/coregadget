@@ -1,0 +1,102 @@
+<div class="flex justify-between items-center">
+  <span class="gadget_bigtitle">選擇產生家長代碼的範圍</span>
+  <button class="btn ml-auto" mat-dialog-close>
+    <span
+      class="iconify close-window"
+      data-icon="eva:close-fill"
+      data-inline="false"
+    ></span>
+  </button>
+</div>
+<mat-dialog-content>
+  <div class="grid">
+    <div class="">
+      <div class="nav">
+        <ul>
+          <li *ngFor="let gradeYear of gradeYears">
+            <label>
+              <input
+                type="checkbox"
+                (change)="
+                  toggleGradeSelection(gradeYear, $event.target.checked)
+                "
+                [checked]="isGradeSelected(gradeYear)"
+                class="cursor-pointer"
+              />
+              <button
+                (click)="gradeYear.open = !gradeYear.open"
+                class="btn inline-flex items-center rounded text-left font-semibold px-2 ml-2"
+              >
+                <span>
+                  {{ gradeYear.title ? gradeYear.title + "年級" : "未分年級" }}
+                  ({{ gradeYear.studentsCount }})
+                </span>
+                <svg
+                  fill="currentColor"
+                  class="transition-transform duration-200 transform ml-2 -mt-1"
+                  [ngClass]="{
+                    '-rotate-90': gradeYear.open,
+                    'rotate-90': !gradeYear.open
+                  }"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  focusable="false"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill="#4f4f4f"
+                    d="M10 19a1 1 0 0 1-.64-.23a1 1 0 0 1-.13-1.41L13.71 12L9.39 6.63a1 1 0 0 1 .15-1.41a1 1 0 0 1 1.46.15l4.83 6a1 1 0 0 1 0 1.27l-5 6A1 1 0 0 1 10 19z"
+                  />
+                </svg>
+              </button>
+            </label>
+            <div [hidden]="!gradeYear.open" class="ml-8">
+              <ul>
+                <li *ngFor="let item of gradeYear.classes">
+                  <label class="mt-2 rounded inline-flex p-2 items-center">
+                    <input
+                      type="checkbox"
+                      (change)="
+                        toggleClassSelection(item, $event.target.checked)
+                      "
+                      [checked]="isClassSelected(item)"
+                      class="cursor-pointer"
+                    />
+                    <span class="ml-2">
+                      {{ item.ClassName || "未分班級" }} ({{
+                        item.Students.length
+                      }})
+                    </span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <div class="w-full flex justify-between items-center">
+    <div class="">
+      <span *ngIf="selectedStudentsCount > 0" class="">
+        已選擇 {{ selectedStudentsCount }} 位學生
+      </span>
+    </div>
+    <div class="flex items-center">
+      <p class="text-red-500 font-bold mr-4">
+        ※注意！批次產生家長代碼將會覆蓋現有資料
+      </p>
+      <button
+        class="btn btn-primary rounded-full"
+        (click)="confirmSelection()"
+        [disabled]="selectedStudentsCount === 0"
+      >
+        確認
+      </button>
+    </div>
+  </div>
+</mat-dialog-actions>

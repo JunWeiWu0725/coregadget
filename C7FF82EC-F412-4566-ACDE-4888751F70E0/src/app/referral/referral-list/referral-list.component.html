@@ -21,6 +21,7 @@
           <li class="sticky-top">班級</li>
           <li class="sticky-top">座號</li>
           <li class="sticky-top">姓名</li>
+          <li class="sticky-top">學生代號</li>
           <li class="sticky-top">性別</li>
           <li class="sticky-top">班導師</li>
           <li class="sticky-top">轉介日期</li>
@@ -46,6 +47,10 @@
             <li data-title="姓名"
                 (click)="toCounselDetail(item)">
               {{ item.Name }}
+            </li>
+            <li data-title="學生代號"
+                (click)="toCounselDetail(item)">
+              {{ item.StuCounselNumber }}
             </li>
             <li data-title="性別"
                 (click)="toCounselDetail(item)">
@@ -80,8 +85,8 @@
                       data-backdrop="static"
                       data-target="#grant">
                 編輯授理狀況
-              </button>
-              <button class="btn btn-light font_size_m"
+              </button> 
+              <button class="btn btn-light font_size_m" 
                       data-toggle="modal"
                       data-backdrop="static"
                       data-target="#newCase"

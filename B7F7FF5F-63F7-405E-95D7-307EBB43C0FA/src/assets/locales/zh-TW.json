@@ -1,0 +1,22 @@
+{
+  "welcome": "歡迎來到您的 Angular App",
+  "roll-call": "課堂點名",
+  "roll-call-today": "今日點名",
+  "session": "節次",
+  "teacher-called": "已點名",
+  "assistant-called": "學生點名",
+  "courses": "課程",
+  "teacher": "授課教師",
+  "select-absence-type": "選擇假別",
+  "please-select-absence-type": "請選擇假別！",
+  "unable-to-adjust-absence": "此學生無法調整缺曠。",
+  "save": "儲存",
+  "saving": "儲存中...",
+  "save-success": "儲存成功",
+  "not-assigned-as-roll-call-assistant": "本學期未被指定爲點名小幫手。",
+  "teacher-already-called-roll": "課堂老師已點名，無法再進行點名動作。",
+  "teacher-confirmation": "授課教師確認",
+  "roll-call-pw": "點名密碼",
+  "skip": "略過",
+  "confirm": "確定"
+}

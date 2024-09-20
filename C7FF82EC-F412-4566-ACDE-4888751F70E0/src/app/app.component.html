@@ -3,7 +3,8 @@
   <router-outlet name="simple-page"></router-outlet>
 
 
-  <div  id="appcomponent" class="cbs d-flex justify-content-between flex-column" >
+  <div *ngIf="isTeacher" id="appcomponent" class="cbs d-flex justify-content-between flex-column" >
+    <div hidden > version 20240806 </div>
     <!-- <div hidden id="userInfo"
       style ="display: float ;
             z-index: 99;
@@ -18,12 +19,12 @@
   {{roleService.role}}
     </div> -->
     <div id="index" page>
-   
+
         <!-- <ol class="breadcrumb">
           <li class="breadcrumb-item active"
               aria-current="page">輔導紀錄</li>
         </ol> -->
-  
+
       <ul class="nav nav-justified nav-tabs mb-3 header-base ">
        <div>
         <!-- <button (click)="mode='permissionShow'" >
@@ -39,7 +40,7 @@
               (click)="!roleService.enableCounsel || routeTo('/counsel')"
               [ngClass]="{'active': currentComponent == 'counsel', 'disabled': !roleService.enableCounsel}">
               <b>{{counselStudentStr}} </b>
-           
+
             </a>
           </li>
         </ng-container>
@@ -51,7 +52,7 @@
               [ngClass]="{'active': currentComponent == 'work_service', 'disabled': !roleService.enableCounsel}">
               <b>工作管理 </b></a>
           </li>
-       
+
         </ng-container>
         <ng-container *ngIf="counsel_statisticsVisable === true">
           <li class="nav-item">
@@ -59,18 +60,18 @@
               (click)="!roleService.enableCounselStatistics || routeTo('/counsel_statistics')"
               [ngClass]="{'active': currentComponent == 'counsel_statistics', 'disabled': !roleService.enableCounselStatistics}">
               <b> 輔導統計 </b></a>
-        
+
           </li>
         </ng-container>
         <ng-container *ngIf="referralVisable === true">
           <li class="nav-item">
-  
-  
+
+
             <a #permissionTag class="nav-link" [attr.data-toggle]="roleService.enableReferral?'tab':null"
               (click)="!roleService.enableReferral || routeTo('/referral')"
               [ngClass]="{'active': currentComponent == 'referral', 'disabled': !roleService.enableReferral}">
-  
-  
+
+
               <!-- <b *ngIf="!refferalNotDealCount"> 轉介學生 </b> -->
   <ng-container >
                 <div  class ="d-flex justify-content-center">
@@ -89,8 +90,8 @@
                 <b >轉介學生</b>
                 </div>
               </ng-container>
-  
-  
+
+
               <!-- <span class="d-none badge badge-pill badge-danger">1</span> -->
             </a>
           </li>
@@ -101,10 +102,10 @@
               (click)="!globalService.enableCase || routeTo('/case')"
               [ngClass]="{'active': currentComponent == 'case', 'disabled': !globalService.enableCase}">
               <b> 個案資料 </b></a>
-          
+
           </li>
         </ng-container>
-  
+
         <!-- <li class="nav-item">
           <a class="nav-link"
              [attr.data-toggle]="roleService.enableInterviewStatistics?'tab':null"
@@ -120,7 +121,7 @@
               <b> {{comprehensiveStr}}</b></a>
           </li>
         </ng-container>
-  
+
         <ng-container *ngIf="transferStudentVisable">
           <li class="nav-item" *ngIf="adminVisable === true">
             <a #permissionTag class="nav-link" [attr.data-toggle]="roleService.enableTransferStudents?'tab':null"
@@ -144,7 +145,7 @@
             </a>
           </li>
         </ng-container>
-  
+
         <ng-container *ngIf="psychologicalTestVisable === true">
           <li class="nav-item ">
             <a class="nav-link" [attr.data-toggle]="roleService.enableCase?'tab':null"
@@ -153,7 +154,7 @@
               <b> 心理測驗</b></a>
           </li>
         </ng-container>
-  
+
               <!-- todo -->
               <ng-container *ngIf="adminVisable === true">
                 <li class="nav-item">
@@ -173,32 +174,32 @@
               <b> 系統管理</b></a>
           </li>
         </ng-container>
-  
-  
-  
-  
+
+
+
+
       </ul>
-  
+
       <!-- style="margin-top: 0px; padding: left 20px;; -->
       <div style ="padding-left :10px; padding-right: 10px; ">
         <router-outlet></router-outlet>
       </div>
     </div>
-  
+
     <div  *ngIf="isOpenUserInfo  " class="fixed-bottom-left">
-      MyCounselTeacherRole(權限 ) :{{this.globalService.MyCounselTeacherRole}} 
+      MyCounselTeacherRole(權限 ) :{{this.globalService.MyCounselTeacherRole}}
       <br>
       teacherName(老師名稱) {{this.globalService.teacherName}}
       <br>
       currentRole  (目前角色) :{{this.roleService.role}}
-      
-  
+
+
    <!-- <select  *ngIf="mode" [(ngModel)]="selectedRole" (change)="onRoleChange($event)">
     <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
   </select> -->
     </div>
-  
-    
+
+
     <footer class="text-center p-2 mt-auto">
       Powered By ischool
     </footer>

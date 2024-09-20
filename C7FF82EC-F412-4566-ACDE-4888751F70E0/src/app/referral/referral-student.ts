@@ -14,7 +14,7 @@ export class ReferralStudent {
   ReferralReplyDate: string;
   ReferralReplyDesc: string;
   isDisplay: boolean = false;
-
+  StuCounselNumber :string ;
   isReferralReplyHasValue: boolean = false;
   isReferralReplyDateHasValue: boolean = false;
   isReferralReplyDescHasValue: boolean = false;

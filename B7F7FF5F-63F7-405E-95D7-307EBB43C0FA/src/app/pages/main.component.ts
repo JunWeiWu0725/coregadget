@@ -3,10 +3,12 @@ import { PeriodChooserComponent } from './../modal/period-chooser.component';
 import { AlertService } from './../service/alert.service';
 import { DebugComponent } from './../modal/debug.component';
 import { DSAService, RollCallRecord, SuggestRecord, PeriodConf, AbsenceConf, Schedule, CourseConf, ConfigData } from './../service/dsa.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
+import { I18NEXT_SERVICE, ITranslationService } from 'angular-i18next';
+import { GadgetService } from '../service/gadget.service';
 
 @Component({
   selector: 'gd-main',
@@ -24,17 +26,21 @@ export class MainComponent implements OnInit {
   today: string; // 今日。
   periodConfs: PeriodConf[];
   conf: ConfigData;
+  currentLanguage: string;
 
   constructor(
     private dsa: DSAService,
     private alert: AlertService,
     private dialog: MatDialog,
     private router: Router,
-    private config: ConfigService
+    private config: ConfigService,
+    private gadget: GadgetService,
+    @Inject(I18NEXT_SERVICE) private i18next: ITranslationService
   ) { }
 
   async ngOnInit() {
     await this.Init();
+    this.currentLanguage = this.i18next.language;
   }
 
   async Init() {
@@ -47,6 +53,12 @@ export class MainComponent implements OnInit {
       this.today = await this.dsa.getToday();
       this.conf = await this.dsa.getSchedule(this.today);
       this.isTeacherHelper = true;
+
+      // const language = this.gadget.getLanguage();
+      // console.log(language)
+      // if (language.split("-")[0] === "zh") {
+      //   this.i18next.changeLanguage("en");
+      // }
 
     } catch (err) {
       // this.alert.json(err);
@@ -70,7 +82,7 @@ export class MainComponent implements OnInit {
       this.router.navigate(['/pick', md1, md2, md3, md4]);  
     }
     else{
-      this.alert.json('課堂老師已點名，無法再進行點名動作。')
+      this.alert.json(this.i18next.t('teacher-already-called-roll', { defaultValue: '課堂老師已點名，無法再進行點名動作。' }))
     }
     
   }

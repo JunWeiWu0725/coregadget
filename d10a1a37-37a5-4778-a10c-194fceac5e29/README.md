@@ -32,7 +32,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 > 目標：為外師提供全英文的操作環境，可由特殊網址登入，操作特定服務，比一般 Gadget 多了登入頁，且內含子服務。
 
 
-適用於老師身分，包含登入、登出及4個子服務，可成為特殊的登入網址，登入後只會看到最多4個服務，Gradebook、Behavior、Attendance、Weekly Report。亦可將其掛載成「Behavior 課堂行為表現」Gadget。
+適用於老師身分，包含登入、登出及4個子服務，可成為特殊的登入網址，登入後只會看到最多4個服務，Gradebook、Behavior、Attendance、Routine Report。亦可將其掛載成「Behavior 課堂行為表現」Gadget。
 
 目前已設定的學校：卡爾、康橋、中科實中、遠見、復興實中、越華國際學校、葳格國際學校
 
