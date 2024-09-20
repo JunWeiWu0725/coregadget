@@ -2,12 +2,12 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
 :root {
-    --header-height : 30px;
-  }
+    --header-height: 30px;
+}
 body {
-/* background: rgba(206, 255, 250, 0.521) !important; */
+    /* background: rgba(206, 255, 250, 0.521) !important; */
 
-} 
+}
 
 
 .mat-dialog-container {
@@ -98,7 +98,7 @@ ul.rwd-table .tr li.sticky-top {
 
 .question_title {
     font-size: 1.1rem;
-    color :rgb(86, 86, 86)
+    color: rgb(86, 86, 86)
 }
 
 /* 顯示必填的星號 預留位置 讓畫面不會動來去*/
@@ -252,7 +252,7 @@ ul.rwd-table .thead li {
     color: #2e334a !important;
     font-size: 17px !important;
     background: #94d0cc17 !important;
-    
+
 
 }
 
@@ -260,8 +260,8 @@ ul.rwd-table .thead li {
 .card {
     box-shadow: none !important;
     transition: none !important;
-    border: 1px solid #00000024 !important ;
-    border: none !important ;
+    border: 1px solid #00000024 !important;
+    border: none !important;
 }
 
 
@@ -376,7 +376,7 @@ ul.rwd-table .thead li {
 }
 
 .custom-control-input:checked~.custom-control-label::after {
-    color: #2A629A !important ;
+    color: #2A629A !important;
     /* color: #A67B5B !important */
 }
 
@@ -707,53 +707,53 @@ div::-webkit-scrollbar {
 
 
 
-textarea.form-control:hover:not([rows='1']), 
-.custom-select:hover[multiple], 
+textarea.form-control:hover:not([rows='1']),
+.custom-select:hover[multiple],
 .custom-select:hover[size]:not([size='1']),
-textarea.form-control:focus:not(.textarea-autosize){
+textarea.form-control:focus:not(.textarea-autosize) {
     box-shadow: none !important;
     border-color: rgba(0, 0, 0, 0.42);
 }
 
-.group-section-bg{
-    background-color:rgba(118, 118, 118, 0.07) ;
+.group-section-bg {
+    background-color: rgba(118, 118, 118, 0.07);
 }
 
 
-textarea{
+textarea {
 
     background: rgba(189, 189, 189, 0.192) !important;
     border: none !important
 }
 
 
-.modal-body{
+.modal-body {
 
-   background-color:  #e3e3e312  ;
+    background-color: #e3e3e312;
 
 }
 
-.modal-body .sub-title{
-    color :rgb(86, 86, 86)
+.modal-body .sub-title {
+    color: rgb(86, 86, 86)
 
 }
 
 /*   */
 .info_section {
-  padding :10px  ;
-  background :rgba(230, 230, 230, 0.9) ;
-  z-index: 9999;
-  position: absolute;
-  border-radius: 3px !important;
-  font-size: 16px !important;
-  width: auto !important;
-    
+    padding: 10px;
+    background: rgba(230, 230, 230, 0.9);
+    z-index: 9999;
+    position: absolute;
+    border-radius: 3px !important;
+    font-size: 16px !important;
+    width: auto !important;
+
 
 }
 /* */
 .sticky-top , .table_header {
- font-size :1.1rem !important ;
- vertical-align: middle;
+    font-size: 1.1rem !important;
+    vertical-align: middle;
 
 }
 .mat-icon {
@@ -763,73 +763,73 @@ textarea{
 }
 
 .material-icons-align {
- 
+
     vertical-align: baseline !important;
 
 }
 
 
-.material-icons{
+.material-icons {
 
 
     font-size: 14px !important;
 }
 
 
-.upload-file-btn .icon  {
-      
-   
+.upload-file-btn .icon {
+
+
     display: inline-flex;
-    padding :7px 15px ;
+    padding: 7px 15px;
     vertical-align: baseline;
-    
-    
+
+
 }
 
 .upload-file-btn label {
- color : #3C4048 !important; 
- background: #96c6c6 !important;
- display: inline-flex;
- padding :7px 15px ;
- font-size: 1rem !important ;
- font-weight: 900;
- border-radius: 5px;
+    color: #3C4048 !important;
+    background: #96c6c6 !important;
+    display: inline-flex;
+    padding: 7px 15px;
+    font-size: 1rem !important;
+    font-weight: 900;
+    border-radius: 5px;
 }
 
 
 /*  */
 .upload-file-btn {
-    color : #45484f !important; 
+    color: #45484f !important;
     /* background: #B2B2B2 !important; */
-    padding :0px ;
+    padding: 0px;
     border-radius: 5px;
-    font-size: 1rem !important ;
+    font-size: 1rem !important;
     font-weight: 900;
-    overflow :hidden ;
-    cursor:  pointer;
+    overflow: hidden;
+    cursor: pointer;
     border: none;
-    outline: none ;
+    outline: none;
 
 }
 
 
-.upload-file-btn :active{
+.upload-file-btn :active {
     border: none;
-    outline: none ;
+    outline: none;
 }
 
 
 
-.base-semester{
-   font-size :20px ;
-   padding: 5px ;
-   font-weight: 900;
+.base-semester {
+    font-size: 20px;
+    padding: 5px;
+    font-weight: 900;
 }
-.base-studentname{
-   font-weight: 900; 
+.base-studentname {
+    font-weight: 900;
 }
 
-.header{
+.header {
     /* height: 60px; */
     position: fixed !important;
     top: 0;
@@ -840,7 +840,7 @@ textarea{
 }
 .header-base {
     height: 30px;
-    margin-bottom:10px ;
+    margin-bottom: 10px;
     width: 100%;
     /* background-color: #bae5dc; */
     z-index: 40;
@@ -848,43 +848,43 @@ textarea{
 
 .drop-list-title {
     background: #e6edebd3;
-    line-height :1.0rem !important;
+    line-height: 1.0rem !important;
 
 }
 
 .name_link {
 
-    width:80px ;
-    padding :5px;
+    width: 80px;
+    padding: 5px;
     padding-left: 10px;
     padding-right: 10px;
 
 }
-.name_link:hover{
+.name_link:hover {
 
-/* font-size : 18px */
-color : rgb(59, 59, 59);
-background-color: #c4e4e3 ;
+    /* font-size : 18px */
+    color: rgb(59, 59, 59);
+    background-color: #c4e4e3;
 
-border-radius: 5px;
-justify-content: center;
-/* border: 1rem solid; */
+    border-radius: 5px;
+    justify-content: center;
+    /* border: 1rem solid; */
 
 
-} 
+}
 
-.sub-title{
+.sub-title {
 
-    padding-bottom:  10px;
+    padding-bottom: 10px;
     font-size: 28px;
 
 
 }
 
 
-.card-body{
+.card-body {
 
-background: #fbfbfb !important;
+    background: #fbfbfb !important;
 
 }
 
@@ -908,7 +908,7 @@ padding:  0px 50px;
   }  */
 
 
-  .displayView {
+.displayView {
     position: fixed;
     top: 0;
     left: 0;
@@ -916,24 +916,29 @@ padding:  0px 50px;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5); /* 0.5 是透明度，可以根据需要调整 */
     z-index: 998; /* 确保它在其他内容之上 */
-    overflow-y: auto; 
-    padding:30px;
+    overflow-y: auto;
+    padding: 30px;
 
-  }
+}
 
 
-  .fixed-bottom-left {
+.fixed-bottom-left {
     position: fixed;
-    bottom: 0 ;
+    bottom: 0;
     left: 10;
     background-color: rgb(233, 233, 233);
-    padding: 10px; 
+    padding: 10px;
     font-size: 12px;
     border-radius: 10px;
     z-index: 999;
 }
 
-button{
-
+button {
     cursor: pointer !important;
+}
+
+.btn-light.disabled,
+.btn-light:disabled {
+    background: #E7E9EB !important;
+    cursor: default !important;
 }
