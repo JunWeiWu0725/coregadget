@@ -652,8 +652,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <!--<div class="input-group" ng-class="{'has-error': !myInfo.StudentBrief2.EmailList.email1 || !myInfo.validEmail(myInfo.StudentBrief2.EmailList.email1)}">-->
-                                    <div class="input-group" ng-class="{'has-error': !myInfo.validEmail(originalEmail1Input)}">
+                                    <div class="input-group" ng-class="{'has-error': !myInfo.StudentBrief2.EmailList.email1 || !myInfo.validEmail(myInfo.StudentBrief2.EmailList.email1)}">
                                         <!--<input type="text" class="{email:true} form-control" target="email1" name="email1" placeholder="必填" ng-model="myInfo.StudentBrief2.EmailList.email1">-->
                                         <input type="{{ maskedField.email1.inputType }}" maxlength="50" class="{email:true} form-control" target="email1" name="email1" ng-model="myInfo.StudentBrief2.EmailList.email1">
                                         <span class="input-group-addon" target="data-sharing" ng-click="myInfo.DataSharing.DataSharing.EmailList.Email1=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email1)">
