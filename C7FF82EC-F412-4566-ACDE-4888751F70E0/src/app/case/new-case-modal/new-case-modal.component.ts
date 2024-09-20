@@ -75,14 +75,32 @@ export class NewCaseModalComponent implements OnInit {
   photoIsShow: boolean = true;
   // 輔導老師清單
   CounselTeacherList: CounselTeacher[];
+  caseliteList: { StudentID: string, UID: string, StuCounselNumber: string, CaseNo: string }[] = []; // 現有所有學生代號及個案編號之陣列
 
-  ngOnInit() { 
+
+  async ngOnInit() {
     this.caseStudent = new CaseStudent();
+    await this.GetCase();
     //  this.loadData();
   }
 
-  async loadData() {
+  /** 取得所有現有個案 並整理至 個案編號及學生代號清單 */
+  async GetCase() {
+    try {
+      let resp = await this.dsaService.send("GetCase", {
+        Request: {}
+      });
+      [].concat(resp.Case || []).forEach(caseRec => {
+        this.caseliteList.push( { StudentID: caseRec.StudentID, UID: caseRec.UID, StuCounselNumber: caseRec.StuCounselNumber, CaseNo: caseRec.CaseNo }); 
+      });
+    } catch (ex) {
+      console.log("取得個案資料發生錯誤",ex);
+    }
 
+  }
+
+
+  async loadData() {
     this.CounselTeacherList = [];
     this.selectGradeValue = "請選擇年級";
     this.selectClassNameValue = "請選擇班級";
@@ -95,8 +113,8 @@ export class NewCaseModalComponent implements OnInit {
     this.loadUpdateCataTerm();//載入有修正
 
 
-    await this.GetDefault();
 
+    await this.GetDefault();
     if (!this.caseStudent) this.caseStudent = new CaseStudent();
 
     // 檢查狀態
@@ -132,25 +150,26 @@ export class NewCaseModalComponent implements OnInit {
 
   setCaseSource(item: { name, checked }) {
 
-
     this.caseStudent.checkValue();
   }
 
   /** 確認CaseNum 是否重複  */
   checkCaseNum(caseInfo: any) {
-    let target = this.caseList.find(x => x.CaseNo == caseInfo.CaseNo);
+    if (!caseInfo.CaseNo) return;
+    let target = this.caseliteList.find(x => ( x.CaseNo == caseInfo.CaseNo ) && ( x.UID !== caseInfo.UID ) );
     if (target) {
-      alert('個案編號重複，請重新輸入')
-      caseInfo.CaseNo = ""
+      alert('個案編號重複，請重新輸入');
+      caseInfo.CaseNo = "";
     }
 
   }
   /** 確認學生代號是否重複 */
   checkStuCounselNumber(caseInfo: CounselStudent) {
-    let target = this.caseList.find(x => (x.StuCounselNumber == caseInfo.StuCounselNumber) && (x.StudentID !== caseInfo.StudentID));
+    if (!caseInfo.StuCounselNumber) return;
+    let target = this.caseliteList.find(x => (x.StuCounselNumber == caseInfo.StuCounselNumber) && (x.StudentID !== caseInfo.StudentID));
     if (target) {
-      alert('學生代號重複，請重新輸入')
-      caseInfo.StuCounselNumber = ""
+      alert('學生代號重複，請重新輸入');
+      caseInfo.StuCounselNumber = "";
     }
 
   }
