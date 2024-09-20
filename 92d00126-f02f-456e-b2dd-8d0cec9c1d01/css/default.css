@@ -405,7 +405,7 @@ input[type=checkbox]:not(:disabled)~.lever:active:after {
         padding-top: 15px;
     }
     table.responsive-table thead tr th::before {
-        content: "\00a0";
+        /* content: "\00a0"; */
     }
     table.responsive-table tbody {
         display: block;
