@@ -178,14 +178,6 @@ export class InputBlockComponent implements OnInit, OnDestroy {
           }
         });
       }
-      if (this.mode.Title === '德行評語') {
-        this.newValue = student.Comment || '';
-
-        // 設定代碼表
-        this.moralList.forEach(v => {
-          this.codeList.set(v.Code, v);
-        });
-      }
 
       this.selectSeatNumber = student.SeatNumber;
 
@@ -217,9 +209,7 @@ export class InputBlockComponent implements OnInit, OnDestroy {
       } else {
         return '';
       }
-    } else if (this.mode.Title === '德行評語') {
-      return student.Comment || '';
-    } else {
+    }  else {
       return '';
     }
   }
@@ -267,8 +257,6 @@ export class InputBlockComponent implements OnInit, OnDestroy {
           Origin: '',
         });
       }
-    } else if (this.mode.Title === '德行評語') {
-      student.Comment = newValue;
     }
     this.targetDataSrv.setStudent(student);
   }

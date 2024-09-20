@@ -145,7 +145,6 @@ export class AppComponent implements OnInit, OnDestroy {
       //   break;
       //   case false: 
       //   this.modeList.push({ Title: '文字評語', GradeItemList: gradeItemList});
-      //   this.modeList.push({ Title: '德行評語', GradeItemList: ['評語']});
       //   await this.setCurrentModel(this.modeList[0]);
       //   break;
       // }
@@ -156,7 +155,6 @@ export class AppComponent implements OnInit, OnDestroy {
       } else {
         // const gradeItemList = this.textScoreList.map(item => item.Face);
         this.modeList.push({ Title: '文字評語', GradeItemList: gradeItemList });
-        this.modeList.push({ Title: '德行評語', GradeItemList: ['評語'] });
         await this.setCurrentModel(this.modeList[0]);
       }
       // 指定第一個學生的第一項成績
@@ -283,8 +281,6 @@ export class AppComponent implements OnInit, OnDestroy {
           }
           if (hasChanged) { break; }
         }
-      } else if (this.curMode.Title === '德行評語') {
-        hasChanged = (this.studentList.find(stu => (stu.Comment || '') != (stu.Origin_Comment || ''))) ? true : false;
       }
     }
     this.hasChanged = hasChanged;
@@ -316,13 +312,6 @@ export class AppComponent implements OnInit, OnDestroy {
                 Morality: moralitys
               }
             }
-          });
-        } else if (this.curMode.Title === '德行評語') {
-          content.push({
-            '@': ['StudentID'],
-            StudentID: stu.StudentID,
-            Difference: stu.Difference,
-            Comment: (stu.Comment || '').replace(/\'/g, '\'\''), // 將單引號變更為兩個單引號，否則 sql 會出錯
           });
         }
       });
@@ -359,10 +348,6 @@ export class AppComponent implements OnInit, OnDestroy {
                     v.Text = data[idx];
                   }
                 });
-              });
-            } else if (this.curMode.Title === '德行評語') {
-              this.studentList.forEach((stu, idx) => {
-                stu.Comment = data[idx];
               });
             }
             this.targetDataSrv.setStudentList(this.studentList);
@@ -415,9 +400,6 @@ export class AppComponent implements OnInit, OnDestroy {
             if (idx === 0) { header += `<td>${v.Face}</td>`; }
             body += `<td>${v.Text || ''}</td>`;
           });
-        } else if (this.curMode.Title === '德行評語') {
-          if (idx === 0)  { header += `<td>評語</td>`; }
-          body += `<td>${stu.Comment || ''}</td>`;
         }
 
         body += `</tr>`;

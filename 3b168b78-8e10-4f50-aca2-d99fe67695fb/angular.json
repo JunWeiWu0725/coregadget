@@ -21,7 +21,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/3b168b78-8e10-4f50-aca2-d99fe67695fb",
-            "index": "src/index.html",
+            "index": "src/content.htm",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
