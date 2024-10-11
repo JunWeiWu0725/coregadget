@@ -196,6 +196,10 @@ img {
   margin-bottom: .75rem
 }
 
+.ml-1 {
+  margin-left: .25rem
+}
+
 .ml-3 {
   margin-left: .75rem
 }
@@ -532,4 +536,8 @@ img {
     --tw-bg-opacity: 1;
     background-color: rgb(55 65 81 / var(--tw-bg-opacity));
   }
+}
+
+.my-video-file a {
+    color: red!important;
 }

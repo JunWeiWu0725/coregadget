@@ -59,4 +59,7 @@ export class Course {
 
   /**投點歷程編號 */
   RefConsumeID: string;
+
+  /**課程影片 */
+  VideoFile: string;
 }

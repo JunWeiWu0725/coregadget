@@ -156,6 +156,9 @@
                               <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
                                 class="leading-5 font-bold">{{item.CourseName}}</a>
                               <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                              <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                                <a [href]="item.VideoFile" __target="ExternalBrowser"><i class="fa fa-youtube-play fa-lg"></i></a>
+                              </span>
                             </div>
                             <div class="whitespace-pre-line mt-2">{{item.CourseTimeInfo}}</div>
                           </div>
@@ -214,6 +217,9 @@
                       <span [appCourseTypeBadge]="item.CourseType" class="label mr-1"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
+                      <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                        <a [href]="item.VideoFile" target="_blank"><i class="fa fa-youtube-play fa-lg"></i></a>
+                      </span>
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
                     <td>{{item.Credit}}</td>
@@ -271,6 +277,9 @@
                               <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
                                 class="leading-5 font-bold">{{item.CourseName}}</a>
                               <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                              <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                                <a [href]="item.VideoFile" __target="ExternalBrowser"><i class="fa fa-youtube-play fa-lg"></i></a>
+                              </span>
                             </div>
                             <div class="whitespace-pre-line mt-2">{{item.CourseTimeInfo}}</div>
                             <div class="whitespace-pre-line mt-2">退選時間：{{item.Time}}</div>
@@ -328,6 +337,9 @@
                       <span [appCourseTypeBadge]="item.CourseType" class="label mr-1"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
+                      <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                        <a [href]="item.VideoFile" target="_blank"><i class="fa fa-youtube-play fa-lg"></i></a>
+                      </span>
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
                     <td>{{item.Credit}}</td>
@@ -397,6 +409,9 @@
                               <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
                                 class="leading-5 font-bold">{{item.CourseName}}</a>
                               <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                              <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                                <a [href]="item.VideoFile" __target="ExternalBrowser"><i class="fa fa-youtube-play fa-lg"></i></a>
+                              </span>
                             </div>
                             <div class="whitespace-pre-line my-2">{{item.CourseTimeInfo}}</div>
                             <div *ngIf="item.ChooseItem == '1' && item.NeedPoints == 't'"
@@ -476,6 +491,9 @@
                       <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
+                      <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                        <a [href]="item.VideoFile" target="_blank"><i class="fa fa-youtube-play fa-lg"></i></a>
+                      </span>
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
                     <td>{{item.Credit}}</td>
@@ -568,6 +586,9 @@
                               <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
                                 class="leading-5 font-bold">{{item.CourseName}}</a>
                               <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                              <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                                <a [href]="item.VideoFile" __target="ExternalBrowser"><i class="fa fa-youtube-play fa-lg"></i></a>
+                              </span>
                             </div>
                             <div class="whitespace-pre-line my-2">{{item.CourseTimeInfo}}</div>
                             <div *ngIf="item.ChooseItem == '2' && item.NeedPoints == 't'"
@@ -648,6 +669,9 @@
                       <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
+                      <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                        <a [href]="item.VideoFile" target="_blank"><i class="fa fa-youtube-play fa-lg"></i></a>
+                      </span>
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
                     <td>{{item.Credit}}</td>
@@ -744,6 +768,9 @@
                               <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
                                 class="leading-5 font-bold">{{item.CourseName}}</a>
                               <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                              <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                                <a [href]="item.VideoFile" __target="ExternalBrowser"><i class="fa fa-youtube-play fa-lg"></i></a>
+                              </span>
                             </div>
                             <div class="whitespace-pre-line my-2">{{item.CourseTimeInfo}}</div>
                             <div [ngClass]="{'my-error': item.HaveConflict?.length > 0}" class="flex">
@@ -835,6 +862,9 @@
                       <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
+                      <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                        <a [href]="item.VideoFile" target="_blank"><i class="fa fa-youtube-play fa-lg"></i></a>
+                      </span>
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
                     <td>{{item.Credit}}</td>
@@ -913,6 +943,9 @@
                           <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
                             class="leading-5 font-bold">{{item.CourseName}}</a>
                           <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                          <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                            <a [href]="item.VideoFile" __target="ExternalBrowser"><i class="fa fa-youtube-play fa-lg"></i></a>
+                          </span>
                         </div>
                         <div class="whitespace-pre-line mt-2">{{item.CourseTimeInfo}}</div>
                       </div>
@@ -981,6 +1014,9 @@
                       <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
+                      <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                        <a [href]="item.VideoFile" target="_blank"><i class="fa fa-youtube-play fa-lg"></i></a>
+                      </span>
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
                     <td>{{item.Credit}}</td>
@@ -1098,6 +1134,9 @@
                           <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
                             class="leading-5 font-bold">{{item.CourseName}}</a>
                           <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                          <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                            <a [href]="item.VideoFile" __target="ExternalBrowser"><i class="fa fa-youtube-play fa-lg"></i></a>
+                          </span>
                         </div>
                         <div class="whitespace-pre-line mt-2">{{item.CourseTimeInfo}}</div>
                       </div>
@@ -1165,6 +1204,9 @@
                       <span [appCourseTypeBadge]="item.CourseType" class="label mr-1"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
+                      <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                        <a [href]="item.VideoFile" target="_blank"><i class="fa fa-youtube-play fa-lg"></i></a>
+                      </span>
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
                     <td>{{item.Credit}}</td>
