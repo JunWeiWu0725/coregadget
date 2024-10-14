@@ -841,7 +841,7 @@ export class AppComponent implements OnInit {
 
               this.isSaving = true;
               try {
-                await this.basicSrv.delSCAttendExt([course.CourseID]);
+                await this.basicSrv.delSCAttendExt([{ CourseID: course.CourseID }]);
                 if (course.StudentSetPoints) {
                   await this.basicSrv.addLog('退選', '退選預選課程', `學生「${this.student.StudentName}」退選預選課程：${course.CourseName}`);
                 }
