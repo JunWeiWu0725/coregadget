@@ -833,6 +833,7 @@ export class AppComponent implements OnInit {
           content: '<p>送出後不能將無法回復，您確定要送出嗎？</p>',
           bodyClass: 'danger',
           okBtn: {
+            show: true,
             text: '送出',
             loadingText: '儲存中...',
             clickBtn: async() => {
