@@ -345,6 +345,11 @@ export class AppComponent implements OnInit {
           item.TeacherURLName = teachers.join(', ');
         }
 
+        if (item.VideoFile) {
+          // 依網址的格式，增加 query string，沒有?就以?增加，有?的話就以&增加
+          item.ConvertedVideoURL = ((item.VideoFile.indexOf('?') < 0) ? item.VideoFile + '?' : item.VideoFile + '&') + '__target=ExternalBrowser';
+        }
+
         this.allCourse.set(item.CourseID, item);
       }
 

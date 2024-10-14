@@ -62,4 +62,7 @@ export class Course {
 
   /**課程影片 */
   VideoFile: string;
+
+  /**課程影片處理後的網址 */
+  ConvertedVideoURL: string;
 }
