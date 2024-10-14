@@ -120,7 +120,7 @@ export class AppComponent implements OnInit {
     private courseTypeFormatPipe: CourseTypeFormatPipe,
     private modalService: BsModalService,
     private viewportScroller: ViewportScroller,
-    private gadgetService: GadgetService, 
+    private gadgetService: GadgetService,
     private http: HttpClient,
     ) {
   }
@@ -722,6 +722,8 @@ export class AppComponent implements OnInit {
 
   /**取得選課最終結果 */
   async getSCAttend() {
+    this.scAttends = [];
+
     try {
       const rsp = await this.basicSrv.getSCAttendExt(this.currSchoolYear, this.currSemester);
       for (const item of rsp) {
@@ -739,6 +741,8 @@ export class AppComponent implements OnInit {
 
   /**預選課程已退選Log清單 */
   async getSCWithdrawnLog() {
+    this.scAttendWithdrawnLogs = [];
+
     try {
       const rsp = await this.basicSrv.getSCAttendExtWithdrawnLog(this.currSchoolYear, this.currSemester);
       for (const item of rsp) {
