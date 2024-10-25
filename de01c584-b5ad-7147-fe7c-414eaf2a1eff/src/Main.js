@@ -1139,7 +1139,7 @@ function Main() {
 
                             </>}
                           </div>
-
+                          <div className='text-start text-mark mt-2'>此總計成績為八大學習領域之科目成績即時運算而得。</div>
 
                           {cField.ToView === 'f' || !ExamScore ? '' :
                             <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
@@ -1220,7 +1220,6 @@ function Main() {
                             <div className='d-flex me-auto p-2 align-items-center'>
                               <div className='fs-4 fw-bold text-start'>{avgSetting}(含彈性課程)</div>
                             </div>
-
                           </div>
 
                           <div className='row align-items-center'>
@@ -1256,7 +1255,7 @@ function Main() {
 
                             </>}
                           </div>
-
+                          <div className='text-start text-mark mt-2'>此總計成績為八大學習領域(含彈性課程)之科目成績即時運算而得。</div>
 
                           {cField.ToView === 'f' || !ExamScore ? '' :
                             <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
