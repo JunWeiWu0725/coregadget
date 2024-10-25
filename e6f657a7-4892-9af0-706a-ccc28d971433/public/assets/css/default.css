@@ -40,6 +40,11 @@ body {
   color: #f9c187;
   font-size: 16px;
 }
+
+.text-mark {
+  color: #f9c187;
+}
+
 .text-more {
   color: #4a8ac7;
 }

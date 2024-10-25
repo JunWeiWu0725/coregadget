@@ -1072,13 +1072,13 @@ function Main() {
                                             </div>
                                           </div>
                                         </div>
+                                        <div className='text-start text-mark mt-2'>此成績為科目成績即時運算而得。</div>
+
                                         <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
                                           <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
                                           更多
                                         </div>
                                       </>}
-
-
 
                                     </div>
                                   </Link>
@@ -1118,23 +1118,26 @@ function Main() {
                                   <div className='row align-items-center'>
 
                                     {avgField.ToView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{avgField.ToViewTime}</div></div> :
-                                      <div className='col-12 my-2'>
-                                        <div className='row align-items-center'>
-                                          <div className='d-flex justify-content-center'>
-                                            <div className='row align-items-center'>
+                                      <>
+                                        <div className='col-12 my-2'>
+                                          <div className='row align-items-center'>
+                                            <div className='d-flex justify-content-center'>
+                                              <div className='row align-items-center'>
 
-                                              {avgField.Score !== '' && Number(avgField.Score) < avgPassingStardard ?
-                                                <div className='fs-4 text-danger me-0 pe-0'>{Math.round(Number(avgField.Score) * 100) / 100}</div>
-                                                : <div className='fs-4 me-0 pe-0'>{avgField.Score === '' ? '-' : Math.round(Number(avgField.Score) * 100) / 100}</div>}
+                                                {avgField.Score !== '' && Number(avgField.Score) < avgPassingStardard ?
+                                                  <div className='fs-4 text-danger me-0 pe-0'>{Math.round(Number(avgField.Score) * 100) / 100}</div>
+                                                  : <div className='fs-4 me-0 pe-0'>{avgField.Score === '' ? '-' : Math.round(Number(avgField.Score) * 100) / 100}</div>}
 
-                                              <div className='text-small me-0 pe-0'>分數</div>
+                                                <div className='text-small me-0 pe-0'>分數</div>
+                                              </div>
+
+                                              <div>{index === 0 || avgField.Score === '' || examAvg.Field[im].Score === '' ? '' : Number(examAvg.Field[index].Score) > Number(examAvg.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(examAvg.Field[index].Score) < Number(examAvg.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
+
                                             </div>
-
-                                            <div>{index === 0 || avgField.Score === '' || examAvg.Field[im].Score === '' ? '' : Number(examAvg.Field[index].Score) > Number(examAvg.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(examAvg.Field[index].Score) < Number(examAvg.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
-
                                           </div>
                                         </div>
-                                      </div>
+                                        <div className='text-start text-mark mt-2'>此成績為科目成績即時運算而得。</div>
+                                      </>
                                     }
 
                                   </div>
