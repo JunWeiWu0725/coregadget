@@ -100,7 +100,7 @@ function Main() {
       //GetRankInfo()
       //GetExamAvgScore();
       //GetScoreCalcRulePassingStandard();
-      GetRankAvgScore();
+      //GetRankAvgScore();
       GetExamAvgScore();
       GetExamAvgScoreInSpecificDomain();
     }
@@ -1442,10 +1442,10 @@ function Main() {
                               <div>{mField.ExamName}</div>
                             </div>
                           </div>
+
                         })}
+                        <div className='text-start text-mark mt-1'>此總計成績為八大學習領域之科目成績即時運算而得。</div>
                       </div>
-
-
                     </div>
                   </div>
                 </div>
@@ -1516,9 +1516,8 @@ function Main() {
                             </div>
                           </div>
                         })}
+                        <div className='text-start text-mark mt-1'>此總計成績為八大學習領域(含彈性課程)之科目成績即時運算而得。</div>
                       </div>
-
-
                     </div>
                   </div>
                 </div>
