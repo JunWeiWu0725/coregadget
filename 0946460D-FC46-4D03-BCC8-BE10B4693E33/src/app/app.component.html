@@ -104,7 +104,8 @@
 
             <!--沒有點名-->
 
-            <ng-container *ngIf="getRollCallLogItem(student.student_id ,period.Name)?.length == 0">
+            <!-- <ng-container *ngIf="getRollCallLogItem(student.student_id ,period.Name)?.length == 0"> -->
+            <ng-container *ngIf="!getAbsenceType(student.student_id ,period.Name)">
               <span class="blue-font" style="font-size:10px ;text-align: center; ">
                 --
               </span>
@@ -118,8 +119,8 @@
 
   <div class="accordion px-2 px-sm-3" id="qa">
     <ng-container *ngFor="let student  of StudentList; let i = index">
-      <div class="border-b py-2">
-        <div class="" id="hqa{{i}}" data-toggle="collapse" [attr.data-target]="'#qa'+ i" aria-expanded="true">
+      <div class="border-b">
+        <div class="py-2" id="hqa{{i}}" data-toggle="collapse" [attr.data-target]="'#qa'+ i" aria-expanded="true">
           <div class="">
             <button class="d-flex justify-content-between px-0 border-0 bg-white w-100" type="button">
               <div class="text-right mr-2" style="width: 20px;">{{student.seat_no}}</div>
@@ -130,24 +131,26 @@
                 getAbsenceTypeForStu(student.student_id)=='病' ? '#4caf50' :
                 getAbsenceTypeForStu(student.student_id)=='事' ? '#2196f3' : '#8f8f8f'}">
                 {{getAbsenceTypeForStu(student.student_id)}}</div>
+
             </button>
           </div>
         </div>
-        <div id="qa{{i}}" class="collapse bg-light py-2" data-parent="#qa">
-          <div class="text-justify pl-3">
-            <table class="rwd-table2">
-              <tr *ngFor="let period of PeriodList" class="d-flex flex-column">
-                <td *ngIf="getRollCallLogItem(student.student_id ,period.Name)?.length != 0"
-                  [attr.data-th]="period.Name" (click)="toogleShowdetail()" class="d-flex align-items-center">
+        <div id="qa{{i}}" class="collapse bg-light pb-2" data-parent="#qa">
+          <div class="text-justify px-5">
+            <table class="rwd-table2 w-100">
+              <tr *ngFor="let period of PeriodList" class="" style="border-bottom: 1px solid #e1e1e1; height: 40px;">
+                <td class="pl-3" style="width: 80px; font-size: 14px; color: rgb(99, 99, 99);"> {{period.Name}}</td>
+                <td (click)="toogleShowdetail()" class="text-center">
                   <ng-container *ngIf="getAbsenceType(student.student_id ,period.Name)">
-                    <span *ngIf="getAbsenceType(student.student_id ,period.Name)?.now_attendance_absence_type"
-                      class="ml-3 text-nowrap" style="color: rgb(202, 79, 79);">
+                    <!-- <span *ngIf="getAbsenceType(student.student_id ,period.Name)?.now_attendance_absence_type" -->
+                    <span
+                      class="text-nowrap" style="color: rgb(202, 79, 79);">
                       {{ getAbsenceType(student.student_id ,period.Name)?.now_attendance_absence_type}}
                     </span>
-                    <span class="blue-font"
+                    <!-- <span class="blue-font"
                       *ngIf="!getAbsenceType(student.student_id ,period.Name)?.now_attendance_absence_type">
                       --
-                    </span>
+                    </span> -->
                     <!-- <br> -->
                     <span style="font-size:10px ; color :rgb(114, 114, 124); max-width: 180px;">
                       <!--缺曠又衝堂 {{getAbsenceType(student.student_id ,period.Name)?.course_name ||'  '}} -->
@@ -202,8 +205,9 @@
 
                   <!--沒有點名-->
 
-                  <ng-container *ngIf="getRollCallLogItem(student.student_id ,period.Name)?.length == 0">
-                    <span class="blue-font" style="font-size:10px ;text-align: center; ">
+                  <!-- <ng-container *ngIf="getRollCallLogItem(student.student_id ,period.Name)?.length == 0"> -->
+                  <ng-container  *ngIf="!getAbsenceType(student.student_id ,period.Name)">
+                    <span class="" style="font-size:10px ;text-align: center; ">
                       --
                     </span>
                   </ng-container>
