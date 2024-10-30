@@ -104,8 +104,7 @@
 
             <!--沒有點名-->
 
-            <!-- <ng-container *ngIf="getRollCallLogItem(student.student_id ,period.Name)?.length == 0"> -->
-            <ng-container *ngIf="!getAbsenceType(student.student_id ,period.Name)">
+            <ng-container *ngIf="getRollCallLogItem(student.student_id ,period.Name)?.length == 0">
               <span class="blue-font" style="font-size:10px ;text-align: center; ">
                 --
               </span>
@@ -125,8 +124,7 @@
             <button class="d-flex justify-content-between px-0 border-0 bg-white w-100" type="button">
               <div class="text-right mr-2" style="width: 20px;">{{student.seat_no}}</div>
               <div class="">{{student.student_name}}</div>
-              <div class="ml-auto mr-3"
-                [ngStyle]="{'width':'24px','border-radius':'50%','color':'#fff',
+              <div class="ml-auto mr-3" [ngStyle]="{'width':'24px','border-radius':'50%','color':'#fff',
                 'background': getAbsenceTypeForStu(student.student_id)=='曠' ? '#f44336' :
                 getAbsenceTypeForStu(student.student_id)=='病' ? '#4caf50' :
                 getAbsenceTypeForStu(student.student_id)=='事' ? '#2196f3' : '#8f8f8f'}">
@@ -138,82 +136,69 @@
         <div id="qa{{i}}" class="collapse bg-light pb-2" data-parent="#qa">
           <div class="text-justify px-5">
             <table class="rwd-table2 w-100">
-              <tr *ngFor="let period of PeriodList" class="" style="border-bottom: 1px solid #e1e1e1; height: 40px;">
-                <td class="pl-3" style="width: 80px; font-size: 14px; color: rgb(99, 99, 99);"> {{period.Name}}</td>
-                <td (click)="toogleShowdetail()" class="text-center">
-                  <ng-container *ngIf="getAbsenceType(student.student_id ,period.Name)">
-                    <!-- <span *ngIf="getAbsenceType(student.student_id ,period.Name)?.now_attendance_absence_type" -->
-                    <span
-                      class="text-nowrap" style="color: rgb(202, 79, 79);">
-                      {{ getAbsenceType(student.student_id ,period.Name)?.now_attendance_absence_type}}
-                    </span>
-                    <!-- <span class="blue-font"
-                      *ngIf="!getAbsenceType(student.student_id ,period.Name)?.now_attendance_absence_type">
-                      --
-                    </span> -->
-                    <!-- <br> -->
-                    <span style="font-size:10px ; color :rgb(114, 114, 124); max-width: 180px;">
-                      <!--缺曠又衝堂 {{getAbsenceType(student.student_id ,period.Name)?.course_name ||'  '}} -->
-                      <ng-container
-                        *ngIf="getRollCallLogItem(student.student_id ,period.Name)?.length == 1 ; else Repeat1">
-                        {{getRollCallLogItem(student.student_id ,period.Name)[0]?.course_name||''}}
-                      </ng-container>
-                      <ng-template #Repeat1>
-                        <span style="color: rgb(202, 79, 79);"
-                          *ngFor="let rollCallLog of getRollCallLogItem(student.student_id ,period.Name)">
-                          ({{rollCallLog.course_name}})
-                          <br>
-                        </span>
-                      </ng-template>
-                    </span>
-                  </ng-container>
-                  <!--有點名沒有被記任何假別 -->
-                  <ng-container
-                    *ngIf="!getAbsenceType(student.student_id ,period.Name)&& getRollCallLogItem(student.student_id ,period.Name)?.length != 0"
-                    style="text-align: center ;">
-                    <!-- {{ getRollCallLogItem(student.student_id ,period.Name)}} D -->
-                    <span class="material-icons-outlined check_icon main_color ml-3 text-nowrap">
-                      done
-                    </span>
-                    <!-- <span class="material-icons-outlined">
-                        check_circle
-                        </span> -->
-                    <!-- <br> -->
+              <ng-container *ngFor="let period of PeriodList">
+                <tr *ngIf="getRollCallLogItem(student.student_id, period.Name)?.length !== 0" class=""
+                  style="border-bottom: 1px solid #e1e1e1;">
+                  <td [attr.data-th]="period.Name" (click)="toogleShowdetail()" class="d-flex justify-content-between align-items-center pl-3" style="height: 40px;">
 
-                    <span style="font-size:10px ; color :rgb(114, 114, 124)">
-                      <ng-container class="blue-font"
-                        *ngIf="getRollCallLogItem(student.student_id ,period.Name)?.length == 0">
-                        {{'--'}}
+                    <!-- 有點名並且有假別 -->
+                    <ng-container *ngIf="getAbsenceType(student.student_id, period.Name)">
+                      <span *ngIf="getAbsenceType(student.student_id, period.Name)?.now_attendance_absence_type"
+                        class="text-nowrap" style="color: rgb(202, 79, 79);">
+                        {{ getAbsenceType(student.student_id, period.Name)?.now_attendance_absence_type }}
+                      </span>
+                      <span class="blue-font"
+                        *ngIf="!getAbsenceType(student.student_id, period.Name)?.now_attendance_absence_type">
+                        --
+                      </span>
+                      <span style="font-size:10px; color: rgb(114, 114, 124); max-width: 180px;">
+                        <ng-container
+                          *ngIf="getRollCallLogItem(student.student_id, period.Name)?.length === 1; else Repeat1">
+                          {{ getRollCallLogItem(student.student_id, period.Name)[0]?.course_name || '' }}
+                        </ng-container>
+                        <ng-template #Repeat1>
+                          <span style="color: rgb(202, 79, 79);"
+                            *ngFor="let rollCallLog of getRollCallLogItem(student.student_id, period.Name)">
+                            ({{ rollCallLog.course_name }})<br>
+                          </span>
+                        </ng-template>
+                      </span>
+                    </ng-container>
 
-                      </ng-container>
-                      <!--  有點名 -->
-                      <ng-container
-                        *ngIf="getRollCallLogItem(student.student_id ,period.Name)?.length == 1 ; else Repeat">
-                        {{getRollCallLogItem(student.student_id ,period.Name)[0]?.course_name||''}}
+                    <!-- 有點名但沒有假別 -->
+                    <ng-container
+                      *ngIf="!getAbsenceType(student.student_id, period.Name) && getRollCallLogItem(student.student_id, period.Name)?.length !== 0">
+                      <span class="material-icons-outlined check_icon main_color ml-3 text-nowrap">
+                        done
+                      </span>
+                      <span style="font-size:10px; color: rgb(114, 114, 124);">
+                        <ng-container class="blue-font"
+                          *ngIf="getRollCallLogItem(student.student_id, period.Name)?.length === 0">
+                          --
+                        </ng-container>
+                        <ng-container
+                          *ngIf="getRollCallLogItem(student.student_id, period.Name)?.length === 1; else Repeat">
+                          {{ getRollCallLogItem(student.student_id, period.Name)[0]?.course_name || '' }}
+                        </ng-container>
+                        <ng-template #Repeat>
+                          <span style="color: rgb(202, 79, 79);"
+                            *ngFor="let rollCallLog of getRollCallLogItem(student.student_id, period.Name)">
+                            ({{ rollCallLog.course_name }})<br>
+                          </span>
+                        </ng-template>
+                      </span>
+                    </ng-container>
 
-                      </ng-container>
-                      <!--  衝堂 -->
-                      <ng-template #Repeat>
-                        <span style="color: rgb(202, 79, 79);"
-                          *ngFor="let rollCallLog of getRollCallLogItem(student.student_id ,period.Name)">
-                          ({{rollCallLog.course_name}})
-                          <br>
-                        </span>
-                      </ng-template>
-                    </span>
-                  </ng-container>
+                    <!-- 沒有點名 -->
+                    <ng-container *ngIf="getRollCallLogItem(student.student_id, period.Name)?.length === 0">
+                      <span style="font-size:10px; text-align: center;">
+                        --
+                      </span>
+                    </ng-container>
 
-                  <!--沒有點名-->
-
-                  <!-- <ng-container *ngIf="getRollCallLogItem(student.student_id ,period.Name)?.length == 0"> -->
-                  <ng-container  *ngIf="!getAbsenceType(student.student_id ,period.Name)">
-                    <span class="" style="font-size:10px ;text-align: center; ">
-                      --
-                    </span>
-                  </ng-container>
-
-                </td>
-              </tr>
+                  </td>
+                </tr>
+              </ng-container>
             </table>
 
           </div>
