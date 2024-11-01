@@ -121,7 +121,7 @@
   .rwd-table th,
   .rwd-table td {
     display: table-cell;
-    padding: 1em !important;
+    padding: 1em 0 !important;
     text-align: center;
   }
 
