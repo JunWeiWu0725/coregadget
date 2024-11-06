@@ -708,7 +708,7 @@ function Main() {
                   }
 
                   //缺或免  紅字
-                  if (cField.ExamScore !== '' && cField.ExamScoreText !== '')
+                  if (cField.ExamScoreText !== '')
                     examScoreColor = 'fs-4 text-danger me-0 pe-0';
                   if (cField.AssignmentScore !== '' && cField.AssignmentScoreText !== '')
                     assignmentScoreColor = 'fs-4 text-danger me-0 pe-0';
@@ -751,7 +751,9 @@ function Main() {
                                   <div className='row align-items-center'>
                                     {/* <div className={examScoreColor}>{cField.ExamScore === '' ? '-' : cField.ExamScore}</div> */}
                                     {/* 2023-12-2 及時運算sevice 使用 */}
-                                    <div className={examScoreColor}>{cField.ExamScore === '' ? '-' : cField.ExamScoreText !== '' ? cField.ExamScoreText : cField.ExamScore}</div>
+                                    <div className={examScoreColor}>
+                                      {cField.ExamScoreText !== '' ? cField.ExamScoreText : cField.ExamScore === '' ? '-' : cField.ExamScore}
+                                    </div>
                                     <div className='text-nowrap me-0 pe-0'>定期評量</div>
                                   </div>
 
@@ -1300,14 +1302,12 @@ function Main() {
                           let scoreColor = 'fs-4';
 
                           //缺或免  紅字
-                          if (nField.ExamScore !== '' && nField.ExamScoreText !== '')
+                          if (nField.ExamScoreText !== '')
                             scoreColor = 'fs-4 text-danger me-0 pe-0';
 
                           // 有成績 且 非缺 非免 且 60分以下 紅字
                           if (nField.ExamScore !== '' && nField.ExamScoreText === '' && Number(nField.ExamScore) < 60)
                             scoreColor = 'fs-4 text-danger me-0 pe-0';
-
-
 
                           let im = 0;
                           if (index !== 0)
@@ -1315,7 +1315,13 @@ function Main() {
                           return <div className='col-6 col-md-6 col-lg-6'>
                             <div className='row align-items-center my-2'>
                               <div className='d-flex justify-content-center'>
-                                <div className={scoreColor}>{nField.ToView === 't' ? nField.ExamScore === '' ? '-' : nField.ExamScore : <div className='text-unview'><div>開放查詢時間：</div><div>{nField.ToViewTime === '' ? '未設定' : nField.ToViewTime}</div></div>}
+                                <div className={scoreColor}>
+                                  {nField.ToView === 't' ?
+                                    nField.ExamScoreText !== '' ? nField.ExamScoreText :
+                                      nField.ExamScore === '' ? '-' : nField.ExamScore :
+                                    <div className='text-unview'>
+                                      <div>開放查詢時間：</div><div>{nField.ToViewTime === '' ? '未設定' : nField.ToViewTime}</div>
+                                    </div>}
                                 </div>
                                 <div>{index === 0 || nField.ToView === 'f' || nField.ExamScore === '' || nces.Field[im].ExamScore === '' ? '' : Number(nces.Field[index].ExamScore) > Number(nces.Field[im].ExamScore) ? <img className='arrow' src={up} alt='↑' /> : Number(nces.Field[index].ExamScore) < Number(nces.Field[im].ExamScore) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
                               </div>
