@@ -126,6 +126,8 @@ function Main() {
   useEffect(() => {
     if (examAvgList)
       filterExamAvgList(examAvgList);
+    else
+      setExamAvgFilteredList([]);
   }, [examAvgList]);
 
   var _connection = window.gadget.getContract("1campus.h.exam.parent");
@@ -649,6 +651,10 @@ function Main() {
                     scoreColor = 'fs-4 text-danger me-0 pe-0';
                   }
 
+                  if (cField.ReportValue !== '') {
+                    scoreColor = 'fs-4 text-danger me-0 pe-0';
+                  }
+
 
                   // 檢查是否有相對應的排名
                   let matchingItem = false;
@@ -819,7 +825,7 @@ function Main() {
               })}
             </>
           })}
-         
+
           {/* 評量成績 的加權平均*/}
           {selectedExam !== '0' ?
             <div className="col">
@@ -1027,7 +1033,7 @@ function Main() {
 
                         {[].concat(nces.Field || []).map((nField, index) => {
                           let scoreColor = 'fs-4';
-                          if (nField.IsPass === 'f') {
+                          if (nField.IsPass === 'f' || nField.ReportValue !== '') {
                             scoreColor = 'fs-4 text-danger';
                           }
                           if (nField.ToView === 'f' || nField.Score === '') {
