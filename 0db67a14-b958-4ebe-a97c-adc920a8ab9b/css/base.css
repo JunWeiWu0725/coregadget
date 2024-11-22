@@ -54,8 +54,7 @@ hr {
 }
 
 /* 固定寬度 */
-body {
-  max-width: 1024px;
+body {  
   margin: 0 auto;
   background:url(images/page-bg.gif);
 }
@@ -303,7 +302,7 @@ body {
 }
 
 .my-page {
-	max-width:1000px;
+	
 	margin:20px auto;
 	background:#fff;
 	padding:10px;

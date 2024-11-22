@@ -111,6 +111,7 @@ var app = angular
     })
     .controller("Ctrl", function ($scope, $modal, $filter) {
         console.log("set_dateTime");
+
         $scope.showRule = function () {
             var modalInstance = $modal.open({
                 templateUrl: 'myModalRule.html',
@@ -157,6 +158,13 @@ var app = angular
                     if (!error) {
                         if (response.data)
                             $scope.menu = [].concat(response.data);
+                        if (response.item_value) {
+
+                            $scope.item_value = [].concat(response.item_value)[0].item_value;
+                            //console.log($scope.item_value);
+                        }
+
+
                     } else {
                         $scope.icon_css = "icon-warning-sign";
                         set_error_message("#mainMsg", "GetMenu", error);
@@ -175,7 +183,7 @@ var app = angular
          * @param {*} $course_id 
          * @param {*} callback 
          */
-        $scope.getList = function ($course_id ,callback) {
+        $scope.getList = function ($course_id, callback) {
             $scope.list = [];
             $scope.contract.send({
                 service: "GetList",
@@ -188,6 +196,16 @@ var app = angular
                     if (!error) {
                         if (response.data)
                             $scope.list = [].concat(response.data);
+
+                        for (var i = 0; i < $scope.list.length; i++) {
+                            if ($scope.list[i].school_year < 113) {
+                                $scope.list[i].is_sit_up = 't';
+                            } else {
+                                $scope.list[i].is_sit_up = 'f';
+                            }
+
+                            $scope.list[i].item_value = $scope.item_value;
+                        }
                         listCheck();
                     } else {
                         $scope.icon_css = "icon-warning-sign";
@@ -197,10 +215,9 @@ var app = angular
                 }
             });
 
-        
-            if(callback)
-            { 
-               callback() ;
+
+            if (callback) {
+                callback();
             }
         }
         $scope.refresh = function () {
@@ -239,6 +256,7 @@ var app = angular
                 return;
             if (!$scope.current || !$scope.current.id)
                 return;
+
             if ($scope.current.start_time && $scope.current.end_time && (
                 (new Date($scope.current.start_time)).getTime() >= (new Date()).getTime() ||
                 (new Date($scope.current.end_time)).getTime() <= (new Date()).getTime()
@@ -246,6 +264,7 @@ var app = angular
                 return;
             if (column != "test_date" && !listCheck())
                 return;
+
             if (Object.prototype.toString.call(defaultValue) === '[object Date]')
                 defaultValue = $filter('date')(defaultValue, 'yyyy/M/d');
             var tmplist = [];
@@ -261,6 +280,7 @@ var app = angular
             if (column == "test_date" && defaultValue && !isValidDate2(defaultValue)) {
                 return;
             }
+
             if (defaultValue) {
 
                 let sendObject = {
@@ -271,8 +291,8 @@ var app = angular
                 // $scope.save(sendObject);
                 // $timeout($scope.onTimeout, 1000);
                 // $scope.CheckSaveDate(sendObject)
-                $scope.save(sendObject, function() {
-                   $scope.getList($scope.current.id,$scope.CheckSaveDate(sendObject));
+                $scope.save(sendObject, function () {
+                    $scope.getList($scope.current.id, $scope.CheckSaveDate(sendObject));
                 });
 
             } else {
@@ -298,8 +318,8 @@ var app = angular
                     // $scope.save(sendObject);
                     // //$scope.$apply();
                     // $scope.CheckSaveDate(sendObject);// 如果施測日期有空白再儲存;
-                    $scope.save(sendObject, function() {
-                       $scope.getList($scope.current.id,$scope.CheckSaveDate(sendObject));
+                    $scope.save(sendObject, function () {
+                        $scope.getList($scope.current.id, $scope.CheckSaveDate(sendObject));
                     });
 
                 }, function () {
@@ -376,7 +396,7 @@ var app = angular
                     //console.log(error);
                     if (!error) {
                         response.data.detail = [].concat(response.data.detail);
-          
+
                         var tmp = [];
                         var msg = [];
                         for (var i = 0; i < response.data.detail.length; i++) {
@@ -400,7 +420,7 @@ var app = angular
                     }
                     //更新施測日期
                     $scope.$apply();
-                    if(callback) { callback(); }
+                    if (callback) { callback(); }
                 }
 
 
@@ -412,6 +432,35 @@ var app = angular
             if ($scope.current == null && $scope.menu[0]) {
                 $scope.current = $scope.menu[0];
                 $scope.current.inPeriod = (new Date($scope.current.start_time)).getTime() >= (new Date()).getTime() || (new Date($scope.current.end_time)).getTime() <= (new Date()).getTime();
+
+                if ($scope.current.school_year < 113) {
+                    $scope.current.is_sit_up = 't';
+                } else {
+                    $scope.current.is_sit_up = 'f';
+                }
+                $scope.current.item_value = $scope.item_value;
+
+                $scope.arrayTestItem = [];
+                // console.log($scope.arrayTestItemList);
+                for (i = 0; i < $scope.arrayTestItemList.length; i++) {
+                    if ($scope.arrayTestItemList[i].Key === 'sit_up') {
+                        if ($scope.current.is_sit_up === 't') {
+                            $scope.arrayTestItem.push($scope.arrayTestItemList[i]);
+                        }
+
+                    } else if ($scope.arrayTestItemList[i].Key === 'cardiorespiratory') {
+                        if ($scope.current.item_value ==='心肺耐力') {
+                            $scope.arrayTestItem.push($scope.arrayTestItemList[i]);
+                        }
+                    } else if ($scope.arrayTestItemList[i].Key === 'pacer') {
+                        if ($scope.current.item_value ==='漸速耐力跑') {
+                            $scope.arrayTestItem.push($scope.arrayTestItemList[i]);
+                        }
+                     }
+                    else
+                        $scope.arrayTestItem.push($scope.arrayTestItemList[i]);
+                }
+                $scope.initImportItem();
             }
             if ($scope.menu[0]) {
                 $scope.getList($scope.current.id);
@@ -423,7 +472,7 @@ var app = angular
             }
         }
         // 體適能測驗項目
-        $scope.arrayTestItem = [
+        $scope.arrayTestItemList = [
             {
                 Name: "測驗日期",
                 Key: "test_date",
@@ -461,143 +510,157 @@ var app = angular
                 errorMsg: "資料格式不正確，請輸入數字或免測"
             },
             {
-                Name: "心肺適能(秒)",
+                Name: "800/1600公尺跑走",
                 Key: "cardiorespiratory",
                 Validate: /^[1-9]\d*$|^[1-9]\d*\.[0-5]\d$|^免測$|^$/,
                 errorMsg: "資料格式不正確，200秒可輸入200或3.20 <擇一輸入>或免測"
+            },
+            {
+                Name: "仰臥捲腹(次)",
+                Key: "curl",
+                Validate: /^[1-9]\d*$|^免測$|^$/,
+                errorMsg: "資料格式不正確，請輸入數字或免測"
+            },
+            {
+                Name: "漸速耐力跑(趟)",
+                Key: "pacer",
+                Validate: /^[1-9]\d*$|^免測$|^$/,
+                errorMsg: "資料格式不正確，請輸入數字或免測"
             },
         ];
         // 匯入的項目
         $scope.targetItem = {};
         // 初始匯入按鈕
         $scope.initImportItem = function () {
-            $scope.arrayTestItem.forEach(function (item) {
-                item.Fn = function () {
-                    delete item.InputData;
-                    delete item.InputValues;
-                    $('#importModal').modal('show');
-                    $scope.targetItem = item
-                };
-                item.Parse = function () {
-                    item.InputData = item.InputData || '';
-                    item.InputValues = item.InputData.split("\n");
-                    item.HasError = false;
-                    // 資料驗證
-                    for (var i = 0; i < item.InputValues.length; i++) {
-                        var flag = false;
-                        //$scope.list[i][item.Key] = item.InputValues[i];
-                        //var value = $scope.list[i][item.Key];
-                        var value = item.InputValues[i].trim();
-                        //var value = Number(item.InputValues[i].trim());
+            if (Array.isArray($scope.arrayTestItem) && $scope.arrayTestItem.length > 0) {
+                $scope.arrayTestItem.forEach(function (item) {
+                    item.Fn = function () {
+                        delete item.InputData;
+                        delete item.InputValues;
+                        $('#importModal').modal('show');
+                        $scope.targetItem = item
+                    };
+                    item.Parse = function () {
+                        item.InputData = item.InputData || '';
+                        item.InputValues = item.InputData.split("\n");
+                        item.HasError = false;
+                        // 資料驗證
+                        for (var i = 0; i < item.InputValues.length; i++) {
+                            var flag = false;
+                            //$scope.list[i][item.Key] = item.InputValues[i];
+                            //var value = $scope.list[i][item.Key];
+                            var value = item.InputValues[i].trim();
+                            //var value = Number(item.InputValues[i].trim());
 
-                        if (!isNaN(Number(value))) {
-                            if (item.InputValues[i] != '') {
-                                flag = true;
+                            if (!isNaN(Number(value))) {
+                                if (item.InputValues[i] != '') {
+                                    flag = true;
+                                }
                             }
-                        }
-                        // 使用者若知道其學生沒有資料，請在其欄位內輸入 - ，程式碼會將其填上空值 
-                        if (item.InputValues[i] == '-') {
-                            flag = true;
-                            //item.InputValues[i] = '';
-                            //if (item.Key != 'test_date'){
-                            //    item.InputValues[i] = '';
-                            //}
-                        }
-                        // 執行驗證規則
-                        if (angular.isFunction(item.Validate)) {
-                            if (item.Validate(value)) {
+                            // 使用者若知道其學生沒有資料，請在其欄位內輸入 - ，程式碼會將其填上空值 
+                            if (item.InputValues[i] == '-') {
                                 flag = true;
+                                //item.InputValues[i] = '';
+                                //if (item.Key != 'test_date'){
+                                //    item.InputValues[i] = '';
+                                //}
+                            }
+                            // 執行驗證規則
+                            if (angular.isFunction(item.Validate)) {
+                                if (item.Validate(value)) {
+                                    flag = true;
+                                }
+                                else {
+                                    flag = false;
+                                }
                             }
                             else {
-                                flag = false;
+                                if (value.match(item.Validate)) {
+                                    flag = true;
+                                }
                             }
-                        }
-                        else {
-                            if (value.match(item.Validate)) {
-                                flag = true;
+                            // 最後
+                            if (flag) {
+                                if (!isNaN(value) && item.InputValues[i] != '') {
+                                    item.InputValues[i] = value;
+                                }
                             }
-                        }
-                        // 最後
-                        if (flag) {
-                            if (!isNaN(value) && item.InputValues[i] != '') {
-                                item.InputValues[i] = value;
+                            else {
+                                item.InputValues[i] = '錯誤';//item.errorMsg;
+                                item.HasError = true;
                             }
+
                         }
-                        else {
-                            item.InputValues[i] = '錯誤';//item.errorMsg;
-                            item.HasError = true;
+                        // 狀況:匯入的資料超過學生數
+                        $scope.list.forEach(function (stuRec, index) {
+                            if (index >= item.InputValues.length) {
+                                item.InputValues.push('錯誤');
+                                item.HasError = true;
+                            }
+                        });
+                    };
+                    item.GoBack = function () {
+                        delete item.InputValues;
+                    };
+                    item.Import = function () {
+                        if (item.HasError == true)
+                            return;
+                        // 介面暫存資料
+                        //$scope.list.forEach(function (stuRec, index) {
+                        //    if (item.InputValues[index] == '-') {
+                        //        stuRec[item.Key] = '';
+                        //    }
+                        //    else {
+                        //        stuRec[item.Key] = item.InputValues[index];
+                        //    }
+                        //});
+                        // 資料整理
+                        var dataRow = [];
+                        $scope.list.forEach(function (stuRec, index) {
+                            if (item.InputValues[index] == '-') {
+                                dataRow.push({
+                                    uid: stuRec.uid,
+                                    student_id: stuRec.student_id,
+                                    seat_no: stuRec.seat_no,
+                                    name: stuRec.name,
+                                    value: ''
+                                });
+                            }
+                            else {
+                                dataRow.push({
+                                    uid: stuRec.uid,
+                                    student_id: stuRec.student_id,
+                                    seat_no: stuRec.seat_no,
+                                    name: stuRec.name,
+                                    value: item.InputValues[index]
+                                });
+                            }
+                        });
+                        //$scope.list.forEach(function (stuRec, index) {
+                        //    dataRow.push({
+                        //        uid: stuRec.uid,
+                        //        student_id: stuRec.student_id,
+                        //        seat_no: stuRec.seat_no,
+                        //        name: stuRec.name,
+                        //        value: stuRec[item.Key]
+                        //    });
+                        //});
+
+                        // 儲存置資料庫
+
+                        let sendObject = {
+                            column: item.Key,
+                            course_id: $scope.current.id,
+                            detail: dataRow
                         }
 
-                    }
-                    // 狀況:匯入的資料超過學生數
-                    $scope.list.forEach(function (stuRec, index) {
-                        if (index >= item.InputValues.length) {
-                            item.InputValues.push('錯誤');
-                            item.HasError = true;
-                        }
-                    });
-                };
-                item.GoBack = function () {
-                    delete item.InputValues;
-                };
-                item.Import = function () {
-                    if (item.HasError == true)
-                        return;
-                    // 介面暫存資料
-                    //$scope.list.forEach(function (stuRec, index) {
-                    //    if (item.InputValues[index] == '-') {
-                    //        stuRec[item.Key] = '';
-                    //    }
-                    //    else {
-                    //        stuRec[item.Key] = item.InputValues[index];
-                    //    }
-                    //});
-                    // 資料整理
-                    var dataRow = [];
-                    $scope.list.forEach(function (stuRec, index) {
-                        if (item.InputValues[index] == '-') {
-                            dataRow.push({
-                                uid: stuRec.uid,
-                                student_id: stuRec.student_id,
-                                seat_no: stuRec.seat_no,
-                                name: stuRec.name,
-                                value: ''
-                            });
-                        }
-                        else {
-                            dataRow.push({
-                                uid: stuRec.uid,
-                                student_id: stuRec.student_id,
-                                seat_no: stuRec.seat_no,
-                                name: stuRec.name,
-                                value: item.InputValues[index]
-                            });
-                        }
-                    });
-                    //$scope.list.forEach(function (stuRec, index) {
-                    //    dataRow.push({
-                    //        uid: stuRec.uid,
-                    //        student_id: stuRec.student_id,
-                    //        seat_no: stuRec.seat_no,
-                    //        name: stuRec.name,
-                    //        value: stuRec[item.Key]
-                    //    });
-                    //});
-
-                    // 儲存置資料庫
-
-                    let sendObject = {
-                        column: item.Key,
-                        course_id: $scope.current.id,
-                        detail: dataRow
-                    }
-                 
-                    $scope.save(sendObject, function() {
-                       $scope.getList($scope.current.id,$scope.CheckSaveDate(sendObject));
-                    });
-                    $('#importModal').modal('hide');
-                };
-            });
+                        $scope.save(sendObject, function () {
+                            $scope.getList($scope.current.id, $scope.CheckSaveDate(sendObject));
+                        });
+                        $('#importModal').modal('hide');
+                    };
+                });
+            }
         };
 
     });
@@ -663,9 +726,19 @@ var ModalInstanceCtrl = function ($scope, column, tmplist) {
             errorMsg: "資料格式不正確，請輸入整數或免測"
         },
         cardiorespiratory: {
-            header: "心肺適能(秒)",
+            header: "800/1600公尺跑走(秒)",
             validate: /^[1-9]\d*$|^[1-9]\d*\.[0-5]\d$|^免測$|^$/,
             errorMsg: "資料格式不正確，200秒可輸入200或3.20 <擇一輸入>或免測"
+        },
+        curl: {
+            header: "仰臥捲腹(次)",
+            validate: /^[1-9]\d*$|^免測$|^$/,
+            errorMsg: "資料格式不正確，請輸入整數或免測"
+        },
+        pacer: {
+            header: "漸速耐力跑(趟)",
+            validate: /^[1-9]\d*$|^免測$|^$/,
+            errorMsg: "資料格式不正確，請輸入整數或免測"
         },
     };
 
