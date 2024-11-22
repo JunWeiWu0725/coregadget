@@ -1,5 +1,7 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, Inject, ChangeDetectorRef } from '@angular/core';
 
+import { I18NEXT_SERVICE, ITranslationService } from 'angular-i18next';
+import { GadgetService } from './service/gadget.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -9,9 +11,35 @@ export class AppComponent implements OnInit {
 
   error;
   
-  constructor() {
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private gadget: GadgetService,
+    @Inject(I18NEXT_SERVICE) private i18next: ITranslationService,
+  ) {
   }
 
   async ngOnInit() {
+
+    const language = this.gadget.getLanguage();
+    console.log("gadget.getLanguage:" + language)
+    if (language) {
+      const lang = (language.split("-")[0] === "en" || language === "English") ? "en" : "zh-TW";
+      if ( this.i18next.language !== lang) {
+        this.i18next.changeLanguage(lang).then(() => {
+          console.log("i18n:" + this.i18next.language);
+        })
+      }
+    } else if ( this.i18next.language !== "zh-TW"){
+      this.i18next.changeLanguage("zh-TW").then(() => {
+        console.log("i18n:" + this.i18next.language);
+      })
+    }
   }
+ 
+  setLanguage(language: string) {
+    this.i18next.changeLanguage(language).then(() => {
+      console.log(this.i18next.language);
+    })
+  }
+
 }

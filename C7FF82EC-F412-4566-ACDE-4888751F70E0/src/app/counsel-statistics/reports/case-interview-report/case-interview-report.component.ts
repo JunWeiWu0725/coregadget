@@ -14,7 +14,7 @@ import { result } from 'lodash';
 })
 export class CaseInterviewReportComponent implements OnInit {
 
-  @ViewChild("condition_modal") condition_modal:ConditionModalComponent 
+  @ViewChild("condition_modal") condition_modal:ConditionModalComponent
   tmpGradeYear: number[] = [];
   tmpClass: CounselClass[] = [];
   isSelectAllItem: boolean = false;
@@ -26,7 +26,7 @@ export class CaseInterviewReportComponent implements OnInit {
   /**塞選條件 性別*/
   conditionGender :string[]=[];
    /**塞選條件 個案類別*/
-  conditionProblemCatag :string[]=[]; 
+  conditionProblemCatag :string[]=[];
    /**塞選條件 性別*/
    isUseGenderFilter :boolean = false;
    isUseProblemCatagFilter :boolean = false;
@@ -44,8 +44,8 @@ export class CaseInterviewReportComponent implements OnInit {
 
   /**收合年級區塊 */
   openGradeSection(gradeClassInfo:GradeClassInfo){
-    
- 
+
+
     gradeClassInfo.isOpen =! gradeClassInfo.isOpen ;
 
   }
@@ -63,7 +63,7 @@ export class CaseInterviewReportComponent implements OnInit {
 
   report() {
 
- 
+
    let chkDataPass: boolean = true;
 
     this.selectClassIDs = [];
@@ -100,7 +100,7 @@ export class CaseInterviewReportComponent implements OnInit {
 
   async exportReport() {
 
-    
+
     this.isUseGenderFilter =this.condition_modal.filterByGender ;
     this.isUseProblemCatagFilter =this.condition_modal.filterByProblemCata ;
     this.conditionGender =this.condition_modal.selectGender ;
@@ -135,23 +135,21 @@ export class CaseInterviewReportComponent implements OnInit {
        if(item.ProblemMainCategory){
         ProblemMainCategoryString  =this.getProblemCatString(JSON.parse(item.ProblemMainCategory)).join('、');
        }
-         
 
-        
+
+
            //#region 是否要列印
-           let isPrint =false 
+           let isPrint =false
            if(this.isUseGenderFilter && this.isUseProblemCatagFilter) // 兩個塞選條件都有
            {
              try{
-               isPrint = 
+               isPrint =
                (this.checkIsPrintByCondition(this.getProblemCatString(JSON.parse(item.ProblemCategory)))
                ||this.checkIsPrintByCondition(this.getProblemCatString(JSON.parse(item.ProblemMainCategory||null))))
                &&this.conditionGender.includes(item.Gender);
 
 
              }catch(ex){
-              // debugger 
-              
              }
 
            }else if(this.isUseGenderFilter && !this.isUseProblemCatagFilter){ //只塞選男女
@@ -160,16 +158,16 @@ export class CaseInterviewReportComponent implements OnInit {
 
            }else if(!this.isUseGenderFilter && this.isUseProblemCatagFilter) // 只塞選個案類別
            {
-            isPrint =   
+            isPrint =
               (this.checkIsPrintByCondition(this.getProblemCatString(JSON.parse(item.ProblemCategory)))
               ||this.checkIsPrintByCondition(this.getProblemCatString(JSON.parse(item.ProblemMainCategory))))
 
-           }else //都沒有選 
-           {    
-             //印全部!! 
+           }else //都沒有選
+           {
+             //印全部!!
              isPrint =true ;
            }
-           //#endregion 
+           //#endregion
 
           let item1 = {
             '晤談紀錄ID': item.CaseInterviewID,
@@ -198,7 +196,7 @@ export class CaseInterviewReportComponent implements OnInit {
           {
             data1.push(item1);
           }
-       
+
         });
 
         if(data1.length ==0){
@@ -245,7 +243,7 @@ export class CaseInterviewReportComponent implements OnInit {
 
 
   return result ;
- 
+
 }
 
 
@@ -321,11 +319,11 @@ export class CaseInterviewReportComponent implements OnInit {
   }
 
 
-// 
+//
   openCondictionModal()
   {
     this.condition_modal.title='請選擇產出條件'
-    // alert("ho") ; 
+    // alert("ho") ;
     $("#conditionModal").modal("show");
     // 關閉畫面
     $("#conditionModal").on("hide.bs.modal", () => {

@@ -40,6 +40,20 @@ export class AddComponent implements OnInit {
     this.getData();
   }
 
+
+  onCheckboxChange(selected: string) {
+    if (selected === 'detention') {
+      this.currentGood = false;
+      this.currentDaaDsaFollow = false;
+    } else if (selected === 'goodBehavior') {
+      this.currentDetention = false;
+      this.currentDaaDsaFollow = false;
+    } else if (selected === 'currentDaaDsaFollow') {
+      this.currentDetention = false;
+      this.currentGood = false;
+    }
+  }
+
   async getCommentTemplate() {
     try {
       this.loading = true;

@@ -21,6 +21,8 @@ import { CheckboxModule } from './shared/checkbox/checkbox.module';
 import { EditParentComponent } from './edit-parent/edit-parent.component';
 import { SelectAclassComponent } from './select-aclass/select-aclass.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { InviteLettersModalComponent } from './invite-letters-modal/invite-letters-modal.component';
+import { ParentCodeModalComponent } from './parent-code-modal/parent-code-modal.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     ObjectCheckboxDirective,
     EditParentComponent,
     SelectAclassComponent,
+    InviteLettersModalComponent,
+    ParentCodeModalComponent,
   ],
   imports: [
     CommonModule,

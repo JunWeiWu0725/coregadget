@@ -66,8 +66,8 @@ export class ComprehensiveComponent implements OnInit {
 
   ngOnInit() {
 
-   
-    // 設定是否可編輯權限 
+
+    // 設定是否可編輯權限
     this.isEditable =false ;
     // 預設
 
@@ -99,13 +99,13 @@ export class ComprehensiveComponent implements OnInit {
          try {
            this.http.get<any>(url, { responseType: 'json' }).subscribe(response => {
              this.schoolTye = response.Response.School.Type;
-          
+
            });
-    
+
          } catch (err) {
            console.log(err);
          }
- 
+
 
 }
 
@@ -129,7 +129,7 @@ export class ComprehensiveComponent implements OnInit {
     }
   }
 
-  
+
 
   async genSSNKey(fillInSectionID) {
     try {
@@ -200,7 +200,7 @@ export class ComprehensiveComponent implements OnInit {
         let isNeedAdjustGrade = false ;
         let adjusctGradeSapn ;
         let extensionGrade:string[]=[];
-    
+
          // 取得年級
         try{
              let  showText ='校務系統年級非1-6年級 \n本作業會自動對應，對應如下: \n';
@@ -208,7 +208,7 @@ export class ComprehensiveComponent implements OnInit {
              let rsp =   await this.dsaService.send("GetAllGradeYearAdjustInfo", {
           });
               let showTextlist= [].concat(rsp.Result||[]);
-             
+
               if(this.schoolSystem == '國小')
               {
                 isNeedAdjustGrade =false ;
@@ -239,7 +239,7 @@ export class ComprehensiveComponent implements OnInit {
         }catch(err){
           alert('資料庫查詢學制或年級有誤!');
         }
-   
+
 
         if (this.isSaving || this.isLoading) { return; }
         this.isSaving = true;
@@ -260,7 +260,6 @@ export class ComprehensiveComponent implements OnInit {
                 , ClassID: classRec.ClassID
               });
               this.currentClass = classRec.ClassName + " 題目展開中 ...";
-              // debugger
             } catch (err) {
               console.log(err);
               alert("發生錯誤 :  \n"+ JSON.stringify(err))
@@ -268,23 +267,21 @@ export class ComprehensiveComponent implements OnInit {
           }else{ //如需調整年級
             try {
               if(extensionGrade.includes(classRec.GradeYear)) //有允許展開的年級才會展開
-              {   
+              {
                 await this.dsaService.send("GenerateFillInDataForSpecificGrade", {
                 SchoolYear: this.schoolYear
                 , Semester: this.semester
                 , ClassID: classRec.ClassID
                 , AdjusctGradeSapn :adjusctGradeSapn
-                
+
               });
                   this.currentClass = classRec.ClassName + " 題目展開中 ...";
               }
-              // debugger
             } catch (err) {
-              
               console.log(err);
             }
           }
-        
+
           this.progress = Math.round((++index) * 100 / classList.length);
         }
         this.isSaving = false;
@@ -322,7 +319,7 @@ export class ComprehensiveComponent implements OnInit {
       clearSemester : function() {
         if (!this.isBringPreviousAnsCheck) {
           this.selectSemesterInfo = null ;
-          
+
         }
       }
     };
@@ -359,12 +356,12 @@ export class ComprehensiveComponent implements OnInit {
 
   /** 轉入校務系統欄位 */
   async transferSystemCoreColToAFrom(){
-  
-    // 取得學生資訊 
+
+    // 取得學生資訊
     this.isLoading = true;
     try {
       const resp = await this.dsaService.send("TranferAdminSystem.GetAllStudentsStatus1", {});
-      this.studentList =resp.rs 
+      this.studentList =resp.rs
       // alert(JSON.stringify( this.studentList));
       /** 對在校生進行轉入 */
       for (const stud of this.studentList) {
@@ -375,7 +372,7 @@ export class ComprehensiveComponent implements OnInit {
            alert(stud.id);
          }
       }
-     
+
       this.isLoading = false;
       this.transferSuccess = true;
       // $("#genSystemCoreColtoAFrom").modal('hide');
@@ -388,14 +385,14 @@ export class ComprehensiveComponent implements OnInit {
   /** 一個學生一個學生 */
   async transferSystemCoreColToAFromByStudent(stud :any ) {
     this.isLoading = true;
-    this.studentStatus += stud.id 
+    this.studentStatus += stud.id
     try {
       const resp = await this.dsaService.send("TranferAdminSystem.TranferAdminSysToAformByStud", {
         SchoolYear: this.currentSemester.SchoolYear
         , Semester: this.currentSemester.Semester
         , StudentID :stud.id
       });
-  
+
 
 
       // $("#genSystemCoreColtoAFrom").modal('hide');

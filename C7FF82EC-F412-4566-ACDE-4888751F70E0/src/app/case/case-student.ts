@@ -11,76 +11,80 @@ export class CaseStudent {
     this.isGuidanceTeacherHasValue = false;
   }
 
+  /** [月統計報表使用] */
+  StuCounselNumber: string;
+  /** 學生UID  */
   UID: string;
   /** 班級 */
   ClassName: string;
-  /** 座號 */ 
-  SeatNo: string; 
-  /** 姓名 */ 
+  /** 座號 */
+  SeatNo: string;
+  /** 姓名 */
   Name: string;
-  /** 性別 */ 
-  Gender: string = ''; //  
+  /** 性別 */
+  Gender: string = ''; //
   /** 班導師 */
   TeacherName: string;
   /** 建立個案日期  */
-  OccurDate: string; 
+  OccurDate: string;
   /** 晤談時間 */
-  MeetTime :string ;
+  MeetTime: string;
   /** 個案編號 */
-  CaseNo: string; 
+  CaseNo: string;
   /** 轉介概況 */
-  ReportReferralStatus:string = "無轉介"; // 預設值為無轉介
+  ReportReferralStatus: string = "無轉介"; // 預設值為無轉介
   /** 學生身分 */
   StudentIdentity: string; // 學生身份
   /**  疑似特殊生類別 */
-  PossibleSpecialCategory: string; 
+  PossibleSpecialCategory: string;
   /** 特殊生等級 */
   SpecialLevel: string; // 特殊生等級
   /** 特殊生類別  */
-  SpecialCategory: string; 
+  SpecialCategory: string;
   /** 是否領有身心障礙手冊*/
-  HasDisabledBook: string; 
+  HasDisabledBook: string;
   /** 偏差行為 */
-  DeviantBehavior: string; 
+  DeviantBehavior: string;
   /** 個案類別(副) */
-  ProblemCategory: string; 
+  ProblemCategory: string;
   /** 學生身分 */
-  StudentStatus : string  // 20220923 學生身分 新規格
+  StudentStatus: string  // 20220923 學生身分 新規格
   /** */
-  ProblemMainCategory:string ;
+  ProblemMainCategory: string;
   /** 問題描述 */
   ProbleDescription: string;
   /** 特殊狀況 */
   SpecialSituation: string;
   /** 評估結果 */
-  EvaluationResult: string; 
+  EvaluationResult: string;
   /** 教師參與層級 */
-  TeacherCounselLevels :string ;
+  TeacherCounselLevels: string;
   /** 是否結案 */
-  IsClosed: string; 
+  IsClosed: string;
   /** 結案日期 */
-  CloseDate: string; 
+  CloseDate: string;
   /** 結案人員教師編碼  */
   ClosedByTeacherID: string;
   /** 結案說明 */
-  CloseDescription: string; 
+  CloseDescription: string;
   /** 學生系統編號 */
-  StudentID: string; 
+  StudentID: string;
   /** 班級編號 */
-  ClassID: string; 
+  ClassID: string;
   /**個案來源改為多選 */
-  CaseSourceList :{name,checked}[] =[] ;
+  CaseSourceList: { name, checked }[] = [];
   /**轉借資料多選 */
-  CaseReferalList :string[] =[] ;
+  CaseReferalList: string[] = [];
   /** 個案來源 */
-  CaseSource: string; 
+  CaseSource: string;
   /** 個案輔導次數 */
-  CaseCount: string; 
+  CaseCount: string;
   PhotoUrl: string;
   CaseTeachers: CaseTeacher[];
-  CaseTeacherString : string ;
+  CaseTeacherString: string;
   /** 結案教師 */
-  CaseCloseTeacher : any ;
+  CaseCloseTeacher: any;
+
 
   // 個案輔導等級相關
   isCaseLevel1Checked: boolean = false;
@@ -95,21 +99,22 @@ export class CaseStudent {
   // 這個案選的個案老師
   selectCaseTeacers: SelectCaseTeacher[];
   /** 學生身分 */
-  student_status : QOption[] ; 
+  student_status: QOption[];
   /** 偏差行為 */
   deviant_behavior: QOption[]; // 偏差行為
   /** 個案類別 */
   problem_category: QOption[]; // 	個案類別 (副)
   /** 個案類別(主) 根據月報表規則修改 就資料指向下相容副類別   */
-  problem_main_category:QOption[];  
+  problem_main_category: QOption[];
   /** */
   proble_description: QOption[]; //	問題描述
   special_situation: QOption[]; //	特殊狀況
   evaluation_result: QOption[]; //	評估結果
-  teacher_counsel_level:QOption[]; // 參與輔導教師層級
+  teacher_counsel_level: QOption[]; // 參與輔導教師層級
   isOccurDateHasValue: boolean = false;
   // isCaseNoHasValue: boolean = false;
   isGuidanceTeacherHasValue: boolean = false;
+  isStuCounselNumberHasValue: boolean = false;
   isReportReferralStatusHasValue: boolean = false;
   isCaseSourceHasValue: boolean = false;
   isSaveButtonDisable: boolean = true;
@@ -129,14 +134,14 @@ export class CaseStudent {
   isProblemMainCategoryHasValue: boolean = false;
   isProbleDescriptionHasValue: boolean = false;
   isEvaluationResultHasValue: boolean = false;
-  isStudentStatusHasValue :boolean = false ;
+  isStudentStatusHasValue: boolean = false;
 
   /** 入DB使用 把 */
-  changeCaseSourceToString(){
-   let checkSocurcesList = this.CaseSourceList.filter(x=> x.checked )
-   checkSocurcesList = checkSocurcesList.map(x=>x.name) ;
-   this.CaseSource = checkSocurcesList.join("___") ;
-    return  this.CaseSource ;
+  changeCaseSourceToString() {
+    let checkSocurcesList = this.CaseSourceList.filter(x => x.checked)
+    checkSocurcesList = checkSocurcesList.map(x => x.name);
+    this.CaseSource = checkSocurcesList.join("___");
+    return this.CaseSource;
   }
   // 當透過轉介建立才會在值，儲存輔導紀錄 uid
   RefCounselInterviewID: string = "";
@@ -152,17 +157,17 @@ export class CaseStudent {
     this.loadProblemMainCategoryTemplate(); // 5 取得 【個案類別(主)】
     this.loadSpecialSituationTemplate();  // 6. 取得 【特殊狀況】
     this.loadStudentStatusTemplate(); //  新增學生身分
-    this.loadTeacherCounselLevel() ; // 新增教師輔導層級
+    this.loadTeacherCounselLevel(); // 新增教師輔導層級
     this.loadCaseSource();
   }
 
   /** 清空個案類別(主類別) T :點選個案類別(主)時 */
-  clearAllProblemMainCategory(item:QOption){
-    this.problem_main_category.forEach( x=>{x.answer_checked = false});
+  clearAllProblemMainCategory(item: QOption) {
+    this.problem_main_category.forEach(x => { x.answer_checked = false });
     item.answer_checked = true;
   }
 
-  /** 設定個案輔導層級 */ 
+  /** 設定個案輔導層級 */
   SetCaseLevel(level: string) {
 
     this.isCaseLevel1Checked = false;
@@ -185,7 +190,7 @@ export class CaseStudent {
     this.CaseTeachers.forEach(item => {
       ta.push(item.TeacherName);
     });
-    this.CaseTeacherString =ta.join(',');
+    this.CaseTeacherString = ta.join(',');
     return ta.join(',');
   }
 
@@ -227,39 +232,38 @@ export class CaseStudent {
       this.problem_category.push(qo);
     }
 
-    console.log('副類別..',  this.problem_category)
+    console.log('副類別..', this.problem_category)
   }
 
 
 
- 
 
 
 
-/**取得個案類別 (主) */
-public loadProblemMainCategoryTemplate()
-{
 
-  let num: number = 1;
-  this.problem_main_category = []; // 	個案類別
-  let problem_categoryT = this.caseQuestionTemplate.getProblemCategory();
+  /**取得個案類別 (主) */
+  public loadProblemMainCategoryTemplate() {
 
-  for (let item of problem_categoryT) {
-    let qo: QOption = new QOption();
-    qo.answer_code = `problem_main_category${num}`;
-    qo.answer_martix = [];
-    qo.answer_text = item.answer_text;
-    qo.answer_checked = item.answer_checked;
-    qo.answer_complete = item.answer_complete;
-    qo.answer_value = item.answer_value;
+    let num: number = 1;
+    this.problem_main_category = []; // 	個案類別
+    let problem_categoryT = this.caseQuestionTemplate.getProblemCategory();
 
-    num += 1;
-    this.problem_main_category.push(qo);
+    for (let item of problem_categoryT) {
+      let qo: QOption = new QOption();
+      qo.answer_code = `problem_main_category${num}`;
+      qo.answer_martix = [];
+      qo.answer_text = item.answer_text;
+      qo.answer_checked = item.answer_checked;
+      qo.answer_complete = item.answer_complete;
+      qo.answer_value = item.answer_value;
+
+      num += 1;
+      this.problem_main_category.push(qo);
+    }
+
+
+
   }
-
-
-
-}
 
 
 
@@ -301,8 +305,8 @@ public loadProblemMainCategoryTemplate()
   }
 
   /** 取得學生身分選項 */
-  public loadStudentStatusTemplate(){
-    this.student_status = [] ;
+  public loadStudentStatusTemplate() {
+    this.student_status = [];
     let student_statusT = this.caseQuestionTemplate.getStudentStatus();
 
     let num = 1;
@@ -378,7 +382,7 @@ public loadProblemMainCategoryTemplate()
 
   /**載入個案來源選項 */
   loadCaseSource() {
-    const caseSource =["學生主動求助", "家長轉介", "教師轉介（含教職員工）", "同儕轉介", "輔導老師約談", "線上預約管道（僅限高中階段）","其他"]
+    const caseSource = ["學生主動求助", "家長轉介", "教師轉介（含教職員工）", "同儕轉介", "輔導老師約談", "線上預約管道（僅限高中階段）", "其他"]
     this.CaseSourceList = [];
     caseSource.forEach(sourceeName => {
       this.CaseSourceList.push({ name: sourceeName, checked: false });
@@ -387,33 +391,34 @@ public loadProblemMainCategoryTemplate()
   }
 
   /** 載入轉借資料 */
-  loadReferalStatusList (){
-    this.CaseReferalList =[
-    '本月轉介輔諮中心' ,
-    '無轉介',
-    '已轉介輔諮中心且該中心持續服務中',
-    '已轉介輔諮中心，該中心服務至本月結案' 
+  loadReferalStatusList() {
+    this.CaseReferalList = [
+      '本月轉介輔諮中心',
+      '無轉介',
+      '已轉介輔諮中心且該中心持續服務中',
+      '已轉介輔諮中心，該中心服務至本月結案'
     ]
 
   }
   /** 處理個案來源選項*/
-  public LoadCaseSourceOptionStringToList(){
+  public LoadCaseSourceOptionStringToList() {
     this.loadCaseSource();
-    this.loadReferalStatusList ();
+    this.loadReferalStatusList();
 
-    let caseSourceCheckedList :string []= this.CaseSource.split('___') ;
-     if(this.CaseSource){
-      this.CaseSourceList.forEach(item =>{
-        if(caseSourceCheckedList.includes(item.name )){
-          item.checked = true ;
+    let caseSourceCheckedList: string[] = this.CaseSource.split('___');
+    if (this.CaseSource) {
+      this.CaseSourceList.forEach(item => {
+        if (caseSourceCheckedList.includes(item.name)) {
+          item.checked = true;
         }
 
-   })}
+      })
+    }
 
   }
 
   /** 將問答結果字串轉成 list 依據有沒有資料判斷編輯*/
-  public LoadQuestionOptionStringToList() { 
+  public LoadQuestionOptionStringToList() {
     // 個案來源
     this.LoadCaseSourceOptionStringToList();
     if (this.DeviantBehavior) {
@@ -424,7 +429,7 @@ public loadProblemMainCategoryTemplate()
       this.loadDeviantBehaviorTemplate();
     }
     if (this.ProblemCategory) {
-      
+
       this.problem_category = this.parseQuestioOptionToArray(
         this.ProblemCategory
       );
@@ -434,26 +439,25 @@ public loadProblemMainCategoryTemplate()
     }
 
     // 學生身分
-    if(this.StudentStatus){
-      this.student_status =this.parseQuestioOptionToArray(this.StudentStatus);
+    if (this.StudentStatus) {
+      this.student_status = this.parseQuestioOptionToArray(this.StudentStatus);
 
-    }else{
-         this.loadStudentStatusTemplate();
+    } else {
+      this.loadStudentStatusTemplate();
     }
-    //新增個案類別(主) 
+    //新增個案類別(主)
 
-    if(this.ProblemMainCategory)
-    {
-   
+    if (this.ProblemMainCategory) {
+
       this.problem_main_category = this.parseQuestioOptionToArray(
-        this.ProblemMainCategory 
+        this.ProblemMainCategory
       );
-    
-    }else{
-     
+
+    } else {
+
       this.loadProblemMainCategoryTemplate();
     }
-   
+
 
     this.isProbleDescriptionHasValue = false;
     if (this.ProbleDescription) {
@@ -488,7 +492,7 @@ public loadProblemMainCategoryTemplate()
       this.loadEvaluationResultTemplate();
     }
 
-    // 教師參與層級 
+    // 教師參與層級
     if (this.TeacherCounselLevels) {
       this.teacher_counsel_level = this.parseQuestioOptionToArray(
         this.TeacherCounselLevels
@@ -525,13 +529,8 @@ public loadProblemMainCategoryTemplate()
     let value = [];
     for (const item of this.problem_main_category) {
       // console.log('problem');
-      // debugger
- 
+
       if (item.answer_checked) {
-
-  
-
-
         value.push(item.answer_value);
       }
     }
@@ -598,7 +597,17 @@ public loadProblemMainCategoryTemplate()
     }
   }
 
-  /** 處理UI 檢查是否可以按下使用*/ 
+  /** 確認傳入質是否已經存在 */
+  checkIsContain(stuCounselNum: string, targetList: { stuCounselNum: string }[]) {
+    if (targetList.some(x => x.stuCounselNum == stuCounselNum)) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+
+  /** 處理UI 檢查是否可以按下使用*/
   checkValue() {
     if (this.OccurDate) {
       this.isOccurDateHasValue = true;
@@ -614,11 +623,17 @@ public loadProblemMainCategoryTemplate()
     // 20220923 【個案來源】改成多選
     // alert("個案來源 :"+JSON.stringify(this.CaseSourceList))
     // 取得有勾選項目長度 :
-    const checkedList  = this.CaseSourceList.filter(x=>x.checked) ;
+    const checkedList = this.CaseSourceList.filter(x => x.checked);
     if (checkedList.length) {
       this.isCaseSourceHasValue = true;
     } else {
       this.isCaseSourceHasValue = false;
+    }
+
+    if (this.StuCounselNumber.length > 0) {
+      this.isStuCounselNumberHasValue = true;
+    } else {
+      this.isStuCounselNumberHasValue = false;
     }
 
     if (this.selectCaseTeacers.length > 0) {
@@ -626,6 +641,7 @@ public loadProblemMainCategoryTemplate()
     } else {
       this.isGuidanceTeacherHasValue = false;
     }
+
 
     if (this.IsClosed && this.IsClosed === "t") {
       this.isCloseYes = true;
@@ -639,7 +655,7 @@ public loadProblemMainCategoryTemplate()
     this.isDeviantBehaviorHasValue = false;
     this.isProblemCategoryHasValue = false;
     this.isEvaluationResultHasValue = false;
-    this.isStudentStatusHasValue =false ;
+    this.isStudentStatusHasValue = false;
 
     // 偏差行為
     for (const cc of this.deviant_behavior) {
@@ -647,14 +663,14 @@ public loadProblemMainCategoryTemplate()
         this.isDeviantBehaviorHasValue = true;
       }
     }
-    // 學生身分 
-    for (const cc of this.student_status){
+    // 學生身分
+    for (const cc of this.student_status) {
       if (cc.answer_checked) {
         this.isStudentStatusHasValue = true;
       }
 
     }
-     
+
     // 個案類別(主)
     for (const cc of this.problem_main_category) {
       if (cc.answer_checked) {
@@ -676,15 +692,14 @@ public loadProblemMainCategoryTemplate()
       }
     }
 
-    if (this.ReportReferralStatus){
+    if (this.ReportReferralStatus) {
       this.isReportReferralStatusHasValue = true;
     }
-    else{
+    else {
       this.isReportReferralStatusHasValue = false;
     }
 
-    if (this.CaseLevel != '')
-    {
+    if (this.CaseLevel != '') {
       this.isCaseLevelHasValue = true;
     } else {
       this.isCaseLevelHasValue = false;
@@ -702,8 +717,9 @@ public loadProblemMainCategoryTemplate()
       this.isProbleDescriptionHasValue &&
       this.isEvaluationResultHasValue &&
       this.isCaseLevelHasValue &&
-      this.StudentID && 
-      this.isStudentStatusHasValue
+      this.StudentID &&
+      this.isStudentStatusHasValue&& 
+      this.isStuCounselNumberHasValue
     ) {
       this.isSaveButtonDisable = false;
     } else {

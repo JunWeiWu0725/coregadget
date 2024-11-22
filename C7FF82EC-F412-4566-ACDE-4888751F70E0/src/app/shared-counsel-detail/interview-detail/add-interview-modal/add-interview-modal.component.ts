@@ -187,8 +187,6 @@ export class AddInterviewModalComponent implements OnInit {
   }
   /** Click 後儲存 */
   async save() {
-    alert("sss")
-    debugger
     // 檢查內容是否有填寫
     try {
       this.isCancel = false;

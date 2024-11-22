@@ -3,14 +3,14 @@
   <nav aria-label="breadcrumb text-nowrap text-truncate ">
     <ol class="breadcrumb  second-page-header">
       <li class="breadcrumb-item header-top">
-        <a [routerLink]="['/main']">課堂點名</a>
+        <a [routerLink]="['/main']">{{ 'roll-call' | i18next }}</a>
       </li>
       <ng-container *ngIf="!(students.length > 0) else titleText">
         <li class="breadcrumb-item active" aria-current="page">loading...</li>
       </ng-container>
       <ng-template #titleText>
         <li class="breadcrumb-item" aria-current="page">
-          <a [routerLink]="['/setting']">設定小幫手</a>
+          <a [routerLink]="['/setting']">{{ 'set-assistant' | i18next }}</a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">{{targetName}}</li>
       </ng-template>
@@ -110,9 +110,9 @@
   </ng-template>
 
   <ng-template #save>
-    <button (click)="saveTeacherHelper()" type="button" class="btn btn-lg btn-info">{{checkSummary? '儲存 (' +
+    <button (click)="saveTeacherHelper()" type="button" class="btn btn-lg btn-info">{{checkSummary? ( 'save' | i18next ) + ' (' +
       checkSummary
-      +')': '儲存'}}</button>
+      +')' : 'save' | i18next }}</button>
   </ng-template>
 
 </div>

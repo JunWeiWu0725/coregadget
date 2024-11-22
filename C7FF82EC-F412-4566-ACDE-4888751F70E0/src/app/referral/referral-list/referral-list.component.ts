@@ -116,19 +116,21 @@ export class ReferralListComponent implements OnInit {
     );
   }
 
-  setNewCaseMmodal(refStudent: ReferralStudent) {
-    this.case_modal.loadData();
+  async setNewCaseMmodal(refStudent: ReferralStudent) {
     this.case_modal.setCaseFromReferral(refStudent);
+    await this.case_modal.loadData();
     this.case_modal.isAddMode = true;
     this.case_modal.caseStudent.checkValue();
-    $("#newCase").modal("show");
-    // 關閉畫面
-    $("#newCase").on("hide.bs.modal", () => {
-      // 重整資料
-      if (!this.case_modal.isCancel)
-        this.loadData();
-      $("#newCase").off("hide.bs.modal");
-    });
+    {
+      $("#newCase").modal("show");
+      // 關閉畫面
+      $("#newCase").on("hide.bs.modal", () => {
+        // 重整資料
+        if (!this.case_modal.isCancel)
+          this.loadData();
+        $("#newCase").off("hide.bs.modal");
+      });
+    }
   }
 
   setGrantModal(refStudent: ReferralStudent) {
@@ -200,6 +202,7 @@ export class ReferralListComponent implements OnInit {
         rec.ReferralReplyDate = studRec.ReferralReplyDate;
         rec.ReferralReplyDesc = studRec.ReferralReplyDesc;
         rec.RefCaseID = studRec.CaseID;
+        rec.StuCounselNumber = studRec.StuCounselNumber;
         rec.PhotoUrl = `${this.dsaService.AccessPoint
           }/GetStudentPhoto?stt=Session&sessionid=${this.dsaService.SessionID
           }&parser=spliter&content=StudentID:${rec.StudentID}`;

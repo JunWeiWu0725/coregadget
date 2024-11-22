@@ -3,7 +3,7 @@ import { GlobalService } from 'src/app/global.service';
 import { ReferralStudent } from './../referral/referral-student';
 // 輔導資料
 export class CounselInterview {
-  constructor(isPublic?  :boolean) { 
+  constructor(isPublic?  :boolean) {
     // alert('isPublic'+isPublic)
   this.isPublic =isPublic ;
   }
@@ -55,10 +55,9 @@ export class CounselInterview {
   // 是否可以看到
   isCanView: boolean = false;
   ReferralForm?: ReferralForm; //轉介單資訊
-  
+
 
   public loadCategoryTemplate() {
-    debugger 
     let num: number = 1;
     this._category = []; // 	個案類別
     let problem_categoryT = this.getCategory();
@@ -221,7 +220,7 @@ export class CounselInterview {
 
   // 檢查是否有值
   checkValue() {
-    //    var re = /^[0-9] .?[0-9]*/;//判斷字串是否為數字//判斷正整數/[1−9] [0−9]∗]∗/ 
+    //    var re = /^[0-9] .?[0-9]*/;//判斷字串是否為數字//判斷正整數/[1−9] [0−9]∗]∗/
 
 
     if (this.SchoolYear) {
@@ -427,7 +426,6 @@ export class ReferralForm {
       this.ProbblemAndExpectation = refRerral.ProblemExpectation;
       this.Strategy = refRerral.Strategy;
       this.InterViewID = refRerral.RefInterviewId;
-      // debugger 
       // console.log(this.InterViewID)
       this.loadStrategyTemplate(); //將題目字串轉成題目
     }
@@ -537,7 +535,7 @@ export class ReferralForm {
   /** 班導師介入 結束時間 */
   HomeTeacherEndDate: string = "2021";
   /** 輔導策略 顯示端 */
-  _stratgy: QOption[]; // 顯示用 
+  _stratgy: QOption[]; // 顯示用
   /** 輔導策略 資料庫端 */
   Strategy: string; // 存入資料庫格式
   /** 問題與期待 */

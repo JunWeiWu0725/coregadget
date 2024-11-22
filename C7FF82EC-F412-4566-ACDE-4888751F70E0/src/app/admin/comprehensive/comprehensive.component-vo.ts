@@ -11,7 +11,7 @@ export class QuestionSubject {
         this.AddGroup(questionInfo);
         this.SubjectText = questionInfo.QuestionSubject;
     }
-    
+
     SubjectText: string;
     IsSetDisable: boolean;
     IsDisable: boolean;
@@ -23,13 +23,13 @@ export class QuestionSubject {
 
     ischildAllCheck (){
         if( this.GetQuestionGroups().find(x=>(x.IsSetDisable))){
-   
+
             return true
         }else {
 
             return false
         }
-       
+
     }
     /**
      *
@@ -57,7 +57,7 @@ export class QuestionSubject {
      * @memberof QuestionSubject
      */
     public AddGroup(questionInfo: QuestionInfo) {
-   
+
 
         if(questionInfo.IsDisable =='true'){
             this.IsSetDisable  = (questionInfo.IsDisable =='true') ; // 需要註解掉
@@ -85,7 +85,7 @@ export class QuestionSubject {
     }
     /**
      * 取得
-     * 
+     *
      * @param {boolean} isChecked
      * @memberof QuestionSubject
      */
@@ -122,7 +122,7 @@ export class QuestionGroup {
     IsDisable: boolean  = false ;
     QuestionQuery: QuestionQuery[] = [];
     QuestionQueryMap: Map<string, QuestionQuery> = new Map<string, QuestionQuery>();
-    
+
     ischildAllCheck (){
         if( this.GetQuestionQuerys().find(x=>(x.IsSetDisable))){
             return true
@@ -177,9 +177,8 @@ export class QuestionGroup {
         this.IsSetDisable = !isChecked;
         [].concat(Array.from(this.QuestionQueryMap.values())).forEach((questionQuery: QuestionQuery) => {
             // alert("sss")
-            debugger
             questionQuery.QueryCheckChildIsChecked(isChecked,updateLists);
-            if (updateLists) 
+            if (updateLists)
             {
                 // updateLists = updateLists.filter(x => x.QuestionCode !== this.QuestionCode);
                 updateLists.push({ QuestionCode: this.QuestionCode, IsDisable: this.IsSetDisable })
@@ -201,20 +200,20 @@ export class QuestionQuery {
     QuestionCode: string ;
     QueryText: string ;
     IsSetDisable: boolean  ;
-    IsDisable : boolean   
+    IsDisable : boolean
     hasChild: boolean = false ;
     ShowChecked: boolean = false ;
     QuestionText: QuestionText[] = [];
     QuestionTextMap: Map<string, QuestionText> = new Map<string, QuestionText>(); // question_code
     ischildAllCheck (){
         if( this.GetQuestionText().find(x=>(x.IsSetDisable))){
-   
+
             return true
         }else {
 
             return false
         }
-       
+
     }
     /**
     *
@@ -239,7 +238,7 @@ export class QuestionQuery {
             this.QuestionTextMap.set(questionInfo.QuestionCode, new QuestionText(questionInfo));
             this.QuestionText.push(new QuestionText(questionInfo));
         } else {
-      
+
 
 
         }
@@ -255,14 +254,14 @@ export class QuestionQuery {
     }
 
     public QueryCheckChildIsChecked(IsCheck: boolean,updateLists? :QuestionDisableVO[]) {
-         
+
         this.IsSetDisable = !IsCheck;
         this.ShowChecked = !IsCheck && !this.hasChild;
         [].concat(Array.from(this.QuestionTextMap.values())).forEach((questionText: QuestionText) => {
-            questionText.TextCheckChildIsChecked(IsCheck ,updateLists); 
+            questionText.TextCheckChildIsChecked(IsCheck ,updateLists);
             updateLists.push({ QuestionCode: this.QuestionCode, IsDisable: this.IsSetDisable })
 
-         
+
         });
 
 
@@ -276,7 +275,7 @@ export class QuestionText {
         this.QuestionCode = questionInfo.QuestionCode;
         this.IsSetDisable  = (questionInfo.IsDisable =='true') ; // 需要註解掉
         this.IsDisable  = (questionInfo.IsDisable =='true') ;
-        
+
       console.log( questionInfo.QuestionText +questionInfo.IsDisable)
     }
     QuestionText: string;
@@ -299,7 +298,7 @@ export class QuestionText {
 
 /** 小題 */
 export class OptionText {
-    constructor(questionInfo: QuestionInfo) { 
+    constructor(questionInfo: QuestionInfo) {
         this.QuestionText = questionInfo.OptionText;
         this.QuestionCode = questionInfo.OptionCode;
         this.IsChecked  = (questionInfo.IsDisable =='true') ;
@@ -320,23 +319,23 @@ export class OptionText {
 
 
 
-export interface QuestionInfo { 
+export interface QuestionInfo {
     /** 最後小題  */
     UID? :string  ;
-    OptionCode : string ; 
+    OptionCode : string ;
     OptionText :string  ;
     QuestionCode: string;
     QuestionSubject: string;
     QuestionGroup: string;
     QuestionQuery: string;
-    QuestionText: string; 
+    QuestionText: string;
     IsDisable : string ;
 }
 
 export interface OptionTextInfo {
     UID :string ;
     OptionText :string;
-    
+
     IsDisable : string ;
 }
 
@@ -344,4 +343,4 @@ export interface SectionInfo {
     SectionID: string;
     SectionName: string;
     Respondent: string;
-} 
+}

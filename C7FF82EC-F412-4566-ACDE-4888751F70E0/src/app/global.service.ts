@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DsaService } from './dsa.service';
+import { RoleService } from './role.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,13 +18,16 @@ export class GlobalService {
   public teacherID: string = ''
   public currentRole: '班導師' | '認輔老師' | '輔導老師' | string = ''
   public settingLists : any[] = []
-  public isCaseInterviewOpenDefault :boolean 
-  public isCounselOpenDefault :boolean 
-  // currentTeacherRole : '' 
-  constructor(private dsaService: DsaService) {
-
-    this.mode = gadget.params.mode 
-    this.loadingSettingList() ;
+  public isCaseInterviewOpenDefault :boolean
+  public isCounselOpenDefault :boolean
+  // currentTeacherRole : ''
+  constructor(
+    private dsaService: DsaService,
+    private roleService: RoleService
+  ) {
+    if (!gadget) return;
+    this.mode = gadget.params.mode;
+    if (this.roleService.isTeacher) this.loadingSettingList();
   }
 
   /** 取得老師 的 紀錄 */
@@ -66,7 +70,7 @@ export class GlobalService {
   }
 
   getDayOfWeekByString(date: string): string {
-    
+
     const daysOfWeek = ['日', '一', '二', '三', '四', '五', '六'];
     return daysOfWeek[new Date(date).getUTCDay()];
   }
@@ -75,14 +79,14 @@ export class GlobalService {
 
 
   /** */
- public async loadingSettingList () {
+  async loadingSettingList () {
     try {
       let resp = await this.dsaService.send("Admin.GetSetting", {});
       this.settingLists = [].concat(resp.result || []);
 
-      this.isCaseInterviewOpenDefault = this.settingLists.find(x=>x.functionality_code == 'case_counsel_is_private_default').content=='true' 
-      this.isCounselOpenDefault = this.settingLists.find(x=>x.functionality_code == 'interview_is_private_default').content=='true' 
-      
+      this.isCaseInterviewOpenDefault = this.settingLists.find(x=>x.functionality_code == 'case_counsel_is_private_default').content=='true'
+      this.isCounselOpenDefault = this.settingLists.find(x=>x.functionality_code == 'interview_is_private_default').content=='true'
+
       console.log("isCounselOpenDefault", this.isCounselOpenDefault)
     } catch (ex) {
       alert(JSON.stringify(ex))
@@ -90,4 +94,12 @@ export class GlobalService {
 
   }
 
+  /** 轉換日期格式 */
+  public   formatToTaiwanDate(date: Date): string {
+    const westernYear = date.getFullYear();
+    const taiwanYear = westernYear - 1911 ;
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // getMonth() 從 0 開始計算，所以需要加 1
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${taiwanYear}-${month}-${day}`;
+  }
 }

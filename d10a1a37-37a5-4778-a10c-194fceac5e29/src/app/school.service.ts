@@ -128,7 +128,7 @@ export class SchoolService {
       return this.schoolMap.get(this.gadget.application);
     } else {
       return { // DSNS 都找不到，會顯示這個。
-        title: '未設定'
+        title: ''
         , iconUrl: ''
       }
     }

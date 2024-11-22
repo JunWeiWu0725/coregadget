@@ -72,8 +72,6 @@ export class CounselItemDetailComponent implements OnInit {
 
   /** 新增 */
   addInterviewModal(item: CaseStudent) {
-  //  alert("sss")
-  //  debugger
     this._addInterview._editMode = "add";
     this._addInterview.editModeString = "新增";
     this._addInterview.fileUpladed = {};
@@ -116,7 +114,7 @@ export class CounselItemDetailComponent implements OnInit {
     $("#addCaseInterview").on("hide.bs.modal", () => {
 
       if (!this._addInterview.isCancel && this._addInterview.isAddServiceWork) {
-        // 新增之後跳出 新增服務項目 
+        // 新增之後跳出 新增服務項目
         this._addServiceModal.mode = 'add';
         this._addServiceModal.CaseInterviewID = this._addInterview.InsertCaseInterViewID;
            this._addServiceModal.CaseInterviewID = this._addInterview.InsertCaseInterViewID;
@@ -126,7 +124,7 @@ export class CounselItemDetailComponent implements OnInit {
         $("#addServiceModal").modal("show");
         $("#addServiceModal").on("hide.bs.modal", () => {
           if (true) { // 如果關掉舊重新 load 資料
-            //Jean 
+            //Jean
 
             this.loadData();
             $("#addServiceModal").off("hide.bs.modal");
@@ -185,15 +183,16 @@ export class CounselItemDetailComponent implements OnInit {
 
   }
 
+
+
   decodeHtml(html: string ,action :'修改'|'新增'): string {
     if(action=='修改'){
-
-      const txt = document.querySelector('textarea');
+      const txt = document.querySelector('#contentdescription')  as HTMLTextAreaElement;;
       console.log(txt)
       txt.innerHTML = html;
       return txt.value;
     }else{
-      const txt = document.querySelector('textarea');
+      const txt = document.querySelector('#contentdescription')  as HTMLTextAreaElement;;
       console.log(txt)
       txt.innerHTML = "";
       return txt.value;
@@ -216,15 +215,14 @@ export class CounselItemDetailComponent implements OnInit {
 
   /** 編輯 */
   editInterviewModal(caseInterview: CaseInterview) {
-    if (caseInterview.isEditDisable) // 不能編編輯 
+    if (caseInterview.isEditDisable) // 不能編編輯
     {
       return
     }
-
     this._addInterview._editMode = "edit";
     this._addInterview.editModeString = "修改";
     this._addInterview._CaseInterview = caseInterview;
-    this.decodeHtml(caseInterview.Content ,"修改")
+
     this._addInterview._CaseInterview.selectCounselType = caseInterview.CounselType;
     this._addInterview._CaseInterview.selectContactName = caseInterview.ContactName;
     this._addInterview._CaseInterview.AuthorRole = this.globalService.MyCounselTeacherRole;
@@ -233,6 +231,9 @@ export class CounselItemDetailComponent implements OnInit {
     this._addInterview.loadDefaultData();
     this._addInterview.getFile(caseInterview.UID);;
     this._addInterview._CaseInterview.checkValue();
+    this._addInterview.decodeHtml(caseInterview.Content ,"修改")
+    this._addInterview._CaseInterview.Content = this._addInterview.decodeHtmlEntities(caseInterview.Content);
+
     // 服務項目相關
     this._addServiceModal.CaseInterviewID = caseInterview.UID;
     $("#addCaseInterview").modal({ backdrop: 'static' });
@@ -264,7 +265,7 @@ export class CounselItemDetailComponent implements OnInit {
   }
 
 
-  // 轉介單 
+  // 轉介單
   referralRromModal() {
     $("#delCaseInterview").modal("show");
     // 關閉畫面
@@ -379,7 +380,6 @@ export class CounselItemDetailComponent implements OnInit {
 
       data.push(rec);
     });
-    // debugger
     this.caseList = data;
   }
 
@@ -398,7 +398,7 @@ export class CounselItemDetailComponent implements OnInit {
 
     $("#addServiceModal").on("hide.bs.modal", async () => {
 
-      // 重整資料 
+      // 重整資料
 
       await this.loadData();
       $("#addServiceModal").off("hide.bs.modal");
@@ -414,7 +414,7 @@ export class CounselItemDetailComponent implements OnInit {
         StudentID: StudentID
       }
     });
-      
+
     [].concat(resp.CaseInterview || []).forEach(counselRec => {
       // 建立認輔資料
       let rec: CaseInterview = new CaseInterview(this.globalService.isCaseInterviewOpenDefault);
@@ -424,8 +424,8 @@ export class CounselItemDetailComponent implements OnInit {
       rec.Semester = parseInt(counselRec.Semester);
       let dN = Number(counselRec.OccurDate);
       let x = new Date(dN);
-      rec.OccurDate = rec.parseDate(x); 
-      debugger
+      rec.OccurDate = rec.parseDate(x);
+
       rec.MeetTime = counselRec.MeetTime ;
       rec.ContactName = counselRec.ContactName;
       rec.ContactNameOther = counselRec.ContactNameOther;
@@ -527,7 +527,7 @@ export class CounselItemDetailComponent implements OnInit {
   }
 
   resize(){
-    const textArea = document.getElementById('description');
+    const textArea = document.getElementById('contentdescription');
     textArea.style.overflow = 'hidden';
     textArea.style.height = 'auto';
     textArea.style.height = textArea.scrollHeight + 'px';

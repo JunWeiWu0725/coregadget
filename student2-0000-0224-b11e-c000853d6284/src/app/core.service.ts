@@ -154,6 +154,41 @@ export class CoreService {
     });
   }
 
+  // 取得使用者dsns
+  getDsns() {
+    const dsns = this._cnStaff.getUserInfo.Application;
+    return dsns;
+  }
+
+  // 取得學校名稱
+  async getSchoolName() {
+    await this.getCNPublic();
+    const rsp = await this._cnPublic.send('beta.GetSchoolName');
+    return rsp.result.school_name || '';
+  }
+
+  // 以班級為單位產生家長代碼
+  async batchParentCode(classIds: string[]): Promise<any> {
+    await this.getCNStaff();
+    const rsp = await this._cnStaff.send("beta.BatchParentCode", {
+      Request: {
+        ClassID: classIds,
+      },
+    });
+    return rsp.result || "";
+  }
+
+  // 以年級為單位產生家長代碼
+  async batchParentCodeGradeYear(GradeYears: string[]): Promise<any> {
+    await this.getCNStaff();
+    const rsp = await this._cnStaff.send('beta.BatchParentCode' , {
+      Request: {
+        GradeYear: GradeYears
+      },
+    });
+    return rsp.result || '';
+  }
+
   private async getAllClassList() {
     await this.getCNStaff();
 

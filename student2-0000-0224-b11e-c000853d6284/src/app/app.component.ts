@@ -13,6 +13,8 @@ import { EditModalComponent } from './edit-modal/edit-modal.component';
 import { EditParentComponent } from './edit-parent/edit-parent.component';
 import { StatusPipe } from './shared/pipes/status.pipe';
 import { StudentManage } from './student-manage';
+import { InviteLettersModalComponent } from './invite-letters-modal/invite-letters-modal.component';
+import { ParentCodeModalComponent } from './parent-code-modal/parent-code-modal.component';
 
 @Component({
   selector: 'app-root',
@@ -136,6 +138,30 @@ export class AppComponent implements OnInit {
     if (this.curStudent && this.curStudent.StudentId) {
       this.openModifyStudentDialog({ ... this.curStudent });
     }
+  }
+
+
+  openInviteLetterDialog(): void {
+    const dialogRef = this.dialog.open(InviteLettersModalComponent, {
+      width: "80vw",
+      maxWidth: "1050px",
+    });
+  }
+
+  openParentCodeDialog(): void {
+    const dialogRef = this.dialog.open(ParentCodeModalComponent, {
+      width: "80vw",
+      maxWidth: "600px",
+    });
+    
+    dialogRef.afterClosed().subscribe(async result => {
+      if (result && result.state === 'refresh') {
+        this.loading = true;
+        await this.getStudents();
+        this.colForStudent(this.keywordCtrl.value);
+        this.loading = false;
+      }
+    });
   }
 
   openModifyParentDialog(student: StudentRec, parent: StudentParent): void {

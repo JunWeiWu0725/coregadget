@@ -216,6 +216,42 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
         'CompanyWebsite': ''
     };
 
+
+    /** 處理 行動電話與 email 的遮蔽效果 */
+    const resetMaskedFields = () => {
+        $scope.maskedField = {};
+        $scope.maskedField.smsPhone1 = { eyeIcon: 'eyec.png', inputType: 'password' };
+        $scope.maskedField.smsPhone2 = { ...($scope.maskedField.smsPhone1) };
+        $scope.maskedField.contactPhone = { ...($scope.maskedField.smsPhone1) }
+        $scope.maskedField.homePhone = { ...($scope.maskedField.smsPhone1) }
+        $scope.maskedField.companyPhone = { ...($scope.maskedField.smsPhone1) };
+        $scope.maskedField.secretaryPhone = { ...($scope.maskedField.smsPhone1) };
+        $scope.maskedField.email1 = { ...($scope.maskedField.smsPhone1) };
+        $scope.maskedField.email2 = { ...($scope.maskedField.smsPhone1) };
+        $scope.maskedField.email3 = { ...($scope.maskedField.smsPhone1) };
+        $scope.maskedField.email4 = { ...($scope.maskedField.smsPhone1) };
+        $scope.maskedField.email5 = { ...($scope.maskedField.smsPhone1) };
+        $scope.toggleEyeIcon = function(field) {
+            if (field.eyeIcon === 'eye.png') {
+                field.eyeIcon = 'eyec.png';
+                field.inputType = 'password';
+            } else {
+                field.eyeIcon = 'eye.png';
+                field.inputType = 'text';
+            }
+        }
+        // console.log({ name: 'resetMaskedFields()', maskedField: $scope.maskedField});
+    }
+    resetMaskedFields();
+
+    $scope.cleanPhoneNo = (rawPhoneNo) => {
+        // console.log({ rawPhoneNo })
+        const result =  rawPhoneNo.replace(/\D/g, '');
+        // console.log({result});
+        return result ;
+    }
+
+
     // 將地址合併成字串
     $scope.myInfo.mergeAddress = function (address) {
         if (address.AddressList && address.AddressList.Address) {
@@ -300,6 +336,8 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
 
                         $scope.myInfo.StudentInfo.saveing = false;
 
+                        resetMaskedFields();    // 重設欄位遮蔽效果
+
                         $scope.$apply();
                     }
                 }
@@ -374,14 +412,16 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
 
         var requestStudentInfo = {
             Request: {
-                Content: $scope.myInfo.StudentInfo
+                Content: {...$scope.myInfo.StudentInfo}
             }
         };
+
         var requestStudentBrief2 = {
             Request: {
-                Content: $scope.myInfo.StudentBrief2
+                Content: {...$scope.myInfo.StudentBrief2}
             }
         };
+
         requestStudentBrief2.Request.Content.DataSharing = $scope.myInfo.DataSharing;
         var requestWillingness = {
             Request: {
@@ -989,6 +1029,8 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
             };
             delete body_content.Request.Experience.$$hashKey;
 
+            // console.log({body_content});
+
             $scope.connection.send({
                 service: service_name,
                 body: body_content,
@@ -1107,7 +1149,7 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
             $scope.experiences.current.menu.Domain = tmp;
             $scope.experiences.current.menu.Category = null;
             $scope.experiences.current.menu.Item = null;
-            
+
             $scope.experiences.current.result.IndustryID = null;
             $scope.experiences.current.result.Industry = null;
             $scope.experiences.current.result.IndustryDesc = null;
@@ -1123,12 +1165,12 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
             var tmp = $scope.experiences.current.menu.Domain['C_'+category];
             $scope.experiences.current.menu.Category = tmp;
             $scope.experiences.current.menu.Item = null;
-            
+
             $scope.experiences.current.result.IndustryID = null;
             $scope.experiences.current.result.Industry = null;
             $scope.experiences.current.result.IndustryDesc = null;
             $scope.experiences.current.result.IndustryOther = null;
-            
+
             if (tmp.Items.length == 0) {
                 $scope.experiences.current.result.Industry = tmp.Category;
                 $scope.experiences.current.result.IndustryID = tmp.UID;
@@ -1509,6 +1551,6 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
         $scope.getDataSource(function () {
             $scope.stu_additionals.load(); // 興趣/參加台大EMBA團體/參加校外組織
             $scope.experiences.load(); // 經歷
-        }); 
+        });
     });
 }]);

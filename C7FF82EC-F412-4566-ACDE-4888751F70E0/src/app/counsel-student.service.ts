@@ -15,9 +15,9 @@ export class CounselStudentService {
 
   public teacherInfo: TeacherInfo = new TeacherInfo();
 
+  /** */
   public getCounselClass(targetRole: string) {
-    // debugger
-    console.log("CounselClass",this.counselClass)
+    // console.log("CounselClass333",this.counselClass)
     let list: CounselClass[] = [];
     this.counselClass.forEach((item) => {
       if (item.Role.indexOf(targetRole) >= 0)
@@ -25,7 +25,7 @@ export class CounselStudentService {
         // console.log('item',item);
     });
     return list;
-    
+
   }
 
   /**目前學年度*/
@@ -33,9 +33,9 @@ export class CounselStudentService {
   /**目前學期 */
   public currentSemester: number;
   public meetTime: string ;
-  /** 認輔學生 */ 
+  /** 認輔學生 */
   public guidanceStudent: CounselStudent[];
-  /** 搜尋學生*/ 
+  /** 搜尋學生*/
   public searchStudent: CounselStudent[];
 
   // public currentStudent: CounselStudent;
@@ -49,6 +49,7 @@ export class CounselStudentService {
     this.studentMap = new Map<string, CounselStudent>();
     this.classMap = new Map<string, CounselClass>();
     this.counselClass = [];
+
     this.guidanceStudent = [];
 
     this.classMap = new Map<string, CounselClass>();
@@ -73,7 +74,9 @@ export class CounselStudentService {
     this.dsaService.getSessionIDAndAccessPoint();
 
     // 班導師，輔導老師，會讀取目前學年度學期
-    let resp = await this.dsaService.send("GetCounselStudent", {});
+    let resp = await this.dsaService.send("GetCounselStudent", {}); 
+    // dev_mod_console 
+    console.log("GetCounselStudent",resp ) ;
     [].concat(resp.Student || []).forEach(stuRec => {
       //建立學生
       if (!this.studentMap.has(stuRec.StudentID)) {
@@ -106,7 +109,8 @@ export class CounselStudentService {
             LastUpdateVg: stuRec.LastUpdateVg,
             VGCount: stuRec.VGCount,
             InterviewContentCount: stuRec.InterviewContentCount,
-            InterviewContactItemCount: stuRec.InterviewContactItemCount
+            InterviewContactItemCount: stuRec.InterviewContactItemCount,
+            StuCounselNumber: stuRec.StuCounselNumber
           } as CounselStudent);
       }
       let stu = this.studentMap.get(stuRec.StudentID);
@@ -212,6 +216,7 @@ export class CounselStudent {
       this.StudentID =counselStudent.StudentID ;
       this.StudentName =counselStudent .StudentName;
   }
+  StuCounselNumber :string ;
   StudentID: string;
   SchoolYear: number;
   Semester: number;

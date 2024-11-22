@@ -59,10 +59,11 @@
 
 .rwd-table2 td:before {
   content: attr(data-th);
-  font-weight: bold;
-  width: 80px;
-  display: inline-block;
-  color: #000;
+  /* font-weight: bold; */
+  width: 100px;
+  display: block;
+  color: #2e3f57;
+  font-size: 14px;
 }
 
 .accordion {
@@ -120,7 +121,7 @@
   .rwd-table th,
   .rwd-table td {
     display: table-cell;
-    padding: 1em !important;
+    padding: 1em 0 !important;
     text-align: center;
   }
 

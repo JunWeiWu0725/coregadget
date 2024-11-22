@@ -4,7 +4,7 @@
             <li class="breadcrumb-item active d-flex"
                 aria-current="page"
                 style="width: 100%">
-                <div>課堂點名<span *ngIf="today">&nbsp;(&nbsp;{{today}}&nbsp;)</span></div>
+                <div><ng-container *ngIf="!loading">{{ 'roll-call' | i18next }}</ng-container><span *ngIf="today">&nbsp;(&nbsp;{{today}}&nbsp;)</span></div>
                 <div style="flex: 1"></div>
             </li>
         </ol>
@@ -24,21 +24,21 @@
         <li *ngIf="conf?.Schedule && conf?.Schedule.length"
             class="list-group-item active d-flex align-items-center py-2 px-3">
 
-            <div class=" col-sm-6  col-md-9 col-6">
-                <span class="pr-3">今日點名</span>
+            <div class=" col-sm-6  col-md-9 col-5">
+                <span class="pr-3">{{ 'roll-call-today' | i18next }}</span>
             </div>
-            <div class=" col-sm-2 col-md-1 col-2 text-nowrap text-center">節次</div>
-            <div class=" col-sm-2  col-md-1 col-2 text-center text-nowrap">已點名</div>
-            <div class=" col-sm-2  col-md-1 col-2 text-center text-nowrap">學生點名</div>
+            <div class=" col-sm-2 col-md-1 col-3 text-nowrap text-center">{{ 'session' | i18next }}</div>
+            <div class=" col-sm-2  col-md-1 col-2 text-center " [ngClass]="currentLanguage === 'en' ? '' : 'text-nowrap'">{{ 'teacher-called' | i18next }}</div>
+            <div class=" col-sm-2  col-md-1 col-2 text-center " [ngClass]="currentLanguage === 'en' ? '' : 'text-nowrap'">{{ 'assistant-called' | i18next }}</div>
         </li>
         <li class="list-group-item px-3 py-2" style="min-height: 2rem;"
             *ngFor="let suggest of conf?.Schedule"
             (click)="openSchedule(suggest)">
             <div class="row">
-                <div class="col-sm-6 col-md-9 col-6" style="word-wrap: break-word;">
+                <div class="col-sm-6 col-md-9 col-5" style="word-wrap: break-word;">
                     <span class="pr-3">{{suggest.ClassName?suggest.ClassName:suggest.CourseName}}</span>
                 </div>
-                <div class=" col-sm-2 col-md-1 col-2  text-nowrap text-center">{{suggest.Period}}</div>
+                <div class=" col-sm-2 col-md-1 col-3  text-nowrap text-center">{{suggest.Period}}</div>
                 <div class=" col-sm-2 col-md-1 col-2 text-center">
                     <ng-container *ngIf="suggest.TeacherChecked=='true'">
                         <i class="material-icons"
@@ -72,7 +72,7 @@
 
         <li *ngIf="conf?.CourseConf && conf?.CourseConf.length"
             class="list-group-item active d-flex align-items-center py-2 ">
-            <div>課程</div>
+            <div>{{ 'courses' | i18next }}</div>
         </li>
         <li class="list-group-item py-2 px-3" style="min-height: 2rem;"
             *ngFor="let course of conf?.CourseConf">
@@ -87,7 +87,7 @@
 
     <div *ngIf="!isTeacherHelper && !loading">
         <div style="position:absolute;top:40%;left: 0px;right: 0px;text-align: center;">
-            本學期未被指定爲點名小幫手。
+            {{ 'not-assigned-as-roll-call-assistant' | i18next }}
         </div>
     </div>
 

@@ -53,7 +53,7 @@ export class BasicService {
   }
 
   /**
-   *取得德行評語代碼表(評語代碼 + 評語內容)
+   *取得代碼表(評語代碼 + 評語內容)
    */
   async getMoralCommentMappingTable() {
     const conn = await this.connection1();

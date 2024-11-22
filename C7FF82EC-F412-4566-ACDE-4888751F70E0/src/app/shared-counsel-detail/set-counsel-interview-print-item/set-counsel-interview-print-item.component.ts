@@ -78,6 +78,7 @@ export class SetCounselInterviewPrintItemComponent implements OnInit {
 
       let a = { studentID: this.studentID, StartDate: StartDate, EndDate: EndDate, P1T: this.isCheckP1T, P1F: this.isCheckP1F, P2T: this.isCheckP2T, P2F: this.isCheckP2F }
       let x = JSON.stringify(a);
+      
      if(this.globalService.MyCounselTeacherRole&&this.RoleService.role.indexOf('輔導老師') >= 0){
        localStorage.setItem('OnlyPrintMine', 'false');
        window.open('content.htm#/(simple-page:simple-page/print/counsel-interview-doc/' + x + ')', '_blank');

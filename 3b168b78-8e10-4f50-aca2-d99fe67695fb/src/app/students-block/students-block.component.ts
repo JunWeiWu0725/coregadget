@@ -52,8 +52,6 @@ export class StudentsBlockComponent implements OnInit, OnDestroy {
         } else {
           return false;
         }
-      } else if (this.mode.Title === '德行評語') {
-        return ((student.Comment || '') != (student.Origin_Comment || ''));
       } else {
         return false;
       }
@@ -71,8 +69,6 @@ export class StudentsBlockComponent implements OnInit, OnDestroy {
         } else {
           return '';
         }
-      } else if (this.mode.Title === '德行評語') {
-        return student.Comment || '';
       } else {
         return '';
       }

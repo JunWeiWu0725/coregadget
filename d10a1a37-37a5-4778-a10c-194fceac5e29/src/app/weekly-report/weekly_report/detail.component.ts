@@ -125,7 +125,7 @@ export class DetailComponent implements OnInit {
   async delete() {
     const result = await this.dialogService.confirm(
       "Confirmation",
-      "Are you sure to delete all the students' weekly report?"
+      "Are you sure to delete all the students' Routine Report?"
     );
     if (result) {
       try {

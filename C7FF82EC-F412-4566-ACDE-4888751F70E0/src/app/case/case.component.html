@@ -2,202 +2,170 @@
   <div class="tab-content">
     <app-permission-denied *ngIf="!roleService.isLoading && !globalService.enableCase"></app-permission-denied>
     <!-- TAB 4 個案資料 -->
-    <div *ngIf="!roleService.isLoading && globalService.enableCase"
-         class="tab-pane fade show active">
+    <div *ngIf="!roleService.isLoading && globalService.enableCase" class="tab-pane fade show active">
 
       <div class="d-flex justify-content-between">
         <div class="d-flex">
-     
-        <div class="dropdown">
-          <button class="btn btn-light dropdown-toggle"
-                  type="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false">
-            {{ selectItemClosed }}
-          </button>
-          <div class="dropdown-menu">
-            <a class="dropdown-item"
-               *ngFor="let item of itemClosedList"
-               [ngClass]="{ active: selectItemClosed === item }"
-               (click)="SetSelectItemClosed(item)">{{ item }}</a>
+
+          <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              {{ selectItemClosed }}
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" *ngFor="let item of itemClosedList"
+                [ngClass]="{ active: selectItemClosed === item }" (click)="SetSelectItemClosed(item)">{{ item }}</a>
+            </div>
+          </div>
+          <div class="dropdown" style="margin-left: 20px">
+            <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              {{ selectItemClass }}
+            </button>
+            <div class="dropdown-menu scrollable-menu">
+              <a class="dropdown-item" *ngFor="let item of itemClassList"
+                [ngClass]="{ active: selectItemClass === item }" (click)="SetSelectItemClass(item)">{{ item }}</a>
+            </div>
           </div>
         </div>
-        <div class="dropdown"
-             style="margin-left: 20px">
-          <button class="btn btn-light dropdown-toggle"
-                  type="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false">
-            {{ selectItemClass }}
+        <div class=" float-right">
+          <button class="btn  btn-info btn-deep " data-toggle="modal" data-backdrop="static" data-target="#newCase"
+            (click)="setNewCaseModal()">
+            <i class="material-icons">add</i> 建立新個案
           </button>
-          <div class="dropdown-menu scrollable-menu">
-            <a class="dropdown-item"
-               *ngFor="let item of itemClassList"
-               [ngClass]="{ active: selectItemClass === item }"
-               (click)="SetSelectItemClass(item)">{{ item }}</a>
-          </div>
         </div>
-      </div>
-        <div class =" float-right">
-          <button class="btn  btn-info btn-deep "
-          data-toggle="modal"
-          data-backdrop="static"
-          data-target="#newCase"
-          (click)="setNewCaseModal()">
-    <i class="material-icons">add</i> 建立新個案
-         </button>
-        </div >
       </div>
 
 
-<!-- table 部分 -->
-      
+      <!-- table 部分 -->
+
       <ul class="rwd-table">
         <li class="thead  ">
           <ol class="tr ">
             <li class="sticky-top ">
-            班級 
-           <mat-icon *ngIf="sortType=='Asc'||''" (click) ="sortByDesc('ClassName')" 
-              class = " cuser"  
-              style ="font-size: 18px ;color :gray;"
-              aria-hidden="false" aria-label="Example home icon">
-              arrow_drop_down
-          </mat-icon>
-          
-            <mat-icon *ngIf="sortType=='Desc'||sortType==''" (click) ="sortByAsc('ClassName')" 
-                      class = " cuser"  
-                      style ="font-size: 18px  ;color :gray;"
-                      aria-hidden="false" aria-label="Example home icon">
-                      arrow_drop_up
+              班級
+              <mat-icon *ngIf="sortType=='Asc'||''" (click)="sortByDesc('ClassName')" class=" cuser"
+                style="font-size: 18px ;color :gray;" aria-hidden="false" aria-label="Example home icon">
+                arrow_drop_down
+              </mat-icon>
 
-            </mat-icon>
-       
-             
+              <mat-icon *ngIf="sortType=='Desc'||sortType==''" (click)="sortByAsc('ClassName')" class=" cuser"
+                style="font-size: 18px  ;color :gray;" aria-hidden="false" aria-label="Example home icon">
+                arrow_drop_up
+
+              </mat-icon>
+
+
             </li>
             <li class="sticky-top">座號
-              <mat-icon *ngIf="sortType=='Asc'||''" (click) ="sortByDesc('SeatNo',true)" 
-              class = " cuser"  
-              style ="font-size: 18px ;color :gray;"
-              aria-hidden="false" aria-label="Example home icon">
-              arrow_drop_down
-          </mat-icon>
-          
-            <mat-icon *ngIf="sortType=='Desc'||sortType==''" (click) ="sortByAsc('SeatNo',true)" 
-                      class = " cuser"  
-                      style ="font-size: 18px  ;color :gray;"
-                      aria-hidden="false" aria-label="Example home icon">
-                      arrow_drop_up
-  
-            </mat-icon>
+              <mat-icon *ngIf="sortType=='Asc'||''" (click)="sortByDesc('SeatNo',true)" class=" cuser"
+                style="font-size: 18px ;color :gray;" aria-hidden="false" aria-label="Example home icon">
+                arrow_drop_down
+              </mat-icon>
+
+              <mat-icon *ngIf="sortType=='Desc'||sortType==''" (click)="sortByAsc('SeatNo',true)" class=" cuser"
+                style="font-size: 18px  ;color :gray;" aria-hidden="false" aria-label="Example home icon">
+                arrow_drop_up
+
+              </mat-icon>
 
 
             </li>
 
-            
+
 
 
 
             <li class="sticky-top">姓名</li>
             <li class="sticky-top">性別</li>
             <li class="sticky-top">學生身份</li>
-            <li class="sticky-top "style ="width:auto">個案日期
-              <mat-icon *ngIf="sortType=='Asc'||''" (click) ="sortByDesc('OccurDate')" 
-              class = " cuser"  
-              style ="font-size: 18px ;color :gray;"
-              aria-hidden="false" aria-label="Example home icon">
-              arrow_drop_down
-          </mat-icon>
-          
-            <mat-icon *ngIf="sortType=='Desc'||sortType==''" (click) ="sortByAsc('OccurDate')" 
-                      class = " cuser"  
-                      style ="font-size: 18px  ;color :gray;"
-                      aria-hidden="false" aria-label="Example home icon">
-                      arrow_drop_up
+            <li class="sticky-top " style="width:auto">個案日期
+              <mat-icon *ngIf="sortType=='Asc'||''" (click)="sortByDesc('OccurDate')" class=" cuser"
+                style="font-size: 18px ;color :gray;" aria-hidden="false" aria-label="Example home icon">
+                arrow_drop_down
+              </mat-icon>
 
-            </mat-icon>
+              <mat-icon *ngIf="sortType=='Desc'||sortType==''" (click)="sortByAsc('OccurDate')" class=" cuser"
+                style="font-size: 18px  ;color :gray;" aria-hidden="false" aria-label="Example home icon">
+                arrow_drop_up
+
+              </mat-icon>
 
             </li>
             <li class="sticky-top">個案編號</li>
-            <li class="sticky-top">個案類別(主) 
-            
+            <li class="sticky-top">學生代號</li>
+            <li class="sticky-top">個案類別(主)
+
             </li>
             <li class="sticky-top">個案類別(副)</li>
-            <li class="sticky-top"
-                style="" >負責老師
-                <mat-icon  *ngIf="sortType=='Asc'" (click) ="sortByDesc('CaseTeacherString')" 
-                class = " cuser"  
-                style ="font-size: 16px ;color :gray;"
-                aria-hidden="false" aria-label="Example home icon">
+            <li class="sticky-top" style="">負責老師
+              <mat-icon *ngIf="sortType=='Asc'" (click)="sortByDesc('CaseTeacherString')" class=" cuser"
+                style="font-size: 16px ;color :gray;" aria-hidden="false" aria-label="Example home icon">
                 arrow_drop_down
-  
-              </mat-icon>
-    
-              <mat-icon *ngIf="sortType=='Desc'||sortType==''"  (click) ="sortByAsc('CaseTeacherString')" 
-                        class = " cuser"  
-                        style ="font-size: 18px  ;color :gray;"
-                        aria-hidden="false" aria-label="Example home icon">
-                  arrow_drop_up
-  
-              </mat-icon>
-                        
-              
-              
-          </li>
-            <li class="sticky-top">
-              輔導次數
-              <mat-icon  *ngIf="sortType=='Asc'" (click) ="sortByDesc('CaseCount',true)" 
-              class = " cuser"  
-              style ="font-size: 16px ;color :gray;"
-              aria-hidden="false" aria-label="Example home icon">
-              arrow_drop_down
 
-            </mat-icon>
-  
-            <mat-icon *ngIf="sortType=='Desc'||sortType==''"  (click) ="sortByAsc('CaseCount',true)" 
-                      class = " cuser"  
-                      style ="font-size: 18px  ;color :gray;"
-                      aria-hidden="false" aria-label="Example home icon">
+              </mat-icon>
+
+              <mat-icon *ngIf="sortType=='Desc'||sortType==''" (click)="sortByAsc('CaseTeacherString')" class=" cuser"
+                style="font-size: 18px  ;color :gray;" aria-hidden="false" aria-label="Example home icon">
                 arrow_drop_up
 
-            </mat-icon>
-                      
+              </mat-icon>
+
+
+
+            </li>
+            <li class="sticky-top">
+              輔導次數
+              <mat-icon *ngIf="sortType=='Asc'" (click)="sortByDesc('CaseCount',true)" class=" cuser"
+                style="font-size: 16px ;color :gray;" aria-hidden="false" aria-label="Example home icon">
+                arrow_drop_down
+
+              </mat-icon>
+
+              <mat-icon *ngIf="sortType=='Desc'||sortType==''" (click)="sortByAsc('CaseCount',true)" class=" cuser"
+                style="font-size: 18px  ;color :gray;" aria-hidden="false" aria-label="Example home icon">
+                arrow_drop_up
+
+              </mat-icon>
+
 
             </li>
             <li class="sticky-top">結案</li>
-            <li class="sticky-top">編輯   <span class="ml-3">刪除</span>  </li>
-        
+            <li class="sticky-top">編輯 <span class="ml-3">刪除</span> </li>
+
           </ol>
         </li>
         <li class="tbody">
           <ng-container *ngFor="let item of caseList">
-          <ol class="tr " *ngIf="item.isDisplay === true"     >
-         
+            <ol class="tr " *ngIf="item.isDisplay === true">
+
               <li data-title="班級">{{ item.ClassName }}</li>
               <li data-title="座號">{{ item.SeatNo }}</li>
-              <li data-title="姓名" style =" justify-content: center; font-weight: 900; "  (click)="toCounselDetail(item)">
-              <div class="name_link" >
-                {{ item.Name }}
-              </div> 
+              <li data-title="姓名" style=" justify-content: center; font-weight: 900; " (click)="toCounselDetail(item)">
+                <div class="name_link">
+                  {{ item.Name }}
+                </div>
               </li>
-              
+
               <li data-title="性別">{{ item.Gender }}</li>
               <li data-title="學生身份">{{ item.StudentIdentity }}</li>
               <li data-title="學生身份">{{ item.OccurDate }}</li>
               <li data-title="個案編號">{{ item.CaseNo }}</li>
-              <li class="text-left text-normal "
-                  data-title="個案類別(主)"
-                  style="white-space: pre-wrap;word-break: break-all;">
+              <li data-title="學生代號">
+                {{ item.StuCounselNumber }}
+                <mat-icon *ngIf="!item.StuCounselNumber" aria-hidden="false" aria-label="Example home icon"
+                  style="color: #efc44c; cursor: pointer; font-size :18px !important" class="blinking-icon">
+                  error
+                </mat-icon>
+              </li>
+              <li class="text-left text-normal " data-title="個案類別(主)"
+                style="white-space: pre-wrap;word-break: break-all;">
                 {{ item.getProblemMainCategoryCheckedValue() }}
               </li>
-              <li  class="text-left text-normal"
-              data-title="個案類別(副)"
-              style="overflow: hidden;">
-            {{ item.getProblemCategoryCheckedValue() }}
-          </li>
-              <li data-title="認輔老師"
-                  style="white-space: pre-wrap;word-break: break-all;">
+              <li class="text-left text-normal" data-title="個案類別(副)" style="overflow: hidden;">
+                {{ item.getProblemCategoryCheckedValue() }}
+              </li>
+              <li data-title="認輔老師" style="white-space: pre-wrap;word-break: break-all;">
                 {{ item.GetTeacherNames() }}
               </li>
               <li data-title="輔導次數">{{ item.CaseCount }}</li>
@@ -211,10 +179,8 @@
                   編輯
                
                 </button> -->
-                <mat-icon aria-hidden="false" 
-                          aria-label="Example home icon" 
-                          style ="color:  #797dca; cursor:pointer " 
-                          (click)="setEditCaseModal(item)">mode_edit
+                <mat-icon aria-hidden="false" aria-label="Example home icon" style="color:  #797dca; cursor:pointer "
+                  (click)="setEditCaseModal(item)">mode_edit
                 </mat-icon>
                 <!-- <button class="btn btn-danger"
                              data-toggle="modal"
@@ -223,33 +189,27 @@
                         [disabled]="isDeleteButtonDisable">
                   刪除
                 </button> -->
-                              
 
-            
-                <mat-icon class="ml-4"
-                          aria-hidden="false" 
-                          aria-label="Example home icon" 
-                          [ngClass] ="isDeleteButtonDisable?'word_gray':'word_red'"
-                            
-                          (click)="delCaseModal(item)">
-                          highlight_off
+
+
+                <mat-icon class="ml-4" aria-hidden="false" aria-label="Example home icon"
+                  [ngClass]="isDeleteButtonDisable?'word_gray':'word_red'" (click)="delCaseModal(item)">
+                  highlight_off
                 </mat-icon>
 
               </li>
-      
 
-          </ol>
-        </ng-container>
+
+            </ol>
+          </ng-container>
         </li>
       </ul>
     </div>
   </div>
 </div>
 
-<ng-template #tmpLoading
-             class="container">
-  <div class="row justify-content-center"
-       style="margin-top:250px;margin-bottom:200px;">
+<ng-template #tmpLoading class="container">
+  <div class="row justify-content-center" style="margin-top:250px;margin-bottom:200px;">
     Loading...
   </div>
 </ng-template>

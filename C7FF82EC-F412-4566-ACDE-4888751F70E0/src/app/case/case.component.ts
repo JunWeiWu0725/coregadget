@@ -8,6 +8,7 @@ import { GlobalService } from "../global.service";
 import { DelCaseModalComponent } from "./del-case-modal/del-case-modal.component"
 import { asLiteral } from "@angular/compiler/src/render3/view/util";
 import { ActivatedRoute, Router } from "@angular/router";
+import { CounselStudentService } from "../counsel-student.service";
 
 
 @Component({
@@ -46,7 +47,7 @@ export class CaseComponent implements OnInit {
     private dsaService: DsaService,
     public globalService: GlobalService,
     @Optional()
-    private appComponent: AppComponent
+    private appComponent: AppComponent,
   ) {
     setTimeout(() => { if (this.appComponent) this.appComponent.currentComponent = "case"; });
 
@@ -55,7 +56,7 @@ export class CaseComponent implements OnInit {
   @ViewChild("case_modal") case_modal: NewCaseModalComponent;
   @ViewChild("del_case_modal") del_case_modal: DelCaseModalComponent;
   // 新增
-  setNewCaseModal() {
+  async setNewCaseModal() {
     // this.case_modal.loadCaseSource(); //載入個案來源
     this.case_modal.isAddMode = true;
     this.case_modal.editModeString = "新增";
@@ -152,7 +153,7 @@ export class CaseComponent implements OnInit {
   }
 
   /** 編輯 */
-  setEditCaseModal(item: CaseStudent) {
+ async setEditCaseModal(item: CaseStudent) {
     let obj = Object.assign({}, item);
     this.case_modal.isAddMode = false;
     this.case_modal.editModeString = "修改";
@@ -209,6 +210,7 @@ export class CaseComponent implements OnInit {
 
     this.case_modal.caseStudent.checkValue();
     item.checkValue();
+
     $("#newCase").modal({ backdrop: 'static' });
     $("#newCase").modal("show");
     // 關閉畫面
@@ -293,6 +295,7 @@ export class CaseComponent implements OnInit {
         rec.CaseCount = caseRec.CaseCount;
         rec.StudentStatus = caseRec.StudentStatus;
         rec.TeacherCounselLevels = caseRec.TeacherCounselLevels;
+        rec.StuCounselNumber =caseRec.StuCounselNumber;
         rec.PhotoUrl = `${this.dsaService.AccessPoint
           }/GetStudentPhoto?stt=Session&sessionid=${this.dsaService.SessionID
           }&parser=spliter&content=StudentID:${rec.StudentID}`;

@@ -1,0 +1,22 @@
+{
+  "welcome": "Welcome to Your Angular App",
+  "roll-call": "Roll Call",
+  "roll-call-today": "Roll-call today",
+  "session": "Session",
+  "teacher-called": "Called",
+  "assistant-called": "Student Called",
+  "courses": "Courses",
+  "teacher": "Teacher",
+  "select-absence-type": "Select absence type",
+  "please-select-absence-type": "Please select absence type!",
+  "unable-to-adjust-absence": "This student cannot adjust absences.",
+  "save": "save",
+  "saving": "Saving...",
+  "save-success": "Save successful",
+  "not-assigned-as-roll-call-assistant": "Not roll-call assistant this semester.",
+  "teacher-already-called-roll": "The teacher has already called roll.",
+  "teacher-confirmation": "Teacher Confirmation",
+  "roll-call-pw": "Roll-call PW",
+  "skip": "Skip",
+  "confirm": "Confirm"
+}

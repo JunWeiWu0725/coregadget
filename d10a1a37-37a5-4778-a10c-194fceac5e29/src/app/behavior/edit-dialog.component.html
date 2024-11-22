@@ -8,7 +8,7 @@
       <input matInput
              [(ngModel)]="comment">
     </mat-form-field>
-    <div class="form-group form-check">
+    <!-- <div class="form-group form-check">
       <input id="detention"
              type="checkbox"
              class="form-check-input"
@@ -26,7 +26,8 @@
              for="isGoodBehavior">Good</label>
              
     </div>
-    <!--  DaaDsaFollow :this.currentDaaDsaFollow ? "true" : "false", -->
+
+    
     <div class="form-group form-check">
       <input id="daaDsaFollow"
              type="checkbox"
@@ -35,7 +36,41 @@
       <label class="form-check-label"
              for="daaDsaFollow">DAA/DSA Follow up</label>
              
+    </div> -->
+
+
+
+    <!-- new  -->
+    <div class="form-group form-check">
+      <input id="detention"
+             type="checkbox"
+             class="form-check-input"
+             (change)="onCheckboxChange('detention')"
+             [(ngModel)]="detention">
+      <label class="form-check-label"
+             for="detention">Detention</label>
     </div>
+    <div class="form-group form-check">
+        <input id="goodBehavior"
+               type="checkbox"
+               class="form-check-input"
+               (change)="onCheckboxChange('goodBehavior')"
+               [(ngModel)]="isGoodBehavior">
+        <label class="form-check-label"
+               for="goodBehavior">Good</label>
+      </div>
+       <!--  DaaDsaFollow :this.currentDaaDsaFollow ? "true" : "false", -->
+    <div class="form-group form-check">
+      <input id="daaDsaFollow"
+             type="checkbox"
+             class="form-check-input"
+             (change)="onCheckboxChange('daaDsaFollow')"
+             [(ngModel)]="daaDsaFollow">
+      <label class="form-check-label"
+             for="daaDsaFollow">DAA/DSA Follow up</label>
+             
+    </div>
+    <!-- new end  -->
   </div>
   <div class="modal-footer">
     <button type="button"

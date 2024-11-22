@@ -106,11 +106,11 @@ export class PsychologicalQuizSetupComponent implements OnInit {
 
     // 關閉畫面
     $("#addPsychologicalQuizData").on("hide.bs.modal", () => {
-      if (!this._addPsychologicalQuizData.isCancel) {
+
         // 重整資料
         this.loadData();
-      }
-      $("#addPsychologicalQuizData").off("hide.bs.modal");
+   
+      $("#addPsychologicalQuizData").off("hide.bs.modal" );
     });
   }
 

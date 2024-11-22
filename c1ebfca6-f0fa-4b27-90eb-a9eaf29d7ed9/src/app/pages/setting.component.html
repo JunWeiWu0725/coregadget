@@ -2,7 +2,7 @@
   <nav aria-label="breadcrumb text-nowrap text-truncate">
     <ol class="breadcrumb  no-background ">
       <li class="breadcrumb-item" >
-        <a [routerLink]="['/main']"><b>課堂點名</b></a>
+        <a [routerLink]="['/main']"><b>{{ 'roll-call' | i18next }}</b></a>
       </li>
       <ng-container *ngIf="loading; else titleText">
         <li class="breadcrumb-item active"
@@ -10,7 +10,7 @@
       </ng-container>
       <ng-template #titleText>
         <li class="breadcrumb-item active"
-            aria-current="sub">設定</li>
+            aria-current="sub">{{ 'setting' | i18next }}</li>
       </ng-template>
     </ol>
   </nav>
@@ -21,18 +21,18 @@
         *ngIf="!loading;else Loading">
       <li *ngIf="true"
           class="list-group-item active d-flex align-items-center py-2 main-bg-color">
-        <div><b>點名設定</b></div>
+        <div><b>{{ 'roll-call-setting' | i18next }}</b></div>
         <button (click)="saveSetting()"
                 type="button"
                 class="btn btn-sm btn-info"
                 style="float:right"
-                class="btn btn-sm btn-info ml-auto">儲存
+                class="btn btn-sm btn-info ml-auto">{{ 'save' | i18next }}
         </button>
       </li>
       <li class="list-group-item">
         <div class="row">
           <div class="col-8 col-sm-9 col-md-10 col-lg-11 text-nowrap">
-            <div style="display :inline">是否顯示照片</div>
+            <div style="display :inline">{{ 'show-id-photo' | i18next }}</div>
           </div>
 
           <div class="col-4 col-sm-3 col-md-2 col-lg-1 text-right text-nowrap">
@@ -41,23 +41,23 @@
                      name="radio"
                      value=""
                      [checked]="teacherSetting['usePhoto'] === true"
-                     (change)="settingChange('usePhoto',true)"> 是
+                     (change)="settingChange('usePhoto',true)"> {{ 'yes' | i18next }}
             </label>
             <label class="ml-3 point">
               <input type="radio"
                      name="radio"
                      value=""
                      [checked]="teacherSetting['usePhoto'] === false"
-                     (change)="settingChange('usePhoto',false)"> 否
+                     (change)="settingChange('usePhoto',false)"> {{ 'no' | i18next }}
             </label>
           </div>
         </div>
       </li>
       <li class="list-group-item">
         <div class="flex flex-wrap">
-            <div class="text-nowrap">
-              <span>設定點名密碼</span>
-              <span class="text-muted small">(小幫手點名完後直接確認)</span>
+            <div class="">
+              <span>{{ 'roll-call-pw-setting' | i18next }}</span>
+              <span class="text-muted small text-nowrap"> ({{ 'assistant-confirm-after-roll-call' | i18next }})</span>
             </div>
 
               <input type="password"
@@ -81,7 +81,7 @@
       </li>
       <!-- 點名小幫手 -->
       <li class="list-group-item active d-flex align-items-center py-2  main-bg-color">
-        <div><b>點名小幫手</b></div>
+        <div><b>{{ 'roll-call-assistant' | i18next }}</b></div>
       </li>
       <li class="list-group-item point"
           *ngFor="let class of classList"
@@ -89,11 +89,11 @@
         <div class="d-flex flex-wrap justify-content-between align-items-center">
           <div class="text-nowrap">
             <span class="pr-1" style="white-space: pre-wrap;">{{class.ClassName}}</span>
-            <span class="text-muted small pr-3">導師班</span>
+            <span class="text-muted small pr-3">{{ 'home-room' | i18next }}</span>
           </div>
           <div class="text-nowrap ml-auto">
             <span *ngIf="true">
-                  小幫手：{{class.StudentName}}({{class.StudentNumber}})
+              {{ 'assistant' | i18next }}：{{class.StudentName}}({{class.StudentNumber}})
               </span>
           </div>
         </div>
@@ -105,7 +105,7 @@
           <div class="text-nowrap pr-3">{{course.CourseName}}</div>
           <div class="text-nowrap ml-auto text-truncate">
             <span *ngIf="true">
-                 <b>小幫手：</b> {{course.StudentName}}{{course.StudentNumber||'--'}}
+                 <b>{{ 'assistant' | i18next }}：</b> {{course.StudentName}}{{course.StudentNumber||'--'}}
               </span>
           </div>
         </div>

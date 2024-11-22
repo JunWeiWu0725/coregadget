@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Module>
-  <ModulePrefs title="德行成績登錄" description="高中-德行成績登錄">
-    <Title lang="zh-TW">德行成績登錄</Title>
+  <ModulePrefs title="文字評量輸入" description="高中 文字評量輸入">
+    <Title lang="zh-TW">文字評量輸入</Title>
     <Icon>icon.png</Icon>
     <Mobile />
     <Title lang="zh-CN">

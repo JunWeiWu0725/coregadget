@@ -24,7 +24,7 @@ export class CounselInterviewDocComponent implements OnInit {
   reportData: any;
   isDisplayCounsel: boolean = false;
   isDisplayCase: boolean = false;
-  OnlyPrintMine :boolean = false ; 
+  OnlyPrintMine :boolean = false ;
   teacherID :string  ="";
   // 一級輔導
   CounselInterview: any[] = [];
@@ -42,7 +42,7 @@ export class CounselInterviewDocComponent implements OnInit {
 
 
   async ngOnInit() {
-   
+
     this.activatedRoute.paramMap.subscribe(
       (params: ParamMap): void => {
         this.OnlyPrintMine = localStorage.getItem('OnlyPrintMine') =='true';
@@ -63,15 +63,13 @@ export class CounselInterviewDocComponent implements OnInit {
     try {
       console.log("gloableService")
       if( this.globalService.MyCounselTeacherRole=='輔導主任' && (this.RoleService.role.indexOf('輔導老師') >= 0 )){
-          debugger
           this.reportData = await this.dsaService.send("GetPrintCounselData12ByStudentID", {
           StudentID: this.param.studentID,
           StartDate: this.param.StartDate,
           EndDate: this.param.EndDate ,
-        
+
         });
       }else if(this.RoleService.role.indexOf('輔導老師') >= 0) {
-        debugger
         this.reportData = await this.dsaService.send("GetPrintCounselData12ByStudentIDandTeacherID", {
           StudentID: this.param.studentID,
           StartDate: this.param.StartDate,

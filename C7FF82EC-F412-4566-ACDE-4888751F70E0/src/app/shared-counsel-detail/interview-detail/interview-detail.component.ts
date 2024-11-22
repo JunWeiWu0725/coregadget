@@ -19,7 +19,7 @@ import { AddInterviewModalComponent } from "./add-interview-modal/add-interview-
   styleUrls: ["./interview-detail.component.css"]
 })
 export class InterviewDetailComponent implements OnInit {
-  comPoGUID :string  = "f1a09a1e-8a6b-4311-ae07-79a61a9e1762" 
+  comPoGUID :string  = "f1a09a1e-8a6b-4311-ae07-79a61a9e1762"
   enableReferal: boolean = false;
   _semesterInfo: SemesterInfo[] = [];
   _counselInterview: CounselInterview[] = [];
@@ -188,7 +188,7 @@ export class InterviewDetailComponent implements OnInit {
     });
   }
 
-  
+
   /** 修改 */
   editInterviewModal(counselView: CounselInterview) {
     this._addInterview._editMode = "edit";
@@ -200,7 +200,7 @@ export class InterviewDetailComponent implements OnInit {
     this._addInterview.loadDefaultData(this.counselDetailComponent.currentStudent);
     this._addInterview._currentCounselInterview.isSaveDisable = true;
     this._addInterview.getFile(counselView.UID);
-    debugger
+
     this.decodeHtml(this._addInterview._currentCounselInterview.Content,'修改','#description')
     this.decodeHtml(this._addInterview._currentCounselInterview.ContactItem,'修改','#contactMatter1')
     $("#addInterview").modal({ backdrop: 'static' });
@@ -280,7 +280,7 @@ export class InterviewDetailComponent implements OnInit {
         let dN = Number(counselRec.OccurDate);
         let x = new Date(dN);
         rec.OccurDate = rec.parseDate(x);
-        rec.MeetTime = counselRec.MeetTime 
+        rec.MeetTime = counselRec.MeetTime
         rec.ContactName = counselRec.ContactName;
         rec.AuthorName = counselRec.AuthorName;
         rec.CounselType = counselRec.CounselType;

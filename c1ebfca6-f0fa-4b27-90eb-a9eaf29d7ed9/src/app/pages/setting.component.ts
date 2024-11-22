@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { DSAService, RollCallRecord, PeriodConf, AbsenceConf, Schedule, CourseConf, ConfigData } from './../service/dsa.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ConfigService } from '../service/config.service';
 import { AlertService } from '../service/alert.service';
 import { RollCallRateDenominator } from './vo';
 
+import { I18NEXT_SERVICE, ITranslationService } from 'angular-i18next';
 
 @Component({
   selector: 'gd-setting',
@@ -38,7 +39,8 @@ export class SettingComponent implements OnInit {
     private dsa: DSAService,
     private router: Router,
     private config: ConfigService,
-    private alert: AlertService
+    private alert: AlertService,
+    @Inject(I18NEXT_SERVICE) private i18next: ITranslationService
   ) { }
 
   async ngOnInit() {
@@ -81,10 +83,10 @@ export class SettingComponent implements OnInit {
   }
   async saveSetting() {
 
-    const dialog = this.alert.waiting("儲存中...");
+    const dialog = this.alert.waiting(this.i18next.t('saving', { defaultValue: '儲存中...' }));
     try {
       await this.dsa.setTeacherSetting(this.teacherSetting);
-      this.alert.snack("儲存成功");
+      this.alert.snack(this.i18next.t('save-success', { defaultValue: '儲存成功' }));
     } catch (error) {
       this.alert.json(error);
     } finally {

@@ -8,6 +8,7 @@ import { MapOperator } from 'rxjs/internal/operators/map';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { mapping } from './mapping';
 import * as ExcelJS from 'exceljs';
+import { GlobalService } from 'src/app/global.service';
 
 @Component({
   selector: 'app-gov-statistics-monthly',
@@ -24,6 +25,9 @@ export class GovStatisticsMonthlyComponent implements OnInit {
 
   @ViewChild('sheet1') sheet1: ElementRef;
   @ViewChild('sheet2') sheet2: ElementRef;
+  /** 開發用 (列印數字及原本用詞) */
+  isShowPrintString :boolean = false ;
+  isPrintString: boolean = false
   reportNameList: { reportName, description, isShowDescrip?}[];
   selectYear: number;
   selectMonth: number;
@@ -34,11 +38,14 @@ export class GovStatisticsMonthlyComponent implements OnInit {
   schoolType;
   schoolName = '';
   maping = new mapping();
-  /**sheet 1 資料 */
+  /**sheet 1 [晤談紀錄]資料 */
   data = [];
-  /**sheet 2 資料 */
+  dataOrgin = [];
+  /**sheet 2  [相關服務]資料 */
   data2 = [];
+  data2Orgin = [];
   TeacherCounselRole: TeacherCounselRole[] = [];
+
   /** 範圍 */
   privateRangeList: {
     /**選單顯示用詞*/
@@ -54,21 +61,23 @@ export class GovStatisticsMonthlyComponent implements OnInit {
   workbook: ExcelJS.Workbook
 
   constructor(@Optional()
-  private appComponent: AppComponent, private dsaService: DsaService, private http: HttpClient) { }
+  private appComponent: AppComponent,
+    private dsaService: DsaService,
+    private http: HttpClient,
+    private globalService: GlobalService) { }
 
 
-  /** */
+  /** 開發用*/
   getJSON(obj: any) {
     return JSON.stringify(obj)
   }
 
   async ngOnInit() {
-    console.log("以下皆非", this.maping.StudentStatusMaps.get("以下皆非"))
 
-    // console.log("mapping",mapping.StudentStatusMaps);
-    // 取得教師編碼 
+    // 確認是否為開發模式 判斷是否要印出文字
+    this.isShowPrintString = gadget.params.mode;
+    // 取得教師編碼
     await this.getTeacherConNumbr();
-    let scType: string;
     this.dsnsName = gadget.getApplication().accessPoint;
 
     let url = `https://dsns.ischool.com.tw/campusman.ischool.com.tw/config.public/GetSchoolList?body=%3CCondition%3E%3CDsns%3E${this.dsnsName}%3C/Dsns%3E%3C/Condition%3E&rsptype=json`;
@@ -81,7 +90,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         this.selectMonth = new Date().getMonth() + 1;
         this.buttonDisable = false;
         this.reportNameList = [
-          { reportName: "輔導工作月統計報表-教育部版", description: "版本更新月份:2024年5月", isShowDescrip: false },
+          { reportName: "輔導工作月統計報表-教育部版", description: "版本更新月份:2024年7月", isShowDescrip: false },
           { reportName: "輔導工作月統計報表-新北市版", description: "" },
           { reportName: "輔導工作月統計報表-新竹國中版", description: "" },
           { reportName: "輔導工作月統計報表-新竹國小版", description: "" }
@@ -178,7 +187,6 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     if (this.TeacherCounselRole.find(x => x.TeacherID == teacherIDSor.TeacherID)) {
       const teacherConNumber = this.TeacherCounselRole.find(x => x.TeacherID == teacherIDSor.TeacherID).TeacherCounselNumber
       if (teacherConNumber) {
-        // alert("有資料" +teacherIDSor.TeacherID+teacherIDSor.TeacherName +teacherConNumber)
         return this.TeacherCounselRole.find(x => x.TeacherID == teacherIDSor.TeacherID).TeacherCounselNumber
 
       } else {
@@ -229,10 +237,11 @@ export class GovStatisticsMonthlyComponent implements OnInit {
 
 
 
-  /* test*/
-  async readAndModifyExcelFile(data1: any[], data2: any[]): Promise<void> {
+  /* 使用excel js */
+  async genExcelMonthlyReport(data1: any[], data2: any[]): Promise<void> {
     this.workbook = new ExcelJS.Workbook();
-    const filePath = 'assets/輔導教師工作成果-111學年度-新修正表格(空白).xlsx'; // Excel 文件路径，根据实际情况修改
+    const filePath = 'assets/高級中等以下學校輔導工作成果填報系統１.xlsx'; // Excel 文件路径，根据实际情况修改\
+
 
 
     fetch(filePath)
@@ -245,34 +254,40 @@ export class GovStatisticsMonthlyComponent implements OnInit {
           // 使用 ExcelJS 讀取工作簿
           // this.workbook = new ExcelJS.Workbook();
           await this.workbook.xlsx.load(arrayBuffer); // 使用 load 方法載入數據
-          const sheet1 = this.workbook.getWorksheet('表A-1-輔導教師-1.當月個案 ');
-          let firstCell1 = sheet1.getCell('A1')
-          const masterCell = firstCell1.master;
-
+          // #region 處理 sheet
+          const sheet1 = this.workbook.getWorksheet('表A-1-輔導教師-當月個案');
+          let Sheet1getCellA1 = sheet1.getCell('A1')
+          let sheet1getCellH1 = sheet1.getCell('O1')
+          const masterCell = Sheet1getCellA1.master;
+          const masterFirstCellH1 = sheet1getCellH1.master;
           masterCell.value = `[${(this.selectYear - 1911)}-${this.selectMonth}] ${this.schoolName}  輔導教師工作成果(當月個案填報)
           本表填報為經輔導處（室）、辦理輔導業務單位專業評估後，開案進入介入性輔導之學生，一位學生填報一列，統計資料會以學生代號統計，所有欄位皆為必填，不可空白！`
-          data1.forEach((x, index) => {
+          masterFirstCellH1.value = `表格更新日期${this.globalService.formatToTaiwanDate(new Date())}`
 
+          data1.forEach((x, index) => {
             sheet1.spliceRows(6 + index, 1, x)
 
           })
+          //#endregion sheet1
 
-
-
-
-          const sheet2 = this.workbook.getWorksheet('表A-2-輔導教師-2.相關服務')
-          let firstCell2 = sheet2.getCell('A1')
-          const masterCel2 = firstCell2.master;
+          //#region 處理 sheet2
+          const sheet2 = this.workbook.getWorksheet('表A-2-輔導教師-相關服務')
+          let Sheet2getCellA1 = sheet2.getCell('A1')
+          let sheet2getCellH1 = sheet2.getCell('H1')
+          const masterCel2 = Sheet2getCellA1.master;
+          const masterCelH1 = sheet2getCellH1.master;
 
           masterCel2.value = `[${(this.selectYear - 1911)}-${this.selectMonth}] ${this.schoolName}  輔導教師工作成果(相關服務填報)
           (所有欄位皆為必填，不可空白！)`
-
+          // 處理列印日期
+          masterCelH1.value = `表格更新日期${this.globalService.formatToTaiwanDate(new Date())}`
 
           data2.forEach((x, index) => {
 
             sheet2.spliceRows(5 + index, 1, x)
 
           })
+          //#endregion sheet2
 
           // 保存文件
           const buffer = await this.workbook.xlsx.writeBuffer();
@@ -286,23 +301,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       });
 
 
-    // try {
-    //   await workbook.xlsx.readFile(filePath);
-    //   debugger
 
-    //   const worksheet = workbook.getWorksheet(1); // 获取第一个工作表
-
-    //   // 添加几行数据
-    //   worksheet.addRow([1, 'John', 'Doe']);
-    //   worksheet.addRow([2, 'Jane', 'Doe']);
-
-    //   // 保存文件
-    //   const buffer = await workbook.xlsx.writeBuffer();
-    //   this.saveExcelFile(buffer, '111學年度-輔導教師工作成果填報(0502).xlsx');
-    // } catch (error) {
-    //   console.log('err...', JSON.stringify(error))
-    //   console.error('Error reading or modifying Excel file:', error);
-    // }
   }
 
 
@@ -332,8 +331,6 @@ export class GovStatisticsMonthlyComponent implements OnInit {
     // 2. 該月結案:是否結案=t and 結案日期 = 畫面上所選年月
     let wsName: string = this.selectYear + "年輔導工作" + this.selectMonth + "月統計報表-教育部版";
     let fileName: string = wsName + ".xlsx";
-    // let data: CaseMonthlyStatistics[] = [];
-    // let data2: CaseMonthlyStatistics2[] = [];
     this.data = [];
     this.data2 = [];
     let resp = await this.dsaService.send("GetCaseMonthlyStatistics1_1", {
@@ -343,10 +340,9 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         IsPrivate: this.currentRange.dbIsPrivate
       }
     });
-
+     console.log("resp",resp) ;
     // sheet1
     [].concat(resp.Statistics || []).forEach(rspRec => {
-
       // 輔導當月個案
       let rec: CaseMonthlyStatistics = new CaseMonthlyStatistics();
       rec.TeacherReportRole = rspRec.TeacherReportRole; // 教師身分
@@ -358,12 +354,17 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       rec.StudentID = rspRec.StudentID;
       rec.TeacherName = rspRec.TeacherName;
       rec.ReportReferal = rspRec.ReportedReferralStatus; //202209 增加轉借狀況
-      rec.CaseNo = rspRec.CaseNo; // 20220907 需求增加
-
+      rec.StuCounselNumber = rspRec.StuCounselNumber; // 20220907 需求增加
       rec.CaseSource = rspRec.CaseSource      // 202209增加個案來源 (複選)
       rec.TeacherCounselNumber = this.getTeacherConNumberByTeacherID(rspRec),
         rec.GradeYear = rspRec.GradeYear;
-      rec.StudentGender = rspRec.StudentGender;
+      if (rspRec.StudentGender == '男') {
+        rec.StudentGender = '生理男'
+      } else if (rspRec.StudentGender == '女') {
+        rec.StudentGender = '生理女'
+      } else {
+        rec.StudentGender = rspRec.StudentGender;
+      }
       rec.Status = rspRec.CaseStatus; //  新舊個案
       rec.Count = parseInt(rspRec.Count);
       rec.CLevel = rspRec.CLevel;
@@ -434,13 +435,13 @@ export class GovStatisticsMonthlyComponent implements OnInit {
 
       }
 
-      // 處理轉借概況 
+      // 處理轉借概況
       if (rspRec.ReportedReferralStatus) {
         rec.ReportReferal = this.maping.ReteralStatus.get(rspRec.ReportedReferralStatus)
 
       }
 
-      // 新案舊案 
+      // 新案舊案
       if (rspRec.CaseStatus) {
         rec.Status = this.maping.NewOrOldCase.get(rspRec.CaseStatus)
 
@@ -462,9 +463,6 @@ export class GovStatisticsMonthlyComponent implements OnInit {
 
     [].concat(resp2.Statistics || []).forEach(rspRec => {
       // 輔導相關服務
-      // let key = rspRec.TeacherID + rspRec.OccurDate + rspRec.ContactItem + rspRec.ContactName;
-
-
       let rec: CaseMonthlyStatistics2 = new CaseMonthlyStatistics2();
       rec.TeacherID = rspRec.ref_teacher_id;
       rec.TeacherNickName = rspRec.nickname;
@@ -476,68 +474,69 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       rec.ServiceItem = rspRec.service_item;
       rec.ContactName = rspRec.detail_service_target;
       rec.BoyCount = rspRec.male || 0;
-      rec.GirlCount = rspRec.female || 0;
-      // rec.CLevel = rspRec.CLevel;
-      ;
+      rec.GirlCount = rspRec.female || 0; rec.GirlCount = rspRec.female || 0;
+      rec.GenderOther = rspRec.gender_other || 0;
       this.data2.push(rec);
-
     });
 
     //sheet 1
     if (this.data.length > 0 || this.data2.length > 0) {
-      let data1: any[] = [];
+      let data1: any[] = []; // 晤談紀錄
       let data2_d: any[] = [];
 
-      let data_1_forexcelJS
       this.data.forEach(da => {
         let tno = da.TeacherName;
         if (da.TeacherNickName != '')
           tno = da.TeacherName + "(" + da.TeacherNickName + ")";
 
 
-        // let item = {
-        //   '教師編碼': da.TeacherCounselNumber,
-        //   '身分': this.maping.ReportTeacherRole.get(da.TeacherReportRole), // 新欄位 
-        //   '學生代號': da.CaseNo, // 新欄位(個案編號) 
-        //   '學生年級': this.parseGradeYear(da.GradeYear),
-        //   '學生性別': da.StudentGender,
-        //   '學生身分': da.StudentStatusList.length > 0 ? da.StudentStatusList.join(',') : '', // 新欄位 
-        //   '個案來源': da.CaseSourceList.join(','), // 新欄位 
-        //   '輔導概況': da.Status, // 新案舊案 
-        //   '轉介概況 ': da.ReportReferal, // 新欄位 
-        //   '個案類別(主)': da.MainCategoryValueList.length > 0 ? da.MainCategoryValueList.join(',') : '',
-        //   '個案類別(主) 其他說明': da.CaseMainCategoryOther || 0,
-        //   '個案類別(副)': da.CategoryValue.join(',') || 0,
-        //   '個案類別(副) 其他說明': da.CategoryOther || 0,
-        //   // '新案舊案': da.Status, // 新規格暫時住借
-        //   '晤談次數': da.Count
-        //   // '其他服務次數': 0
-        // };
-
-
-        let item = [
+        // sheet1
+        const item = [
           da.TeacherCounselNumber,
-          this.maping.ReportTeacherRole.get(da.TeacherReportRole), // 新欄位 
-          da.CaseNo, // 新欄位(個案編號) 
+          this.maping.ReportTeacherRole.get(da.TeacherReportRole), // 新欄位
+          da.StuCounselNumber = da.StuCounselNumber,
           this.parseGradeYear(da.GradeYear),
           da.StudentGender,
-          da.StudentStatusList.length > 0 ? da.StudentStatusList.join(',') : '', // 新欄位 
-          da.CaseSourceList.join(','), // 新欄位 
-          da.Status, // 新案舊案 
-          da.ReportReferal, // 新欄位 
+          '', // 因為系統目前沒有其他選項 故先填入空字串
+          da.StudentStatusList.length > 0 ? da.StudentStatusList.join(',') : '', // 新欄位
+          da.Status, // 新案舊案
+          da.CaseSourceList.join(','), // 新欄位
+          da.ReportReferal, // 新欄位
           da.MainCategoryValueList.length > 0 ? da.MainCategoryValueList.join(',') : '',
           da.CaseMainCategoryOther || 0,
           da.CategoryValue.join(',') || 0,
           da.CategoryOther || 0,
           // '新案舊案': da.Status, // 新規格暫時住借
           da.Count
-          // '其他服務次數': 0
-        ]
-        data1.push(item);
 
+        ];
+
+        const itemCheck = [
+          da.TeacherCounselNumber,
+          da.TeacherReportRole, // 新欄位
+          da.CaseNo, // 新欄位(個案編號)
+          da.GradeYear,
+          da.StudentGender,
+          '', // 因為系統目前沒有其他選項 故先填入空字串
+          da.StudentStatusList.length > 0 ? da.StudentStatusList.join(',') : '', // 新欄位
+          da.Status, // 新案舊案
+          da.CaseSourceList.join(','), // 新欄位
+          da.ReportReferal, // 新欄位
+          da.MainCategoryValueList.length > 0 ? da.MainCategoryValueList.join(',') : '',
+          da.CaseMainCategoryOther || 0,
+          da.CategoryValue.join(',') || 0,
+          da.CategoryOther || 0,
+          // '新案舊案': da.Status, // 新規格暫時住借
+          da.Count
+
+        ];
+
+        data1.push(item);
+        if (this.isPrintString) {
+          data1.push(itemCheck);
+        }
       })
       // sheet2
-
       this.data2.forEach(da => {
         let tno = da.TeacherName;
         if (da.TeacherNickName != '')
@@ -553,8 +552,6 @@ export class GovStatisticsMonthlyComponent implements OnInit {
         //   '服務人次(女)': da.GirlCount
         // };
 
-
-
         let item = [
           da.TeacherCounselNumber || (da.TeacherName + '(未設教師編碼)'),
           this.maping.ReportTeacherRole.get(da.TeacherReportRole),
@@ -562,55 +559,30 @@ export class GovStatisticsMonthlyComponent implements OnInit {
           da.ServiceItemOtherDetail || '0',
           this.maping.ServiceTargetMaps.get(da.ServiceTarget),
           da.BoyCount,
+          da.GirlCount,
+          da.GenderOther
+        ]
+        /** 驗證目前 */
+        let itemCheck = [
+          da.TeacherName + da.TeacherCounselNumber || (da.TeacherName + '(未設教師編碼)'),
+          da.TeacherReportRole + this.maping.ReportTeacherRole.get(da.TeacherReportRole),
+          da.ServiceItem + this.maping.ServiceItemsMapping.get(da.ServiceItem),
+          da.ServiceItemOtherDetail + da.ServiceItemOtherDetail || '0',
+          da.ServiceTarget + this.maping.ServiceTargetMaps.get(da.ServiceTarget),
+          da.BoyCount,
           da.GirlCount
         ]
         data2_d.push(item);
+        if (this.isPrintString) {
+          data2_d.push(itemCheck)
+        }
       })
-
-      console.log("data1", data1)
-      console.log("data2_d", data2_d)
-      await this.readAndModifyExcelFile(data1, data2_d)
+      await this.genExcelMonthlyReport(data1, data2_d)
 
       return
 
-
-      // XLSX.writeFile
-      const wb = XLSX.utils.book_new();
-      var ws = XLSX.utils.json_to_sheet([
-        { A: `[${(this.selectYear - 1911)}-${this.selectMonth}] ${this.schoolName} 輔導教師工作成果(當月個案填報)` }
-      ], { header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true });
-
-      // 合併儲存格
-      ws["!merges"] = [{ s: { c: 0, r: 0 }, e: { c: 6, r: 0 } }];
-      var wscols = [
-        { hpx: 18 }
-      ]; // 設定第一版 
-
-      ws['!rows'] = wscols;
-
-      const ws1 = XLSX.utils.table_to_sheet(this.sheet1.nativeElement);
-      // 增加資料 
-
-
-
-      XLSX.utils.sheet_add_json(ws1, data1, { skipHeader: true, origin: { r: 5, c: 0 } });// 寫入資料 從第二列開始
-      // sheet 2 
-
-      const ws2 = XLSX.utils.table_to_sheet(this.sheet2.nativeElement);
-
-      XLSX.utils.sheet_add_json(ws2, data2_d, { skipHeader: true, origin: { r: 4, c: 0 } });// 寫入資料 從第二列開始
-      // sheet 3
-      const table = document.getElementById("sheet3");
-
-      const ws3 = XLSX.utils.table_to_sheet(table);
-
-      XLSX.utils.book_append_sheet(wb, ws1, "表A-1-輔導教師-1.當月個案");
-      XLSX.utils.book_append_sheet(wb, ws2, "表A-2-輔導教師-2.相關服務");
-      XLSX.utils.book_append_sheet(wb, ws3, "填報說明-A-輔導教師");
-      //XLSX.write(wb,{type:'buffer',bookType:'xlsx'});
-      XLSX.writeFile(wb, fileName);
     } else {
-      alert("沒有資料");
+      alert(`${this.selectMonth}月,沒有資料!`);
     }
 
     this.buttonDisable = false;
@@ -719,6 +691,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
 
     [].concat(resp.Statistics || []).forEach(rspRec => {
       // 輔導當月個案
+
       let rec: CaseMonthlyStatistics = new CaseMonthlyStatistics();
       rec.TeacherID = rspRec.TeacherID;
       rec.TeacherNickName = rspRec.TeacherNickName;
@@ -899,7 +872,7 @@ export class GovStatisticsMonthlyComponent implements OnInit {
       rec.StudentGender = rspRec.StudentGender;
       rec.Status = rspRec.CaseStatus;
       rec.Count = parseInt(rspRec.Count);
-      // 處理數字對應 
+      // 處理數字對應
       if (rspRec.Category != "") {
         let Category = JSON.parse(rspRec.Category);
         Category.forEach(proRec => {

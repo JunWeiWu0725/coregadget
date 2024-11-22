@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { DSAService, GradeClassRecords, ClassRecord, PeriodConf } from '../service/dsa.service';
 import { AlertService } from '../service/alert.service';
 import { ConfigService } from '../service/config.service';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
-
+import { I18NEXT_SERVICE, ITranslationService } from 'angular-i18next';
 const ClassTutor = '班導師';
 
 @Component({
@@ -26,7 +26,8 @@ export class ClassSubstituteComponent implements OnInit {
     private dsa: DSAService,
     private alert: AlertService,
     private config: ConfigService,
-    private router: Router
+    private router: Router,
+    @Inject(I18NEXT_SERVICE) private i18next: ITranslationService
   ) { }
 
   async ngOnInit() {
@@ -57,7 +58,8 @@ export class ClassSubstituteComponent implements OnInit {
   //開啟課程選擇清單
   openClass(oClass: ClassRecord) {
     if(!this.selectedPeriod) {
-      this.alert.snack('請選擇要點名的節次。', 5000);
+      const message = this.i18next.t('select-session-for-roll-call', { defaultValue: '請選擇要點名的節次。' });
+      this.alert.snack(message, 5000);
     } else {
       this.router.navigate([`/pick/Class/${oClass.ClassID}/${this.selectedPeriod.Name}/${oClass.ClassName}`]);
     }

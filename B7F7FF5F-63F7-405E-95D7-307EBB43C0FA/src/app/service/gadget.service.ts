@@ -23,6 +23,10 @@ export class GadgetService {
       });
     });
   }
+
+  public getLanguage() {
+    return gadget.getLanguage();
+  }
 }
 
 /**

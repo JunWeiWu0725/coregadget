@@ -44,36 +44,43 @@
                 [(ngModel)]="addText" (change)="commentChange()">
         </div>
         <div class="input-group col-md-3 col-lg-2 d-inline-flex">
-            <div class="form-group form-check m-2"  >
-                <input id="detention" 
-                        type="checkbox" 
-                        class="form-check-input" 
-                        [(ngModel)]="currentDetention">
-                <label class="form-check-label" for="detention">Detention</label>
 
-            </div>
 
-            
-            <!-- 新增 Good Behavior -->
-            <div class="form-group form-check m-2" >
-                <input id="isGoodBehavior" 
-                        type="checkbox" 
-                        class="form-check-input" 
-                        [(ngModel)]="currentGood">
-                <label class="form-check-label" for="isGoodBehavior">Good</label>
+   
+        
 
-            </div>
+                    <!--  -->
 
-                     <!-- 新增 Good Behavior -->
-                     <div class="form-group form-check m-2" >
+                    <div class="form-group form-check"    (click)="onCheckboxChange('detention')" style="margin-left: 5px">
+                        <input id="detention"
+                               type="checkbox"
+                               class="form-check-input"
+                               (change)="onCheckboxChange('detention')"
+                               [(ngModel)]="currentDetention">
+                        <label class="form-check-label"
+                               for="detention">Detention</label>
+                      </div>
+                
+                      <div class="form-group form-check"    (click)="onCheckboxChange('goodBehavior')"  style="margin-left: 5px">
+                        <input id="goodBehavior"
+                               type="checkbox"
+                               class="form-check-input"
+                            
+                               [(ngModel)]="currentGood">
+                        <label class="form-check-label"
+                               for="goodBehavior">Good</label>
+                      </div>    
+                      
+                      <div class="form-group form-check  "    (click)="onCheckboxChange('currentDaaDsaFollow')" style="margin-left: 5px">
                         <input id="currentDaaDsaFollow" 
                                 type="checkbox" 
                                 class="form-check-input" 
+                             
                                 [(ngModel)]="currentDaaDsaFollow">
                         <label class="form-check-label" for="currentDaaDsaFollow">DAA/DSA Follow up</label>
-        
+                  
                     </div>
-        
+                    <!--  -->
 
         </div>
         <div class="col-md-12 col-lg-2">

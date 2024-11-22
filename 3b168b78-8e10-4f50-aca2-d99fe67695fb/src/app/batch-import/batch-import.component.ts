@@ -89,13 +89,6 @@ export class BatchImportComponent implements OnInit {
   /**代碼轉文字*/
   doTransfer(){
     const re = new RegExp(/([\d\w]+)/, 'g');
-    if(this.data.title === '德行評語'){
-      this.data.moralList.forEach(item => {
-        if(item.Code){ this.moralListArry[item.Code] = item.Comment || '';}
-      });
-      this.sourceText = (this.sourceText  || '').replace(re, (match, g1) => { 
-        return this.moralListArry[g1] || g1 });      
-    }else{
       if(this.data.title){
         this.codeList = this.data.textScoreList.filter((item)=>{
           return item.Face === this.data.title
@@ -107,6 +100,5 @@ export class BatchImportComponent implements OnInit {
           return this.codeListArry[g1] || g1 });
       });
       }
-    }
   }
 }

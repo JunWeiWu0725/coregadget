@@ -125,7 +125,7 @@
                         j(false);
                     } else {
                         $scope.$apply(function () {
-                            $scope.examExtensionMap = response.ExamExtensionMap;
+                            $scope.examExtensionMap = [].concat(response.ExamExtensionMap || []);
                         });
                         r(true);
                     }
@@ -148,14 +148,16 @@
                         j(false);
                     } else {
                         $scope.$apply(function () {
-                            var asZero = true;
-                            if (response.Response.is_null_as_zero == 'f') {
-                                //有資料，且不勾
-                                $scope.isNullAsZeroChecked = false;
-                            } else {
-                                //沒有資料，或是有資料勾
-                                console.log('true', response.Response.is_null_as_zero);
-                            }
+                            $scope.isNullAsZeroChecked = true;
+                            if (response.length)
+                                if (response.Response.is_null_as_zero == 'f') {
+                                    //有資料，且不勾
+                                    $scope.isNullAsZeroChecked = false;
+                                } else {
+                                    //有資料，且勾
+                                    console.log('true', response.Response.is_null_as_zero);
+                                }
+                                
                         });
                         r(true);
                     }
@@ -533,7 +535,7 @@
                                 if (drl['student_id'] == stu['StudentID']) {
 
                                     stu['Course_MakeupStandard'] = drl['makeup_standard'] || 40;
-
+                                    stu['Remark'] = drl['remark'];
                                     digit = drl['digit'] || 2;
 
                                     if (drl['is_floor'] == 't')
