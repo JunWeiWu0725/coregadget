@@ -161,9 +161,16 @@ var app = angular
                         if (response.item_value) {
 
                             $scope.item_value = [].concat(response.item_value)[0].item_value;
-                            //console.log($scope.item_value);
-                        }
 
+                            for (var i = 0; i < $scope.menu.length; i++) {
+                                if ($scope.menu[i].school_year < 113) {
+                                    $scope.menu[i].is_sit_up = 't';
+                                } else {
+                                    $scope.menu[i].is_sit_up = 'f';
+                                }
+                                $scope.menu[i].item_value = $scope.item_value;
+                            }
+                        }
 
                     } else {
                         $scope.icon_css = "icon-warning-sign";
@@ -175,7 +182,7 @@ var app = angular
             });
         }
         $scope.setCurrent = function (m) {
-            $scope.current = m;
+            $scope.current = m;            
             CurrentChanged();
         }
         /**
@@ -197,6 +204,7 @@ var app = angular
                         if (response.data)
                             $scope.list = [].concat(response.data);
 
+
                         for (var i = 0; i < $scope.list.length; i++) {
                             if ($scope.list[i].school_year < 113) {
                                 $scope.list[i].is_sit_up = 't';
@@ -206,6 +214,7 @@ var app = angular
 
                             $scope.list[i].item_value = $scope.item_value;
                         }
+
                         listCheck();
                     } else {
                         $scope.icon_css = "icon-warning-sign";
@@ -449,14 +458,14 @@ var app = angular
                         }
 
                     } else if ($scope.arrayTestItemList[i].Key === 'cardiorespiratory') {
-                        if ($scope.current.item_value ==='心肺耐力') {
+                        if ($scope.current.item_value === '心肺耐力') {
                             $scope.arrayTestItem.push($scope.arrayTestItemList[i]);
                         }
                     } else if ($scope.arrayTestItemList[i].Key === 'pacer') {
-                        if ($scope.current.item_value ==='漸速耐力跑') {
+                        if ($scope.current.item_value === '漸速耐力跑') {
                             $scope.arrayTestItem.push($scope.arrayTestItemList[i]);
                         }
-                     }
+                    }
                     else
                         $scope.arrayTestItem.push($scope.arrayTestItemList[i]);
                 }
