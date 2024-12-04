@@ -1,52 +1,75 @@
 /* You can add global styles to this file, and also import other style files */
 // @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-*{
-margin: 0px;
-padding: 0px;
+* {
+  margin: 0px;
+  padding: 0px;
 }
+
 .title {
   --tw-text-opacity: 1;
   color: rgba(50, 50, 50, var(--tw-text-opacity));
-  font-size: 1.4rem/* 24px */;
-  line-height: 2rem/* 32px */;
-   font-weight: 600;
+  font-size: 1.4rem
+    /* 24px */
+  ;
+  line-height: 2rem
+    /* 32px */
+  ;
+  font-weight: 600;
   letter-spacing: 0.1em;
-  margin-left: 15px;
+  // margin-left: 15px;
 }
 
-.sub-title{
+.sub-title {
 
-font-size: 20px;
-font-weight: 900;
-color :rgb(82, 82, 82) !important ;
-// margin-left: 15px;
-margin-right: 15px;
-// margin-top: 17px ;
+  font-size: 20px;
+  font-weight: 900;
+  color: rgb(82, 82, 82) !important;
+  // margin-left: 15px;
+  margin-right: 15px;
+  // margin-top: 17px ;
 }
 
 
-.btn-color{
-   margin-top: 10px;
-width: 100px;
- background-color:#0b778d ;
+.btn-color {
+  margin-top: 10px;
+  width: 100px;
+  background-color: #0b778d;
 }
 
-.content{
-   font-size: 1.1rem;
-   color :rgb(93, 93, 93)
+.content {
+  font-size: 1.1rem;
+  color: rgb(93, 93, 93)
 }
 
-.info_section{
-//   width: 800px;
-// display: block;
-// position: absolute !important;
-// z-index: 999 ;
-// right : -20px;
-// bottom: 0px;
-background: rgb(234, 234, 234);
-padding: 20px;
-font-size: 18px;
-font-weight: 600;
-color :rgb(105, 105, 105)
+.info_section {
+  //   width: 800px;
+  // display: block;
+  // position: absolute !important;
+  // z-index: 999 ;
+  // right : -20px;
+  // bottom: 0px;
+  background: rgb(234, 234, 234);
+  padding: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  color: rgb(105, 105, 105)
 }
+
+.w-self {
+  width: 100%;
+}
+
+.p-24 {
+  padding :24px ;
+}
+
+@media(width>767px) {
+  .w-self {
+    width: auto;
+  }
+  .p-24 {
+    padding :24px 48px ;
+  }
+}
+
