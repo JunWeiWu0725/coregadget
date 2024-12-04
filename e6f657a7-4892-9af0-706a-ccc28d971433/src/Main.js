@@ -478,9 +478,11 @@ function Main() {
     //debugger;
 
     let score = null;
+    let scoreType = '';
     [].concat(e.Field || []).forEach(f => {
       if (f.ExamID === selectedExam || '') {
         score = f.Score;
+        scoreType = f.ScoreType;
       }
     })
 
@@ -496,6 +498,7 @@ function Main() {
 
       domain: e.Domain,
       score: score,
+      scoreType: scoreType,
     });
   };
 
@@ -518,6 +521,7 @@ function Main() {
 
       domain: '',
       score: score,
+      scoreType: '',
     });
   };
 

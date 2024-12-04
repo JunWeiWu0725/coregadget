@@ -20,7 +20,7 @@ const RankDetailImmediately = () => {
     const storagePeriod = appData.period;
     const storageCredit = appData.credit;
     const storageScore = appData.score;
-
+    const scoreType = appData.scoreType;
 
     // 班級學生即時組距資料
     const [scoreLevelData, setScoreLevel] = useState([]);
@@ -67,6 +67,8 @@ const RankDetailImmediately = () => {
             scoreLevelData.forEach(data => {
                 //擇優成績
                 let score = Number(storageScore);
+                if (scoreType === '0分')
+                    score = 0;
                 let position_name = '';
 
                 if (score >= 100)
