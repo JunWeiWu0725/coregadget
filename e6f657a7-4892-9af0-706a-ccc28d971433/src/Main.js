@@ -925,11 +925,13 @@ function Main() {
                                             </div>
                                           </div>
                                         </div>
-                                        <div className='text-start text-mark mt-2'>此成績為科目成績即時運算而得。</div>
 
-                                        <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
-                                          <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
-                                          更多
+                                        <div className='d-flex align-items-center justify-content-between mt-2'>
+                                          <div className='text-start text-mark'>此成績為科目成績即時運算而得。</div>
+                                          <div className="d-flex align-items-center text-nowrap text-more">
+                                            <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
+                                            更多
+                                          </div>
                                         </div>
                                       </>}
 
@@ -989,7 +991,14 @@ function Main() {
                                             </div>
                                           </div>
                                         </div>
-                                        <div className='text-start text-mark mt-2'>此成績為科目成績即時運算而得。</div>
+
+                                        <div className='d-flex align-items-center justify-content-between mt-2'>
+                                          <div className='text-start text-mark'>此成績為科目成績即時運算而得。</div>
+                                          <div className="d-flex align-items-center text-nowrap text-more">
+                                            <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
+                                            組距
+                                          </div>
+                                        </div>
                                       </>
                                     }
 
