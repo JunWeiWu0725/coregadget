@@ -12,6 +12,8 @@
             oAuth: {
                 clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
+                account :'' ,
+                password :''
             }
         });
     </script>
@@ -120,14 +122,20 @@
                                         <th>
                                             <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]" ng-click="showEditForm('standing_long_jump')"><i class="fa fa-edit"></i> 立定跳遠(cm)</a>
                                         </th>
-                                        <th>
-                                            <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]" ng-click="showEditForm('sit_up')"><i class="fa fa-edit"></i> 仰臥起坐(次)</a>
+                                        <th ng-show="current.is_sit_up ==='t'">
+                                            <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]"  ng-click="showEditForm('sit_up')"><i class="fa fa-edit"></i> 仰臥起坐(次)</a>
                                         </th>
-                                        <th>
+                                        <th ng-show="current.item_value ==='心肺耐力'">
                                             <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]" ng-click="showEditForm('cardiorespiratory')">
                                                 <i class="fa fa-edit"></i>
-                                                心肺適能(秒)
+                                                800/1600公尺跑走(秒)
                                             </a>
+                                        </th>
+                                        <th>
+                                            <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]" ng-click="showEditForm('curl')"><i class="fa fa-edit"></i> 仰臥捲腹(次)</a>
+                                        </th>
+                                        <th ng-show="current.item_value ==='漸速耐力跑'">
+                                            <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]" ng-click="showEditForm('pacer')"><i class="fa fa-edit"></i> 漸速耐力跑(趟)</a>
                                         </th>
                                     </tr>
                                 </thead>
@@ -140,8 +148,10 @@
                                         <td>{{l.weight}}</td>
                                         <td>{{l.sit_and_reach}}</td>
                                         <td>{{l.standing_long_jump}}</td>
-                                        <td>{{l.sit_up}}</td>
-                                        <td>{{l.cardiorespiratory}}</td>
+                                        <td ng-show="l.is_sit_up ==='t'" >{{l.sit_up}}</td>
+                                        <td ng-show="l.item_value ==='心肺耐力'">{{l.cardiorespiratory}}</td>
+                                        <td>{{l.curl}}</td>
+                                        <td ng-show="l.item_value ==='漸速耐力跑'">{{l.pacer}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -178,10 +188,14 @@
                                         <th>常模</th>
                                         <th>立定跳遠(cm)</th>
                                         <th>常模</th>
-                                        <th>仰臥起坐(次)</th>
+                                        <th ng-show="current.is_sit_up ==='t'" >仰臥起坐(次)</th>
+                                        <th ng-show="current.is_sit_up ==='t'" >常模</th>                                        
+                                        <th ng-show="current.item_value ==='心肺耐力'">800/1600公尺跑走(秒)</th>
+                                        <th ng-show="current.item_value ==='心肺耐力'">常模</th>
+                                        <th>仰臥捲腹(次)</th>
                                         <th>常模</th>
-                                        <th>心肺適能(秒)</th>
-                                        <th>常模</th>
+                                        <th ng-show="current.item_value ==='漸速耐力跑'">漸速耐力跑(趟)</th>
+                                        <th ng-show="current.item_value ==='漸速耐力跑'">常模</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -196,10 +210,14 @@
                                         <td>{{l.sit_and_reach_degree}}</td>
                                         <td>{{l.standing_long_jump}}</td>
                                         <td>{{l.standing_long_jump_degree}}</td>
-                                        <td>{{l.sit_up}}</td>
-                                        <td>{{l.sit_up_degree}}</td>
-                                        <td>{{l.cardiorespiratory}}</td>
-                                        <td>{{l.cardiorespiratory_degree}}</td>
+                                        <td ng-show="l.is_sit_up ==='t'" >{{l.sit_up}}</td>
+                                        <td ng-show="l.is_sit_up ==='t'" >{{l.sit_up_degree}}</td>
+                                        <td ng-show="l.item_value ==='心肺耐力'">{{l.cardiorespiratory}}</td>
+                                        <td ng-show="l.item_value ==='心肺耐力'">{{l.cardiorespiratory_degree}}</td>
+                                        <td>{{l.curl}}</td>
+                                        <td>{{l.curl_degree}}</td>
+                                        <td ng-show="l.item_value ==='漸速耐力跑'">{{l.pacer}}</td>
+                                        <td ng-show="l.item_value ==='漸速耐力跑'">{{l.pacer_degree}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -222,8 +240,10 @@
                     <li>坐姿體前彎 (公分) ，例如：50 (整數)</li>
                     <li>立定跳遠 (公分) ，例如：170 (整數)</li>
                     <li>
-                        心肺適能 (秒)，例如：200秒可輸入200或3.20<擇一輸入>
+                        800/1600公尺跑走 (秒)，例如：200秒可輸入200或3.20<擇一輸入>
                     </li>
+                    <li>仰臥捲腹 (次) ，例如：60 (整數)</li>
+                    <li>漸速耐力跑 (趟) ，例如：65 (整數)</li>
                     <li>身心障礙等特殊原因學生經主管機關認定無法施測者，統一輸入"免測"</li>
                 </ul>
             </div>

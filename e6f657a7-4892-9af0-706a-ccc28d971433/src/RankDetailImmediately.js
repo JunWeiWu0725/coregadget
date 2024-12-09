@@ -20,12 +20,12 @@ const RankDetailImmediately = () => {
     const storagePeriod = appData.period;
     const storageCredit = appData.credit;
     const storageScore = appData.score;
-
+    const scoreType = appData.scoreType;
 
     // 班級學生即時組距資料
     const [scoreLevelData, setScoreLevel] = useState([]);
 
-    const [levelImmediatelyList, setLevelImmediatelyList] = useState([{ name: "100", count: 0 }, { name: "90-99", count: 0 }, { name: "80-89", count: 0 }, { name: "70-79", count: 0 }, { name: "60-69", count: 0 },{ name: "50-59", count: 0 },{ name: "40-49", count: 0 },{ name: "30-39", count: 0 },{ name: "20-29", count: 0 },{ name: "10-19", count: 0 },{ name: "0-9", count: 0 }]);
+    const [levelImmediatelyList, setLevelImmediatelyList] = useState([{ name: "100", count: 0 }, { name: "90-99", count: 0 }, { name: "80-89", count: 0 }, { name: "70-79", count: 0 }, { name: "60-69", count: 0 }, { name: "50-59", count: 0 }, { name: "40-49", count: 0 }, { name: "30-39", count: 0 }, { name: "20-29", count: 0 }, { name: "10-19", count: 0 }, { name: "0-9", count: 0 }]);
 
     //取長條圖最大值
     const [chartMax, setChartMax] = useState(0);
@@ -67,6 +67,8 @@ const RankDetailImmediately = () => {
             scoreLevelData.forEach(data => {
                 //擇優成績
                 let score = Number(storageScore);
+                if (scoreType === '0分')
+                    score = 0;
                 let position_name = '';
 
                 if (score >= 100)
@@ -106,7 +108,7 @@ const RankDetailImmediately = () => {
                 source["30-39"] = Number(data.level_30);
                 source["20-29"] = Number(data.level_20);
                 source["10-19"] = Number(data.level_10);
-                source["0-9"] = Number(data.level_0);                
+                source["0-9"] = Number(data.level_0);
 
                 const merge = Object.getOwnPropertyNames(source).map(v => ({
                     name: v,
@@ -181,18 +183,15 @@ const RankDetailImmediately = () => {
     return (
         <div className="App">
             <div className="container px-3 px-sm-4 py-5 ">
-
                 <div className="d-flex justify-content-between">
                     <button type="button" className="btn btn-back active d-flex justify-content-start px-0" onClick={handleBackToHomePage}>＜返回</button>
-
                 </div>
                 <div className='detailBorder row row row-cols-1 row-cols-md-2 row-cols-lg-2'>
                     <div className='col'>
                         <div className='d-flex me-auto align-items-center pt-2 ps-2'>
-                            {/* <div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{storageScore}</div> */}
-                            <div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{storageSubject === '加權平均' || storageSubject=== '算術平均' ? Math.round(Number(storageScore) * 100) / 100 : storageScore}</div>
-                            
-                            
+                            <div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>
+                                {storageSubject === '加權平均' || storageSubject === '算術平均' ? Math.round(Number(storageScore) * 100) / 100 : storageScore}
+                            </div>
                             <div className='fs-4 fw-bold'>{storageDomain === "" ? "" : storageDomain + "-"}{storageSubject}</div>
                         </div>
                     </div>
@@ -205,15 +204,17 @@ const RankDetailImmediately = () => {
                     </div> */}
                 </div>
 
-
-
                 <div className='row align-items-start mt-2'>
                     <div className='col-12 mt-3'>
                         <div className='chartHeightNoShowRank'>
                             <ResponsiveContainer height="100%" width="100%">
                                 <BarChart data={levelImmediatelyList} layout="vertical" margin={{ top: 30, right: 50, left: 10, bottom: 0 }}>
-                                    <XAxis dateKey="count" type="number" label={{ value: '人數', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
-                                    <YAxis dataKey="name" type="category" label={{ value: '組距', position: 'insideTopLeft', offset: 0, dy: -15, dx: 40, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} />
+                                    <XAxis dateKey="count" type="number"
+                                        label={{ value: '人數', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }}
+                                        axisLine={{ stroke: "#2196f3" }} allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
+                                    <YAxis dataKey="name" type="category"
+                                        label={{ value: '組距', position: 'insideTopLeft', offset: 0, dy: -15, dx: 40, fill: '#498ED0' }}
+                                        axisLine={{ stroke: "#2196f3" }} />
                                     <Bar dataKey="count" barSize={25} label={{ position: 'right' }} fillOpacity={0.8} >
                                     </Bar>
                                 </BarChart>

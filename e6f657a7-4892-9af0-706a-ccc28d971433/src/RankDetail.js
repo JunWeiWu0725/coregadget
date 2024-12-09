@@ -36,7 +36,7 @@ const RankDetail = () => {
 	const [rankTypeList, setRankTypeList] = useState([]);
 
 	//長條圖
-	const [levelList, setLevelList] = useState([{ name: "100", count: 0 }, { name: "90-99", count: 0 }, { name: "80-89", count: 0 }, { name: "70-79", count: 0 }, { name: "60-69", count: 0 },{ name: "50-59", count: 0 },{ name: "40-49", count: 0 },{ name: "30-39", count: 0 },{ name: "20-29", count: 0 },{ name: "10-19", count: 0 },{ name: "0-9", count: 0 },{ name: "0-9", count: 0 }]);
+	const [levelList, setLevelList] = useState([{ name: "100", count: 0 }, { name: "90-99", count: 0 }, { name: "80-89", count: 0 }, { name: "70-79", count: 0 }, { name: "60-69", count: 0 }, { name: "50-59", count: 0 }, { name: "40-49", count: 0 }, { name: "30-39", count: 0 }, { name: "20-29", count: 0 }, { name: "10-19", count: 0 }, { name: "0-9", count: 0 }, { name: "0-9", count: 0 }]);
 
 	//取長條圖最大值
 	const [chartMax, setChartMax] = useState(0);
@@ -289,7 +289,9 @@ const RankDetail = () => {
 						return <div className='detailBorder row row row-cols-1 row-cols-md-2 row-cols-lg-2'>
 							<div className='col'>
 								<div className='d-flex me-auto align-items-center pt-2 ps-2'>
-									<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>{data.subject === '加權平均' || data.subject === '算術平均' ? Math.round(Number(data.score) * 100) / 100 : data.score}</div>
+									<div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>
+										{data.subject === '加權平均' || data.subject === '算術平均' ? Math.round(Number(data.score) * 100) / 100 : data.final_show_score}
+									</div>
 									<div className='fs-4 fw-bold'>{data.domain === "" ? "" : data.domain + "-"}{data.subject}</div>
 								</div>
 							</div>
@@ -355,33 +357,18 @@ const RankDetail = () => {
 									})}
 								</table>
 
-								{/* <div className='d-flex justify-content-center align-items-center'>
-									<div className='me-1 p-0' style={{ width: '12px', height: '12px', background: "#5B9BD5" }}></div>
-									<div>級距</div>
-								</div> */}
-
-								{/* <div className={chartHeight} >
-									<ResponsiveContainer width="100%" height="100%">
-										<BarChart margin={{ top: 40, right: 50, bottom: 0, left: 0 }} data={levelList} >
-											<XAxis dataKey="name" label={{ value: '組距', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }} />
-											<YAxis dateKey="count" label={{ value: '人數', position: 'insideTopLeft', offset: 0, dy: -25, dx: 35, fill: '#498ED0' }} type="number" allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
-											<Bar dataKey="count" fill="#498ED0" barSize={'30%'} label={{ position: 'top', fill: '#2196f3' }} fillOpacity={0.8} />
-										</BarChart>
-									</ResponsiveContainer>
-								</div> */}
 								<div className={chartHeight}  >
 									<ResponsiveContainer height="100%" width="100%">
-									<BarChart data={levelList} layout="vertical" margin={{ top: 30, right: 50, left: 10, bottom: 0 }}>
-  <XAxis dataKey="count" type="number" label={{ value: '人數', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
-  <YAxis dataKey="name" type="category" interval={0} width={100} tick={{ fontSize: 10 }} minTickGap={5} label={{ value: '組距', position: 'insideTopLeft', offset: 0, dy: -15, dx: 40, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} />
-  <Bar dataKey="count" barSize={25} label={{ position: 'right' }} fillOpacity={0.8} />
-</BarChart>
-										{/* <BarChart data={levelList} layout="vertical" margin={{ top: 30, right: 50, left: 10, bottom: 0 }}>
-											<XAxis dateKey="count" type="number" label={{ value: '人數', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
-											<YAxis dataKey="name" type="category" label={{ value: '組距', position: 'insideTopLeft', offset: 0, dy: -15, dx: 40, fill: '#498ED0' }} axisLine={{ stroke: "#2196f3" }} />
-											<Bar dataKey="count" barSize={25} label={{ position: 'right' }} fillOpacity={0.8} >
-											</Bar>
-										</BarChart> */}
+										<BarChart data={levelList} layout="vertical" margin={{ top: 30, right: 50, left: 10, bottom: 0 }}>
+											<XAxis dataKey="count" type="number"
+												label={{ value: '人數', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }}
+												axisLine={{ stroke: "#2196f3" }}
+												allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
+											<YAxis dataKey="name" type="category" interval={0} width={100} tick={{ fontSize: 10 }} minTickGap={5}
+												label={{ value: '組距', position: 'insideTopLeft', offset: 0, dy: -15, dx: 40, fill: '#498ED0' }}
+												axisLine={{ stroke: "#2196f3" }} />
+											<Bar dataKey="count" barSize={25} label={{ position: 'right' }} fillOpacity={0.8} />
+										</BarChart>
 									</ResponsiveContainer>
 								</div>
 							</div>
