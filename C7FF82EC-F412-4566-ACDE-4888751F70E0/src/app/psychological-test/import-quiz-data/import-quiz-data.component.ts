@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import { DsaService } from "../../dsa.service";
 import { single } from 'rxjs/operators';
 
+
 @Component({
   selector: 'app-import-quiz-data',
   templateUrl: './import-quiz-data.component.html',
@@ -216,8 +217,8 @@ export class ImportQuizDataComponent implements OnInit {
           for (var C = range.s.c; C <= range.e.c; ++C) {
             var address = XLSX.utils.encode_col(C) + "1"; // <-- first row, column number C
             if (!ws[address]) continue;
-
-            this.wsColName.push(ws[address].v);
+         
+            this.wsColName.push(ws[address].v + "");
             console.log(ws[address].v);
           }
 
