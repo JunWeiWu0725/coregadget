@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import ScrollToTopButton from './ScrollToTopButton';
+import Loading from './Loading';
 import { useAppContext } from './AppContext';
 
 const RankDetailImmediately = () => {
@@ -22,6 +23,7 @@ const RankDetailImmediately = () => {
     const storageScore = appData.score;
     const scoreType = appData.scoreType;
 
+    const [loading, setLoading] = useState(true);
     // 班級學生即時組距資料
     const [scoreLevelData, setScoreLevel] = useState([]);
 
@@ -29,9 +31,6 @@ const RankDetailImmediately = () => {
 
     //取長條圖最大值
     const [chartMax, setChartMax] = useState(0);
-
-
-
 
     const position = window.gadget.params.system_position;
 
@@ -41,24 +40,31 @@ const RankDetailImmediately = () => {
         _connection = window.gadget.getContract("1campus.h.exam.student");
 
 
-
     useEffect(() => {
-        if (storageSubject === '算術平均' || storageSubject === '加權平均') {
-            CalculateExamAvgLevel();
-            console.log('CalculateExamAvgLevel');
-        } else {//科目
-            CalculateSubjectExamScoreLevel();
-            console.log('CalculateSubjectExamScoreLevel');
-        }
-    }, []);
+        const init = async () => {
+            try {
+                setLoading(true);
+                if (storageSubject === '算術平均' || storageSubject === '加權平均') {
+                    await CalculateExamAvgLevel();
+                } else {
+                    await CalculateSubjectExamScoreLevel();
+                }
+            } catch (error) {
+                console.error("init Error:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
+        init();
+    }, []);
 
     useEffect(() => {
         ToBarChartImmediately();
     }, [scoreLevelData]);
 
 
-    function ToBarChartImmediately() {
+    const ToBarChartImmediately = () => {
         const source = {};
 
         levelImmediatelyList.forEach(v => source[v.name] = v.count);
@@ -124,52 +130,53 @@ const RankDetailImmediately = () => {
         }
     }
 
-
     /** 計算 科目 班級組距資料*/
-    async function CalculateSubjectExamScoreLevel() {
-        await _connection.send({
-            service: "_.CalculateSubjectExamScoreLevel",
-            body: {
-                StudentID: studentID,
-                ViewSemester: semester,
-                Subject: storageSubject,
-                ExamID: examID,
-            },
-            result: function (response, error, http) {
-                if (error !== null) {
-                    console.log('CalculateSubjectExamScoreLevel Error', error);
-                    return 'err';
-                } else {
-                    if (response) {
-                        setScoreLevel([].concat(response.Response.Level || []));
+    const CalculateSubjectExamScoreLevel = async () => {
+        return new Promise((resolve, reject) => {
+            _connection.send({
+                service: "_.CalculateSubjectExamScoreLevel",
+                body: {
+                    StudentID: studentID,
+                    ViewSemester: semester,
+                    Subject: storageSubject,
+                    ExamID: examID,
+                },
+                result: (response, error) => {
+                    if (error) {
+                        console.log('CalculateSubjectExamScoreLevel Error:', error);
+                        return reject(error);
                     }
+                    const level = [].concat(response.Response.Level || []);
+                    setScoreLevel(level);
+                    resolve(level);
                 }
-            }
+            });
         });
-    }
-    /** 計算 科目總計 (加權平均/算術平均) 班級組距資料*/
-    async function CalculateExamAvgLevel() {
-        await _connection.send({
-            service: "_.CalculateExamAvgLevel",
-            body: {
-                StudentID: studentID,
-                ViewSemester: semester,
-                Subject: storageSubject,
-                ExamID: examID,
-            },
-            result: function (response, error, http) {
-                if (error !== null) {
-                    console.log('CalculateExamAvgLevel Error', error);
-                    return 'err';
-                } else {
-                    if (response) {
-                        setScoreLevel([].concat(response.Response.Level || []));
-                    }
-                }
-            }
-        });
-    }
+    };
 
+    /** 計算 科目總計 (加權平均/算術平均) 班級組距資料*/
+    const CalculateExamAvgLevel = async () => {
+        return new Promise((resolve, reject) => {
+            _connection.send({
+                service: "_.CalculateExamAvgLevel",
+                body: {
+                    StudentID: studentID,
+                    ViewSemester: semester,
+                    Subject: storageSubject,
+                    ExamID: examID,
+                },
+                result: (response, error) => {
+                    if (error) {
+                        console.log('CalculateExamAvgLevel Error:', error);
+                        return reject(error);
+                    }
+                    const level = [].concat(response.Response.Level || []);
+                    setScoreLevel(level);
+                    resolve(level);
+                }
+            });
+        });
+    };
 
     const handleBackToHomePage = (e) => {
         setAppDataValues({
@@ -182,52 +189,58 @@ const RankDetailImmediately = () => {
 
     return (
         <div className="App">
-            <div className="container px-3 px-sm-4 py-5 ">
-                <div className="d-flex justify-content-between">
-                    <button type="button" className="btn btn-back active d-flex justify-content-start px-0" onClick={handleBackToHomePage}>＜返回</button>
-                </div>
-                <div className='detailBorder row row row-cols-1 row-cols-md-2 row-cols-lg-2'>
-                    <div className='col'>
-                        <div className='d-flex me-auto align-items-center pt-2 ps-2'>
-                            <div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>
-                                {storageSubject === '加權平均' || storageSubject === '算術平均' ? Math.round(Number(storageScore) * 100) / 100 : storageScore}
-                            </div>
-                            <div className='fs-4 fw-bold'>{storageDomain === "" ? "" : storageDomain + "-"}{storageSubject}</div>
+            {loading ? (
+                <Loading />
+            )
+                : (
+                    <div className="container px-3 px-sm-4 py-5 ">
+                        <div className="d-flex justify-content-between">
+                            <button type="button" className="btn btn-back active d-flex justify-content-start px-0" onClick={handleBackToHomePage}>＜返回</button>
                         </div>
-                    </div>
+                        <div className='detailBorder row row row-cols-1 row-cols-md-2 row-cols-lg-2'>
+                            <div className='col'>
+                                <div className='d-flex me-auto align-items-center pt-2 ps-2'>
+                                    <div className='fs-2 text-white me-1 row align-items-center justify-content-center' style={{ width: '80px', height: '80px', background: "#5B9BD5" }}>
+                                        {storageSubject === '加權平均' || storageSubject === '算術平均' ? Math.round(Number(storageScore) * 100) / 100 : storageScore}
+                                    </div>
+                                    <div className='fs-4 fw-bold'>{storageDomain === "" ? "" : storageDomain + "-"}{storageSubject}</div>
+                                </div>
+                            </div>
 
-                    {/* <div className='col align-self-end'>
+                            {/* <div className='col align-self-end'>
                         <div className='text-end pt-0 pt-md-2 pt-lg-2 pe-2'>
                             <div className=''>及格標準：{passingStandard}分</div>
                             <div className=''>計算排名時間：{data.create_time}</div>
                         </div>
                     </div> */}
-                </div>
-
-                <div className='row align-items-start mt-2'>
-                    <div className='col-12 mt-3'>
-                        <div className='chartHeightNoShowRank'>
-                            <ResponsiveContainer height="100%" width="100%">
-                                <BarChart data={levelImmediatelyList} layout="vertical" margin={{ top: 30, right: 50, left: 10, bottom: 0 }}>
-                                    <XAxis dateKey="count" type="number"
-                                        label={{ value: '人數', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }}
-                                        axisLine={{ stroke: "#2196f3" }} allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
-                                    <YAxis dataKey="name" type="category"
-                                        label={{ value: '組距', position: 'insideTopLeft', offset: 0, dy: -15, dx: 40, fill: '#498ED0' }}
-                                        axisLine={{ stroke: "#2196f3" }} />
-                                    <Bar dataKey="count" barSize={25} label={{ position: 'right' }} fillOpacity={0.8} >
-                                    </Bar>
-                                </BarChart>
-                            </ResponsiveContainer>
                         </div>
-                        <div className='mt-3'>組距資訊為該班學生定期評量成績即時統計。</div>
 
+                        <div className='row align-items-start mt-2'>
+                            <div className='col-12 mt-3'>
+                                <div className='chartHeightNoShowRank'>
+                                    <ResponsiveContainer height="100%" width="100%">
+                                        <BarChart data={levelImmediatelyList} layout="vertical" margin={{ top: 30, right: 50, left: 10, bottom: 0 }}>
+                                            <XAxis dateKey="count" type="number"
+                                                label={{ value: '人數', position: 'right', offset: 10, dy: -15, fill: '#498ED0' }}
+                                                axisLine={{ stroke: "#2196f3" }} allowDecimals={false} domain={[0, () => (chartMax === 0) ? 1 : chartMax]} />
+                                            <YAxis dataKey="name" type="category"
+                                                label={{ value: '組距', position: 'insideTopLeft', offset: 0, dy: -15, dx: 40, fill: '#498ED0' }}
+                                                axisLine={{ stroke: "#2196f3" }} />
+                                            <Bar dataKey="count" barSize={25} label={{ position: 'right' }} fillOpacity={0.8} >
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <div className='mt-3'>組距資訊為該班學生定期評量成績即時統計。</div>
+
+                            </div>
+
+                        </div>
+
+                        <ScrollToTopButton />
                     </div>
-
-                </div>
-
-                <ScrollToTopButton />
-            </div>
+                )
+            }
         </div>
     );
 };
