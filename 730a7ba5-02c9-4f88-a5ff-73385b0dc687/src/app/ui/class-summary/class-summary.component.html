@@ -110,23 +110,31 @@
 
     <!-- 缺曠 -->
     <div class="table-responsive scrollable" #table>
-      <table class="table-rwd table ntable table-hover whitespace-nowrap">
+      <table class="table-rwd table ntable table-hover whitespace-nowrap m-auto" style="min-width: 320px;">
         <thead>
           <tr style="position: sticky; top: 0; z-index: 10;">
             <th *ngIf="this.ready">座號</th>
             <th *ngIf="this.ready">姓名</th>
-            <th *ngFor="let leave of absenceName">{{ leave }}</th>
+            <th *ngFor="let leave of absenceName" class="hidden xl:table-cell">{{ leave }}</th>
+            <th class="table-cell xl:hidden pl-0 pr-8">缺曠節數</th>
           </tr>
         </thead>
         <tbody *ngFor=" let studentInfo of aryStudents">
           <tr *ngIf="showAllStudents ||  studentMappingTable.get(studentInfo.seat_no).has_data" class="collapsed cursor-pointer"
-            data-toggle="collapse" data-target="#aA" aria-expanded="false" aria-controls="aA">
-            <td data-th="座號" (click)="nextPage(studentInfo)" routerLink="/student-summary">{{ studentInfo.seat_no}}</td>
-            <td data-th="姓名" (click)="nextPage(studentInfo)" routerLink="/student-summary"
-              [innerHtml]="studentInfo.name"></td>
-            <td *ngFor="let leave of absenceName;" [attr.data-th]="leave" style="text-align: center"
-              (click)="nextPage(studentInfo)" routerLink="/student-summary">
+            data-toggle="collapse" data-target="#aA" aria-expanded="false" aria-controls="aA" (click)="nextPage(studentInfo)" routerLink="/student-summary">
+            <td data-th="座號" style="width: 50px;">{{ studentInfo.seat_no}}</td>
+            <td data-th="姓名" [innerHtml]="studentInfo.name"></td>
+            <td *ngFor="let leave of absenceName;" [attr.data-th]="leave" class="hidden xl:table-cell" style="text-align: center">
               {{ studentMappingTable.get(studentInfo.seat_no).attendanceMapping.get(leave) }}
+            </td>
+            <td style="text-align: center" class="flex flex-wrap xl:hidden items-center gap-x-4 gap-y-3 p-2" style="height:auto">
+              <ng-container *ngFor="let leave of absenceName;">
+                <div *ngIf="studentMappingTable.get(studentInfo.seat_no)?.attendanceMapping.get(leave)"
+                      [ngStyle]="{'color': getLeaveColor(leave), 'width': '70px'}">
+                  <div style="font-weight:500">{{ studentMappingTable.get(studentInfo.seat_no)?.attendanceMapping.get(leave) }}</div>
+                  <div class="text-xs">{{ leave }}</div>
+                </div>
+              </ng-container>
             </td>
           </tr>
         </tbody>
