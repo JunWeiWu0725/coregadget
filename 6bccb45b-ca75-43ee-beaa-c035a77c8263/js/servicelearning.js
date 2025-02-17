@@ -78,7 +78,8 @@ angular.module('learning', ['ngAnimate'])
                                     ];
 
                                     $scope.colHeaderList = [
-                                        '學生基本資料'
+                                        // '學生基本資料'
+                                        ''
                                     ];
 
                                     angular.forEach($scope.schoolYearList, function (item) {
@@ -202,11 +203,12 @@ angular.module('learning', ['ngAnimate'])
                                 
                                     targetStudent[item.SchoolYear + 'total'] += sum;
 
-                                    
                                     //var targetStudent = studentKey[item.StudentID];
                                     //targetStudent[item.SchoolYear + item.Semester] = item.Sum;
                                     //targetStudent[item.SchoolYear + 'total'] += Number(item.Sum == "" ? "0" : item.Sum);
                                 })
+                                console.log($scope.schoolYearList);
+                                console.log("整理後的 studentList：", $scope.studentList);
                             }
                         });
                     }
@@ -294,46 +296,52 @@ angular.module('learning', ['ngAnimate'])
             //}
         }
         $scope.selectStudent = function (item) {
-            $scope.currentStudent = item;
-
-            //-> 班級選取下拉變色
-            angular.forEach($scope.studentList, function (item) {
-                item.selected = false; //先設定通通不選取
-            })
-
-            item.selected = true; //設定被選取
-
-            //delete $scope.currentStudent.records;
-
-            $scope.connection.send({
-                service: "_.GetStudentServiceDetail",
-                body: {
-                    Request: {
-                        StudentID: item.StudentID
-                    }
-                }, //物件的寫法
-                result: function (response, error, http) {
-                    if (error !== null) {
-                        $scope.set_error_message('#mainMsg', 'GetStudentServiceDetail', error);
-                    } else {
-                        //console.log(response); //檢查元素console用
-
-                        $scope.$apply(function () {
-                            if (response !== null && response.Result !== null && response.Result !== ''&& response.Result !== undefined) {
-                                $scope.currentStudent.records = [].concat(response.Result); //當回傳得項目只有一個時，service會判斷成物件（多個時會是陣列），這裡寫法是將物件轉為陣列
-
-                                angular.forEach($scope.currentStudent.records, function (item) {
-                                    if (item.OccurDate != "") {
-                                        var date = new Date(parseInt(item.OccurDate)).toLocaleDateString();
-                                        item.OccurDate = date;
-                                    }
-                                })
-                            }
-                        });
-                    }
+            // 切換選取狀態
+            item.selected = !item.selected;
+        
+            // 取消選取其他學生
+            angular.forEach($scope.studentList, function (student) {
+                if (student !== item) {
+                    student.selected = false;
                 }
             });
-        }
+        
+            // 如果展開，就請求 API，否則不請求
+            if (item.selected) {
+                $scope.currentStudent = item; // 設定目前選取的學生
+        
+                // 呼叫 API 載入該學生詳細資料
+                $scope.connection.send({
+                    service: "_.GetStudentServiceDetail",
+                    body: {
+                        Request: {
+                            StudentID: item.StudentID
+                        }
+                    },
+                    result: function (response, error, http) {
+                        if (error !== null) {
+                            $scope.set_error_message('#mainMsg', 'GetStudentServiceDetail', error);
+                        } else {
+                            $scope.$apply(function () {
+                                if (response && response.Result) {
+                                    item.records = [].concat(response.Result); // 確保 records 是陣列
+                                    
+                                    angular.forEach(item.records, function (record) {
+                                        if (record.OccurDate) {
+                                            var date = new Date(parseInt(record.OccurDate)).toLocaleDateString();
+                                            record.OccurDate = date;
+                                        }
+                                    });
+                                } else {
+                                    item.records = []; // 確保 records 為空陣列，而不是 undefined
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        };
+        
         $scope.removeCurrentStudent = function () {
             delete $scope.currentStudent;
         }
