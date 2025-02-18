@@ -130,18 +130,18 @@
                   <div>下</div>
                   <div>合計</div>
                 </div>
-                <div class="grid grid-cols-4 text-center text-14 text-gray-500 mb-1" ng-repeat="Year in schoolYearList">
+                <div class="grid grid-cols-4 text-center text-14 text-gray-500 mb-1" ng-repeat="Year in schoolYearList | orderBy:'-SchoolYear'">
                   <div>{{Year.SchoolYear}}</div>
-                  <div class="font-semibold"><span ng-if="item[Year.SchoolYear + '1'] !== 0">{{ item[Year.SchoolYear + '1'] }}</span></div>
-                  <div class="font-semibold"><span ng-if="item[Year.SchoolYear + '2'] !== 0">{{ item[Year.SchoolYear + '2'] }}</span></div>
+                  <div class="font-semibold text-green"><span ng-if="item[Year.SchoolYear + '1'] !== 0">{{ item[Year.SchoolYear + '1'] }}</span></div>
+                  <div class="font-semibold text-blue"><span ng-if="item[Year.SchoolYear + '2'] !== 0">{{ item[Year.SchoolYear + '2'] }}</span></div>
                   <div class="font-semibold"><span ng-if="item[Year.SchoolYear + 'total'] !== 0">{{ item[Year.SchoolYear + 'total'] }}</span></div>
                 </div>
                 <!-- <div class="{{col.Class}}" ng-repeat="col in columnList">{{col.Text}}</div> -->
 
                 <!-- 詳細資料 -->
-                <div class="bg-slate-100 rounded-lg mt-2 p-2" data-type="detail" ng-if="item.selected">
+                <div class="bg-slate-100 rounded-lg mt-2 px-2 pt-2" data-type="detail" ng-if="item.selected">
                   <div ng-if="item.records.length > 0">
-                    <div ng-repeat="record in item.records" class="text-14 text-gray-500">
+                    <div ng-repeat="record in item.records | orderBy:'-SchoolYear'" class="text-14 text-gray-500">
                       <div class="flex justify-between items-baseline gap-3 whitespace-nowrap">
                         <div>
                           <span>{{record.SchoolYear}}</span>
@@ -149,7 +149,8 @@
                         </div>
                         <span>{{record.OccurDate}}</span>
                         <div>
-                          <span class="text-lg font-semibold text-gray-900">{{record.Hours}}</span>
+                          <span class="text-lg font-semibold" 
+                            ng-class="{'text-green': record.Semester == 1, 'text-blue': record.Semester != 1}">{{record.Hours}}</span>
                           <span>hrs</span>
                         </div>
                       </div>
@@ -161,7 +162,7 @@
                     </div>
                   </div>
                   <div ng-if="item.records.length === 0">
-                    <div class="text-center">目前無資料</div>
+                    <div class="text-center text-14 pb-2">目前無資料</div>
                   </div>
                 </div>
 

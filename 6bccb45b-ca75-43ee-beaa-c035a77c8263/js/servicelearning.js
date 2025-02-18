@@ -152,7 +152,6 @@ angular.module('learning', ['ngAnimate'])
             //}
         }
         $scope.getStudentData = function () {
-
             $scope.connection.send({
                 service: "_.GetStudentService",
                 body: {
@@ -162,36 +161,37 @@ angular.module('learning', ['ngAnimate'])
                     if (error !== null) {
                         $scope.set_error_message('#mainMsg', 'GetStudentService', error);
                     } else {
-                        console.log(response);
+
                         $scope.$apply(function () { //apply用來更新選擇或變動的資料顯示
                             if (response !== null && response.Result !== null && response.Result !== '') {
-                                // 資料整理
+                                $scope.schoolYearList.sort((a, b) => b.SchoolYear - a.SchoolYear);
+        
+                                // **清除 studentList 並初始化**
                                 $scope.studentList = [];
                                 var studentKey = {};
-
+        
                                 angular.forEach([].concat(response.Result), function (item) {
                                     if (!studentKey[item.StudentID]) {
-                                        
                                         var student = {
-                                            StudentID: item.StudentID
-                                            , SeatNo: item.SeatNo
-                                            , StudentNumber: item.StudentNumber
-                                            , StudentName: item.StudentName
+                                            StudentID: item.StudentID,
+                                            SeatNo: item.SeatNo,
+                                            StudentNumber: item.StudentNumber,
+                                            StudentName: item.StudentName,
+                                            selected: false,  // **確保每次重新載入時不會有學生保持展開狀態**
+                                            records: []
                                         };
-
+        
                                         angular.forEach($scope.schoolYearList, function (data) {
                                             student[data.SchoolYear + 1] = 0;
                                             student[data.SchoolYear + 2] = 0;
                                             student[data.SchoolYear + 'total'] = 0;
-                                        })
-                                        
-
+                                        });
+        
                                         $scope.studentList.push(student);
                                         studentKey[item.StudentID] = student;
-                                    };
-
+                                    }
+        
                                     var targetStudent = studentKey[item.StudentID];
-
                                     // 確保將 item.Sum 安全地轉換為數字
                                     var sum = Number(item.Sum) || 0;
                                     targetStudent[item.SchoolYear + item.Semester] = sum;
@@ -200,21 +200,28 @@ angular.module('learning', ['ngAnimate'])
                                     if (typeof targetStudent[item.SchoolYear + 'total'] === 'undefined') {
                                         targetStudent[item.SchoolYear + 'total'] = 0;
                                     }
-                                
+        
                                     targetStudent[item.SchoolYear + 'total'] += sum;
-
-                                    //var targetStudent = studentKey[item.StudentID];
-                                    //targetStudent[item.SchoolYear + item.Semester] = item.Sum;
-                                    //targetStudent[item.SchoolYear + 'total'] += Number(item.Sum == "" ? "0" : item.Sum);
-                                })
-                                console.log($scope.schoolYearList);
-                                console.log("整理後的 studentList：", $scope.studentList);
+        
+                                    // **確保詳細資料（records）也重新初始化**
+                                    targetStudent.records.push({
+                                        SchoolYear: item.SchoolYear,
+                                        Semester: item.Semester,
+                                        OccurDate: item.OccurDate,
+                                        Hours: sum,
+                                        Organizers: item.Organizers,
+                                        InternalOrExternal: item.InternalOrExternal,
+                                        Reason: item.Reason,
+                                        Remark: item.Remark
+                                    });
+                                });
                             }
                         });
                     }
                 }
             });
-        }
+        };
+        
         {
             //$scope.selectSchoolYear = function (data) {
             //    $scope.currentSchoolYear = data.SchoolYear;
