@@ -620,7 +620,7 @@ function Main() {
             <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 "> {/* 三排 */}
               {/* 評量成績 */}
               {[].concat(courseExamScore || []).map((ces) => {
-                let col = 'col-6 col-md-6 col-lg-3 my-2';
+                let col = 'col-6 col-md-6 col-xxl-3 my-2';
                 if (showNoRankSetting || (!showNoRankSetting && [].concat(examRankType || []).length < 1))//不顯示排名(只有分數) || 顯示排名但沒排名
                   col = 'col-12 my-2';
 
@@ -820,7 +820,7 @@ function Main() {
                 <div className="col">
                   {[].concat(examAvgList || []).map((examAvg, index) => {
                     if (examAvg.ItemName === avgSetting) {
-                      let col = 'col-6 col-md-6 col-lg-3 my-2';
+                      let col = 'col-6 col-md-6 col-xxl-3 my-2';
                       if (showNoRankSetting)//不顯示排名(只有分數) 
                         col = 'col-12 my-2';
                       const filteredRankTypeAvgList = [].concat(examAvg.Field || []).filter((exaAvgField, index) => exaAvgField.RankType === selectedRankType);
