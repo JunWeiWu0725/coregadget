@@ -85,7 +85,7 @@
       </li>
       <li class="list-group-item point"
           *ngFor="let class of classList"
-          [routerLink]="['/teacher-helper', 'Class', class.ClassID]">
+          [routerLink]="['/teacher-helper', this.today , 'Class', class.ClassID]">
         <div class="d-flex flex-wrap justify-content-between align-items-center">
           <div class="text-nowrap">
             <span class="pr-1" style="white-space: pre-wrap;">{{class.ClassName}}</span>
@@ -100,7 +100,7 @@
       </li>
       <li class="list-group-item point"
           *ngFor="let course of courseList"
-          [routerLink]="['/teacher-helper', 'Course', course.CourseID]">
+          [routerLink]="['/teacher-helper', this.today ,  'Course', course.CourseID]">
         <div class="d-flex flex-wrap justify-content-between align-items-center">
           <div class="text-nowrap pr-3">{{course.CourseName}}</div>
           <div class="text-nowrap ml-auto text-truncate">

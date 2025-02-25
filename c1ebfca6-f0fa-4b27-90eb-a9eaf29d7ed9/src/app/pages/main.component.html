@@ -4,7 +4,15 @@
             <li class="breadcrumb-item active d-flex"
                 aria-current="page"
                 style="width: 100%">
-                <div class="header-top" ><ng-container *ngIf="!loading">{{ 'roll-call' | i18next }}</ng-container><span *ngIf="today">&nbsp;(&nbsp;{{today}}&nbsp;)</span></div>
+                <div class="header-top centered-container" ><ng-container *ngIf="!loading">{{ 'roll-call' | i18next }}</ng-container></div>
+                <span>
+                  <span>&nbsp;&nbsp;(</span>
+                  <select id="dropdown" [(ngModel)]="selectedValue" (change)="onSelectionChange($event)">
+                    <option *ngFor="let item of options" [value]="item.value">
+                      {{ item.label }}
+                    </option>
+                    </select>)
+                </span>
                 <div style="flex: 1"></div>
                 <a routerLink="/setting"
                    class="btn btn-sm btn-default text-capitalize">

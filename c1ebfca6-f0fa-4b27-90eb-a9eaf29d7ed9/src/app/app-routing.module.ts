@@ -11,11 +11,11 @@ import { ClassSubstituteComponent } from './pages/class-substitute.component';
 const routes: Routes = [
     { path: '', redirectTo: 'main', pathMatch: 'full' },
     { path: 'main', component: MainComponent },
-    { path: 'pick/:type/:id/:period/:name', component: StudentPickComponent },
+    { path: 'pick/:curr_day/:type/:id/:period/:name', component: StudentPickComponent },
     { path: 'sub', component: SubstituteComponent },
     { path: 'class', component: ClassSubstituteComponent },
     { path: 'course', component: CourseSelcComponent },
-    { path: 'teacher-helper/:type/:id', component: TeacherHelperComponent},
+    { path: 'teacher-helper/:curr_day/:type/:id', component: TeacherHelperComponent},
     { path: 'setting', component: SettingComponent }
 ];
 
