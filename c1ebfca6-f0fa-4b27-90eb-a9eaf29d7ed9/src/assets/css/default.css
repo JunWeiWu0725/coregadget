@@ -337,5 +337,9 @@ ul li:nth-child(odd) {
 	width: 16px;
   height: 16px;
 	background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 width=%2224%22 height=%2224%22%3E%3Cpath fill=%22%23fff%22 d=%22M9 19l-7-7 1.41-1.41L9 16.17l11.59-11.59L22 6l-13 13z%22/%3E%3C/svg%3E');
-            background-size: contain;
+  background-size: contain;
+}
+
+.card-body .card-stu-name {
+	border-bottom-color: #65b2ef !important;
 }
