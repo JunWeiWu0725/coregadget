@@ -8,12 +8,16 @@ html, body {
 	font-size: 1rem;
 }
 
+:focus-visible {
+	outline: none;
+}
+
 a {
-	color: #869923;
+	color: #5d707e;
 }
 
 a:hover {
-	color: #73831F;
+	color: #7e94a4;
 }
 
 .btn-link:hover {
@@ -26,7 +30,7 @@ a:hover {
 }
 
 .breadcrumb-item.active {
-	font-weight: 500;
+	font-weight: 600;
 }
 
 h5, .h5 {
@@ -122,15 +126,6 @@ a.text-green:active,a.text-green:focus, a.text-green:hover {
     自訂 Class Style
 ----------------------------------------------------- */
 
-.st-list .card {
-	cursor: pointer;
-	height: 100%;
-}
-
-.st-list .card:hover {
-	background: #f5f5f5;
-}
-
 .ad-status {
 	border: 1px solid rgba(0,0,0,.12);
 	text-align: center;
@@ -187,4 +182,160 @@ a.text-green:active,a.text-green:focus, a.text-green:hover {
 	.table-auto th, .table-auto td {
 		padding: 8px 32px;
 	}
+}
+
+.btn-second {
+	background: #1891ce !important;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.list-group-item {
+	padding: 16px;
+}
+
+.flex-rc {
+	flex-direction: column;
+}
+
+.st-list .card {
+	cursor: pointer;
+	height: 100%;
+}
+
+.st-list .card:hover {
+	background: #f5f5f5;
+}
+
+.con {
+  /* container-type: inline-size; */
+  container: con / inline-size;
+}
+
+@container con (width < 1024px) {
+  .imgst {
+    height: 130cqw;
+  }
+}
+
+.col-stu {
+	width: 47% !important;
+	margin-right: 0 !important;
+}
+
+@media(min-width: 576px) {
+	.col-stu {
+		width: 30% !important;
+	}
+	.flex-rc {
+		flex-direction: row;
+	}
+}
+
+@media(min-width: 768px) {
+	.col-stu {
+		width: 22% !important;
+	}
+}
+
+@media(min-width: 1024px) {
+	.col-stu {
+		width: 18% !important;
+	}
+}
+/* 
+.cdk-overlay-pane {
+  max-width: 650px !important;
+  position: relative !important;
+  top: 148px !important;
+	left:12px !important;
+}
+
+@media(min-width: 686px) {
+	.cdk-overlay-pane {
+		top: 48px !important;
+		left:0px !important;
+	}	
+}	 */
+
+.assistant {
+	color: #5eaafb; 
+	background: #d8ebff; 
+	border-radius: 4px; 
+	padding: 4px 8px; 
+	font-size: 12px; 
+	font-weight: 600;
+}
+
+ul li:nth-child(odd) {
+	background: #f6f6f6;
+}
+
+.list-group-item {
+	border: none !important;
+}
+
+.col-span-5 {
+	grid-column: span 5 / span 5;
+}
+
+.col-span-4 {
+	grid-column: span 4 / span 4;
+}
+
+.titl {
+	background: #65b2ef;
+	border-radius: 25px;
+	padding: 4px 7px;
+	color: #fff;
+	width: 32px;
+	height: 32px;
+	/* line-height: 32px; */
+	font-weight: 600;
+}
+
+.list-group-item.main-bg-color, .second-page-header {
+	border-radius: 8px 8px 0 0;
+}
+
+.custom-checkbox {
+	display: none;
+}
+
+/* 自訂checkbox外觀 */
+.custom-checkbox + .form-check-label {
+	position: relative;
+	padding-left: 30px; /* 留白讓我們放置自訂勾選框 */
+	cursor: pointer;
+}
+
+/* 自訂勾選框 */
+.custom-checkbox + .form-check-label::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 20px;
+	height: 20px;
+	border: 2px solid #65b2ef;
+	border-radius: 4px; /* 使其邊角圓滑 */
+	background-color: #fff;
+}
+
+/* 當checkbox被勾選時改變樣式 */
+.custom-checkbox:checked + .form-check-label::before {
+	background-color: #65b2ef; /* 勾選後變綠色 */
+	border-color: #65b2ef;
+}
+
+/* 當checkbox被勾選時變換標誌 */
+.custom-checkbox:checked + .form-check-label::after {
+	content: '';
+	position: absolute;
+	left: 2px;
+	top: 2px;
+	width: 16px;
+  height: 16px;
+	background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 width=%2224%22 height=%2224%22%3E%3Cpath fill=%22%23fff%22 d=%22M9 19l-7-7 1.41-1.41L9 16.17l11.59-11.59L22 6l-13 13z%22/%3E%3C/svg%3E');
+            background-size: contain;
 }

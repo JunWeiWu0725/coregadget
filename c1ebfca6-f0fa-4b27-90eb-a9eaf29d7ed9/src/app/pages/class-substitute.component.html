@@ -2,7 +2,7 @@
 <div>
     <nav aria-label="breadcrumb text-nowrap text-truncate">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item header-top">
+        <li class="breadcrumb-item header-top" style="font-weight: 600; font-size: 18px;">
           <a href="#" [routerLink]="['']">{{ 'roll-call' | i18next }}&nbsp;(&nbsp;{{today}}&nbsp;)</a>
         </li>
         <ng-container *ngIf="loading; else titleText">
@@ -10,7 +10,7 @@
               aria-current="sub">loading...</li>
         </ng-container>
         <ng-template #titleText>
-          <li class="breadcrumb-item active"
+          <li class="breadcrumb-item active" style="font-weight: 600; font-size: 18px;"
               aria-current="sub">{{ 'select-session-grade-class' | i18next }}</li>
         </ng-template>
       </ol>
@@ -27,7 +27,7 @@
       <div class="btn-group dropdown mr-auto mb-2">
         <button [matMenuTriggerFor]="menu"
                 type="button"
-                class="btn btn-dark dropdown-toggle text-capitalize"
+                class="btn btn-info dropdown-toggle text-capitalize"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false">

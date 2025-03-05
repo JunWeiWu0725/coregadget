@@ -1,22 +1,19 @@
 <!-- 開始點名 -->
-<div id="attendence-page"
-     page>
+<div id="attendence-page" page>
   <nav aria-label="breadcrumb text-nowrap text-truncate header-top">
     <ol class="breadcrumb header-top second-page-header ">
       <li class="breadcrumb-item">
-        <a class=""  href="#"
-           [routerLink]="['/main']">{{ 'roll-call' | i18next }}</a>
+        <a class="" href="#" [routerLink]="['/main']">{{ 'roll-call' | i18next }}</a>
       </li>
       <ng-container *ngIf="!studentChecks; else titleText">
-        <li class="breadcrumb-item active"
-            aria-current="page">loading...</li>
+        <li class="breadcrumb-item active" style="white-space: normal; word-break: keep-all;" aria-current="page">
+          loading...</li>
       </ng-container>
 
-     
+
 
       <ng-template #titleText>
-        <li class="breadcrumb-item active"
-            aria-current="page">
+        <li class="breadcrumb-item active" aria-current="page">
           {{groupInfo.name}}&nbsp;&nbsp;(&nbsp;{{curr_day}}：{{periodConf?.Name}}&nbsp;)</li>
       </ng-template>
     </ol>
@@ -32,7 +29,8 @@
 
   <ng-template #studentSection>
     <ng-container *ngIf="(studentChecks.length==0); else  elseTemplate">
-      <div class=" w-90 h-90"  style="position:absolute;top:50%;left: 0px;right: 0px;text-align: center;color: #00000061;">
+      <div class=" w-90 h-90"
+        style="position:absolute;top:50%;left: 0px;right: 0px;text-align: center;color: #00000061;">
         {{ 'no-students-for-roll-call' | i18next }}
       </div>
     </ng-container>
@@ -41,71 +39,64 @@
   <!--  -->
   <ng-template #elseTemplate>
 
-      <!-- 顯示英文名 -->
+    <!-- 顯示英文名 -->
 
 
-  <!-- <ng-container [ngTemplateOutlet]="reload"></ng-container> -->
+    <!-- <ng-container [ngTemplateOutlet]="reload"></ng-container> -->
 
-  <div class="d-flex justify-center align-items-center form-check text-nowrap z-20 -mb-0 lg:-mb-9 p-0 w-50 mx-auto">
-    <input class="mr-2" type="checkbox" value="" id="flexCheckDefault" [checked]=displayEnglishName (change)="displayEnglishName=!displayEnglishName">
-    <label class="form-check-label"  style="color :#656566" for="flexCheckDefault">
-     Display EnglishName
-    </label>
-  </div>
 
-    <div class="d-flex flex-wrap justify-content-between position-sticky top-0 bg-white z-10 py-2 gap-4">
-      <div>
-        <div class="dropdown">
-          <button [matMenuTriggerFor]="menu"
-                  type="button"
-                  class="btn btn-dark dropdown-toggle"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false">
+    <div class="d-flex flex-wrap justify-content-between position-sticky top-0 bg-white z-10 py-3 gap-4">
+          <button [matMenuTriggerFor]="menu" type="button" class="btn btn-info dropdown-toggle" style="font-size: 16px;"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span *ngIf="!selectedAbsence">{{ 'select-absence-type' | i18next }}</span>
             <span *ngIf="selectedAbsence">{{selectedAbsence}}</span>
-        
+
           </button>
-        
-          <mat-menu #menu="matMenu">
+
+          <mat-menu #menu="matMenu" [overlapTrigger]="false" matMenuPositionX="after" matMenuPositionY="below">
             <div *ngIf="!periodConf">loading...</div>
-            <button mat-menu-item
-                    *ngFor="let abb of periodConf?.Absence"
-                    (click)="selectedAbsenceItem(abb)">{{abb.Name}}</button>
+            <button mat-menu-item *ngFor="let abb of periodConf?.Absence"
+              (click)="selectedAbsenceItem(abb)">{{abb.Name}}</button>
           </mat-menu>
-      
-        </div>
-      </div>
-      <ng-container  [ngTemplateOutlet]="save"></ng-container>
+
+      <ng-container [ngTemplateOutlet]="save"></ng-container>
     </div>
-    <div *ngIf=" this.groupInfo.type=='Course'" class = "m-2" style="color: #ff3333;">{{explainMessage}}</div>
-  
+    <div class="d-flex flex-wrap justify-between items-center gap-2">
+      <div *ngIf=" this.groupInfo.type=='Course'" class="" style="color: #ff3333;">{{explainMessage}}</div>
+      <div
+        class="d-flex justify-center align-items-center form-check text-nowrap ml-auto"
+        style="font-size: 16px;">
+        <input class="custom-checkbox mr-2" type="checkbox" value="" id="flexCheckDefault" [(ngModel)]="displayEnglishName">
+        <label class="form-check-label" style="color :#656566" for="flexCheckDefault">
+          Display English Name
+        </label>
+      </div>
+    </div>
+
+
 
 
     <!-- 無修課紀錄時 -->
 
- 
-  
 
- 
+
+
+
 
     <!-- studentChecks.length===0 -->
     <!-- 學生資料(no photo)-->
-    <div class="row mt-3 mt-lg-1"
-         *ngIf="!showPhoto">
-      <div class=" col-12 col-sm-6 col-lg-4"
-           style="margin-bottom: 0.75rem;"
-           *ngFor="let student of studentChecks">
+    <div class="row mt-3 mt-lg-1" *ngIf="!showPhoto">
+      <div class=" col-12 col-sm-6 col-lg-4" style="margin-bottom: 0.75rem;" *ngFor="let student of studentChecks">
         <div class="card">
-          <div (click)="changeAttendance(student)"
-               class="point row pr-2">
+          <div (click)="changeAttendance(student)" class="point row pr-2">
             <div class="col-9 card-body p-2 text-truncate ">
               <div class="text-gray text-truncate d-flex">
-                <strong  *ngIf="!displayEnglishName"  class="mb-0 text-truncate card-stu-name "  [innerHTML] ="student.data?.Name"> </strong>
-                <strong  *ngIf="displayEnglishName"  class="mb-0 text-truncate card-stu-name ">{{student.data?.EnglishName||student.data?.Name}}</strong>
-                <div class="ml-auto"
-                     *ngIf="student.data?.AbsenceRate"
-                     [ngStyle]="getAbsenceRateStyle(student.data?.AbsenceRate)">
+                <strong *ngIf="!displayEnglishName" class="mb-0 text-truncate card-stu-name "
+                  [innerHTML]="student.data?.Name"> </strong>
+                <strong *ngIf="displayEnglishName"
+                  class="mb-0 text-truncate card-stu-name ">{{student.data?.EnglishName||student.data?.Name}}</strong>
+                <div class="ml-auto" *ngIf="student.data?.AbsenceRate"
+                  [ngStyle]="getAbsenceRateStyle(student.data?.AbsenceRate)">
                   <span>{{student.data?.AbsenceRate}}</span>
                   <span>%</span>
                 </div>
@@ -116,11 +107,9 @@
                 <span> {{getCheckInTime(student.data.StudentID)}}</span>
               </div>
             </div>
-            <div class="col-3 ad-status text-truncate py-2 my-auto border-r5"
-                 [ngStyle]="getAttendanceStyle(student)"
-                 (mouseover)="showCurrentAbsType(student)"
-                 (mouseout)="hideCurrentAbsType(student)"   >
-                 {{showAbsText(student)}}</div>
+            <div class="col-3 ad-status text-truncate py-2 my-auto border-r5" [ngStyle]="getAttendanceStyle(student)"
+              (mouseover)="showCurrentAbsType(student)" (mouseout)="hideCurrentAbsType(student)">
+              {{showAbsText(student)}}</div>
           </div>
         </div>
       </div>
@@ -128,80 +117,80 @@
 
 
     <!-- 學生資料 (with photo)-->
-    <div class="st-list d-flex flex-wrap justify-center sm:justify-start gap-2 mt-3 mt-lg-1"
-    style =""
-         *ngIf="showPhoto">
-      <div class="card st-check"
-           style="min-width: 155px ;max-width: 50%; margin-right: 0;"
-           *ngFor="let student of studentChecks">
-        <label (click)="changeAttendance(student)" class="point">
-          <div style="height: 259px;width: 100%;">
-            <div class ="pic" style="height:100%;width:100%;background-position: center center;background-size: cover;"
-                 [style.background-image]="'url(' + student.data.PhotoUrl + ')'"></div>
+    <div class="st-list d-flex flex-wrap justify-center gap-4" *ngIf="showPhoto">
+      <div class="card col-stu st-check" *ngFor="let student of studentChecks">
+        <label (click)="changeAttendance(student)" class="con point">
+          <div class="imgst" style="width: 100%;">
+            <div class="pic" style="height:100%;width:100%;background-position: center center;background-size: cover;"
+              [style.background-image]="'url(' + student.data.PhotoUrl + ')'"></div>
           </div>
           <div style="margin-top: -54px; width:100%;">
-            <div [ngStyle]="getAttendanceStyle(student)"
-            (mouseover)="showCurrentAbsType(student)"
-            (mouseout)="hideCurrentAbsType(student)"   
-                 class="w-100 ad-status text-truncate border-r5 select-abs-section">
+            <div [ngStyle]="getAttendanceStyle(student)" (mouseover)="showCurrentAbsType(student)"
+              (mouseout)="hideCurrentAbsType(student)"
+              class="w-100 ad-status text-truncate border-r5 select-abs-section">
               {{showAbsText(student)}}</div>
             <div class="card-body p-2 px-xl-3 w-100 h-100" style="background-color: #f3f3f3 !important; z-index: 99;">
               <div class="text-gray d-flex flex-wrap">
                 <!-- <strong class="mb-0 text-truncate" inhtml>{{student.data?.Name}}</strong> -->
-                <div  *ngIf="!displayEnglishName" class="card-stu-name">
-                <strong class="mb-0 " [innerHtml]="student.data?.Name"></strong>
+                <div *ngIf="!displayEnglishName" class="card-stu-name">
+                  <strong class="mb-0 " [innerHtml]="student.data?.Name"></strong>
                 </div>
                 <div *ngIf="displayEnglishName" class="card-stu-name">
                   <b class="mb-0 " [innerHtml]="student.data?.EnglishName ||student.data?.Name"></b>
 
                 </div>
-                
-                <div class="ml-auto"
-                     *ngIf="student.data?.AbsenceRate"
-                     [ngStyle]="getAbsenceRateStyle(student.data?.AbsenceRate)">
+
+                <div class="ml-auto" *ngIf="student.data?.AbsenceRate"
+                  [ngStyle]="getAbsenceRateStyle(student.data?.AbsenceRate)">
                   {{student.data?.AbsenceRate}} <span>%</span>
                 </div>
-              
-          
+
+
               </div>
-      
+
               <div class="d-flex flex-wrap text-gray">
                 <span>{{student.data?.StudentNumber}}</span>
                 <div class="ml-auto">
                   <span class="mr-2">{{student.data?.ClassName}}</span>
                   <span>{{student.data?.SeatNo}}</span>
                 </div>
-   
+
               </div>
-              <div  class="text-gray text-truncate d-flex"> 
+              <div class="text-gray text-truncate d-flex">
 
                 <span *ngIf="isShowCheckInTime" style="font-size: 13px; color: rgb(75, 83, 97);"><b>
 
-                  {{ 'arrival-time' | i18next }} : {{getCheckInTime(student.data.StudentID)?.checkin_only_time||'  --  '}}
-                </b> 
-                
-              </span>
+                    {{ 'arrival-time' | i18next }} : {{getCheckInTime(student.data.StudentID)?.checkin_only_time||' --
+                    '}}
+                  </b>
+
+                </span>
               </div>
             </div>
           </div>
         </label>
       </div>
+      <div class="col-stu"></div>
+      <div class="col-stu"></div>
+      <div class="col-stu"></div>
+      <div class="col-stu"></div>
+
     </div>
 
     <div class="text-right">
       <!-- <ng-container [ngTemplateOutlet]="reload"></ng-container> -->
       <ng-container [ngTemplateOutlet]="save"></ng-container>
     </div>
- 
+
 
 
   </ng-template>
 
-  <ng-template #save >
+  <ng-template #save>
 
-  <button *ngIf="studentChecks.length!==0"(click)="saveRollCall()"
-          type="button"
-          class="btn btn-lg btn-info text-capitalize">{{checkSummary?  ( 'send' | i18next ) + ' ( ' + checkSummary +' )': 'all-present-send' | i18next }}</button>
+    <button *ngIf="studentChecks.length!==0" (click)="saveRollCall()" type="button" class="btn btn-info text-capitalize"
+      style="font-size: 16px;">{{checkSummary? ( 'send' | i18next ) + ' ( ' + checkSummary +' )': 'all-present-send' |
+      i18next }}</button>
 
   </ng-template>
 

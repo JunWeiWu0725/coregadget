@@ -1,27 +1,39 @@
 <div>
     <nav aria-label="breadcrumb text-nowrap text-truncate">
-        <ol class="breadcrumb header-top no-background no-background ">
-            <li class="breadcrumb-item active d-flex"
-                aria-current="page"
+        <ol class="breadcrumb header-top no-background no-background px-0 sm:px-4">
+            <li class="breadcrumb-item active d-flex flex-wrap justify-between gap-4 mb-3" aria-current="page"
                 style="width: 100%">
-                <div class="header-top centered-container" ><ng-container *ngIf="!loading">{{ 'roll-call' | i18next }}</ng-container></div>
-                <span>
-                  <span>&nbsp;&nbsp;(</span>
-                  <select id="dropdown" [(ngModel)]="selectedValue" (change)="onSelectionChange($event)">
-                    <option *ngFor="let item of options" [value]="item.value">
-                      {{ item.label }}
-                    </option>
-                    </select>)
-                </span>
-                <div style="flex: 1"></div>
-                <a routerLink="/setting"
-                   class="btn btn-sm btn-default text-capitalize">
-                   <!-- <i class="material-icons material-icons-outlined"
-                   style="color:#C9C9C9">
-                   settings_applications
-                </i> -->
-                <ng-container *ngIf="!loading">{{ 'setting' | i18next }}</ng-container></a>
-                 
+                <div class="header-top centered-container"><ng-container *ngIf="!loading">{{ 'roll-call' | i18next
+                        }}</ng-container></div>
+                <div class="d-flex flex-wrap justify-center md:justify-between grow gap-4 ms-auto">
+                    <select id="dropdown" [(ngModel)]="selectedValue" (change)="onSelectionChange($event)"
+                        class="hover:opacity-70"
+                        style="border: 1px solid #65b2ef; padding: 4px 8px; border-radius: 8px; cursor: pointer;">
+                        <option *ngFor="let item of options" [value]="item.value">
+                            {{ item.label }}
+                        </option>
+                    </select>
+
+                    <!-- <div style="flex: 1"></div> -->
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <button (click)=openSubstitute() type="button"
+                            class="btn btn-sm btn-second text-white text-capitalize"
+                            style="width: 122px;">
+                            {{'sub-teacher-call' | i18next }}</button>
+                        <button (click)=openClassSubstitute() type="button"
+                            class="btn btn-sm btn-second text-white text-capitalize">
+                            {{ 'sub-hr-teacher-call' | i18next }}</button>
+
+
+                        <a routerLink="/setting" class="btn text-capitalize hover:opacity-70 ml-auto"
+                            style="border-width: 1px;border-color: #65b2ef; color: #fff; padding:4px 1rem; line-height: 28px; font-size: 18px; border-radius: 6px; font-weight: 600; background: #65b2ef;">
+                            <!-- <i class="material-icons material-icons-outlined"
+                                style="color:#C9C9C9">
+                                settings_applications
+                            </i> -->
+                            <ng-container *ngIf="!loading">{{ 'setting' | i18next }}</ng-container></a>
+                    </div>
+                </div>
                 <!-- <button (click)=openSubstitute() type="button" class="btn btn-lg btn-info">代課課程</button> -->
             </li>
         </ol>
@@ -30,37 +42,37 @@
     style="color:#C9C9C9">
     settings_applications
  </i> -->
-    <ul class="list-group mb-3"
-        *ngIf="!loading;else Loading">
-        <li class="grid grid-cols-5 lg:grid-cols-7 items-center list-group-item active py-2  main-bg-color">
-            <div class="col-span-2 lg:col-span-3 text-nowrap"><b>{{ 'roll-call-today' | i18next }}</b></div>
-            <div class="col-span-1 lg:col-span-2 text-nowrap text-center"><b>{{ 'session' | i18next }}</b></div>
-            <div class="text-center px-1" style="min-width: 45px;"><b>{{ 'teacher-called' | i18next }}</b></div>
-            <div class="text-center px-1" style="min-width: 45px;"><b>{{ 'assistant-called' | i18next }}</b></div>
+    <ul class="list-group mb-3" *ngIf="!loading;else Loading">
+        <li class="grid grid-cols-7 lg:grid-cols-7 items-center list-group-item active py-2 main-bg-color">
+            <div class="col-span-4 md:col-span-3 text-nowrap"><b>{{ 'roll-call-today' | i18next }}</b></div>
+            <div class="col-span-1 md:col-span-2 text-nowrap text-center"><b>{{ 'session' | i18next }}</b></div>
+            <div class="hidden md:block mx-auto"><b>{{ 'teacher-called' | i18next }}</b></div>
+            <div class="hidden md:block mx-auto"><b>{{ 'assistant-called' | i18next }}</b></div>
+            <div class="titl block md:hidden mx-auto">{{ 't-called' | i18next }}</div>
+            <div class="titl block md:hidden mx-auto">{{ 'a-called' | i18next }}</div>
         </li>
         <ng-container *ngIf="conf&&conf.Schedule&&conf.Schedule.length; else noSchedule">
-            <li class="list-group-item point"
-                *ngFor="let suggest of conf.Schedule"
-                (click)="openSchedule(suggest)">
-                <div class="grid grid-cols-5 lg:grid-cols-7 pointer" >
-                    <div class="col-span-2 lg:col-span-3">
+            <li class="list-group-item point" *ngFor="let suggest of conf.Schedule" (click)="openSchedule(suggest)">
+                <div class="grid grid-cols-7 lg:grid-cols-7 pointer gap-y-2">
+                    <div class="col-span-4 md:col-span-3" style="font-weight: 600;">
                         {{suggest.ClassName?suggest.ClassName:suggest.CourseName}}
                     </div>
-                    <div class="col-span-1 lg:col-span-2 text-nowrap text-center">{{suggest.Period}}</div>
-                    <div class="text-center">
+                    <!-- <div class="block lg:hidden col-span-2"></div> -->
+                    <div class="col-span-1 md:col-span-2 text-nowrap text-center">{{suggest.Period}}</div>
+                    <div class="text-center" style="font-size: 16px;">
                         <ng-container *ngIf="suggest.Checked=='true'">
                             <i class="material-icons icon-green">check_circle</i>
                         </ng-container>
                         <ng-container *ngIf="suggest.Checked!='true'">
-                            <i class="material-icons" style="color:#C9C9C9">check_circle_outline</i>
+                            <i class="material-icons" style="color: #65b2ef52">check_circle_outline</i>
                         </ng-container>
                     </div>
-                    <div class="text-center">
+                    <div class="text-center" style="font-size: 16px;">
                         <ng-container *ngIf="suggest.StudentChecked=='true'">
                             <i class="material-icons icon-green">check_circle</i>
                         </ng-container>
                         <ng-container *ngIf="suggest.StudentChecked!='true'">
-                            <i class="material-icons" style="color:#C9C9C9">check_circle_outline</i>
+                            <i class="material-icons" style="color: #65b2ef52">check_circle_outline</i>
                         </ng-container>
                     </div>
                 </div>
@@ -73,47 +85,32 @@
                         <span class="pr-3 text-muted">{{ 'no-roll-call-record' | i18next }}</span>
                     </div>
                     <div class="col-2 text-nowrap text-center"></div>
-                    <div class="col-1 text-center">
-                    </div>
-                    <div class="col-1 text-center">
-                    </div>
+                    <div class="col-1 text-center"></div>
+                    <div class="col-1 text-center"></div>
                 </div>
             </li>
         </ng-template>
 
 
-     
-        <div class="ml-auto my-3">
-            <button (click)=openSubstitute()
-                    type="button"
-                    style="float:right"
-                    class="btn btn-sm btn-info text-capitalize">{{ 'sub-teacher-call' | i18next }}</button>
-            <button (click)=openClassSubstitute()
-                    type="button"
-                    style="float:right"
-                    class="btn btn-sm btn-info mr-1 text-capitalize">{{ 'sub-hr-teacher-call' | i18next }}</button>
-        </div>
+
+        <li class="my-4"><hr style="border-color: #68b7f6;"></li>
         <li class="list-group-item active d-flex align-items-center py-2  main-bg-color">
-         
-                <div class="col-8 col-lg-10 text-nowrap"> <b>{{ 'my-courses' | i18next }}</b></div>
-                <div class="col-4 col-lg-2 text-nowrap"> <b class="ml-2">{{ 'assistant' | i18next }}</b></div>
-          
-          
-        
+
+            <div class="col-10 text-nowrap"> <b>{{ 'my-courses' | i18next }}</b></div>
+            <div class="col-2 text-nowrap text-center"> <b>{{ 'assistant' | i18next }}</b></div>
+
+
+
         </li>
         <ng-container *ngIf="conf&&conf.CourseConf&&conf.CourseConf.length; else noCourse">
-            <li class="list-group-item point"
-                *ngFor="let course of conf.CourseConf"
-                (click)="openPicker(course)"
-                >
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="col-8 col-lg-10 text-nowrap">
-                        <span class="pr-3" style ="font-size:16px; white-space: normal;">{{course.CourseName}}</span>
+            <li class="list-group-item point" *ngFor="let course of conf.CourseConf" (click)="openPicker(course)" style="font-weight: 600;">
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <div class="">
+                        <span class="pr-3">{{course.CourseName}}</span>
                     </div>
-                    <div class="col-4 col-lg-2 text-wrap text-truncate">
-                        <div class="align-middle p-1" *ngIf="course.StudentName != ''" style =" white-space: normal; border-left:2px solid  #3f51b5a3;">
-                     {{course.StudentName}} ({{course.StudentNumber}})
-                        </div>
+                    <div class="align-middle pl-1 ml-auto" *ngIf="course.StudentName != ''"
+                        style="padding-top: 2px; border-left:2px solid #1891ce; color: #1891ce; line-height: 18px; white-space: normal; font-size: 16px;">
+                        {{course.StudentName}} ({{course.StudentNumber}})
                     </div>
                 </div>
             </li>
@@ -137,3 +134,14 @@
         </div>
     </ng-template>
 </div>
+
+<script>
+    function updateText() {
+        const div = document.getElementById("t-text");
+        const key = window.innerWidth < 1024 ? "t-called" : "teacher-called"; // 決定 i18next key
+        div.textContent = i18next.t(key); // 更新文字內容
+    }
+
+    window.addEventListener("resize", updateText); // 當螢幕尺寸變動時更新
+    window.addEventListener("load", updateText); // 當網頁載入時先執行一次
+</script>

@@ -1,6 +1,6 @@
 <div>
   <nav aria-label="breadcrumb text-nowrap text-truncate">
-    <ol class="breadcrumb  no-background ">
+    <ol class="breadcrumb header-top no-background ">
       <li class="breadcrumb-item" >
         <a [routerLink]="['/main']"><b>{{ 'roll-call' | i18next }}</b></a>
       </li>
@@ -9,7 +9,7 @@
             aria-current="sub">loading...</li>
       </ng-container>
       <ng-template #titleText>
-        <li class="breadcrumb-item active"
+        <li class="breadcrumb-item active" style="font-weight: 600; font-size: 18px;"
             aria-current="sub">{{ 'setting' | i18next }}</li>
       </ng-template>
     </ol>
@@ -17,33 +17,32 @@
 
 
   <div style="width:100%">
-    <ul class="list-group mb-3"
+    <ul class="list-group mb-3" style="font-weight: 600;"
         *ngIf="!loading;else Loading">
       <li *ngIf="true"
           class="list-group-item active d-flex align-items-center py-2 main-bg-color">
         <div><b>{{ 'roll-call-setting' | i18next }}</b></div>
-        <button (click)="saveSetting()"
-                type="button"
-                class="btn btn-sm btn-info"
-                style="float:right"
-                class="btn btn-sm btn-info ml-auto">{{ 'save' | i18next }}
+        <button (click)="saveSetting()" 
+                type="button" 
+                class="btn btn-info ml-auto" 
+                style="font-size: 18px;">{{ 'save' | i18next }}
         </button>
       </li>
       <li class="list-group-item">
         <div class="row">
-          <div class="col-8 col-sm-9 col-md-10 col-lg-11 text-nowrap">
+          <div class="col-8 col-sm-9 col-md-10 col-lg-11 text-nowrap pl-0">
             <div style="display :inline">{{ 'show-id-photo' | i18next }}</div>
           </div>
 
           <div class="col-4 col-sm-3 col-md-2 col-lg-1 text-right text-nowrap">
-            <label class="point">
+            <label class="point" style="font-size: 18px;font-weight: 600;">
               <input type="radio"
                      name="radio"
                      value=""
                      [checked]="teacherSetting['usePhoto'] === true"
                      (change)="settingChange('usePhoto',true)"> {{ 'yes' | i18next }}
             </label>
-            <label class="ml-3 point">
+            <label class="ml-3 point" style="font-size: 18px;font-weight: 600;">
               <input type="radio"
                      name="radio"
                      value=""
@@ -54,16 +53,17 @@
         </div>
       </li>
       <li class="list-group-item">
-        <div class="flex flex-wrap">
+        <div class="flex flex-wrap items-center gap-3">
             <div class="">
               <span>{{ 'roll-call-pw-setting' | i18next }}</span>
-              <span class="text-muted small text-nowrap"> ({{ 'assistant-confirm-after-roll-call' | i18next }})</span>
+              <span class="text-muted small text-nowrap" style="font-size: 16px;"> ({{ 'assistant-confirm-after-roll-call' | i18next }})</span>
             </div>
 
               <input type="password"
                      name="teacherKey"
                      value=""
-                     class="ml-auto border-2"
+                     class="ml-auto border-2 w-full md:w-80 p-2"
+                     style="border-radius: 8px;"
                      [(ngModel)]="teacherSetting['teacherKey']" />
         </div>
       </li>
@@ -71,7 +71,7 @@
 
       <li class="list-group-item">
         <div class="flex flex-wrap">
-          <div class="text-nowrap mr-2">校訂1/3 缺課母數規則 :</div>
+          <div class="text-nowrap mr-2">校訂1/3 缺課母數規則</div>
           <!-- 增加出席率母數 -->
           <div class="text-nowrap ml-auto">
             <span *ngIf="isUseWeekFromCourse">依課程上課週數*節數</span>
@@ -80,33 +80,33 @@
         </div>
       </li>
       <!-- 點名小幫手 -->
-      <li class="list-group-item active d-flex align-items-center py-2  main-bg-color">
+      <li class="list-group-item active d-flex align-items-center py-2 main-bg-color">
         <div><b>{{ 'roll-call-assistant' | i18next }}</b></div>
       </li>
       <li class="list-group-item point"
           *ngFor="let class of classList"
           [routerLink]="['/teacher-helper', this.today , 'Class', class.ClassID]">
-        <div class="d-flex flex-wrap justify-content-between align-items-center">
-          <div class="text-nowrap">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-1">
+          <div class="mr-auto" style="font-weight: 600;">
             <span class="pr-1" style="white-space: pre-wrap;">{{class.ClassName}}</span>
-            <span class="text-muted small pr-3">{{ 'home-room' | i18next }}</span>
+            <span class="text-muted pr-3">{{ 'home-room' | i18next }}</span>
           </div>
-          <div class="text-nowrap ml-auto">
-            <span *ngIf="true">
-              {{ 'assistant' | i18next }}：{{class.StudentName}}({{class.StudentNumber}})
-              </span>
+          <div class="ml-auto" style="color: #5eaafb;">
+            <span *ngIf="class.StudentName != ''" class="pl-1" style="border-left:2px solid #1891ce; color: #1891ce; line-height: 18px; white-space: normal; font-size: 16px;">
+              {{class.StudentName}}<span class="mx-2">{{class.StudentNumber}}</span>
+            </span>
           </div>
         </div>
       </li>
       <li class="list-group-item point"
           *ngFor="let course of courseList"
           [routerLink]="['/teacher-helper', this.today ,  'Course', course.CourseID]">
-        <div class="d-flex flex-wrap justify-content-between align-items-center">
-          <div class="text-nowrap pr-3">{{course.CourseName}}</div>
-          <div class="text-nowrap ml-auto text-truncate">
-            <span *ngIf="true">
-                 <b>{{ 'assistant' | i18next }}：</b> {{course.StudentName}}{{course.StudentNumber||'--'}}
-              </span>
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-1">
+          <div class="mr-auto" style="font-weight: 600;">{{course.CourseName}}</div>
+          <div class="ml-auto" style="color: #5eaafb;">
+            <span *ngIf="course.StudentName != ''" class="pl-1" style="border-left:2px solid #1891ce; color: #1891ce; line-height: 18px; white-space: normal; font-size: 16px;">
+              {{course.StudentName}}<span class="mx-2">{{course.StudentNumber||''}}</span>
+            </span>
           </div>
         </div>
       </li>

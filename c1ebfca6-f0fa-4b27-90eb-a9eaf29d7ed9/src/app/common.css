@@ -18,6 +18,7 @@ tr.example-element-row:not(.example-expanded-row):active {
     width: calc(16.66% - 8px);
     margin-right: 8px;
     margin-bottom: 1rem;
+    min-width: 145px;
 }
 
 .st-list label {

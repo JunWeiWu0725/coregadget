@@ -130,6 +130,9 @@ export class StudentPickComponent implements OnInit {
         this.selectedAbsence = this.periodConf.Absence[0].Name;
       }
     });
+    const lang = document.documentElement.lang;    
+    // 如果語言是 "en"，則顯示英文名字
+    this.displayEnglishName = lang === 'en';
   }
 
 
