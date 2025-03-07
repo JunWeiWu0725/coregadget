@@ -343,3 +343,25 @@ ul li:nth-child(odd) {
 .card-body .card-stu-name {
 	border-bottom-color: #65b2ef !important;
 }
+
+.breadcrumb {
+	background-color: #d6edff;
+	border-radius: 8px 8px 0 0;
+	margin-bottom: 24px;
+}
+
+button.mat-raised-button {
+	border: 2px solid #65b2ef !important;
+}
+
+.btn-group, .btn-group-vertical {
+	border-radius: 6px;
+}
+
+.list-group-item.active {
+	background-color: #f6f6f6;
+}
+
+.mat-raised-button[disabled][disabled] {
+	border: 2px solid #c6c6c6 !important;
+}

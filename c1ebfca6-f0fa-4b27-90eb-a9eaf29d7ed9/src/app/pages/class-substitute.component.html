@@ -24,17 +24,18 @@
   
     <ng-template #gradeYearAndCourse>
 
-      <div class="btn-group dropdown mr-auto mb-2">
+      <div class="btn-group dropdown mr-auto mb-4">
         <button [matMenuTriggerFor]="menu"
                 type="button"
                 class="btn btn-info dropdown-toggle text-capitalize"
+                style="font-size: 16px;"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false">
           <span *ngIf="!selectedPeriod">{{ 'select-roll-call-session' | i18next }}</span>
           <span *ngIf="selectedPeriod">{{selectedPeriod.Name}}</span>
         </button>
-        <mat-menu #menu="matMenu">
+        <mat-menu #menu="matMenu" [overlapTrigger]="false" matMenuPositionX="after" matMenuPositionY="below">
           <div *ngIf="!Periods">loading...</div>
           <button mat-menu-item
                   *ngFor="let period of Periods"
@@ -50,11 +51,10 @@
             <span class="pr-3">{{grade.GradeYear?('grade-class' | i18next: { count: grade.GradeYear }) : 'unspecified-grade' | i18next }} ({{ 'class_no' | i18next }}{{grade.Class.length}})</span>
           </div>
         </li>
-        <li class="d-flex flex-wrap justify-content-center justify-content-md-start list-group-item point">
+        <li class="d-flex flex-wrap justify-content-center justify-content-md-start list-group-item point gap-4">
           <!-- 顯示班級 -->
   
-          <div *ngFor="let tClass of grade.Class"
-               class="m-1">
+          <div *ngFor="let tClass of grade.Class">
             <div class="col-md-2 col-lg-1 text-nowrap"
                  (click)=openClass(tClass)>
               <button mat-raised-button

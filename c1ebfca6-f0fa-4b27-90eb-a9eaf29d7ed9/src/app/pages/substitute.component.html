@@ -33,11 +33,10 @@
           <span class="pr-3">{{grade.GradeYear?('grade-class' | i18next: { count: grade.GradeYear }): 'unspecified-grade' | i18next }} ({{ 'class_no' | i18next }}{{grade.Class.length}})</span>
         </div>
       </li>
-      <li class="list-group-item point d-flex flex-wrap justify-content-center justify-content-md-start">
+      <li class="list-group-item point d-flex flex-wrap justify-content-center justify-content-md-start gap-4">
         <!-- 顯示班級 -->
 
-        <div *ngFor="let tClass of grade.Class"
-             class="m-1">
+        <div *ngFor="let tClass of grade.Class">
           <div class="col-md-2 col-lg-1 text-nowrap"
                (click)=openClass(tClass)>
             <button mat-raised-button
