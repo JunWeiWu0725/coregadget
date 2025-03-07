@@ -175,7 +175,7 @@ a.text-green:active,a.text-green:focus, a.text-green:hover {
 }
 
 .table-auto th, .table-auto td {
-	padding: 8px 8px;
+	padding: 12px 8px;
 }
 
 .min-w-650 {
@@ -184,7 +184,7 @@ a.text-green:active,a.text-green:focus, a.text-green:hover {
 
 @media(min-width: 1024px){
 	.table-auto th, .table-auto td {
-		padding: 8px 32px;
+		padding: 12px 32px;
 	}
 	.min-w-650 {
 		min-width: 650px;
@@ -251,7 +251,7 @@ a.text-green:active,a.text-green:focus, a.text-green:hover {
 	}
 }
 
-.cdk-overlay-pane {
+.cdk-global-overlay-wrapper .cdk-overlay-pane {
   max-width: 700px !important;
 	margin: auto 16px;
   /* position: relative !important;
