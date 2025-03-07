@@ -13,22 +13,22 @@
           aria-current="selc">{{ 'select-course' | i18next }}</li>
     </ol>
   </nav>
-  <table *ngIf="jClass && jClass.Course.length" class="border-collapse table-auto w-full mx-auto">
+  <table *ngIf="jClass && jClass.Course.length" class="border-collapse table-auto w-full mx-auto" style="font-size: 18px;">
     <thead>
-      <tr class="border-b font-medium text-slate-400 whitespace-nowrap bg-gray-200">
-        <th class="md:w-1/3">{{ 'courses' | i18next }}</th>
+      <tr class="font-medium text-slate-400 whitespace-nowrap bg-gray-200">
+        <th class="min-w-650">{{ 'courses' | i18next }}</th>
         <th class="md:w-32">{{ 'sessions' | i18next }}</th>
         <th>{{ 'teacher' | i18next }}</th>
-        <th class="hidden lg:block w-40"></th>
+        <!-- <th class="hidden lg:block w-40"></th> -->
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let course of jClass.Course"
-      (click)="openPicker(course)" class="border-b cursor-pointer hover:bg-gray-100">
+      (click)="openPicker(course)" class="cursor-pointer hover:bg-gray-100">
         <td>{{course.CourseName}}</td>
         <td>{{course.Credit}}</td>
-        <td>{{course.AllTeacherString?course.AllTeacherString: 'no-teacher' | i18next }}</td>
-        <td class="hidden lg:block"></td>
+        <td style="word-break: keep-all;">{{course.AllTeacherString?course.AllTeacherString: 'no-teacher' | i18next }}</td>
+        <!-- <td class="hidden lg:block"></td> -->
       </tr>
     </tbody>
   </table>
