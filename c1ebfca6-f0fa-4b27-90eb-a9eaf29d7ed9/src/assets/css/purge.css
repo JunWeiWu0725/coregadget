@@ -232,8 +232,16 @@ button, input {
   gap: 16px;
 }
 
+.gap-x-4 {
+  column-gap: 16px;
+}
+
 .gap-y-2 {
   row-gap: 8px;
+}
+
+.gap-y-5 {
+  row-gap: 1.25rem;
 }
 
 .block {
@@ -369,14 +377,6 @@ button, input {
 
 .justify-between {
   justify-content: space-between;
-}
-
-.gap-2 {
-  gap: .5rem
-}
-
-.gap-4 {
-  gap: 1rem
 }
 
 .whitespace-nowrap {

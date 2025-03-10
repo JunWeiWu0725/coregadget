@@ -373,3 +373,16 @@ button.mat-raised-button {
 .mat-raised-button[disabled][disabled] {
 	border: 2px solid #c6c6c6 !important;
 }
+
+.w-b1, .w-b2 {
+	width: 100%;
+}
+
+@media(min-width: 420px) {
+	.w-b1 {
+		width: 122px;
+	}
+	.w-b2 {
+		width: auto;
+	}
+}

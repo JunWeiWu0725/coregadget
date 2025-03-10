@@ -5,9 +5,9 @@
                 style="width: 100%">
                 <div class="header-top centered-container"><ng-container *ngIf="!loading">{{ 'roll-call' | i18next
                         }}</ng-container></div>
-                <div class="d-flex flex-wrap justify-center md:justify-between grow gap-4 ms-auto">
+                <div class="d-flex flex-wrap justify-center md:justify-between grow gap-x-4 gap-y-5 ms-auto">
                     <select id="dropdown" [(ngModel)]="selectedValue" (change)="onSelectionChange($event)"
-                        class="hover:opacity-70"
+                        class="hover:opacity-70 w-b2"
                         style="border: 1px solid #65b2ef; padding: 4px 8px; border-radius: 8px; cursor: pointer;">
                         <option *ngFor="let item of options" [value]="item.value">
                             {{ item.label }}
@@ -15,18 +15,17 @@
                     </select>
 
                     <!-- <div style="flex: 1"></div> -->
-                    <div class="flex flex-wrap justify-center gap-4">
+                    <div class="flex flex-wrap justify-center gap-x-4 gap-y-5 w-b2">
                         <button (click)=openSubstitute() type="button"
-                            class="btn btn-sm btn-second text-white text-capitalize"
-                            style="width: 122px;">
+                            class="btn btn-sm btn-second text-white text-capitalize w-b1">
                             {{'sub-teacher-call' | i18next }}</button>
                         <button (click)=openClassSubstitute() type="button"
-                            class="btn btn-sm btn-second text-white text-capitalize">
+                            class="btn btn-sm btn-second text-white text-capitalize w-b2">
                             {{ 'sub-hr-teacher-call' | i18next }}</button>
 
 
-                        <a routerLink="/setting" class="btn text-capitalize hover:opacity-70 ml-auto"
-                            style="border-width: 1px;border-color: #65b2ef; color: #fff; padding:4px 1rem; line-height: 28px; font-size: 18px; border-radius: 6px; font-weight: 600; background: #65b2ef;">
+                        <a routerLink="/setting" class="btn text-capitalize hover:opacity-70 ml-auto w-b2"
+                            style="border-width: 1px;border-color: #65b2ef; color: #fff; padding:4px 1rem; line-height: 28px; font-size: 18px; border-radius: 6px; font-weight: 600; background: #65b2ef; height: 37px;">
                             <!-- <i class="material-icons material-icons-outlined"
                                 style="color:#C9C9C9">
                                 settings_applications
@@ -93,7 +92,7 @@
 
 
 
-        <li class="my-4"><hr style="border-color: #68b7f6;"></li>
+        <li class="my-4 bg-white"><hr style="border-color: #68b7f6;"></li>
         <li class="list-group-item active d-flex align-items-center py-2  main-bg-color">
 
             <div class="col-10 text-nowrap"> <b>{{ 'my-courses' | i18next }}</b></div>
