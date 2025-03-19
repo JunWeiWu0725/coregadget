@@ -13,7 +13,7 @@ export class AddCadreDialogComponent implements OnInit {
 
   selectedStudent: StudentInfo ;
   errMsg = '';
-
+  isValid = true;
   constructor(
     public dialogRef: MatDialogRef<AddCadreDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -31,6 +31,10 @@ export class AddCadreDialogComponent implements OnInit {
       this.errMsg = '請選擇一位學生';
       return ;
     }
+
+    this.isValid = true;
+
+
     console.log(this.selectedStudent);
     console.log(this.data);
     // this.data.classCadre.student = this.selectedStudent ;
@@ -49,6 +53,8 @@ export class AddCadreDialogComponent implements OnInit {
     } catch(error) {
       this.errMsg = error ;
     }
+
+    this.isValid = false;
   }
 
   changeStud() {
