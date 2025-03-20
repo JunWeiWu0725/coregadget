@@ -1,7 +1,7 @@
-<div>
+<div class="text-lg">
     <nav aria-label="breadcrumb text-nowrap text-truncate">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item active d-flex"
+        <ol class="breadcrumb bg-white font-semibold mb-0">
+            <li class="active d-flex"
                 aria-current="page"
                 style="width: 100%">
                 <div><ng-container *ngIf="!loading">{{ 'roll-call' | i18next }}</ng-container><span *ngIf="today">&nbsp;(&nbsp;{{today}}&nbsp;)</span></div>
@@ -19,27 +19,30 @@
         </div>
     </div>  -->
 
-    <ul class="list-group mb-3 point"
+    <ul class="list-group mb-3"
         *ngIf="!loading;else Loading">
         <li *ngIf="conf?.Schedule && conf?.Schedule.length"
-            class="list-group-item active d-flex align-items-center py-2 px-3">
+            class="list-group-item active d-flex align-items-center text-lg font-semibold py-2 px-3 mt-3">
 
-            <div class=" col-sm-6  col-md-9 col-5">
+            <div class="col-6">
                 <span class="pr-3">{{ 'roll-call-today' | i18next }}</span>
             </div>
-            <div class=" col-sm-2 col-md-1 col-3 text-nowrap text-center">{{ 'session' | i18next }}</div>
-            <div class=" col-sm-2  col-md-1 col-2 text-center " [ngClass]="currentLanguage === 'en' ? '' : 'text-nowrap'">{{ 'teacher-called' | i18next }}</div>
-            <div class=" col-sm-2  col-md-1 col-2 text-center " [ngClass]="currentLanguage === 'en' ? '' : 'text-nowrap'">{{ 'assistant-called' | i18next }}</div>
+            <div class="col-2 text-nowrap text-center">{{ 'session' | i18next }}</div>
+            <div class="col-2 text-center hidden sm:block">{{ 'teacher-called' | i18next }}</div>
+            <div class="col-2 text-center hidden sm:block">{{ 'assistant-called' | i18next }}</div>
+            <div class="col-2 text-center titl block sm:hidden mx-auto">{{ 't-called' | i18next }}</div>
+            <div class="col-2 text-center titl block sm:hidden mx-auto">{{ 'a-called' | i18next }}</div>
+
         </li>
-        <li class="list-group-item px-3 py-2" style="min-height: 2rem;"
+        <li class="list-group-item px-3 py-2 text-lg" style="min-height: 2rem;"
             *ngFor="let suggest of conf?.Schedule"
             (click)="openSchedule(suggest)">
             <div class="row">
-                <div class="col-sm-6 col-md-9 col-5" style="word-wrap: break-word;">
+                <div class="col-6" style="word-wrap: break-word;">
                     <span class="pr-3">{{suggest.ClassName?suggest.ClassName:suggest.CourseName}}</span>
                 </div>
-                <div class=" col-sm-2 col-md-1 col-3  text-nowrap text-center">{{suggest.Period}}</div>
-                <div class=" col-sm-2 col-md-1 col-2 text-center">
+                <div class="col-2 text-nowrap text-center">{{suggest.Period}}</div>
+                <div class="col-2 text-center">
                     <ng-container *ngIf="suggest.TeacherChecked=='true'">
                         <i class="material-icons"
                            style="color:#DB2B30">
@@ -53,7 +56,7 @@
                         </i>
                     </ng-container>
                 </div>
-                <div class=" col-sm-2 col-md-1 col-2 text-center">
+                <div class="col-2 text-center">
                     <ng-container *ngIf="suggest.StudentChecked=='true'">
                         <i class="material-icons"
                            style="color:#33691E">
@@ -71,10 +74,10 @@
         </li>
 
         <li *ngIf="conf?.CourseConf && conf?.CourseConf.length"
-            class="list-group-item active d-flex align-items-center py-2 ">
+            class="list-group-item active d-flex align-items-center py-2 text-lg font-semibold main-bg-color mt-3" style="border-radius: 8px 8px 0 0;">
             <div>{{ 'courses' | i18next }}</div>
         </li>
-        <li class="list-group-item py-2 px-3" style="min-height: 2rem;"
+        <li class="list-group-item py-2 px-3 text-lg point" style="min-height: 2rem;"
             *ngFor="let course of conf?.CourseConf">
             <div class="d-flex justify-content-between align-items-center row">
                 <div class="col-12" style="word-wrap: break-word;"
@@ -98,3 +101,4 @@
     </ng-template>
 
 </div>
+

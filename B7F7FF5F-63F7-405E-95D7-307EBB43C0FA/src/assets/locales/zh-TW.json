@@ -5,6 +5,8 @@
   "session": "節次",
   "teacher-called": "已點名",
   "assistant-called": "學生點名",
+  "t-called": "教",
+  "a-called": "幫",
   "courses": "課程",
   "teacher": "授課教師",
   "select-absence-type": "選擇假別",

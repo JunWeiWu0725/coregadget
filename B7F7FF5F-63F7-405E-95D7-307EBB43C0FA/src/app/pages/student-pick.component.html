@@ -1,6 +1,5 @@
 <!-- 開始點名 -->
-<div id="attendence-page"
-     page>
+<div id="attendence-page" class="text-lg font-semibold" page>
   <nav aria-label="breadcrumb text-nowrap text-truncate">
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
@@ -12,8 +11,8 @@
             aria-current="page">loading...</li>
       </ng-container>
       <ng-template #titleText>
-        <li class="breadcrumb-item active w-100" aria-current="page">
-          <div style="word-wrap: break-word; width: 85%;">{{groupInfo.name}}&nbsp;&nbsp;(&nbsp;{{today}}：{{periodConf?.Name}}&nbsp;)</div>
+        <li class="breadcrumb-item active" aria-current="page">
+          <div>{{groupInfo.name}}&nbsp;&nbsp;(&nbsp;{{today}}：{{periodConf?.Name}}&nbsp;)</div>
         </li>
       </ng-template>
     </ol>
@@ -27,18 +26,18 @@
 
   <!--  -->
   <ng-template #elseTemplate>
-    <div class="d-flex flex-column-reverse flex-sm-row mb-3">
-      <div class="btn-group dropdown mr-auto">
+    <div class="d-flex flex-wrap gap-4 my-4">
+      <div class="btn-group dropdown">
         <button [matMenuTriggerFor]="menu"
                 type="button"
-                class="btn btn-dark dropdown-toggle "
+                class="btn btn-info dropdown-toggle "
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false">
           <span *ngIf="!selectedAbsence">{{ 'select-absence-type' | i18next }}</span>
           <span *ngIf="selectedAbsence">{{selectedAbsence}}</span>
         </button>
-        <mat-menu #menu="matMenu">
+        <mat-menu #menu="matMenu" [overlapTrigger]="false" matMenuPositionX="after" matMenuPositionY="below">
           <div *ngIf="!periodConf">loading...</div>
           <button mat-menu-item
                   *ngFor="let abb of periodConf?.Absence"
@@ -51,16 +50,15 @@
 
 
     <!-- 學生資料(no photo)-->
-    <div class="row mt-3 mt-lg-1"
+    <div class="row justify-center mt-3 gap-x-4 gap-y-5"
          *ngIf="!showPhoto">
       <div class="col-12 col-sm-6 col-lg-4"
-           style="margin-bottom: 0.75rem;"
            *ngFor="let student of studentChecks">
         <div class="card">
           <div (click)="changeAttendance(student)"
                class="point row pr-2">
             <div class="col-9 card-body p-2 ">
-              <div class="text-gray flex-wrap d-flex">
+              <div class="text-gray d-flex flex-wrap">
                 <strong class="mb-0" style="word-break: break-all;">{{student.data?.Name}}</strong>
                 <div class="ml-auto"
                      *ngIf="student.data?.AbsenceRate"
@@ -69,7 +67,7 @@
                   <span>%</span>
                 </div>
               </div>
-              <div class="text-gray d-flex">
+              <div class="text-gray d-flex flex-wrap gap-2">
                 <span>{{student.data?.StudentNumber}}</span>
                 <span class="ml-auto">{{student.data?.ClassName}}&nbsp;&nbsp;{{student.data?.SeatNo}}</span>
               </div>
@@ -80,6 +78,8 @@
           </div>
         </div>
       </div>
+      <div class="col-12 col-sm-6 col-lg-4"></div>
+      <div class="col-12 col-sm-6 col-lg-4"></div>
     </div>
 
 
@@ -127,7 +127,11 @@
   <ng-template #save>
     <button (click)="saveRollCall()"
             type="button"
-            class="btn btn-lg btn-info mb-2 text-capitalize">{{checkSummary?  ('save' | i18next) +' (' + checkSummary +')': 'save' | i18next }}</button>
+            class="btn btn-lg btn-info text-capitalize ml-auto"
+            style="white-space: break-spaces; word-break: keep-all;"
+            >
+            {{checkSummary?  ('save' | i18next) +' (' + checkSummary +')': 'save' | i18next }}
+    </button>
   </ng-template>
 </div>
 

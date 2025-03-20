@@ -5,6 +5,8 @@
   "session": "Session",
   "teacher-called": "Called",
   "assistant-called": "Student Called",
+  "t-called": "T",
+  "a-called": "A",
   "courses": "Courses",
   "teacher": "Teacher",
   "select-absence-type": "Select absence type",
