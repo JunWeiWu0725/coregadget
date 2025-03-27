@@ -519,16 +519,16 @@ var app = angular
                 errorMsg: "資料格式不正確，請輸入數字或免測"
             },
             {
-                Name: "800/1600公尺跑走",
-                Key: "cardiorespiratory",
-                Validate: /^[1-9]\d*$|^[1-9]\d*\.[0-5]\d$|^免測$|^$/,
-                errorMsg: "資料格式不正確，200秒可輸入200或3.20 <擇一輸入>或免測"
-            },
-            {
                 Name: "仰臥捲腹(次)",
                 Key: "curl",
                 Validate: /^[1-9]\d*$|^免測$|^$/,
                 errorMsg: "資料格式不正確，請輸入數字或免測"
+            },
+            {
+                Name: "800/1600公尺跑走",
+                Key: "cardiorespiratory",
+                Validate: /^[1-9]\d*$|^[1-9]\d*\.[0-5]\d$|^免測$|^$/,
+                errorMsg: "資料格式不正確，200秒可輸入200或3.20 <擇一輸入>或免測"
             },
             {
                 Name: "漸速耐力跑(趟)",
@@ -734,16 +734,16 @@ var ModalInstanceCtrl = function ($scope, column, tmplist) {
             validate: /^[1-9]\d*$|^免測$|^$/,
             errorMsg: "資料格式不正確，請輸入整數或免測"
         },
-        cardiorespiratory: {
-            header: "800/1600公尺跑走(秒)",
-            validate: /^[1-9]\d*$|^[1-9]\d*\.[0-5]\d$|^免測$|^$/,
-            errorMsg: "資料格式不正確，200秒可輸入200或3.20 <擇一輸入>或免測"
-        },
         curl: {
             header: "仰臥捲腹(次)",
             validate: /^[1-9]\d*$|^免測$|^$/,
             errorMsg: "資料格式不正確，請輸入整數或免測"
         },
+        cardiorespiratory: {
+            header: "800/1600公尺跑走(秒)",
+            validate: /^[1-9]\d*$|^[1-9]\d*\.[0-5]\d$|^免測$|^$/,
+            errorMsg: "資料格式不正確，200秒可輸入200或3.20 <擇一輸入>或免測"
+        },       
         pacer: {
             header: "漸速耐力跑(趟)",
             validate: /^[1-9]\d*$|^免測$|^$/,

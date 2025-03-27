@@ -125,15 +125,15 @@
                                         <th ng-show="current.is_sit_up ==='t'">
                                             <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]"  ng-click="showEditForm('sit_up')"><i class="fa fa-edit"></i> 仰臥起坐(次)</a>
                                         </th>
+                                        <th>
+                                            <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]" ng-click="showEditForm('curl')"><i class="fa fa-edit"></i> 仰臥捲腹(次)</a>
+                                        </th>
                                         <th ng-show="current.item_value ==='心肺耐力'">
                                             <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]" ng-click="showEditForm('cardiorespiratory')">
                                                 <i class="fa fa-edit"></i>
                                                 800/1600公尺跑走(秒)
                                             </a>
-                                        </th>
-                                        <th>
-                                            <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]" ng-click="showEditForm('curl')"><i class="fa fa-edit"></i> 仰臥捲腹(次)</a>
-                                        </th>
+                                        </th>                                      
                                         <th ng-show="current.item_value ==='漸速耐力跑'">
                                             <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]" ng-click="showEditForm('pacer')"><i class="fa fa-edit"></i> 漸速耐力跑(趟)</a>
                                         </th>
@@ -149,8 +149,8 @@
                                         <td>{{l.sit_and_reach}}</td>
                                         <td>{{l.standing_long_jump}}</td>
                                         <td ng-show="l.is_sit_up ==='t'" >{{l.sit_up}}</td>
-                                        <td ng-show="l.item_value ==='心肺耐力'">{{l.cardiorespiratory}}</td>
                                         <td>{{l.curl}}</td>
+                                        <td ng-show="l.item_value ==='心肺耐力'">{{l.cardiorespiratory}}</td>                                        
                                         <td ng-show="l.item_value ==='漸速耐力跑'">{{l.pacer}}</td>
                                     </tr>
                                 </tbody>
@@ -190,10 +190,10 @@
                                         <th>常模</th>
                                         <th ng-show="current.is_sit_up ==='t'" >仰臥起坐(次)</th>
                                         <th ng-show="current.is_sit_up ==='t'" >常模</th>                                        
-                                        <th ng-show="current.item_value ==='心肺耐力'">800/1600公尺跑走(秒)</th>
-                                        <th ng-show="current.item_value ==='心肺耐力'">常模</th>
                                         <th>仰臥捲腹(次)</th>
                                         <th>常模</th>
+                                        <th ng-show="current.item_value ==='心肺耐力'">800/1600公尺跑走(秒)</th>
+                                        <th ng-show="current.item_value ==='心肺耐力'">常模</th>                                        
                                         <th ng-show="current.item_value ==='漸速耐力跑'">漸速耐力跑(趟)</th>
                                         <th ng-show="current.item_value ==='漸速耐力跑'">常模</th>
                                     </tr>
@@ -212,10 +212,10 @@
                                         <td>{{l.standing_long_jump_degree}}</td>
                                         <td ng-show="l.is_sit_up ==='t'" >{{l.sit_up}}</td>
                                         <td ng-show="l.is_sit_up ==='t'" >{{l.sit_up_degree}}</td>
-                                        <td ng-show="l.item_value ==='心肺耐力'">{{l.cardiorespiratory}}</td>
-                                        <td ng-show="l.item_value ==='心肺耐力'">{{l.cardiorespiratory_degree}}</td>
                                         <td>{{l.curl}}</td>
                                         <td>{{l.curl_degree}}</td>
+                                        <td ng-show="l.item_value ==='心肺耐力'">{{l.cardiorespiratory}}</td>
+                                        <td ng-show="l.item_value ==='心肺耐力'">{{l.cardiorespiratory_degree}}</td>                                        
                                         <td ng-show="l.item_value ==='漸速耐力跑'">{{l.pacer}}</td>
                                         <td ng-show="l.item_value ==='漸速耐力跑'">{{l.pacer_degree}}</td>
                                     </tr>
