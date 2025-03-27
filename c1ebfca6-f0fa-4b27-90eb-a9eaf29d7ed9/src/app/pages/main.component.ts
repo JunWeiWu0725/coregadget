@@ -2,7 +2,7 @@ import { ConfigService } from './../service/config.service';
 import { PeriodChooserComponent } from './../modal/period-chooser.component';
 import { AlertService } from './../service/alert.service';
 import { DebugComponent } from './../modal/debug.component';
-import { DSAService, RollCallRecord, PeriodConf, AbsenceConf, Schedule, CourseConf, ConfigData } from './../service/dsa.service';
+import { DSAService, RollCallRecord, PeriodConf, AbsenceConf, Schedule, CourseConf, ConfigData , DayMakeUp} from './../service/dsa.service';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -25,6 +25,8 @@ export class MainComponent implements OnInit {
   today: string; // 今日。
   periodConfs: PeriodConf[];
   conf: ConfigData;
+  options : DayMakeUp[];
+  selectedValue = '';
 
   constructor(
     private dsa: DSAService,
@@ -36,6 +38,31 @@ export class MainComponent implements OnInit {
 
   async ngOnInit() {
     await this.Init();
+
+    // if (this.options.length > 0) {
+    //     this.selectedValue = this.options[0].value;
+    // }
+    // this.today = this.selectedValue ;
+    
+  
+    console.log({
+      today: this.today ,
+      selectedDay: this.dsa.getSelectedDay(),
+      selectedValue: this.selectedValue
+    });
+  }
+
+  onSelectionChange(event: Event): void {
+    const selectedValue = (event.target as HTMLSelectElement).value;
+    console.log('選擇的值為：', selectedValue);
+  
+    this.dsa.getSchedule(selectedValue).then(conf => {
+      this.conf = conf;
+
+      this.dsa.setSelectedDay(selectedValue);
+      this.today = selectedValue;
+      
+    });
   }
 
   async Init() {
@@ -45,8 +72,19 @@ export class MainComponent implements OnInit {
       //等待是否完成設定值的下載
         this.config.ready;
 
-      this.today = await this.dsa.getToday();
-      this.conf = await this.dsa.getSchedule(this.today);
+        this.options = await this.dsa.getDayMakeUp();
+      
+
+      if (this.dsa.getSelectedDay()) {
+        this.today = this.dsa.getSelectedDay();
+        this.selectedValue = this.today.replace(/\//g, '-') ;
+      } else {
+        this.today = await this.dsa.getToday();
+        this.dsa.setSelectedDay(this.today);
+        this.selectedValue = this.options[0].value ;
+      }
+
+      this.conf = await this.dsa.getSchedule(this.today);      
 
     } catch (error) {
       this.alert.json(error);
@@ -57,19 +95,19 @@ export class MainComponent implements OnInit {
 
   //開啟學生清單介面
   async openSchedule(schedule: Schedule) {
+    const md1 = this.selectedValue; //日期
+    const md2 = schedule.ClassID ? 'Class' : 'Course';
+    const md3 = schedule.ClassID ? schedule.ClassID : schedule.CourseID;
+    const md4 = schedule.Period;
+    const md5 = schedule.ClassID ? schedule.ClassName : schedule.CourseName;
 
-    const md1 = schedule.ClassID ? 'Class' : 'Course';
-    const md2 = schedule.ClassID ? schedule.ClassID : schedule.CourseID;
-    const md3 = schedule.Period;
-    const md4 = schedule.ClassID ? schedule.ClassName : schedule.CourseName;
-
-    this.router.navigate(['/pick', md1, md2, md3, md4]);
+    this.router.navigate(['/pick', md1, md2, md3, md4, md5]);
   }
 
   //開啟節次點名介面
   async openPicker(course: CourseConf) {
     this.dialog.open(PeriodChooserComponent, {
-      data: { course: course, period: this.conf.PeriodConf },
+      data: {curr_day: this.today, course: course, period: this.conf.PeriodConf },
     });
   }
 

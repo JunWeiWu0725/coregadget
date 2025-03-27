@@ -54,7 +54,6 @@ export class PsychologicalTestDetailComponent implements OnInit {
   /**  */
   getJSON(obj: any) {
     return JSON.stringify(obj)
-
   }
   // 取得學生心理測驗題目
   async GetQuizDataByStudentID(StudentID: string) {
@@ -101,7 +100,7 @@ export class PsychologicalTestDetailComponent implements OnInit {
       console.log("resp.Quiz ", resp.Quiz );
 
     } catch (err) {
-      alert('無法取得學生心理測驗題目：' + err.dsaError.message);
+      alert('無法取得學生心理測驗題目：' + JSON.stringify(err));
     }
 
 
@@ -129,7 +128,7 @@ export class PsychologicalTestDetailComponent implements OnInit {
         let x2 = new Date(d2);
         qd.AnalysisDate = qd.parseDate(x2);
         qd.QuizFieldList = [];
-        data.Field.forEach(field => {
+        [].concat(data.Field).forEach(field => {
           let qf: QuizField = new QuizField();
           qf.Name = field.Name;
           qf.Value = field.Value;
@@ -142,7 +141,7 @@ export class PsychologicalTestDetailComponent implements OnInit {
       // 呼叫題目
       await this.GetQuizDataByStudentID(StudentID);
     } catch (err) {
-      alert('無法取得心理測驗答案：' + err.dsaError.message);
+      alert('無法取得心理測驗答案：' + JSON.stringify( err));
     }
   }
 }

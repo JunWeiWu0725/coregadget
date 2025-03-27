@@ -2,6 +2,7 @@ import { Contract } from './gadget.service';
 import { Injectable } from '@angular/core';
 import { GadgetService } from './gadget.service';
 import { RollCallRateDenominator } from '../pages/vo';
+import { now } from 'moment';
 
 
 @Injectable()
@@ -10,6 +11,17 @@ export class DSAService {
   private ready: Promise<void>;
   private contract: Contract;
   private basicContract: Contract
+
+  private selectedDay : any;
+
+  public getSelectedDay(){
+    return this.selectedDay;
+  }
+
+  public setSelectedDay(targetDay){
+    this.selectedDay = targetDay;
+  }
+
 
   constructor(private gadget: GadgetService) {
     this.ready = this.initContract();
@@ -73,10 +85,11 @@ export class DSAService {
   /**
    * 儲存點名資料。
    */
-  public async setRollCall(type: GroupType, id: string, period: string, data: RollCallCheck[]) {
+  public async setRollCall(occurDate: string,type: GroupType, id: string, period: string, data: RollCallCheck[]) {
     await this.ready;
 
     const req: any = {
+      OccurDate: occurDate,
       Period: period,
       Student: data.map((item) => {
         return {
@@ -178,6 +191,62 @@ export class DSAService {
 
     return gradeYears;
   }
+
+  public async getDayMakeUp() {
+    await this.ready;
+    const rsp = await this.contract.send('GetDaysToMakeUp');
+    const today = await this.getToday(); // 獲取今天的日期
+    const dayMakeUp = rsp.Result.day;
+  
+    const generateDates = (count: number): DayMakeUp[] => {
+      const dates: DayMakeUp[] = []; // 用於存儲結果的陣列
+
+      let currentDate = new Date(today); // 使用新的變數來追蹤日期
+      const formattedToday = currentDate.toLocaleDateString('zh-TW', { 
+        year: 'numeric', month: '2-digit', day: '2-digit' 
+      }).replace(/\//g, '-');
+      // 定義星期的標記對應
+      const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+  
+      // 無論如何都加入今天的日期
+      dates.push({
+        label: `${formattedToday} - ${weekDays[currentDate.getDay()]}`,
+        value: formattedToday
+      });
+  
+      if (count === 0) {
+        // 如果 count 是 0，僅返回今天
+        return dates;
+      }
+  
+      let generatedCount = 1; // 因為今天已經計算在內
+  
+      while (generatedCount <= count) {
+        // 減少一天
+        currentDate.setDate(currentDate.getDate() - 1);
+  
+        const dayOfWeek = currentDate.getDay();
+          const formattedDate = currentDate.toLocaleDateString('zh-TW', { 
+            year: 'numeric', month: '2-digit', day: '2-digit' 
+          }).replace(/\//g, '-');;
+          dates.push({
+            label: `${formattedDate} - ${weekDays[dayOfWeek]}`,
+            value: formattedDate
+          });
+  
+          generatedCount++; // 增加有效生成的日期數
+      }
+  
+      return dates;
+    };
+  
+    // 生成日期列表
+    const result = generateDates(dayMakeUp);
+  
+    console.log("生成的日期清單:", result);
+    return result;
+  }
+
 
   public async getAllClass() {
     await this.ready;
@@ -283,6 +352,8 @@ export class DSAService {
       }
     })
   }
+
+  
 }
 
 export type GroupType = '' | 'Course' | 'Class'
@@ -303,6 +374,11 @@ export interface Config {
   Timestamp: string;
   Periods: any;
   Absences: any;
+}
+
+export interface DayMakeUp {
+  label: string;
+  value: string;
 }
 
 export interface Student {

@@ -222,10 +222,33 @@ export class ClassSummaryComponent implements OnInit {
     }
   }
 
-getDevelopsection(obj: any )
-{
-return JSON.stringify(obj);
-}
+  getDevelopsection(obj: any ) {
+    return JSON.stringify(obj);
+  }
+
+  // 預設顏色列表
+  defaultColors: string[] = ['#b01116', '#2da197', '#de312d', '#b5882d', '#869a3b', '#f47820', '#01642e', '#ffc10e', '#2d89ca', '#2d3091', '#6f6fb5', '#90278e', '#d43784', '#f499c2', '#0a5a6e'];
+
+  leaveColorMap = new Map<string, string>();
+
+  // 取得假別顏色（優先使用預設顏色，不夠時用隨機）
+  getLeaveColor(leave: string): string {
+    if (!this.leaveColorMap.has(leave)) {
+      // 先使用預設顏色，沒了再用隨機顏色
+      const color = this.defaultColors.length > this.leaveColorMap.size
+        ? this.defaultColors[this.leaveColorMap.size] // 用預設顏色
+        : this.generateRandomColor(); // 超過時用隨機顏色
+
+      this.leaveColorMap.set(leave, color);
+    }
+    return this.leaveColorMap.get(leave)!;
+  }
+
+  // 產生隨機顏色
+  generateRandomColor(): string {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16);
+  }
+
 
 }
 
@@ -337,3 +360,4 @@ class AbsenceWithNoDetil implements IAbsenceWithNoDetil {
   periodtype: string = "";
   seat_no: string = "";
 }
+

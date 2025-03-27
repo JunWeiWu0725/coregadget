@@ -1,8 +1,8 @@
 <div id="attendence-page" page>
 
   <nav aria-label="breadcrumb text-nowrap text-truncate ">
-    <ol class="breadcrumb  second-page-header">
-      <li class="breadcrumb-item header-top">
+    <ol class="breadcrumb header-top second-page-header">
+      <li class="breadcrumb-item header-top" style="font-weight: 600; font-size: 18px;">
         <a [routerLink]="['/main']">{{ 'roll-call' | i18next }}</a>
       </li>
       <ng-container *ngIf="!(students.length > 0) else titleText">
@@ -52,10 +52,10 @@
 
     <!-- 學生資料 (with photo)-->
 
-    <div class="st-list d-flex flex-wrap justify-center md:justify-start gap-2 mt-3 mt-lg-1" *ngIf="showPhoto">
-      <div class="card st-check mr-0" style="min-width: 155px;" *ngFor="let student of students">
-        <label (click)="changeTeacherHelper(student)" class="point">
-          <div style="height: 259px;width: 100%;">
+    <div class="st-list d-flex flex-wrap justify-center gap-4 mt-4" *ngIf="showPhoto">
+      <div class="card col-stu st-check mr-0" *ngFor="let student of students">
+        <label (click)="changeTeacherHelper(student)" class="con point">
+          <div class="imgst" style="width: 100%;">
             <div style="height:100%;width:100%;background-position: center center;background-size: cover;"
               [style.background-image]="'url(' + student.PhotoUrl + ')'"></div>
           </div>
@@ -78,6 +78,10 @@
           </div>
         </label>
       </div>
+      <div class="col-stu"></div>
+      <div class="col-stu"></div>
+      <div class="col-stu"></div>
+      <div class="col-stu"></div>
     </div>
     <!-- 新樣版  end-->
 

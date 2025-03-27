@@ -2,7 +2,7 @@
 <div>
   <nav aria-label="breadcrumb text-nowrap text-truncate">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item header-top">
+      <li class="breadcrumb-item header-top" style="font-weight: 600; font-size: 18px;">
         <a href="#"
            [routerLink]="['']">{{ 'roll-call' | i18next }}&nbsp;(&nbsp;{{today}}&nbsp;)</a>
       </li>
@@ -11,7 +11,7 @@
             aria-current="sub">loading...</li>
       </ng-container>
       <ng-template #titleText>
-        <li class="breadcrumb-item active"
+        <li class="breadcrumb-item active" style="font-weight: 600; font-size: 18px;"
             aria-current="sub">{{ 'select-grade-class' | i18next }}</li>
       </ng-template>
     </ol>
@@ -33,11 +33,10 @@
           <span class="pr-3">{{grade.GradeYear?('grade-class' | i18next: { count: grade.GradeYear }): 'unspecified-grade' | i18next }} ({{ 'class_no' | i18next }}{{grade.Class.length}})</span>
         </div>
       </li>
-      <li class="list-group-item point d-flex flex-wrap justify-content-center justify-content-md-start">
+      <li class="list-group-item point d-flex flex-wrap justify-content-center justify-content-md-start gap-4">
         <!-- 顯示班級 -->
 
-        <div *ngFor="let tClass of grade.Class"
-             class="m-1">
+        <div *ngFor="let tClass of grade.Class">
           <div class="col-md-2 col-lg-1 text-nowrap"
                (click)=openClass(tClass)>
             <button mat-raised-button

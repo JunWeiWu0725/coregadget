@@ -120,7 +120,7 @@ export class AppComponent implements OnInit {
     private courseTypeFormatPipe: CourseTypeFormatPipe,
     private modalService: BsModalService,
     private viewportScroller: ViewportScroller,
-    private gadgetService: GadgetService, 
+    private gadgetService: GadgetService,
     private http: HttpClient,
     ) {
   }
@@ -343,6 +343,11 @@ export class AppComponent implements OnInit {
             }
           });
           item.TeacherURLName = teachers.join(', ');
+        }
+
+        if (item.VideoFile) {
+          // 依網址的格式，增加 query string，沒有?就以?增加，有?的話就以&增加
+          item.ConvertedVideoURL = ((item.VideoFile.indexOf('?') < 0) ? item.VideoFile + '?' : item.VideoFile + '&') + '__target=ExternalBrowser';
         }
 
         this.allCourse.set(item.CourseID, item);
@@ -722,6 +727,8 @@ export class AppComponent implements OnInit {
 
   /**取得選課最終結果 */
   async getSCAttend() {
+    this.scAttends = [];
+
     try {
       const rsp = await this.basicSrv.getSCAttendExt(this.currSchoolYear, this.currSemester);
       for (const item of rsp) {
@@ -739,6 +746,8 @@ export class AppComponent implements OnInit {
 
   /**預選課程已退選Log清單 */
   async getSCWithdrawnLog() {
+    this.scAttendWithdrawnLogs = [];
+
     try {
       const rsp = await this.basicSrv.getSCAttendExtWithdrawnLog(this.currSchoolYear, this.currSemester);
       for (const item of rsp) {
@@ -833,6 +842,7 @@ export class AppComponent implements OnInit {
           content: '<p>送出後不能將無法回復，您確定要送出嗎？</p>',
           bodyClass: 'danger',
           okBtn: {
+            show: true,
             text: '送出',
             loadingText: '儲存中...',
             clickBtn: async() => {
@@ -840,7 +850,7 @@ export class AppComponent implements OnInit {
 
               this.isSaving = true;
               try {
-                await this.basicSrv.delSCAttendExt([course.CourseID]);
+                await this.basicSrv.delSCAttendExt([{ CourseID: course.CourseID }]);
                 if (course.StudentSetPoints) {
                   await this.basicSrv.addLog('退選', '退選預選課程', `學生「${this.student.StudentName}」退選預選課程：${course.CourseName}`);
                 }

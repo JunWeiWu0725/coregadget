@@ -143,7 +143,7 @@ th {
     position: sticky;
     left: -1px;
     top: 0;
-    z-index: 10;
+    z-index: 20;
     background: #eee;
 }
 
@@ -174,4 +174,71 @@ th {
 
 .ctable thead th {
     z-index: 10;
+}
+
+.max-w-72 {
+    max-width: 288px;
+}
+
+.col-12 {
+    width: 100%;
+    margin: 0 6px;
+}
+
+@media (min-width: 546px){
+    .col-xs-2 {
+        width: 46%;
+        margin: 0;
+    }
+}
+
+@media (min-width: 800px){
+    .col-md-3 {
+        width: 30%;
+        margin: 0;
+    }
+}
+
+.text-14 {
+    font-size: 14px;
+}
+
+.bg-slate-100 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(241 245 249 / var(--tw-bg-opacity, 1)) /* #f1f5f9 */;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem /* 8px */;
+}
+
+.tsite:hover {
+    /* border: 1px solid #B4B4BC; */
+    box-shadow: inset 0px 0px 7px 0px #b4b4bc !important;
+    cursor: pointer;
+}
+
+.text-blue {
+    color: #4680ff;
+}
+
+.text-green {
+    color: #00d9ef;
+}
+
+.px-2 {
+    padding-left: 0.5rem /* 8px */;
+    padding-right: 0.5rem /* 8px */;
+}
+
+.pt-2 {
+    padding-top: 0.5rem /* 8px */;
+}
+
+.pb-2 {
+    padding-bottom: 0.5rem /* 8px */;
+}
+
+div[ng-if="item.records.length > 0"] div[ng-repeat]:last-child hr {
+    border-color: transparent !important;
 }

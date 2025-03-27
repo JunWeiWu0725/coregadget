@@ -354,87 +354,102 @@
     var my_schoolYear, my_semester;
     my_schoolYear = global.behavior.schoolYear;
     my_semester = global.behavior.semester;
+
+    // 先取得對照表
     return gadget.getContract("ischool.AD.student").send({
-      service: "_.GetDisciplineRecord",
-      body: "<Request>\n  <StudentID>" + global.student.StudentID + "</StudentID>\n  <SchoolYear>" + global.behavior.schoolYear + "</SchoolYear>\n  <Semester>" + global.behavior.semester + "</Semester>\n</Request>",
-      result: function(response, error, xhr) {
-        var btn_active, items, sum_merit, _ref;
-        btn_active = $('.my-schoolyear-semester-widget button.active');
-        if (btn_active.attr("school-year") === global.behavior.schoolYear && btn_active.attr("semester") === global.behavior.semester) {
-          resetDiscipline();
-          if (error != null) {
-            return set_error_message('#mainMsg', 'GetDisciplineRecord', error);
-          } else {
-            items = [];
-            if (((_ref = response.Result) != null ? _ref.Discipline : void 0) != null) {
-              sum_merit = {
-                ma: 0,
-                mb: 0,
-                mc: 0,
-                da: 0,
-                db: 0,
-                dc: 0,
-                dd: 0
-              };
-              $(response.Result.Discipline).each(function() {
-                var merit, merit_clear;
-                merit = {
-                  a: 0,
-                  b: 0,
-                  c: 0
-                };
-                if (this.MeritFlag === "1") {
-                  if (!isNaN(parseInt(this.Detail.Discipline.Merit.A, 10))) {
-                    sum_merit.ma += merit.a = parseInt(this.Detail.Discipline.Merit.A, 10);
+      service: "_.GetDisciplineNameMapping",
+      body: "",
+      result: function(mapping_response, mapping_error, mapping_xhr) {
+        // 取得留校察看的對照文字
+        var detentionText = "留校察看";  // 預設文字
+        if (!mapping_error && mapping_response && mapping_response.name) {
+          detentionText = mapping_response.name;
+        }
+
+        // 再取得獎懲紀錄
+        return gadget.getContract("ischool.AD.student").send({
+          service: "_.GetDisciplineRecord",
+          body: "<Request>\n  <StudentID>" + global.student.StudentID + "</StudentID>\n  <SchoolYear>" + global.behavior.schoolYear + "</SchoolYear>\n  <Semester>" + global.behavior.semester + "</Semester>\n</Request>",
+          result: function(response, error, xhr) {
+            var btn_active, items, sum_merit, _ref;
+            btn_active = $('.my-schoolyear-semester-widget button.active');
+            if (btn_active.attr("school-year") === global.behavior.schoolYear && btn_active.attr("semester") === global.behavior.semester) {
+              resetDiscipline();
+              if (error != null) {
+                return set_error_message('#mainMsg', 'GetDisciplineRecord', error);
+              } else {
+                items = [];
+                if (((_ref = response.Result) != null ? _ref.Discipline : void 0) != null) {
+                  sum_merit = {
+                    ma: 0,
+                    mb: 0,
+                    mc: 0,
+                    da: 0,
+                    db: 0,
+                    dc: 0,
+                    dd: 0
+                  };
+                  $(response.Result.Discipline).each(function() {
+                    var merit, merit_clear;
+                    merit = {
+                      a: 0,
+                      b: 0,
+                      c: 0
+                    };
+                    if (this.MeritFlag === "1") {
+                      if (!isNaN(parseInt(this.Detail.Discipline.Merit.A, 10))) {
+                        sum_merit.ma += merit.a = parseInt(this.Detail.Discipline.Merit.A, 10);
+                      }
+                      if (!isNaN(parseInt(this.Detail.Discipline.Merit.B, 10))) {
+                        sum_merit.mb += merit.b = parseInt(this.Detail.Discipline.Merit.B, 10);
+                      }
+                      if (!isNaN(parseInt(this.Detail.Discipline.Merit.C, 10))) {
+                        sum_merit.mc += merit.c = parseInt(this.Detail.Discipline.Merit.C, 10);
+                      }
+                      return items.push("<tr>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.a !== 0 ? "badge-success" : "") + "\">" + merit.a + "</span>\n    <br />大功\n  </td>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.b !== 0 ? "badge-success" : "") + "\">" + merit.b + "</span>\n    <br />小功\n  </td>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.c !== 0 ? "badge-success" : "") + "\">" + merit.c + "</span>\n    <br />嘉獎\n  </td>\n  <td>\n    <span>" + (this.OccurDate.substr(0, 10)) + "</span>\n    <br/>\n    <span>" + (this.Reason || '') + "</span>\n  </td>\n</tr>");
+                    } else if (this.MeritFlag === "2") {
+                      sum_merit.dd += 1;
+                      return items.push("<tr>\n  <td colspan=\"3\" class=\"my-detention\">" + detentionText + "</td>\n  <td class=\"my-detention-text\">\n    <span>" + (this.OccurDate.substr(0, 10)) + "</span>\n    <br/>\n    <span>" + (this.Reason || '') + "</span>\n  </td>\n</tr>");
+                    } else {
+                      if (!isNaN(parseInt(this.Detail.Discipline.Demerit.A, 10))) {
+                        merit.a = parseInt(this.Detail.Discipline.Demerit.A, 10);
+                      }
+                      if (!isNaN(parseInt(this.Detail.Discipline.Demerit.B, 10))) {
+                        merit.b = parseInt(this.Detail.Discipline.Demerit.B, 10);
+                      }
+                      if (!isNaN(parseInt(this.Detail.Discipline.Demerit.C, 10))) {
+                        merit.c = parseInt(this.Detail.Discipline.Demerit.C, 10);
+                      }
+                      merit_clear = this.Detail.Discipline.Demerit.Cleared;
+                      if (merit_clear !== '是') {
+                        sum_merit.da += merit.a;
+                        sum_merit.db += merit.b;
+                        sum_merit.dc += merit.c;
+                      }
+                      return items.push("<tr>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.a !== 0 && merit_clear === "是" ? "badge-warning" : (merit.a !== 0 ? "badge-important" : "")) + "\">" + merit.a + "</span>\n    <br />大過\n  </td>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.b !== 0 && merit_clear === '是' ? "badge-warning" : (merit.b !== 0 ? "badge-important" : "")) + "\">" + merit.b + "</span>\n    <br />小過\n  </td>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.c !== 0 && merit_clear === '是' ? "badge-warning" : (merit.c !== 0 ? "badge-important" : "")) + "\">" + merit.c + "</span>\n    <br />警告\n  </td>\n  <td>\n    " + (this.Detail.Discipline.Demerit.Cleared === '是' ? "<span class='my-offset'>" + (this.Detail.Discipline.Demerit.ClearDate.substr(0, 10).replace(/\//ig, "-")) + " 已銷過<br/>" + (this.Detail.Discipline.Demerit.ClearReason || '') + "</span><br/>" : "") + "\n    <span>" + (this.OccurDate.substr(0, 10)) + "</span>\n    <br/>\n    <span>" + (this.Reason || '') + "</span>\n  </td>\n</tr>");
+                    }
+                  });
+                  $("#merit-a").html("<span class='badge " + (sum_merit.ma !== 0 ? "badge-success" : "") + "'>" + sum_merit.ma + "</span>");
+                  $("#merit-b").html("<span class='badge " + (sum_merit.mb !== 0 ? "badge-success" : "") + "'>" + sum_merit.mb + "</span>");
+                  $("#merit-c").html("<span class='badge " + (sum_merit.mc !== 0 ? "badge-success" : "") + "'>" + sum_merit.mc + "</span>");
+                  $("#demerit-a").html("<span class='badge " + (sum_merit.da !== 0 ? "badge-important" : "") + "'>" + sum_merit.da + "</span>");
+                  $("#demerit-b").html("<span class='badge " + (sum_merit.db !== 0 ? "badge-important" : "") + "'>" + sum_merit.db + "</span>");
+                  $("#demerit-c").html("<span class='badge " + (sum_merit.dc !== 0 ? "badge-important" : "") + "'>" + sum_merit.dc + "</span>");
+                  if (sum_merit.dd > 0) {
+                    $("#demerit-d").html("<li class=\"span12\">\n  <div class=\"thumbnail my-thumbnail-white\">\n    <div class=\"caption my-surveillance\">\n      <h5>" + detentionText + "</h5>\n    </div>\n  </div>\n</li>");
                   }
-                  if (!isNaN(parseInt(this.Detail.Discipline.Merit.B, 10))) {
-                    sum_merit.mb += merit.b = parseInt(this.Detail.Discipline.Merit.B, 10);
-                  }
-                  if (!isNaN(parseInt(this.Detail.Discipline.Merit.C, 10))) {
-                    sum_merit.mc += merit.c = parseInt(this.Detail.Discipline.Merit.C, 10);
-                  }
-                  return items.push("<tr>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.a !== 0 ? "badge-success" : "") + "\">" + merit.a + "</span>\n    <br />大功\n  </td>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.b !== 0 ? "badge-success" : "") + "\">" + merit.b + "</span>\n    <br />小功\n  </td>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.c !== 0 ? "badge-success" : "") + "\">" + merit.c + "</span>\n    <br />嘉獎\n  </td>\n  <td>\n    <span>" + (this.OccurDate.substr(0, 10)) + "</span>\n    <br/>\n    <span>" + (this.Reason || '') + "</span>\n  </td>\n</tr>");
-                } else if (this.MeritFlag === "2") {
-                  sum_merit.dd += 1;
-                  return items.push("<tr>\n  <td colspan=\"3\" class=\"my-detention\">留校察看</td>\n  <td class=\"my-detention-text\">\n    <span>" + (this.OccurDate.substr(0, 10)) + "</span>\n    <br/>\n    <span>" + (this.Reason || '') + "</span>\n  </td>\n</tr>");
-                } else {
-                  if (!isNaN(parseInt(this.Detail.Discipline.Demerit.A, 10))) {
-                    merit.a = parseInt(this.Detail.Discipline.Demerit.A, 10);
-                  }
-                  if (!isNaN(parseInt(this.Detail.Discipline.Demerit.B, 10))) {
-                    merit.b = parseInt(this.Detail.Discipline.Demerit.B, 10);
-                  }
-                  if (!isNaN(parseInt(this.Detail.Discipline.Demerit.C, 10))) {
-                    merit.c = parseInt(this.Detail.Discipline.Demerit.C, 10);
-                  }
-                  merit_clear = this.Detail.Discipline.Demerit.Cleared;
-                  if (merit_clear !== '是') {
-                    sum_merit.da += merit.a;
-                    sum_merit.db += merit.b;
-                    sum_merit.dc += merit.c;
-                  }
-                  return items.push("<tr>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.a !== 0 && merit_clear === "是" ? "badge-warning" : (merit.a !== 0 ? "badge-important" : "")) + "\">" + merit.a + "</span>\n    <br />大過\n  </td>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.b !== 0 && merit_clear === '是' ? "badge-warning" : (merit.b !== 0 ? "badge-important" : "")) + "\">" + merit.b + "</span>\n    <br />小過\n  </td>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.c !== 0 && merit_clear === '是' ? "badge-warning" : (merit.c !== 0 ? "badge-important" : "")) + "\">" + merit.c + "</span>\n    <br />警告\n  </td>\n  <td>\n    " + (this.Detail.Discipline.Demerit.Cleared === '是' ? "<span class='my-offset'>" + (this.Detail.Discipline.Demerit.ClearDate.substr(0, 10).replace(/\//ig, "-")) + " 已銷過<br/>" + (this.Detail.Discipline.Demerit.ClearReason || '') + "</span><br/>" : "") + "\n    <span>" + (this.OccurDate.substr(0, 10)) + "</span>\n    <br/>\n    <span>" + (this.Reason || '') + "</span>\n  </td>\n</tr>");
                 }
-              });
-              $("#merit-a").html("<span class='badge " + (sum_merit.ma !== 0 ? "badge-success" : "") + "'>" + sum_merit.ma + "</span>");
-              $("#merit-b").html("<span class='badge " + (sum_merit.mb !== 0 ? "badge-success" : "") + "'>" + sum_merit.mb + "</span>");
-              $("#merit-c").html("<span class='badge " + (sum_merit.mc !== 0 ? "badge-success" : "") + "'>" + sum_merit.mc + "</span>");
-              $("#demerit-a").html("<span class='badge " + (sum_merit.da !== 0 ? "badge-important" : "") + "'>" + sum_merit.da + "</span>");
-              $("#demerit-b").html("<span class='badge " + (sum_merit.db !== 0 ? "badge-important" : "") + "'>" + sum_merit.db + "</span>");
-              $("#demerit-c").html("<span class='badge " + (sum_merit.dc !== 0 ? "badge-important" : "") + "'>" + sum_merit.dc + "</span>");
-              if (sum_merit.dd > 0) {
-                $("#demerit-d").html("<li class=\"span12\">\n  <div class=\"thumbnail my-thumbnail-white\">\n    <div class=\"caption my-surveillance\">\n      <h5>留校察看</h5>\n    </div>\n  </div>\n</li>");
+                if (items.length === 0) {
+                  return $("#discipline-container").removeClass("hide").html("目前無資料");
+                } else {
+                  $("#discipline-view").removeClass("hide");
+                  $("#discipline .my-thumbnails").removeClass("hide");
+                  return $("#discipline-container").addClass("hide").html("<table class=\"table table-striped\">\n  <tbody>\n    " + (items.join("")) + "\n  </tbody>\n</table>");
+                }
               }
             }
-            if (items.length === 0) {
-              return $("#discipline-container").removeClass("hide").html("目前無資料");
-            } else {
-              $("#discipline-view").removeClass("hide");
-              $("#discipline .my-thumbnails").removeClass("hide");
-              return $("#discipline-container").addClass("hide").html("<table class=\"table table-striped\">\n  <tbody>\n    " + (items.join("")) + "\n  </tbody>\n</table>");
-            }
           }
-        }
+        });
       }
     });
   };

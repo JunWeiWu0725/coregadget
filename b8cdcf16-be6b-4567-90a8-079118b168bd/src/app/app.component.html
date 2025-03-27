@@ -139,7 +139,7 @@
                 </thead>
                 <div class="collapse in" id="classlist" aria-expanded="true">
                   <tbody *ngFor="let item of scAttends; let i = index" class="dis-show">
-                    <div [appBorderColor]="item.CourseType" [ngClass]="{'my-error': item.HaveConflict.length > 0}"
+                    <div [appBorderColor]="item.CourseType" [ngClass]="{'my-error': item.HaveConflict?.length > 0}"
                       class="card bd-callout px-4 pt-3">
                       <div class="text-muted" style="outline: none;">
                         <div class="flex justify-center items-center gap-x-2 pb-3">
@@ -156,6 +156,9 @@
                               <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
                                 class="leading-5 font-bold">{{item.CourseName}}</a>
                               <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                              <span *ngIf="item.ConvertedVideoURL" class="my-video-file ml-1">
+                                <a [href]="item.ConvertedVideoURL" data-target="ExternalBrowser"><i class="fa fa-youtube-play fa-lg"></i></a>
+                              </span>
                             </div>
                             <div class="whitespace-pre-line mt-2">{{item.CourseTimeInfo}}</div>
                           </div>
@@ -204,7 +207,7 @@
                 </div>
 
                 <tbody *ngFor="let item of scAttends" class="dis-none">
-                  <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                  <tr [ngClass]="{'my-error': item.HaveConflict?.length > 0}">
                     <td rowspan="2" class="text-center">
                       <button type="button" class="btn btn-danger btn-mini" (click)="confirmWithDrawn(item)">退選</button>
                     </td>
@@ -214,6 +217,9 @@
                       <span [appCourseTypeBadge]="item.CourseType" class="label mr-1"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
+                      <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                        <a [href]="item.VideoFile" target="_blank"><i class="fa fa-youtube-play fa-lg"></i></a>
+                      </span>
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
                     <td>{{item.Credit}}</td>
@@ -221,7 +227,7 @@
                     <td>{{item.Classroom}}</td>
                     <td>{{item.CourseTimeInfo}}</td>
                   </tr>
-                  <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                  <tr [ngClass]="{'my-error': item.HaveConflict?.length > 0}">
                     <td colspan="8">{{item.Memo}}</td>
                   </tr>
                 </tbody>
@@ -254,7 +260,7 @@
                 </thead>
                 <div class="collapse in" id="outclasslist" aria-expanded="true">
                   <tbody *ngFor="let item of scAttendWithdrawnLogs; let i = index" class="dis-show">
-                    <div [appBorderColor]="item.CourseType" [ngClass]="{'my-error': item.HaveConflict.length > 0}"
+                    <div [appBorderColor]="item.CourseType" [ngClass]="{'my-error': item.HaveConflict?.length > 0}"
                       class="card bd-callout px-4 pt-3">
                       <div class="text-muted" style="outline: none;">
                         <div class="flex justify-center items-center gap-x-2 pb-3">
@@ -271,6 +277,9 @@
                               <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
                                 class="leading-5 font-bold">{{item.CourseName}}</a>
                               <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                              <span *ngIf="item.ConvertedVideoURL" class="my-video-file ml-1">
+                                <a [href]="item.ConvertedVideoURL" data-target="ExternalBrowser"><i class="fa fa-youtube-play fa-lg"></i></a>
+                              </span>
                             </div>
                             <div class="whitespace-pre-line mt-2">{{item.CourseTimeInfo}}</div>
                             <div class="whitespace-pre-line mt-2">退選時間：{{item.Time}}</div>
@@ -328,6 +337,9 @@
                       <span [appCourseTypeBadge]="item.CourseType" class="label mr-1"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
+                      <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                        <a [href]="item.VideoFile" target="_blank"><i class="fa fa-youtube-play fa-lg"></i></a>
+                      </span>
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
                     <td>{{item.Credit}}</td>
@@ -374,7 +386,7 @@
                 <div class="collapse in" id="levelclasslist" aria-expanded="true">
                   <tbody *ngFor="let item of currAttends; let j = index" data-type="quit" class="dis-show">
                     <div *ngIf="item.ChooseItem == '1'" [appBorderColor]="item.CourseType"
-                      [ngClass]="{'my-error': item.HaveConflict.length > 0}" class="card bd-callout px-4 pt-3">
+                      [ngClass]="{'my-error': item.HaveConflict?.length > 0}" class="card bd-callout px-4 pt-3">
                       <div class="text-muted" style="outline: none;">
                         <div class="flex justify-center items-center gap-x-2 pb-3">
                           <div class="text-center">
@@ -397,10 +409,13 @@
                               <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
                                 class="leading-5 font-bold">{{item.CourseName}}</a>
                               <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                              <span *ngIf="item.ConvertedVideoURL" class="my-video-file ml-1">
+                                <a [href]="item.ConvertedVideoURL" data-target="ExternalBrowser"><i class="fa fa-youtube-play fa-lg"></i></a>
+                              </span>
                             </div>
                             <div class="whitespace-pre-line my-2">{{item.CourseTimeInfo}}</div>
                             <div *ngIf="item.ChooseItem == '1' && item.NeedPoints == 't'"
-                              [ngClass]="{'my-error': item.HaveConflict.length > 0}" class="flex">
+                              [ngClass]="{'my-error': item.HaveConflict?.length > 0}" class="flex">
                               <div>投入點數：{{item.StudentSetPoints}} 點</div>
                               <ng-template #popTemplate>
                                 <p *ngFor="let i of ['1','2','3','4','5']">
@@ -463,7 +478,7 @@
                 </div>
 
                 <tbody *ngFor="let item of currAttends" data-type="quit" class="dis-none">
-                  <tr *ngIf="item.ChooseItem == '1'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                  <tr *ngIf="item.ChooseItem == '1'" [ngClass]="{'my-error': item.HaveConflict?.length > 0}">
                     <td *ngIf="['1','2'].indexOf(currLevel) !== -1" rowspan="2" class="my-cbx-style">
                       <input type="checkbox" [tooltip]="conflictCourseNames(item.HaveConflict)" placement="right"
                         [(ngModel)]="item.WillQuit" [value]="item.CourseID"
@@ -476,6 +491,9 @@
                       <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
+                      <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                        <a [href]="item.VideoFile" target="_blank"><i class="fa fa-youtube-play fa-lg"></i></a>
+                      </span>
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
                     <td>{{item.Credit}}</td>
@@ -485,7 +503,7 @@
                     <td>{{item.Item1StudentCount}}</td>
                   </tr>
                   <tr *ngIf="item.ChooseItem == '1' && item.NeedPoints == 't'"
-                    [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                    [ngClass]="{'my-error': item.HaveConflict?.length > 0}">
                     <td colspan="3">
                       <div class="points">投入點數：{{item.StudentSetPoints}} 點</div>
                       <ng-template #popTemplate>
@@ -502,7 +520,7 @@
                     <td colspan="7">{{item.Memo}}</td>
                   </tr>
                   <tr *ngIf="item.ChooseItem == '1' && item.NeedPoints != 't'"
-                    [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                    [ngClass]="{'my-error': item.HaveConflict?.length > 0}">
                     <td colspan="10">{{item.Memo}}</td>
                   </tr>
                 </tbody>
@@ -545,7 +563,7 @@
                 <div class="collapse in" id="level2classlist" aria-expanded="true">
                   <tbody *ngFor="let item of currAttends; let j = index" data-type="quit" id="choose02" class="dis-show">
                     <div *ngIf="item.ChooseItem == '2'" [appBorderColor]="item.CourseType"
-                      [ngClass]="{'my-error': item.HaveConflict.length > 0}" class="card bd-callout px-4 pt-3">
+                      [ngClass]="{'my-error': item.HaveConflict?.length > 0}" class="card bd-callout px-4 pt-3">
                       <div class="text-muted" style="outline: none;">
                         <div class="flex justify-center items-center gap-x-2 pb-3">
                           <div class="text-center">
@@ -568,10 +586,13 @@
                               <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
                                 class="leading-5 font-bold">{{item.CourseName}}</a>
                               <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                              <span *ngIf="item.ConvertedVideoURL" class="my-video-file ml-1">
+                                <a [href]="item.ConvertedVideoURL" data-target="ExternalBrowser"><i class="fa fa-youtube-play fa-lg"></i></a>
+                              </span>
                             </div>
                             <div class="whitespace-pre-line my-2">{{item.CourseTimeInfo}}</div>
                             <div *ngIf="item.ChooseItem == '2' && item.NeedPoints == 't'"
-                              [ngClass]="{'my-error': item.HaveConflict.length > 0}" class="flex">
+                              [ngClass]="{'my-error': item.HaveConflict?.length > 0}" class="flex">
                               <div>投入點數：{{item.StudentSetPoints}} 點</div>
                               <ng-template #popTemplate>
                                 <p *ngFor="let i of ['1','2','3','4','5']">
@@ -635,7 +656,7 @@
                   </tbody>
                 </div>
                 <tbody *ngFor="let item of currAttends" data-type="quit" id="choose02" class="dis-none">
-                  <tr *ngIf="item.ChooseItem == '2'" [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                  <tr *ngIf="item.ChooseItem == '2'" [ngClass]="{'my-error': item.HaveConflict?.length > 0}">
                     <td *ngIf="['1','2'].indexOf(currLevel) !== -1" rowspan="2" class="my-cbx-style">
                       <input type="checkbox" [tooltip]="conflictCourseNames(item.HaveConflict)" placement="right"
                         [(ngModel)]="item.WillQuit" [value]="item.CourseID"
@@ -648,6 +669,9 @@
                       <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
+                      <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                        <a [href]="item.VideoFile" target="_blank"><i class="fa fa-youtube-play fa-lg"></i></a>
+                      </span>
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
                     <td>{{item.Credit}}</td>
@@ -657,7 +681,7 @@
                     <td>{{item.Item2StudentCount}}</td>
                   </tr>
                   <tr *ngIf="item.ChooseItem == '2' && item.NeedPoints == 't'"
-                    [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                    [ngClass]="{'my-error': item.HaveConflict?.length > 0}">
                     <td colspan="3">
                       <div class="points">投入點數：{{item.StudentSetPoints}} 點</div>
                       <ng-template #popTemplate>
@@ -674,7 +698,7 @@
                     <td colspan="7">{{item.Memo}}</td>
                   </tr>
                   <tr *ngIf="item.ChooseItem == '2' && item.NeedPoints != 't'"
-                    [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                    [ngClass]="{'my-error': item.HaveConflict?.length > 0}">
                     <td colspan="10">{{item.Memo}}</td>
                   </tr>
                 </tbody>
@@ -719,13 +743,13 @@
 
                 <div class="collapse in" id="canclasslist" aria-expanded="true">
                   <tbody *ngFor="let item of canChooseCourses; let j = index" data-type="add" class="dis-show">
-                    <div [appBorderColor]="item.CourseType" [ngClass]="{'my-error': item.HaveConflict.length > 0}"
+                    <div [appBorderColor]="item.CourseType" [ngClass]="{'my-error': item.HaveConflict?.length > 0}"
                       class="card bd-callout px-4 pt-3">
                       <div class="text-muted" style="outline: none;">
                         <div class="flex justify-center items-center gap-x-2 pb-3">
                           <div class="text-center">
                             <div *ngIf="['1','2'].indexOf(currLevel) !== -1">
-                              <input type="checkbox" #ck [tooltip]="conflictCourseNames(item.HaveConflict)" 
+                              <input type="checkbox" #ck [tooltip]="conflictCourseNames(item.HaveConflict)"
                                 placement="right" [checked]="item.WillAdd" [id]="item.CourseID"
                                 (click)="clickCourseCheckbox(item, 'WillAdd', ck)" class="dis-none">
                               <label [for]="item.CourseID" class="mb-0">
@@ -744,9 +768,12 @@
                               <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
                                 class="leading-5 font-bold">{{item.CourseName}}</a>
                               <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                              <span *ngIf="item.ConvertedVideoURL" class="my-video-file ml-1">
+                                <a [href]="item.ConvertedVideoURL" data-target="ExternalBrowser"><i class="fa fa-youtube-play fa-lg"></i></a>
+                              </span>
                             </div>
                             <div class="whitespace-pre-line my-2">{{item.CourseTimeInfo}}</div>
-                            <div [ngClass]="{'my-error': item.HaveConflict.length > 0}" class="flex">
+                            <div [ngClass]="{'my-error': item.HaveConflict?.length > 0}" class="flex">
                               <input *ngIf="item.NeedPoints == 't' " type="number" #inputBox
                                 [ngClass]="{'error':item.PointIsError}" [disabled]="item.WillAdd"
                                 (change)="checkPoints(inputBox.value,item)" placeholder="投入點數">
@@ -822,7 +849,7 @@
                 </div>
 
                 <tbody *ngFor="let item of canChooseCourses" data-type="add" class="dis-none">
-                  <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                  <tr [ngClass]="{'my-error': item.HaveConflict?.length > 0}">
                     <td *ngIf="['1','2'].indexOf(currLevel) !== -1" rowspan="2" class="my-cbx-style">
                       <input type="checkbox" #ck [tooltip]="conflictCourseNames(item.HaveConflict)" placement="right"
                         [checked]="item.WillAdd" (click)="clickCourseCheckbox(item, 'WillAdd', ck)"
@@ -835,6 +862,9 @@
                       <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
+                      <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                        <a [href]="item.VideoFile" target="_blank"><i class="fa fa-youtube-play fa-lg"></i></a>
+                      </span>
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
                     <td>{{item.Credit}}</td>
@@ -845,7 +875,7 @@
                     <td *ngIf="currLevel === '1'">{{item.Item1StudentCount}}</td>
                     <td *ngIf="currLevel === '2'">{{item.Item2StudentCount}}</td>
                   </tr>
-                  <tr [ngClass]="{'my-error': item.HaveConflict.length > 0}">
+                  <tr [ngClass]="{'my-error': item.HaveConflict?.length > 0}">
                     <td colspan="3" class="d-flex flex-row">
                       <input type="number" #inputBox *ngIf="item.NeedPoints == 't' "
                         [ngClass]="{'error':item.PointIsError}" [disabled]="item.WillAdd" class="points"
@@ -913,6 +943,9 @@
                           <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
                             class="leading-5 font-bold">{{item.CourseName}}</a>
                           <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                          <span *ngIf="item.ConvertedVideoURL" class="my-video-file ml-1">
+                            <a [href]="item.ConvertedVideoURL" data-target="ExternalBrowser"><i class="fa fa-youtube-play fa-lg"></i></a>
+                          </span>
                         </div>
                         <div class="whitespace-pre-line mt-2">{{item.CourseTimeInfo}}</div>
                       </div>
@@ -981,6 +1014,9 @@
                       <span *ngIf="item.NeedPoints == 't'" [appCourseTypeBadge]="item.NeedPoints" class="label"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
+                      <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                        <a [href]="item.VideoFile" target="_blank"><i class="fa fa-youtube-play fa-lg"></i></a>
+                      </span>
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
                     <td>{{item.Credit}}</td>
@@ -1098,6 +1134,9 @@
                           <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank"
                             class="leading-5 font-bold">{{item.CourseName}}</a>
                           <div *ngIf="!item.Syllabus" class="leading-5 font-bold">{{item.CourseName}}</div>
+                          <span *ngIf="item.ConvertedVideoURL" class="my-video-file ml-1">
+                            <a [href]="item.ConvertedVideoURL" data-target="ExternalBrowser"><i class="fa fa-youtube-play fa-lg"></i></a>
+                          </span>
                         </div>
                         <div class="whitespace-pre-line mt-2">{{item.CourseTimeInfo}}</div>
                       </div>
@@ -1165,6 +1204,9 @@
                       <span [appCourseTypeBadge]="item.CourseType" class="label mr-1"></span>
                       <a *ngIf="item.Syllabus" [href]="item.Syllabus" target="_blank">{{item.CourseName}}</a>
                       <span *ngIf="!item.Syllabus">{{item.CourseName}}</span>
+                      <span *ngIf="item.VideoFile" class="my-video-file ml-1">
+                        <a [href]="item.VideoFile" target="_blank"><i class="fa fa-youtube-play fa-lg"></i></a>
+                      </span>
                     </td>
                     <td [innerHTML]="item.TeacherURLName | safeHtml"></td>
                     <td>{{item.Credit}}</td>

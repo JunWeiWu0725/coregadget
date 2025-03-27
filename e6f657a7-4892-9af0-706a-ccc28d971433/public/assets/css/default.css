@@ -54,10 +54,10 @@ body {
 
 .text-subject {
   /* fs-4 */
-  font-size:calc(1.275rem + 0.3vw); 
+  font-size: calc(1.275rem + 0.3vw);
   text-align: left;
   /* fw-bold */
-  font-weight: 700; 
+  font-weight: 700;
 }
 
 .disabledCursor {
@@ -91,13 +91,37 @@ body {
   max-width: 400px;
 }
 
-.chartHeightShowRank{
+.chartHeightShowRank {
   height: 350px;
 }
-.chartHeightNoShowRank{
+.chartHeightNoShowRank {
   height: 350px;
+}
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8); /* 半透明背景 */
+  z-index: 9999;
+}
+.rotating-icon {
+  color: #5b9bd5;
+  animation: spin 1s linear infinite;
 }
 
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
 .top-btn {
   vertical-align: middle;
@@ -134,40 +158,39 @@ body {
 }
 
 @media (min-width: 768px) {
-  .chartHeightShowRank{
+  .chartHeightShowRank {
     height: 350px;
   }
-  .chartHeightNoShowRank{
+  .chartHeightNoShowRank {
     height: 450px;
   }
 }
 @media (min-width: 992px) {
-  .chartHeightShowRank{
+  .chartHeightShowRank {
     height: 350px;
   }
-  .chartHeightNoShowRank{
+  .chartHeightNoShowRank {
     height: 450px;
   }
 }
 @media (min-width: 1200px) {
-  .chartHeightShowRank{
+  .chartHeightShowRank {
     height: 350px;
   }
-  .chartHeightNoShowRank{
+  .chartHeightNoShowRank {
     height: 450px;
   }
 }
-
 
 /* .innerText {
     font-size: 5vw;
   } 百分比、分數、名次*/
 
 @media (max-width: 480px) {
-  .chartHeightShowRank{
+  .chartHeightShowRank {
     height: 300px;
   }
-  .chartHeightNoShowRank{
+  .chartHeightNoShowRank {
     height: 300px;
   }
   .innerText {
@@ -177,7 +200,7 @@ body {
     max-width: 220px;
   }
   .text-small {
-    font-size:calc(0.7rem + 0.9vw);
+    font-size: calc(0.7rem + 0.9vw);
   }
   .text-subject {
     font-size: calc(1rem + 0.9vw);

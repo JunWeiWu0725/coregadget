@@ -11,7 +11,7 @@
       </div>
       <div class="modal-body px-0 text-center">
         <div *ngIf="!periods">loading...</div>
-        <button mat-raised-button *ngFor="let period of periods" [disabled]="allow_choose(period)" (click)="gotoPick(period)" class="gd-button-primary m-1">{{period.Name}}</button>
+        <button mat-raised-button *ngFor="let period of periods" [disabled]="allow_choose(period)" (click)="gotoPick(period)" class="gd-button-primary m-2">{{period.Name}}</button>
         <!-- <button type="button" class="btn btn-light mb-2" >一</button>
         <button type="button" class="btn btn-light mb-2" >二</button>
         <button type="button" class="btn btn-light mb-2" >三</button>

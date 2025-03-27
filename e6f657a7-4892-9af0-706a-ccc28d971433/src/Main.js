@@ -7,13 +7,16 @@ import down from './down.png';
 import up from './up.png';
 import ScrollToTopButton from './ScrollToTopButton';
 import { useAppContext } from './AppContext';
+import Loading from './Loading';
+import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
 function Main() {
 
   const { appData, setAppDataValues } = useAppContext();
 
+  const [basicLoading, setBasicLoading] = useState(true);
   // 學生清單
-  const [studentDateRange, setStudentList] = useState([]);
+  const [studentList, setStudentList] = useState([]);
 
   //選擇的學生 
   const [studentID, setStudent] = useState(appData.studentID);
@@ -25,7 +28,6 @@ function Main() {
   const [courseExamList, setCourseExamList] = useState([]);
 
   //系統學年期 
-  //const [currSemester, setCurrSemester] = useState(appData.currentSemester);
   const currSemester = appData.currentSemester;
 
   //當前顯示學年期 
@@ -47,7 +49,7 @@ function Main() {
   const [showNoRankSetting, setShowNoRankSetting] = useState(true);
 
   //取得 判斷加權平均、算術平均 的及格標準分數
-  const [avgPassingStardard, setAvgPassingStardard] = useState(60);
+  const [avgPassingStandard, setAvgPassingStandard] = useState(60);
 
   // 該學生的指定學年期、每次評量 之加權平均&算術平均 (即時)
   const [examAvgList, setExamAvgList] = useState([]);
@@ -76,19 +78,23 @@ function Main() {
   const position = window.gadget.params.system_position;
 
   useEffect(() => {
-    if (!currSemester) {
-      GetCurrentSemester();
-      // console.log('Get Current Semester.', currSemester);
-    } else {
-      // console.log('Not Get Current Semester.', currSemester);
+    const init = async () => {
+      try {
+        setBasicLoading(true);
+        if (!currSemester)
+          await GetCurrentSemester();
 
-    }
+        await Promise.all([GetStudentList(), GetViewSetting()]);
 
-    GetViewSetting();
-    GetStudentList();
+      } catch (error) {
+        console.error("init Error:", error);
+      } finally {
+        setBasicLoading(false);
+      }
+    };
 
+    init();
   }, []);
-
 
   useEffect(() => {
     if (studentID)
@@ -113,11 +119,6 @@ function Main() {
   }, [selectedSemester, selectedExam, studentID]);
 
 
-  // useEffect(() => {
-  //   OrganizeCourseExamScore();
-  // }, [courseExamScore]);
-
-
   useEffect(() => {
     if (selectedExam && selectedSemester && courseExamScore)
       CountFailedExamSubject();
@@ -135,111 +136,79 @@ function Main() {
   if (position === 'student')
     _connection = window.gadget.getContract("1campus.h.exam.student");
 
-  // 取得顯示 加權平均、算術平均 或不顯示排名 
-  async function GetViewSetting() {
-    await _connection.send({
-      service: "_.GetViewSetting",
-      body: {},
-      result: function (response, error, http) {
-        if (error !== null) {
-          console.log('GetViewSettingError', error);
-          return 'err';
-        } else {
-          if (response)
-            // console.log( { action: "GetViewSetting",  response, length: response.length })
-            if (response.Setting) {
-              let isShowRank = (response.Setting.show_no_rank.toLowerCase() === 'true')
-              setShowNoRankSetting(isShowRank);
-              //setShowNoRankSetting(true);
-              setAvgSetting(response.Setting.show_score);
-              // console.log( { settingTitle: response.Setting.show_score });
-            }
-        }
-      }
-    });
-  }
-
-  // 取得判斷加權平均、算術平均 的及格標準分數 
-  async function GetScoreCalcRulePassingStandard() {
-    await _connection.send({
-      service: "_.GetScoreCalcRulePassingStandard",
-      body: {
-        StudentID: studentID,
-        ViewSemester: selectedSemester
-      },
-      result: function (response, error, http) {
-        if (error !== null) {
-          console.log('GetScoreCalcRulePassingStandardError', error);
-          return 'err';
-        } else {
-          if (response) {
-            if ([].concat(response.Rule || []).length) {
-              if (response.Rule.passing_standard !== '')
-                setAvgPassingStardard(response.Rule.passing_standard);
-              //console.log('GetScoreCalcRulePassingStandard', response.Rule.passing_standard);
-            }
+  /** 取得系統學年期 */
+  const GetCurrentSemester = async () => {
+    return new Promise((resolve, reject) => {
+      _connection.send({
+        service: "_.GetCurrentSemester",
+        body: {},
+        result: (response, error) => {
+          if (error) {
+            console.log('GetCurrentSemester Error:', error);
+            return reject(error);
           }
+          const currentSemester = response.CurrentSemester.schoolyear + response.CurrentSemester.semester;
+          setAppDataValues({
+            currentSemester: currentSemester
+          });
+          resolve(currentSemester);
         }
-      }
+      });
     });
-  }
+  };
 
-  // 取得 各評量 加權平均、算術平均  
-  async function GetExamAvgScore() {
-    await _connection.send({
-      service: "_.GetExamAvgScore",
-      body: {
-        StudentID: studentID,
-        ViewSemester: selectedSemester
-      },
-      result: function (response, error, http) {
-        if (error !== null) {
-          console.log('GetExamAvgScore', error);
-          return 'err';
-        } else {
-          if (response) {
-            setExamAvgList(response.ExamAvg);
-            //console.log('response.ExamAvg', response.ExamAvg);
+  /** 取得顯示 加權平均、算術平均 或不顯示排名 */
+  const GetViewSetting = async () => {
+    return new Promise((resolve, reject) => {
+      _connection.send({
+        service: "_.GetViewSetting",
+        body: {},
+        result: (response, error) => {
+          if (error) {
+            console.log('GetViewSetting Error:', error);
+            return reject(error);
           }
+          const isShowRank = response?.Setting?.show_no_rank?.toLowerCase() === 'true';
+          setShowNoRankSetting(isShowRank);
+          setAvgSetting(response.Setting.show_score);
+          resolve(isShowRank);
         }
-      }
+      });
     });
-  }
-
-  // 取得學生清單
-  async function GetStudentList() {
-    await _connection.send({
-      service: "_.GetStudentList",
-      body: {},
-      result: function (response, error, http) {
-        if (error !== null) {
-          console.log('GetStudentListError', error);
-          return 'err';
-        } else {
-          if (response) {
-            setStudentList([].concat(response.Student || []));
-
-            if (studentID === '' || studentID === null) {
-              setStudent([].concat(response.Student || [])[0].id);
-            }
-            else {
-              var temp = false;
-              [].concat(response.Student || []).forEach(element => {
-                if (element.id === studentID) {
-                  setStudent(studentID);
-                  temp = true;
-                }
-              });
-              if (!temp) {
-                //localStorage.clear();
-                setStudent([].concat(response.Student || [])[0].id);
+  };
+  /** 取得學生清單 */
+  const GetStudentList = async () => {
+    return new Promise((resolve, reject) => {
+      _connection.send({
+        service: "_.GetStudentList",
+        body: {},
+        result: (response, error) => {
+          if (error) {
+            console.log('GetStudentList Error:', error);
+            return reject(error);
+          }
+          const studentList = [].concat(response.Student || []);
+          const defaultStudent = studentList[0]?.id;
+          setStudentList(studentList);
+          if (!studentID) {
+            setStudent(defaultStudent);
+          } else {
+            var temp = false;
+            studentList.forEach(stu => {
+              if (stu.id === studentID) {
+                setStudent(studentID);
+                temp = true;
               }
+            });
+            if (!temp) {
+              setStudent(defaultStudent);
             }
           }
+          resolve(studentList);
         }
-      }
+      });
     });
-  }
+  };
 
   // 取得課程學年期清單
   async function GetCourseSemesterList() {
@@ -305,31 +274,6 @@ function Main() {
     });
   }
 
-  // 取得系統學年期
-  async function GetCurrentSemester() {
-    await _connection.send({
-      service: "_.GetCurrentSemester",
-      body: {},
-      result: function (response, error, http) {
-        if (error !== null) {
-          console.log('GetCurrentSemesterError', error);
-          return 'err';
-        } else {
-          if (response) {
-            //setCurrSemester(response.CurrentSemester.schoolyear + response.CurrentSemester.semester);
-
-            // if (selectedSemester === '' || selectedSemester === null) {
-            //   setViewSemester(response.CurrentSemester.schoolyear + response.CurrentSemester.semester);
-            // }
-            setAppDataValues({
-              currentSemester: response.CurrentSemester.schoolyear + response.CurrentSemester.semester
-            });
-          }
-        }
-      }
-    });
-  }
-
   // 取得顯示學年期的評量清單
   async function GetCourseExamList() {
     await _connection.send({
@@ -367,6 +311,52 @@ function Main() {
       }
     });
   }
+  // 取得判斷加權平均、算術平均 的及格標準分數 
+  async function GetScoreCalcRulePassingStandard() {
+    await _connection.send({
+      service: "_.GetScoreCalcRulePassingStandard",
+      body: {
+        StudentID: studentID,
+        ViewSemester: selectedSemester
+      },
+      result: function (response, error, http) {
+        if (error !== null) {
+          console.log('GetScoreCalcRulePassingStandardError', error);
+          return 'err';
+        } else {
+          if (response) {
+            if ([].concat(response.Rule || []).length) {
+              if (response.Rule.passing_standard !== '')
+                setAvgPassingStandard(response.Rule.passing_standard);
+              //console.log('GetScoreCalcRulePassingStandard', response.Rule.passing_standard);
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // 取得 各評量 加權平均、算術平均  
+  async function GetExamAvgScore() {
+    await _connection.send({
+      service: "_.GetExamAvgScore",
+      body: {
+        StudentID: studentID,
+        ViewSemester: selectedSemester
+      },
+      result: function (response, error, http) {
+        if (error !== null) {
+          console.log('GetExamAvgScore', error);
+          return 'err';
+        } else {
+          if (response) {
+            setExamAvgList(response.ExamAvg);
+            //console.log('response.ExamAvg', response.ExamAvg);
+          }
+        }
+      }
+    });
+  }
 
   // 取得指定學年期的排名類別
   async function GetRankType() {
@@ -389,13 +379,14 @@ function Main() {
             if ([].concat(response.RankType || []).length) {
               if (selectedRankType === '' || selectedRankType === null)
                 setViewRankType([].concat(response.RankType || [])[0].rank_type);
+            } else {
+              setViewRankType('');
             }
           }
         }
       }
     });
   }
-
 
   //取得指定學年期的固定排名
   async function GetRankInfo() {
@@ -417,7 +408,6 @@ function Main() {
       }
     });
   }
-
 
   // 取得指定學年期的課程評量成績
   async function GetAllExamScore() {
@@ -475,12 +465,12 @@ function Main() {
   }
 
   const handleShowRankDetail = (e) => {
-    //debugger;
-
     let score = null;
+    let scoreType = '';
     [].concat(e.Field || []).forEach(f => {
       if (f.ExamID === selectedExam || '') {
         score = f.Score;
+        scoreType = f.ScoreType;
       }
     })
 
@@ -493,9 +483,9 @@ function Main() {
       subject: e.Subject,
       passingStandard: e.PassingStandard,
 
-
       domain: e.Domain,
       score: score,
+      scoreType: scoreType,
     });
   };
 
@@ -514,18 +504,17 @@ function Main() {
       courseID: 0,
       semester: selectedSemester,
       subject: e.ItemName,
-      passingStandard: avgPassingStardard,
+      passingStandard: avgPassingStandard,
 
       domain: '',
       score: score,
+      scoreType: '',
     });
   };
 
   const handleChangeViewRank = (e) => {
     setViewRankType(e.target.value);
   };
-
-
 
   // 處理 該評量 不及格科目數
   function CountFailedExamSubject() {
@@ -566,578 +555,629 @@ function Main() {
 
   return (
     <div className="App">
-      <div className="container px-3 px-sm-4 py-5 ">
-        <div className='titleBorder d-flex align-items-center'>
-          <div>
-            <div className='ms-2 me-4 d-flex align-items-center fs-4'>評量成績</div>
-            {position === 'student' ? '' :
-              <div className='putLeft'>
-                {studentDateRange.map((student) => {
-                  if (student.id === studentID)
-                    return <button type="button" className="btn btn-outline-blue active me-1 ms-1 mt-1" id={student.id} key={student.id} value={student.id} onClick={() => { handleChangeStudent(student.id); }} >{ConvertStudentName(student.name)}</button>
-                  else
-                    return <button type="button" className="btn btn-outline-blue me-1 ms-1 mt-1" id={student.id} key={student.id} value={student.id} onClick={() => { handleChangeStudent(student.id); }}>{ConvertStudentName(student.name)}</button>
-                  // return <button type="button" className="btn btn-outline-blue active me-1 ms-1" id={student.id} key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }} >{student.name}</button>
-                  // else
-                  // return <button type="button" className="btn btn-outline-blue me-1 ms-1" id={student.id} key={student.id} value={student.id} onClick={(e) => { handleChangeStudent(e); }}>{student.name}</button>
-                })}
+      {basicLoading && <Loading />}
+      {
+        (!!!basicLoading) && (
+          <div className="container px-3 px-sm-4 py-5 ">
+            <div className='titleBorder d-flex align-items-center'>
+              <div>
+                <div className='ms-2 me-4 d-flex align-items-center fs-4'>評量成績</div>
+                {position === 'student' ? '' :
+                  <div className='putLeft'>
+                    {studentList.map((student) => {
+                      if (student.id === studentID)
+                        return <button type="button" className="btn btn-outline-blue active me-1 ms-1 mt-1" id={student.id} key={student.id} value={student.id} onClick={() => { handleChangeStudent(student.id); }} >{ConvertStudentName(student.name)}</button>
+                      else
+                        return <button type="button" className="btn btn-outline-blue me-1 ms-1 mt-1" id={student.id} key={student.id} value={student.id} onClick={() => { handleChangeStudent(student.id); }}>{ConvertStudentName(student.name)}</button>
+                    })}
+                  </div>
+                }
               </div>
-            }
-          </div>
 
-        </div>
-
-
-        <div className='row align-items-center my-1'>
-          <div className='col-12 col-md-3 col-lg-3  py-2'>
-            <select className="form-select" value={selectedSemester} onChange={(e) => handleChangeViewSemester(e)} >
-              {[].concat(courseSemesterRange || []).length < 1 ? <option value="Y" key="Y">(選擇學年度學期)</option> : <></>}
-              {courseSemesterRange.map((courseSemester, index) => {
-                return <option key={index} value={courseSemester.schoolyear + courseSemester.semester}>
-                  {courseSemester.schoolyear}學年度第{courseSemester.semester}學期</option>
-              })}
-            </select>
-          </div>
-          <div className='col-12 col-md-3 col-lg-3  py-2'>
-            <select className="form-select" value={selectedExam} onChange={(e) => handleChangeViewExam(e)}>
-              <option value="0" key="Y">總覽</option>
-              {courseExamList.map((examList, index) => {
-                return <option key={index} value={examList.exam_id}>
-                  {examList.exam_name}</option>
-              })}
-            </select>
-          </div>
-          {selectedExam === '0' || selectedExam === null || showNoRankSetting ? '' :
-
-            <div className="col-12 col-md-6 col-lg-6  py-2">
-              <div className='d-flex align-items-center text-nowrap'>
-                <div className='pe-1'>排名類別</div><select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
-
-                  {[].concat(examRankType || []).length < 1 ? <option value="Y" key="Y">(尚無排名資料)</option> : ''}
-                  {examRankType.map((rankType, index) => {
-                    return <option key={index} value={rankType.rank_type}>
-                      {rankType.rank_type}</option>
-                  })}
-                </select></div>
             </div>
-          }
-
-        </div>
 
 
-        <div>{[].concat(courseExamScore || []).length < 1 ? '尚無資料。' : ''}</div>
+            <div className='row align-items-center my-1'>
+              <div className='col-12 col-md-3 col-lg-3  py-2'>
+                <select className="form-select" value={selectedSemester} onChange={(e) => handleChangeViewSemester(e)} >
+                  {[].concat(courseSemesterRange || []).length < 1 ? <option value="Y" key="Y">(選擇學年度學期)</option> : <></>}
+                  {courseSemesterRange.map((courseSemester, index) => {
+                    return <option key={index} value={courseSemester.schoolyear + courseSemester.semester}>
+                      {courseSemester.schoolyear}學年度第{courseSemester.semester}學期</option>
+                  })}
+                </select>
+              </div>
+              <div className='col-12 col-md-3 col-lg-3  py-2'>
+                <select className="form-select" value={selectedExam} onChange={(e) => handleChangeViewExam(e)}>
+                  <option value="0" key="Y">總覽</option>
+                  {courseExamList.map((examList, index) => {
+                    return <option key={index} value={examList.exam_id}>
+                      {examList.exam_name}</option>
+                  })}
+                </select>
+              </div>
+              {selectedExam === '0' || selectedExam === null || showNoRankSetting ? '' :
 
-        {/* <div className="row row-cols-1 row-cols-md-2 g-4 "> */}{/* 兩排 */}
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 "> {/* 三排 */}
-          {/* 評量成績 */}
-          {[].concat(courseExamScore || []).map((ces) => {
-            let col = 'col-6 col-md-6 col-lg-3 my-2';
-            if (showNoRankSetting || (!showNoRankSetting && [].concat(examRankType || []).length < 1))//不顯示排名(只有分數) || 顯示排名但沒排名
-              col = 'col-12 my-2';
+                <div className="col-12 col-md-6 col-lg-6  py-2">
+                  <div className='d-flex align-items-center text-nowrap'>
+                    <div className='pe-1'>排名類別</div><select className="form-select" value={selectedRankType} onChange={(e) => handleChangeViewRank(e)}>
+
+                      {[].concat(examRankType || []).length < 1 ? <option value="" key="Y">(尚無排名資料)</option> : ''}
+                      {examRankType.map((rankType, index) => {
+                        return <option key={index} value={rankType.rank_type}>
+                          {rankType.rank_type}</option>
+                      })}
+                    </select></div>
+                </div>
+              }
+
+            </div>
 
 
-            return <>
-              {[].concat(ces.Field || []).map((cField, index) => {
-                if (cField.ExamID === selectedExam) {
-                  let roundColor = '#A9D18E';
-                  let passColor = 'card card-pass shadow h-100';
-                  let scoreColor = 'fs-4 me-0 pe-0';
-                  let show = null;
-                  let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
+            <div>{[].concat(courseExamScore || []).length < 1 ? '尚無資料。' : ''}</div>
 
-                  if (cField.IsPass === 'f') {
-                    roundColor = '#FF0000';
-                    passColor = 'card card-unpass shadow h-100';
-                    scoreColor = 'fs-4 text-danger me-0 pe-0';
-                  }
-
-                  if (cField.ReportValue !== '') {
-                    scoreColor = 'fs-4 text-danger me-0 pe-0';
-                  }
+            {/* <div className="row row-cols-1 row-cols-md-2 g-4 "> */}{/* 兩排 */}
+            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 "> {/* 三排 */}
+              {/* 評量成績 */}
+              {[].concat(courseExamScore || []).map((ces) => {
+                let col = 'col-6 col-md-6 col-xxl-3 my-2';
+                if (showNoRankSetting || (!showNoRankSetting && [].concat(examRankType || []).length < 1))//不顯示排名(只有分數) || 顯示排名但沒排名
+                  col = 'col-12 my-2';
 
 
-                  // 檢查是否有相對應的排名
-                  let matchingItem = false;
-                  [].concat(examRankMatrix || []).forEach((rank) => {
+                return <>
+                  {[].concat(ces.Field || []).map((cField, index) => {
+                    if (cField.ExamID === selectedExam) {
+                      let roundColor = '#A9D18E';
+                      let passColor = 'card card-pass shadow h-100';
+                      let scoreColor = 'fs-4 me-0 pe-0';
+                      let show = null;
+                      let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
 
-                    if (rank.ItemName === ces.Subject) {
-                      [].concat(rank.Field || []).forEach((rField) => {
-                        if (rField.ExamID === selectedExam && rField.RankType === selectedRankType) {
-                          matchingItem = true;
+                      if (cField.IsPass === 'f') {
+                        roundColor = '#FF0000';
+                        passColor = 'card card-unpass shadow h-100';
+                        scoreColor = 'fs-4 text-danger me-0 pe-0';
+                      }
+
+                      if (cField.ReportValue !== '') {
+                        scoreColor = 'fs-4 text-danger me-0 pe-0';
+                      }
+
+
+                      // 檢查是否有相對應的排名
+                      let matchingItem = false;
+                      [].concat(examRankMatrix || []).forEach((rank) => {
+
+                        if (rank.ItemName === ces.Subject) {
+                          [].concat(rank.Field || []).forEach((rField) => {
+                            if (rField.ExamID === selectedExam && rField.RankType === selectedRankType) {
+                              matchingItem = true;
+                            }
+                          })
                         }
-                      })
-                    }
-                  });
+                      });
 
 
-                  if (matchingItem) {
-                    show = '/RankDetail';
-                  } else {
-                    show = '/RankDetailImmediately';
-                  }
+                      if (matchingItem) {
+                        show = '/RankDetail';
+                      } else {
+                        show = '/RankDetailImmediately';
+                      }
 
 
-                  // 沒成績 不能看
-                  if (cField.Score === '') {
-                    roundColor = '#5B9BD5';
-                    scoreColor = 'fs-4 me-0 pe-0';
-                    passColor = 'card shadow h-100';
-                    show = null;
-                    disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
-                  }
+                      // 沒成績 不能看
+                      if (cField.Score === '') {
+                        roundColor = '#5B9BD5';
+                        scoreColor = 'fs-4 me-0 pe-0';
+                        passColor = 'card shadow h-100';
+                        show = null;
+                        disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
+                      }
 
-                  //時間未到 不能看
-                  if (cField.ToView === 'f' || ces.Subject === avgSetting) {
-                    roundColor = '#5B9BD5';
-                    passColor = 'card shadow h-100';
-                    if (cField.ToView === 'f') {
-                      disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
-                      show = null;
-                      isShowFailSubjectCount = false;
-                    }
-                  }
+                      //時間未到 不能看
+                      if (cField.ToView === 'f' || ces.Subject === avgSetting) {
+                        roundColor = '#5B9BD5';
+                        passColor = 'card shadow h-100';
+                        if (cField.ToView === 'f') {
+                          disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
+                          show = null;
+                          isShowFailSubjectCount = false;
+                        }
+                      }
 
-                  // if ([].concat(examRankType || []).length < 1) {
-                  //   show = null;
-                  //   disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
-                  // }
+                      // if ([].concat(examRankType || []).length < 1) {
+                      //   show = null;
+                      //   disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
+                      // }
 
 
-                  let im = 0;
-                  let previousExamID = selectedExam;
-                  if (index !== 0) {
-                    im = index - 1;
-                    previousExamID = ces.Field[im].ExamID;
-                  }
-                  return <div className="col"><div className={passColor}>
-                    <div className="card-body">
-                      <Link className={disabledCursor} to={show} onClick={() => { handleShowRankDetail(ces); }}>
-                        <div className='d-flex'>
-                          <div className='d-flex me-auto p-2 align-items-center'>
-                            {ces.Subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
-                            {/* <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div> */}
-                            <div className='text-subject text-start'>{ces.Domain === "" ? "" : ces.Domain + "-"}{ces.Subject}</div>
-                          </div>
-                          <div className='d-flex text-small pt-2 pe-2' >
-                            <div>{ces.Subject === avgSetting ? '' : '權數'}{ces.Credit}</div>
-                          </div>
-                        </div>
-
-                        <div className='row align-items-center'>
-
-                          {cField.ToView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{cField.ToViewTime}</div></div> :
-                            <div className={col}>
-                              <div className='row align-items-center'>
-                                <div className='d-flex justify-content-center'>
-                                  <div className='row align-items-center'>
-                                    <div className={scoreColor}>{cField.Score === '' ? '-' : cField.Score}</div>
-                                    <div className='text-small me-0 pe-0'>分數</div>
-                                  </div>
-
-                                  <div>{index === 0 || cField.ToView === 'f' || cField.Score === '' || ces.Field[im].Score === '' ?
-                                    <img className='arrow' /> :
-                                    Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={up} alt='↑' />
-                                      : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={down} alt='↓' />
-                                        : <img className='arrow' />}</div>
-
-                                </div>
+                      let im = 0;
+                      let previousExamID = selectedExam;
+                      if (index !== 0) {
+                        im = index - 1;
+                        previousExamID = ces.Field[im].ExamID;
+                      }
+                      return <div className="col" key={index}><div className={passColor}>
+                        <div className="card-body">
+                          <Link className={disabledCursor} to={show} onClick={() => { handleShowRankDetail(ces); }}>
+                            <div className='d-flex'>
+                              <div className='d-flex me-auto p-2 align-items-center'>
+                                {ces.Subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div>}
+                                {/* <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: roundColor }}></div> */}
+                                <div className='text-subject text-start'>{ces.Domain === "" ? "" : ces.Domain + "-"}{ces.Subject}</div>
+                              </div>
+                              <div className='d-flex text-small pt-2 pe-2' >
+                                <div>{ces.Subject === avgSetting ? '' : '權數'}{ces.Credit}</div>
                               </div>
                             </div>
-                          }
 
-                          {[].concat(examRankMatrix || []).map((rank, index) => {
-                            if (cField.ToView === 't')
-                              if (rank.ItemName === ces.Subject) {
-                                let previousExamRank = '0';
-                                return <>
-                                  {[].concat(rank.Field || []).map((rField, index) => {
+                            <div className='row align-items-center'>
 
-                                    if (rField.RankType === selectedRankType && rField.ExamID === previousExamID)
-                                      previousExamRank = rField.Rank;
+                              {cField.ToView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{cField.ToViewTime}</div></div> :
+                                <div className={col}>
+                                  <div className='row align-items-center'>
+                                    <div className='d-flex justify-content-center'>
+                                      <div className='row align-items-center'>
+                                        <div className={scoreColor}>{cField.Score === '' ? '-' : cField.Score}</div>
+                                        <div className='text-small me-0 pe-0'>分數</div>
+                                      </div>
 
-                                    if (rField.RankType === selectedRankType && rField.ExamID === selectedExam && !showNoRankSetting)
-                                      return <>
-                                        <div className={col}>
-                                          <div className='d-flex justify-content-center'>
-                                            <div className='row align-self-center'>
-                                              <div className='fs-4 pe-0 me-0'>{rField.Rank}</div>
-                                              <div className='text-small pe-0 me-0'>名次</div>
+                                      <div>{index === 0 || cField.ToView === 'f' || cField.Score === '' || ces.Field[im].Score === '' ?
+                                        <img className='arrow' /> :
+                                        Number(ces.Field[index].Score) > Number(ces.Field[im].Score) ? <img className='arrow' src={up} alt='↑' />
+                                          : Number(ces.Field[index].Score) < Number(ces.Field[im].Score) ? <img className='arrow' src={down} alt='↓' />
+                                            : <img className='arrow' />}</div>
+
+                                    </div>
+                                  </div>
+                                </div>
+                              }
+
+                              {[].concat(examRankMatrix || []).map((rank, index) => {
+                                if (cField.ToView === 't')
+                                  if (rank.ItemName === ces.Subject) {
+                                    let previousExamRank = '0';
+                                    return <>
+                                      {[].concat(rank.Field || []).map((rField, index) => {
+
+                                        if (rField.RankType === selectedRankType && rField.ExamID === previousExamID)
+                                          previousExamRank = rField.Rank;
+
+                                        if (rField.RankType === selectedRankType && rField.ExamID === selectedExam && !showNoRankSetting)
+                                          return <>
+                                            <div className={col}>
+                                              <div className='d-flex justify-content-center'>
+                                                <div className='row align-self-center'>
+                                                  <div className='fs-4 pe-0 me-0'>{rField.Rank}</div>
+                                                  <div className='text-small pe-0 me-0'>名次</div>
+                                                </div>
+
+                                                <div>{previousExamRank === '0' || previousExamID === '' || rField.Rank === '' || previousExamRank === '' ?
+                                                  <img className='arrow' /> : Number(rField.Rank) > Number(previousExamRank) ? <img className='arrow' src={down} alt='↓' />
+                                                    : Number(rField.Rank) === Number(previousExamRank) ?
+                                                      <img className='arrow' /> : <img className='arrow' src={up} alt='↑' />}</div>
+                                              </div>
+                                            </div>
+                                            <div className={col}>
+                                              <div className='d-flex justify-content-center'>
+                                                <div className='row align-self-center'>
+                                                  <div className='fs-4'>{rField.PR}</div>
+                                                  <div className='text-small'>PR</div>
+                                                </div>
+                                              </div>
                                             </div>
 
-                                            <div>{previousExamRank === '0' || previousExamID === '' || rField.Rank === '' || previousExamRank === '' ?
-                                              <img className='arrow' /> : Number(rField.Rank) > Number(previousExamRank) ? <img className='arrow' src={down} alt='↓' />
-                                                : Number(rField.Rank) === Number(previousExamRank) ?
-                                                  <img className='arrow' /> : <img className='arrow' src={up} alt='↑' />}</div>
-                                          </div>
-                                        </div>
-                                        <div className={col}>
-                                          <div className='d-flex justify-content-center'>
-                                            <div className='row align-self-center'>
-                                              <div className='fs-4'>{rField.PR}</div>
-                                              <div className='text-small'>PR</div>
+                                            <div className={col}>
+                                              <div className='d-flex justify-content-center'>
+                                                <div className='row align-self-center'>
+                                                  <div className='fs-4'>{rField.Percentile}</div>
+                                                  <div className='text-nowrap text-small'>百分比</div>
+                                                </div>
+                                              </div>
                                             </div>
-                                          </div>
-                                        </div>
 
-                                        <div className={col}>
-                                          <div className='d-flex justify-content-center'>
-                                            <div className='row align-self-center'>
-                                              <div className='fs-4'>{rField.Percentile}</div>
-                                              <div className='text-nowrap text-small'>百分比</div>
-                                            </div>
-                                          </div>
-                                        </div>
-
-                                        {/* <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
-                                          <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
+                                            {/* <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+                                          <MdKeyboardDoubleArrowRight />
                                           更多
                                         </div> */}
 
-                                      </>
-                                  })}
+                                          </>
+                                      })}
 
-                                </>
+                                    </>
+                                  }
+                              })}
+
+                              {show === '/RankDetail' ?
+                                <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+                                  <MdKeyboardDoubleArrowRight />
+                                  更多
+                                </div> :
+                                show === '/RankDetailImmediately' ?
+                                  <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
+                                    <MdKeyboardDoubleArrowRight />
+                                    組距
+                                  </div>
+                                  : <></>
                               }
-                          })}
 
-                          {show === '/RankDetail' ?
-                            <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
-                              <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
-                              更多
-                            </div> :
-                            show === '/RankDetailImmediately' ?
-                              <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
-                                <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
-                                組距
-                              </div>
-                              : <></>
-                          }
+                            </div>
 
+
+                          </Link>
                         </div>
+                      </div>
+                      </div>
+                    }
 
-
-                      </Link>
-                    </div>
-                  </div>
-                  </div>
-                }
-
+                  })}
+                </>
               })}
-            </>
-          })}
 
-          {/* 評量成績 的加權平均*/}
-          {selectedExam !== '0' ?
-            <div className="col">
-              {[].concat(examAvgList || []).map((examAvg) => {
-                if (examAvg.ItemName === avgSetting) {
-                  //console.log('examAvg.ItemName', examAvg);
-                  let col = 'col-6 col-md-6 col-lg-3 my-2';
-                  if (showNoRankSetting)//不顯示排名(只有分數) 
-                    col = 'col-12 my-2';
-                  return <>
-                    {[].concat(examAvg.Field || []).map((avgField, index) => {
-                      //console.log('examAvg.Field ', avgField);
-                      // console.log('selectedRankType', selectedRankType);
-                      if (avgField.ExamID === selectedExam)
-                        //此評量有計算排名
-                        if (avgField.RankType) {
-                          //console.log('此評量有計算排名examAvg.Field', examAvg.Field);
-                          if (avgField.RankType === selectedRankType) {
-                            let show = '/RankDetail';
-                            let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
+              {/* 評量成績 的加權平均*/}
+              {selectedExam !== '0' ?
+                <div className="col">
+                  {[].concat(examAvgList || []).map((examAvg, index) => {
+                    if (examAvg.ItemName === avgSetting) {
+                      let col = 'col-6 col-md-6 col-xxl-3 my-2';
+                      if (showNoRankSetting)//不顯示排名(只有分數) 
+                        col = 'col-12 my-2';
+                      const filteredRankTypeAvgList = [].concat(examAvg.Field || []).filter((exaAvgField, index) => exaAvgField.RankType === selectedRankType);
 
-                            // if (!avgField.RankScore)
-                            //   show = '/RankDetailImmediately';
-                            if (avgField.ToView === 'f') {
-                              show = null;
-                              disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
-                            }
+                      if (selectedRankType) {
+                        return <>
+                          {
+                            filteredRankTypeAvgList.map((avgField, index) => {
+                              if (avgField.ExamID === selectedExam)
+                                //此評量有計算排名
+                                if (avgField.RankType) {
+                                  if (avgField.RankType === selectedRankType) {
+                                    let show = '/RankDetail';
+                                    let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
 
-                            let im = 0;
-                            let previousExamID = selectedExam;
-
-                            if (index !== 0) {
-                              im = index - 1;
-                              previousExamID = examAvg.Field[im].ExamID;
-                            }
-
-                            return <>
-                              <div className='card shadow h-100'>
-                                <div className="card-body">
-                                  <div className='d-flex'>
-                                    <div className='d-flex me-auto p-2 align-items-center'>
-                                      <div className='text-subject'>{avgSetting}</div>
-                                    </div>
-                                  </div>
-                                  <Link className={disabledCursor} to={show} onClick={() => { handleShowAvgRankDetail(examAvg); }}>
-                                    <div className='row align-items-center'>
-
-                                      {avgField.ToView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{avgField.ToViewTime}</div></div> :
-                                        <div className={col}>
-                                          <div className='row align-items-center'>
-                                            <div className='d-flex justify-content-center'>
-                                              <div className='row align-items-center'>
-
-                                                {avgField.Score !== '' && Number(avgField.Score) < avgPassingStardard ?
-                                                  <div className='fs-4 text-danger me-0 pe-0'>{Math.round(Number(avgField.Score) * 100) / 100}</div>
-                                                  : <div className='fs-4 me-0 pe-0'>{avgField.Score === '' ? '-' : Math.round(Number(avgField.Score) * 100) / 100}</div>}
-
-                                                <div className='text-small me-0 pe-0'>分數</div>
-                                              </div>
-
-                                              <div>{index === 0 || avgField.Score === '' || examAvg.Field[im].Score === '' ? '' : Number(examAvg.Field[index].Score) > Number(examAvg.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(examAvg.Field[index].Score) < Number(examAvg.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
-
-                                            </div>
-                                          </div>
-                                        </div>
-                                      }
-
-                                      {showNoRankSetting || avgField.ToView === 'f' ? '' : <><div className={col}>
-                                        <div className='d-flex justify-content-center'>
-                                          <div className='row align-self-center'>
-                                            <div className='fs-4 pe-0 me-0'>{avgField.Rank}</div>
-                                            <div className='text-small pe-0 me-0'>名次</div>
-                                          </div>
-
-                                          <div>{previousExamID === '' || avgField.Rank === '' || examAvg.Field[im].Rank === '' ? '' : Number(avgField.Rank) > Number(examAvg.Field[im].Rank) ? <img className='arrow' src={down} alt='↓' /> : Number(avgField.Rank) === Number(examAvg.Field[im].Rank) ? '' : <img className='arrow' src={up} alt='↑' />}</div>
-                                        </div>
-                                      </div>
-
-                                        <div className={col}>
-                                          <div className='d-flex justify-content-center'>
-                                            <div className='row align-self-center'>
-                                              <div className='fs-4'>{avgField.PR}</div>
-                                              <div className='text-small'>PR</div>
-                                            </div>
-                                          </div>
-                                        </div>
-
-                                        <div className={col}>
-                                          <div className='d-flex justify-content-center'>
-                                            <div className='row align-self-center'>
-                                              <div className='fs-4'>{avgField.Percentile}</div>
-                                              <div className='text-nowrap text-small'>百分比</div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <div className='text-start text-mark mt-2'>此成績為科目成績即時運算而得。</div>
-
-                                        <div className="d-flex align-items-center justify-content-end text-nowrap text-end text-more">
-                                          <span className="material-symbols-outlined">keyboard_double_arrow_right</span>
-                                          更多
-                                        </div>
-                                      </>}
-
-                                    </div>
-                                  </Link>
-                                </div>
-                              </div>
-                            </>
-                          }
-                        }
-                        else {
-                          //console.log('此評量沒有計算排名examAvg.Field', examAvg.Field);
-                          //此評量沒計算排名avgField.RankType===''
-                          let show = '/RankDetailImmediately';
-                          let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
-
-                          if (avgField.ToView === 'f') {
-                            show = null;
-                            disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
-                          }
-
-                          let im = 0;
-                          let previousExamID = selectedExam;
-
-                          if (index !== 0) {
-                            im = index - 1;
-                            previousExamID = examAvg.Field[im].ExamID;
-                          }
-
-                          return <>
-                            <div className='card shadow h-100'>
-                              <div className="card-body">
-                                <div className='d-flex'>
-                                  <div className='d-flex me-auto p-2 align-items-center'>
-                                    <div className='text-subject'>{avgSetting}</div>
-                                  </div>
-                                </div>
-                                <Link className={disabledCursor} to={show} onClick={() => { handleShowAvgRankDetail(examAvg); }}>
-                                  <div className='row align-items-center'>
-
-                                    {avgField.ToView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{avgField.ToViewTime}</div></div> :
-                                      <>
-                                        <div className='col-12 my-2'>
-                                          <div className='row align-items-center'>
-                                            <div className='d-flex justify-content-center'>
-                                              <div className='row align-items-center'>
-
-                                                {avgField.Score !== '' && Number(avgField.Score) < avgPassingStardard ?
-                                                  <div className='fs-4 text-danger me-0 pe-0'>{Math.round(Number(avgField.Score) * 100) / 100}</div>
-                                                  : <div className='fs-4 me-0 pe-0'>{avgField.Score === '' ? '-' : Math.round(Number(avgField.Score) * 100) / 100}</div>}
-
-                                                <div className='text-small me-0 pe-0'>分數</div>
-                                              </div>
-
-                                              <div>{index === 0 || avgField.Score === '' || examAvg.Field[im].Score === '' ? '' : Number(examAvg.Field[index].Score) > Number(examAvg.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(examAvg.Field[index].Score) < Number(examAvg.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
-
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <div className='text-start text-mark mt-2'>此成績為科目成績即時運算而得。</div>
-                                      </>
+                                    // if (!avgField.RankScore)
+                                    //   show = '/RankDetailImmediately';
+                                    if (avgField.ToView === 'f') {
+                                      show = null;
+                                      disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
                                     }
 
+                                    let im = 0;
+                                    let previousExamID = selectedExam;
+
+                                    if (index !== 0) {
+                                      im = index - 1;
+                                      previousExamID = filteredRankTypeAvgList[im].ExamID;
+                                      // console.log('本次:' + examAvg.ItemName + ':' + avgField.ExamName, '類別:' + avgField.RankType, '名次:' + avgField.Rank, '分數:' + avgField.Score);
+                                      // console.log('上次:' + examAvg.ItemName + ':' + filteredRankTypeAvgList[im].ExamName, '類別:' + filteredRankTypeAvgList[im].RankType, '名次:' + filteredRankTypeAvgList[im].Rank, '分數:' + examAvg.Field[im].Score);
+                                    }
+
+                                    return <>
+                                      <div className='card shadow h-100'>
+                                        <div className="card-body">
+                                          <div className='d-flex'>
+                                            <div className='d-flex me-auto p-2 align-items-center'>
+                                              <div className='text-subject'>{avgSetting}</div>
+                                            </div>
+                                          </div>
+                                          <Link className={disabledCursor} to={show} onClick={() => { handleShowAvgRankDetail(examAvg); }}>
+                                            <div className='row align-items-center'>
+
+                                              {avgField.ToView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{avgField.ToViewTime}</div></div> :
+                                                <div className={col}>
+                                                  <div className='row align-items-center'>
+                                                    <div className='d-flex justify-content-center'>
+                                                      <div className='row align-items-center'>
+
+                                                        {avgField.Score !== '' && Number(avgField.Score) < avgPassingStandard ?
+                                                          <div className='fs-4 text-danger me-0 pe-0'>{Math.round(Number(avgField.Score) * 100) / 100}</div>
+                                                          : <div className='fs-4 me-0 pe-0'>{avgField.Score === '' ? '-' : Math.round(Number(avgField.Score) * 100) / 100}</div>}
+
+                                                        <div className='text-small me-0 pe-0'>分數</div>
+                                                      </div>
+
+                                                      <div>
+                                                        {
+                                                          index === 0 || avgField.Score === '' || examAvg.Field[im].Score === '' ? '' :
+                                                            Number(filteredRankTypeAvgList[index].Score) > Number(examAvg.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> :
+                                                              Number(filteredRankTypeAvgList[index].Score) < Number(examAvg.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''
+                                                        }
+                                                      </div>
+
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              }
+
+                                              {showNoRankSetting || avgField.ToView === 'f' ? '' : <><div className={col}>
+                                                <div className='d-flex justify-content-center'>
+                                                  <div className='row align-self-center'>
+                                                    <div className='fs-4 pe-0 me-0'>{avgField.Rank}</div>
+                                                    <div className='text-small pe-0 me-0'>名次</div>
+                                                  </div>
+                                                  <div>
+                                                    {
+                                                      previousExamID === '' || avgField.Rank === '' || filteredRankTypeAvgList[im].Rank === '' ? '' :
+                                                        Number(avgField.Rank) > Number(filteredRankTypeAvgList[im].Rank) ? <img className='arrow' src={down} alt='↓' /> :
+                                                          Number(avgField.Rank) === Number(filteredRankTypeAvgList[im].Rank) ? '' :
+                                                            <img className='arrow' src={up} alt='↑' />
+                                                    }
+                                                  </div>
+                                                </div>
+                                              </div>
+
+                                                <div className={col}>
+                                                  <div className='d-flex justify-content-center'>
+                                                    <div className='row align-self-center'>
+                                                      <div className='fs-4'>{avgField.PR}</div>
+                                                      <div className='text-small'>PR</div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+
+                                                <div className={col}>
+                                                  <div className='d-flex justify-content-center'>
+                                                    <div className='row align-self-center'>
+                                                      <div className='fs-4'>{avgField.Percentile}</div>
+                                                      <div className='text-nowrap text-small'>百分比</div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+
+                                                <div className='d-flex align-items-center justify-content-between mt-2'>
+                                                  <div className='text-start text-mark'>此成績為科目成績即時運算而得。</div>
+                                                  {
+                                                    show &&
+                                                    <div className="d-flex align-items-center text-nowrap text-more">
+                                                      <MdKeyboardDoubleArrowRight />
+                                                      更多
+                                                    </div>
+                                                  }
+
+                                                </div>
+                                              </>}
+
+                                            </div>
+                                          </Link>
+                                        </div>
+                                      </div>
+                                    </>
+                                  }
+                                }
+                            })
+                          }
+
+                        </>
+                      } else {
+
+                        return (
+                          <>
+                            {
+                              [].concat(examAvg.Field || []).map((avgField, index) => {
+                                if (avgField.ExamID === selectedExam) {
+                                  // console.log('avgField.ExamID', avgField.ExamID);
+                                  let show = '/RankDetailImmediately';
+                                  let disabledCursor = 'card-block stretched-link text-decoration-none link-dark';
+
+                                  if (avgField.ToView === 'f') {
+                                    show = null;
+                                    disabledCursor = 'card-block stretched-link text-decoration-none link-dark disabledCursor';
+                                  }
+
+                                  let im = 0;
+                                  let previousExamID = selectedExam;
+
+                                  if (index !== 0) {
+                                    im = index - 1;
+                                    previousExamID = examAvg.Field[im].ExamID;
+                                  }
+                                  // console.log('本次:' + examAvg.ItemName + ':' + avgField.ExamName, '類別:' + avgField.RankType, '名次:' + avgField.Rank, '分數:' + avgField.Score);
+                                  // console.log('上次:' + examAvg.ItemName + ':' + examAvg.Field[im].ExamName, '類別:' + examAvg.Field[im].RankType, '名次:' + examAvg.Field[im].Rank, '分數:' + examAvg.Field[im].Score);
+
+
+                                  return (
+                                    <div className='card shadow h-100'>
+                                      <div className="card-body">
+                                        <div className='d-flex'>
+                                          <div className='d-flex me-auto p-2 align-items-center'>
+                                            <div className='text-subject'>{avgSetting}</div>
+                                          </div>
+                                        </div>
+                                        <Link className={disabledCursor} to={show} onClick={() => { handleShowAvgRankDetail(examAvg); }}>
+                                          <div className='row align-items-center'>
+
+                                            {avgField.ToView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{avgField.ToViewTime}</div></div> :
+                                              <>
+                                                <div className='col-12 my-2'>
+                                                  <div className='row align-items-center'>
+                                                    <div className='d-flex justify-content-center'>
+                                                      <div className='row align-items-center'>
+
+                                                        {avgField.Score !== '' && Number(avgField.Score) < avgPassingStandard ?
+                                                          <div className='fs-4 text-danger me-0 pe-0'>{Math.round(Number(avgField.Score) * 100) / 100}</div>
+                                                          : <div className='fs-4 me-0 pe-0'>{avgField.Score === '' ? '-' : Math.round(Number(avgField.Score) * 100) / 100}</div>}
+
+                                                        <div className='text-small me-0 pe-0'>分數</div>
+                                                      </div>
+                                                      <div>{
+                                                        index === 0 || avgField.Score === '' || examAvg.Field[im].Score === '' ? '' :
+                                                          Number(examAvg.Field[index].Score) > Number(examAvg.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> :
+                                                            Number(examAvg.Field[index].Score) < Number(examAvg.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> :
+                                                              ''}
+                                                        {/* 本次分數:{Number(avgField.Score)} 上次分數:{Number(examAvg.Field[im].Score)}
+                                                  im:{im}
+                                                  index:{index} */}
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+
+                                                <div className='d-flex align-items-center justify-content-between mt-2'>
+                                                  <div className='text-start text-mark'>此成績為科目成績即時運算而得。</div>
+                                                  {
+                                                    show &&
+                                                    <div className="d-flex align-items-center text-nowrap text-more">
+                                                      <MdKeyboardDoubleArrowRight />
+                                                      組距
+                                                    </div>
+                                                  }
+
+                                                </div>
+                                              </>
+                                            }
+                                          </div>
+                                        </Link>
+                                      </div>
+                                    </div>
+                                  );
+                                }
+                                return null; // 確保 map() 回傳值
+                              })}
+                          </>
+                        );
+
+                      }
+                    }
+                  })}
+
+                </div>
+
+
+                : <></>}
+
+
+              {/* {總覽} */}
+
+              {[].concat(courseExamScore || []).map((nces, index) => {
+
+                if (selectedExam === '0') {
+                  return <div className="col" key={index}>
+                    <div className={nces.Subject === avgSetting ? 'card shadow h-100' : 'card card-pass shadow h-100'}>
+                      <div className="card-body">
+                        <div className="card-block">
+                          <div className='d-flex'>
+                            <div className='d-flex me-auto p-2 align-items-center'>
+                              {nces.Subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: '#8FAADC' }}></div>}
+
+                              <div className='text-subject'>{nces.Domain === "" ? "" : nces.Domain + "-"}{nces.Subject}</div>
+                            </div>
+                            <div className='d-flex text-small pt-2 pe-2' >
+                              <div>{nces.Subject === avgSetting ? '' : '權數'}{nces.Credit}</div>
+                            </div>
+                          </div>
+
+                          <div className='row align-items-center'>
+
+                            {[].concat(nces.Field || []).map((nField, index) => {
+                              let scoreColor = 'fs-4';
+                              if (nField.IsPass === 'f' || nField.ReportValue !== '') {
+                                scoreColor = 'fs-4 text-danger';
+                              }
+                              if (nField.ToView === 'f' || nField.Score === '') {
+                                scoreColor = 'fs';
+                              }
+
+                              let im = 0;
+                              if (index !== 0)
+                                im = index - 1
+                              return <div className='col-6 col-md-6 col-lg-6' key={index}>
+                                <div className='row align-items-center m-2'>
+                                  <div className='d-flex justify-content-center'>
+                                    <div className={scoreColor}>{nField.ToView === 't' ? nField.Score === '' ? '-' : nField.Score : <div className='text-unview'><div>開放查詢時間：</div><div>{nField.ToViewTime}</div></div>}
+                                    </div>
+                                    <div>{index === 0 || nField.ToView === 'f' || nField.Score === '' || nces.Field[im].Score === '' ? '' : Number(nces.Field[index].Score) > Number(nces.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(nces.Field[index].Score) < Number(nces.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
                                   </div>
-                                </Link>
+                                  <div className='text-small'>{nField.ExamName}</div>
+                                </div>
+                              </div>
+                            })}
+                          </div>
+
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              })}
+
+              {/* {總覽 平均} */}
+              {[].concat(examAvgFilteredList || []).map((eaf, index) => {
+                if (eaf.ItemName === avgSetting) {
+
+                  if (selectedExam === '0') {
+                    return <div className="col" key={index}>
+                      <div className='card shadow h-100'>
+                        <div className="card-body">
+                          <div className="card-block">
+                            <div className='d-flex'>
+                              <div className='d-flex me-auto p-2 align-items-center'>
+                                <div className='text-subject'>{eaf.ItemName}</div>
                               </div>
                             </div>
-                          </>
-                        }
-                    })}
-                  </>
+
+                            <div className='row align-items-center'>
+
+                              {[].concat(eaf.Field || []).map((nField, index) => {
+                                let scoreColor = 'fs-4';
+                                if (Number(nField.Score) < avgPassingStandard) {
+                                  scoreColor = 'fs-4 text-danger';
+                                }
+                                if (nField.Score === '') {
+                                  scoreColor = 'fs';
+                                }
+
+                                let im = 0;
+                                if (index !== 0)
+                                  im = index - 1
+
+                                return <div className='col-6 col-md-6 col-lg-6' key={index}>
+                                  <div className='row align-items-center m-2'>
+                                    <div className='d-flex justify-content-center'>
+
+                                      <div className={scoreColor}>
+                                        {nField.ToView === 't' ?
+                                          nField.Score === '' ? '-' : Math.round(Number(nField.Score) * 100) / 100 :
+                                          <div className='text-unview'>
+                                            <div>開放查詢時間：</div><div>{nField.ToViewTime}</div>
+                                          </div>}
+                                      </div>
+                                      <div>
+                                        {index === 0 || nField.ToView === 'f' || nField.Score === '' || eaf.Field[im].Score === '' ? '' :
+                                          Number(eaf.Field[index].Score) > Number(eaf.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> :
+                                            Number(eaf.Field[index].Score) < Number(eaf.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> :
+                                              ''}
+                                      </div>
+                                    </div>
+                                    <div>{nField.ExamName}</div>
+                                  </div>
+                                </div>
+                              })}
+                              <div className='text-start text-mark mt-2'>此成績為科目成績即時運算而得。</div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  }
                 }
-
-
               })}
-              {/* </div>
-              </div> */}
+
             </div>
 
-
-            : <></>}
-
-
-          {/* {總覽} */}
-
-          {[].concat(courseExamScore || []).map((nces) => {
-
-            if (selectedExam === '0') {
-              return <div className="col">
-                <div className={nces.Subject === avgSetting ? 'card shadow h-100' : 'card card-pass shadow h-100'}>
-                  <div className="card-body">
-                    <div className="card-block">
-                      <div className='d-flex'>
-                        <div className='d-flex me-auto p-2 align-items-center'>
-                          {nces.Subject === avgSetting ? <></> : <div className='rounded-circle me-1' style={{ width: '10px', height: '10px', background: '#8FAADC' }}></div>}
-
-                          <div className='text-subject'>{nces.Domain === "" ? "" : nces.Domain + "-"}{nces.Subject}</div>
-                        </div>
-                        <div className='d-flex text-small pt-2 pe-2' >
-                          <div>{nces.Subject === avgSetting ? '' : '權數'}{nces.Credit}</div>
-                        </div>
-                      </div>
-
-                      <div className='row align-items-center'>
-
-                        {[].concat(nces.Field || []).map((nField, index) => {
-                          let scoreColor = 'fs-4';
-                          if (nField.IsPass === 'f' || nField.ReportValue !== '') {
-                            scoreColor = 'fs-4 text-danger';
-                          }
-                          if (nField.ToView === 'f' || nField.Score === '') {
-                            scoreColor = 'fs';
-                          }
-
-                          let im = 0;
-                          if (index !== 0)
-                            im = index - 1
-                          return <div className='col-6 col-md-6 col-lg-6'>
-                            <div className='row align-items-center m-2'>
-                              <div className='d-flex justify-content-center'>
-                                <div className={scoreColor}>{nField.ToView === 't' ? nField.Score === '' ? '-' : nField.Score : <div className='text-unview'><div>開放查詢時間：</div><div>{nField.ToViewTime}</div></div>}
-                                </div>
-                                <div>{index === 0 || nField.ToView === 'f' || nField.Score === '' || nces.Field[im].Score === '' ? '' : Number(nces.Field[index].Score) > Number(nces.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> : Number(nces.Field[index].Score) < Number(nces.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> : ''}</div>
-                              </div>
-                              <div className='text-small'>{nField.ExamName}</div>
-                            </div>
-                          </div>
-                        })}
-                      </div>
-
-
-                    </div>
-                  </div>
-                </div>
+            {!isShowFailSubjectCount || selectedExam === '0' || selectedExam === null ? "" : <div>
+              <div className='d-flex justify-content-left'>
+                <div>不及格科目數：</div><div>{failedCount}</div>
               </div>
-            }
-          })}
+            </div>}
 
-          {/* {總覽 平均} */}
-          {[].concat(examAvgFilteredList || []).map((eaf) => {
-            if (eaf.ItemName === avgSetting) {
+            <ScrollToTopButton />
 
-              if (selectedExam === '0') {
-                return <div className="col">
-                  <div className='card shadow h-100'>
-                    <div className="card-body">
-                      <div className="card-block">
-                        <div className='d-flex'>
-                          <div className='d-flex me-auto p-2 align-items-center'>
-                            <div className='text-subject'>{eaf.ItemName}</div>
-                          </div>
-                        </div>
-
-                        <div className='row align-items-center'>
-
-                          {[].concat(eaf.Field || []).map((nField, index) => {
-                            let scoreColor = 'fs-4';
-                            if (Number(nField.Score) < avgPassingStardard) {
-                              scoreColor = 'fs-4 text-danger';
-                            }
-                            if (nField.Score === '') {
-                              scoreColor = 'fs';
-                            }
-
-                            let im = 0;
-                            if (index !== 0)
-                              im = index - 1
-
-                            return <div className='col-6 col-md-6 col-lg-6'>
-                              <div className='row align-items-center m-2'>
-                                <div className='d-flex justify-content-center'>
-
-                                  <div className={scoreColor}>
-                                    {nField.ToView === 't' ?
-                                      nField.Score === '' ? '-' : Math.round(Number(nField.Score) * 100) / 100 :
-                                      <div className='text-unview'>
-                                        <div>開放查詢時間：</div><div>{nField.ToViewTime}</div>
-                                      </div>}
-                                  </div>
-                                  <div>
-                                    {index === 0 || nField.ToView === 'f' || nField.Score === '' || eaf.Field[im].Score === '' ? '' :
-                                      Number(eaf.Field[index].Score) > Number(eaf.Field[im].Score) ? <img className='arrow' src={up} alt='↑' /> :
-                                        Number(eaf.Field[index].Score) < Number(eaf.Field[im].Score) ? <img className='arrow' src={down} alt='↓' /> :
-                                          ''}
-                                  </div>
-                                </div>
-                                <div>{nField.ExamName}</div>
-                              </div>
-                            </div>
-                          })}
-                          <div className='text-start text-mark mt-2'>此成績為科目成績即時運算而得。</div>
-                        </div>
-
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              }
-            }
-          })}
-
-        </div>
-
-        {!isShowFailSubjectCount || selectedExam === '0' || selectedExam === null ? "" : <div>
-          <div className='d-flex justify-content-left'>
-            <div>不及格科目數：</div><div>{failedCount}</div>
           </div>
-        </div>}
-
-        <ScrollToTopButton />
-
-      </div>
+        )
+      }
     </div>
   );
 }

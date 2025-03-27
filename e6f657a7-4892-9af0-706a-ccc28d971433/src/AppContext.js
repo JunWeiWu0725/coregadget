@@ -13,7 +13,7 @@ export const AppProvider = ({ children }) => {
     passingStandard: 60,
     isBack: false,
     score: null,
-
+    scoreType: '',
     currentSemester: '',
   });
 

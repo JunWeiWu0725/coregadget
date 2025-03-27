@@ -28,13 +28,18 @@ export class CourseSelcComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.today = await this.dsa.getToday();
+    this.today = await this.dsa.getSelectedDay();
+    console.log({
+      curr_day: this.today
+    })
   }
 
   //開啟節次點名介面
   async openPicker(course: CourseConf) {
     this.dialog.open(PeriodChooserComponent, {
-      data: { course: course },
+      data: { 
+        curr_day : this.today  ,
+         course: course },
     });
   }
 }

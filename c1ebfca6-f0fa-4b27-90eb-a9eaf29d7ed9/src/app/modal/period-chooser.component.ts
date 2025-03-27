@@ -21,7 +21,7 @@ export class PeriodChooserComponent implements OnInit {
     private router: Router,
     private config: ConfigService,
     public dialogRef: MatDialogRef<PeriodChooserComponent>,
-    @Inject(MAT_DIALOG_DATA) private data: { course: CourseConf }
+    @Inject(MAT_DIALOG_DATA) private data: {curr_day:string, course: CourseConf }
   ) {
 
     this.title = data.course.CourseName;
@@ -38,9 +38,24 @@ export class PeriodChooserComponent implements OnInit {
     //Type 傳入是課程還是班級
     //CourseName
     //PeriodName
-    this.router.navigate(['../pick', "Course",
-      this.data.course.CourseID, period.Name,
-      this.data.course.CourseName]);
+    console.log({
+      currday: this.data.curr_day,
+      courseID: this.data.course.CourseID,
+      periodName: period.Name,
+      courseName: this.data.course.CourseName
+
+    });
+
+
+
+    this.router.navigate([
+      '../pick', 
+      this.data.curr_day,
+      "Course",
+      this.data.course.CourseID, 
+      period.Name,
+      this.data.course.CourseName
+    ]);
     this.dialogRef.close();
   }
 
