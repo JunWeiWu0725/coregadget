@@ -44,7 +44,7 @@
   padding: 9px;
 }
 #attendance .my-subthumbnail-bottom {
-  background: #DDD;
+  /* background: #DDD; */
 }
 #attendance .my-surveillance {
   color: #fff;
@@ -73,20 +73,20 @@
   background-color: #FFF;
 }
 #discipline .my-subthumbnail-top {
-  border-bottom: 1px solid #ccc;
-  padding: 9px;
+  /* border-bottom: 1px solid #ccc; */
+  /* padding: 9px; */
 }
 #discipline .my-subthumbnail-bottom {
-  background: #DDD;
+  /* background: #DDD; */
 }
 #discipline .my-surveillance {
   color: #fff;
   background: #b94a48;
 }
-#discipline .my-flags {
+/* #discipline .my-flags {
   width: 30px;
   font-size: 13px;
-}
+} */
 #discipline .my-detention {
   background: #b94a48;
   color: white;
