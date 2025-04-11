@@ -22,7 +22,6 @@ export class SettingComponent implements OnInit {
   objectKeys = Object.keys;
   loading: boolean;
   settingList: any;
-
   classList: any[];
   courseList: any[];
 
@@ -34,6 +33,8 @@ export class SettingComponent implements OnInit {
   // 如果設定採用 上課週數*節數 但是課程上卻沒有設節次 調出提醒字眼
   reminderMessage : string ;
   isUseWeekFromCourse :boolean ;
+
+  today: string; // 今日。
   
   constructor(
     private dsa: DSAService,
@@ -57,7 +58,7 @@ export class SettingComponent implements OnInit {
       var rsp = await this.dsa.send("GetClassHelper");
       this.classList = [].concat(rsp.Class || []);
       this.courseList = [].concat(rsp.Course || []);
-
+      this.today = await this.dsa.getToday();
       // 取得點名母數 
      this.isUseWeekFromCourse  =   await this.dsa.getAbsenRateDenominatorDepen() ;
    
@@ -69,12 +70,9 @@ export class SettingComponent implements OnInit {
   }
 
 
-
-
-
   async openTeacherHelper(course: CourseConf) {
 
-    this.router.navigate(['/teacher-helper', course.CourseID, course.CourseName]);
+    this.router.navigate(['/teacher-helper',this.today , course.CourseID, course.CourseName]);
   }
 
 

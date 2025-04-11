@@ -108,14 +108,14 @@ color :#727375 !important ;
 
 .btn-info
 {
-background: #424242  !important;
+background: #65b2ef  !important;
 }
 
 
 
 .icon-green
 {
-color: #29bb89;
+color: #65b2ef;
 
 }
 
@@ -139,6 +139,7 @@ color: #29bb89;
     box-shadow: none;
     border: 2px solid #eee;
     border-top: 0px;
+    font-size: 18px;
 }
 .select-abs-section{
   border: none !important;
@@ -147,7 +148,7 @@ color: #29bb89;
 }
 
 .main-bg-color {
-background :#b7d3d1 !important ;
+background :#d6edff !important ;
 }
 .no-background {
   margin-bottom: 0px !important;
@@ -165,7 +166,7 @@ background :#b7d3d1 !important ;
 }
 
 .second-page-header {
-  background: #b7d3d178 !important ;
+  background: #d6edff  !important ;
   
 }
 
@@ -173,9 +174,3 @@ background :#b7d3d1 !important ;
   padding-left: 3px;
 
 }
-
-.cdk-overlay-pane {
-  max-width: 650px!important;
-}
-
-

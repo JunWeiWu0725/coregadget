@@ -165,12 +165,12 @@ body {
 }
 
 a {
-  color: #0088cc;
+  /* color: #0088cc; */
   text-decoration: none;
 }
 
 a:hover {
-  color: #005580;
+  /* color: #005580; */
   text-decoration: underline;
 }
 
@@ -1527,9 +1527,9 @@ table {
 .table td {
   padding: 8px;
   line-height: 18px;
-  text-align: left;
-  vertical-align: top;
-  border-top: 1px solid #dddddd;
+  /* text-align: left; */
+  /* vertical-align: top; */
+  /* border-top: 1px solid #dddddd; */
 }
 
 .table th {
@@ -1570,7 +1570,7 @@ table {
 
 .table-bordered th,
 .table-bordered td {
-  border-left: 1px solid #dddddd;
+  /* border-left: 1px solid #dddddd; */
 }
 
 .table-bordered caption + thead tr:first-child th,
@@ -1623,7 +1623,7 @@ table {
 
 .table tbody tr:hover td,
 .table tbody tr:hover th {
-  background-color: #f5f5f5;
+  /* background-color: #f5f5f5; */
 }
 
 table .span1 {
@@ -2573,7 +2573,7 @@ button.close {
   -webkit-appearance: none;
 }
 
-.btn {
+/* .btn {
   display: inline-block;
   *display: inline;
   padding: 4px 10px 4px;
@@ -2635,7 +2635,6 @@ button.close {
   text-decoration: none;
   background-color: #e6e6e6;
   *background-color: #d9d9d9;
-  /* Buttons in IE7 don't get borders, so darken on hover */
 
   background-position: 0 -15px;
   -webkit-transition: background-position 0.1s linear;
@@ -2917,7 +2916,7 @@ button.btn,
 input[type="submit"].btn {
   *padding-top: 2px;
   *padding-bottom: 2px;
-}
+} */
 
 button.btn::-moz-focus-inner,
 input[type="submit"].btn::-moz-focus-inner {
@@ -2943,7 +2942,7 @@ input[type="submit"].btn.btn-mini {
   *padding-bottom: 1px;
 }
 
-.btn-group {
+/* .btn-group {
   position: relative;
   *margin-left: .3em;
   *zoom: 1;
@@ -2965,9 +2964,9 @@ input[type="submit"].btn.btn-mini {
 
 .btn-group + .btn-group {
   margin-left: 5px;
-}
+} */
 
-.btn-toolbar {
+/* .btn-toolbar {
   margin-top: 9px;
   margin-bottom: 9px;
 }
@@ -2975,8 +2974,6 @@ input[type="submit"].btn.btn-mini {
 .btn-toolbar .btn-group {
   display: inline-block;
   *display: inline;
-  /* IE7 inline-block hack */
-
   *zoom: 1;
 }
 
@@ -3142,7 +3139,7 @@ input[type="submit"].btn.btn-mini {
   border-bottom-color: #ffffff;
   opacity: 0.75;
   filter: alpha(opacity=75);
-}
+} */
 
 .alert {
   padding: 8px 35px 8px 14px;
@@ -4449,19 +4446,19 @@ input[type="submit"].btn.btn-mini {
   margin-bottom: 0;
 }
 
-.thumbnails {
+/* .thumbnails {
   margin-left: -20px;
   list-style: none;
   *zoom: 1;
-}
+} */
 
-.thumbnails:before,
+/* .thumbnails:before,
 .thumbnails:after {
   display: table;
   content: "";
-}
+} */
 
-.thumbnails:after {
+/* .thumbnails:after {
   clear: both;
 }
 
@@ -4473,9 +4470,9 @@ input[type="submit"].btn.btn-mini {
   float: left;
   margin-bottom: 18px;
   margin-left: 20px;
-}
+} */
 
-.thumbnail {
+/* .thumbnail {
   display: block;
   padding: 4px;
   line-height: 1;
@@ -4486,9 +4483,9 @@ input[type="submit"].btn.btn-mini {
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
      -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
           box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
-}
+} */
 
-a.thumbnail:hover {
+/* a.thumbnail:hover {
   border-color: #0088cc;
   -webkit-box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
      -moz-box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
@@ -4504,7 +4501,7 @@ a.thumbnail:hover {
 
 .thumbnail .caption {
   padding: 9px;
-}
+} */
 
 .label,
 .badge {

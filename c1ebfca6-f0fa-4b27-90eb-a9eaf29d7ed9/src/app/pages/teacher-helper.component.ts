@@ -12,18 +12,19 @@ import { I18NEXT_SERVICE, ITranslationService } from 'angular-i18next';
 })
 export class TeacherHelperComponent implements OnInit {
 
-  today: string;
+  curr_day: string;
   type: string;
   targetName: string;
   targetID: string;
   period: string;
   teacherHelper: TeacherHelper = {} as TeacherHelper;
-  students: Student[];
+  students: Student[] = [];
   showPhoto: boolean;
   teacherSetting: any;
   settingList: any;
   objectKeys = Object.keys;
   checkSummary ;
+  today: string; // 今日。
 
   constructor(
     private dsa: DSAService,
@@ -42,9 +43,8 @@ export class TeacherHelperComponent implements OnInit {
     this.settingList = this.objectKeys(this.teacherSetting);
     this.showPhoto = this.teacherSetting['usePhoto'];
 
-    this.today = await this.dsa.getToday();
     this.route.paramMap.subscribe(async pm => {
-
+      this.curr_day = pm.get('curr_day');
       this.type = pm.get('type');
       // this.targetName = pm.get('name'); // course name
       this.targetID = pm.get('id'); // course id
@@ -62,7 +62,7 @@ export class TeacherHelperComponent implements OnInit {
   public async reloadTeacherHelper() {
     this.students = [];
     // 取得學生清單
-    const _students = await this.dsa.getStudent(this.type, this.targetID, this.today, this.period);
+    const _students = await this.dsa.getStudent(this.type, this.targetID, this.curr_day, this.period);
     // 取得學生照片URL
     const c = await this.gadget.getContract("campus.rollcall.teacher");
     const session = await c.send("DS.Base.Connect", { RequestSessionID: '' });

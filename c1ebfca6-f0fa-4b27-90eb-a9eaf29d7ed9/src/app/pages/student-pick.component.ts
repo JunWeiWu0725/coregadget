@@ -11,6 +11,7 @@ import { RollCallRateDenominator } from './vo';
 import { Console } from '@angular/core/src/console';
 import { HttpClient } from '@angular/common/http';
 import { I18NEXT_SERVICE, ITranslationService } from 'angular-i18next';
+import { StringLiteral } from 'typescript';
 
 @Component({
   selector: 'gd-student-pick',
@@ -21,8 +22,9 @@ export class StudentPickComponent implements OnInit {
   isShowCheckInTime  ="" ;
   /** 是否顯示英文名字 預設為否 */
   displayEnglishName :boolean = false ;
-  
-  today: string;
+
+
+  curr_day: String;
 
   periodConf: PeriodConf; // 節次設定，決定有哪些缺曠可以點。
 
@@ -30,7 +32,7 @@ export class StudentPickComponent implements OnInit {
 
   selectedAbsence: string; // 已選擇的缺曠類別。
 
-  groupInfo: { type: GroupType, id: string, name: string } // 課程或班級。
+  groupInfo: {curr_day: string, type: GroupType, id: string, name: string } // 課程或班級。
 
   /**【View Binding】 */
   studentChecks: StudentCheck[]; //點名狀態。
@@ -73,20 +75,19 @@ export class StudentPickComponent implements OnInit {
 
    this.getSchoolType();
 
-    this.today = await this.dsa.getToday();
-
-
-
     //setting 
     this.teacherSetting = await this.dsa.getTeacherSetting();
     this.settingList = this.objectKeys(this.teacherSetting);
 
     this.showPhoto = this.teacherSetting['usePhoto'];
 
-    this.groupInfo = { type: '', id: '', name: '' };
+    this.groupInfo = {curr_day: '', type: '', id: '', name: '' };
     await this.config.ready;
 
     this.route.paramMap.subscribe(async pm => {
+      this.groupInfo.curr_day = pm.get('curr_day'); // 日期
+      this.curr_day= pm.get('curr_day'); // 日期
+
       this.groupInfo.type = pm.get('type') as GroupType; // course or class
       console.log(this.groupInfo.type);
       this.groupInfo.id = pm.get('id'); // course id
@@ -103,7 +104,7 @@ export class StudentPickComponent implements OnInit {
     // 林口康橋 (客製)
     if(this.isShowCheckInTime){
    
-      this.listCheckInTimes = await this.dsa.getCheckIntime( this.groupInfo.id ,'',  this.groupInfo.type)
+      this.listCheckInTimes = await this.dsa.getCheckIntime(this.groupInfo.id ,'',  this.groupInfo.type)
       }
       // 可點節次。
       this.periodConf = this.config.getPeriod(this.period);
@@ -129,6 +130,9 @@ export class StudentPickComponent implements OnInit {
         this.selectedAbsence = this.periodConf.Absence[0].Name;
       }
     });
+    const lang = document.documentElement.lang;    
+    // 如果語言是 "en"，則顯示英文名字
+    this.displayEnglishName = lang === 'en';
   }
 
 
@@ -169,7 +173,7 @@ getCheckInTime(studentID,date) :any{
   /** 依目前以數載入缺曠資料。 */
   public async reloadStudentAttendances(msg?: string) {
 
-    const students = await this.dsa.getStudent(this.groupInfo.type, this.groupInfo.id, this.today, this.period);
+    const students = await this.dsa.getStudent(this.groupInfo.type, this.groupInfo.id, this.curr_day, this.period);
     this.studentChecks = [];
 
     const c = await this.gadget.getContract("campus.rollcall.teacher");
@@ -355,7 +359,7 @@ getCheckInTime(studentID,date) :any{
     const dialog = this.alert.waiting(this.i18next.t('saving', { defaultValue: "儲存中..." }));
 
     try {
-      await this.dsa.setRollCall(this.groupInfo.type, this.groupInfo.id, this.periodConf.Name, items);
+      await this.dsa.setRollCall(this.groupInfo.curr_day ,this.groupInfo.type, this.groupInfo.id, this.periodConf.Name, items);
       this.router.navigate(['/main']);
     } catch (error) {
       this.alert.json(error);

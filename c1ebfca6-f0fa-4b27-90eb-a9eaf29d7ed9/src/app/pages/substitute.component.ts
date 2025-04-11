@@ -30,7 +30,7 @@ export class SubstituteComponent implements OnInit {
 
   async ngOnInit() {
     this.Init();
-    this.today = await this.dsa.getToday();
+    this.today = await this.dsa.getSelectedDay();
   }
 
   async Init() {

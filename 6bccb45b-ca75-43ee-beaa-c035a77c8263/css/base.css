@@ -4,10 +4,9 @@
   font-family: "微軟正黑體","Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-/*html, body {
-  height: 100%;
-  background: #fdfdfd;
-}*/
+html, body {
+  font-size: 16px;
+}
 
 .navbar {
   border: 1px dashed transparent;
@@ -35,7 +34,8 @@
 }
 
 hr {
-  border-top: none;
+  /* border-top: none; */
+  margin: 0;
 }
 
 @media (min-width: 768px) {
@@ -54,7 +54,7 @@ hr {
 
 /* 固定寬度 */
 body {
-  max-width: 1024px;
+  /* max-width: 1024px; */
   margin: 0 auto;
   background:url(images/page-bg.gif);
 }

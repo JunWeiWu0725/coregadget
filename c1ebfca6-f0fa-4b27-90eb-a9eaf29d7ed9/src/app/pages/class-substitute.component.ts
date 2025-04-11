@@ -31,7 +31,7 @@ export class ClassSubstituteComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.today = await this.dsa.getToday();
+    this.today = this.dsa.getSelectedDay(); //await this.dsa.getToday();
 
     const conf = await this.dsa.getSchedule(this.today);
     this.Periods = conf.PeriodConf.filter(p => p.Actor === ClassTutor);
@@ -61,7 +61,15 @@ export class ClassSubstituteComponent implements OnInit {
       const message = this.i18next.t('select-session-for-roll-call', { defaultValue: '請選擇要點名的節次。' });
       this.alert.snack(message, 5000);
     } else {
-      this.router.navigate([`/pick/Class/${oClass.ClassID}/${this.selectedPeriod.Name}/${oClass.ClassName}`]);
+      //this.router.navigate([`/pick/${this.today}/Class/${oClass.ClassID}/${this.selectedPeriod.Name}/${oClass.ClassName}`]);
+      this.router.navigate([
+        '../pick', 
+        this.today,
+        "Class",
+        oClass.ClassID, 
+        this.selectedPeriod.Name,
+        oClass.ClassName
+      ]);
     }
   }
 

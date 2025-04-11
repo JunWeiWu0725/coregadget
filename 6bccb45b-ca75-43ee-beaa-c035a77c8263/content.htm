@@ -2,16 +2,15 @@
 <html ng-app="learning">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
-    <META HTTP-EQUIV="EXPIRES" CONTENT="0">
-    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+  <META HTTP-EQUIV="EXPIRES" CONTENT="0">
+  <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
 
-    <script src="js/gadget.js"></script>
-    <script>
+  <script src="js/gadget.js"></script>
+  <script>
         init({
-            //application: "dev.jh_kh",
             application: "",
             paramValues: {},
             oAuth: {
@@ -19,153 +18,222 @@
                 clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
             }
         });
-    </script>
+  </script>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/font-awesome.min.css" rel="stylesheet" />
-    <link href="css/base.css" rel="stylesheet" />
-    <link href="css/default.css" rel="stylesheet" />
-    <script src="js/jquery-1.8.1.min.js"></script>
-    <script src="js/angular.min.js"></script>
-    <script src="js/angular-animate.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/servicelearning.js"></script>
+  <link href="css/bootstrap.min.css" rel="stylesheet" />
+  <link href="css/font-awesome.min.css" rel="stylesheet" />
+  <link href="css/base.css" rel="stylesheet" />
+  <link href="css/default.css" rel="stylesheet" />
+  <link href="css/purge.css" rel="stylesheet" />
+  <script src="js/jquery-1.8.1.min.js"></script>
+  <script src="js/angular.min.js"></script>
+  <script src="js/angular-animate.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/servicelearning.js"></script>
 </head>
 
 <body ng-controller="MainCtrl">
-    <div id="gadget" class="my-page">
-        <div id="mainMsg"></div>
-        <div ng-init="getClassList()">
-            <div>
-                <h1>
-                    <span id="tabName">服務學習時數總覽</span>
-                </h1>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        {{currentClassList.ClassName}}
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <li ng-repeat="item in classList" ng-class="{'active':item.selected}">
-                            <a href="javascript:;" ng-click="selectClassList(item)">{{item.ClassName}}</a>
-                        </li>
-                    </ul>
-                </div>
-                <!--
-                    <div class="btn-group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        <span ng-if="arraySchoolYear">
-                            {{currentSchoolYear}}學年度
-                            <span class="caret"></span>
-                        </span>
-                        <span ng-if="!arraySchoolYear">目前無資料</span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <li ng-repeat="data in arraySchoolYear" ng-class="{'active':data.selected}">
-                            <a href="javascript:;" ng-click="selectSchoolYear(data)">{{data.SchoolYear}}學年度</a>
-                        </li>
-                    </ul>
-
-
-                    old design
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        <span ng-if="semesters">{{currentSemester.SchoolYear}}學年度第{{currentSemester.Semester}}學期
-                            <span class="caret"></span>
-                        </span>
-                        <span ng-if="!semesters">目前無資料</span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li ng-repeat="item in semesters" ng-class="{'active':item.selected}">
-                                <a href="javascript:;" ng-click="selectSemester(item)">{{item.SchoolYear}}學年度第{{item.Semester}}學期</a>
-                            </li>
-                        </ul>
-
-                </div>
-                -->
-                <div ng-init="getStudentData()" style="margin-bottom:10px;">
-                    <div class="relative overflow-auto max-w-full max-h-full w-full h-full mt-0" style="max-height: 60vh;">
-                        <table class="table ctable mx-auto whitespace-nowrap"
-                            data-type="all" style="margin-top:10px;">
-                            <thead>
-                                <tr>
-                                    <th colspan="3" ng-repeat="header in colHeaderList">{{header}}</th>
-                                </tr>
-                                <tr>
-                                    <th class="{{col.Class}}" ng-repeat="col in columnList">{{col.Text}}</th>
-                                </tr>
-                            </thead>
-                            <tbody ng-if="studentList">
-                                <tr ng-repeat="item in studentList" ng-click="selectStudent(item)"
-                                    ng-class="{'warning':item.selected}">
-                                    <td class="{{col.Class}}" ng-repeat="col in columnList">{{item[col.Name]}}</td>
-                                </tr>
-                            </tbody>
-                            <tbody ng-if="!studentList">
-                                <tr>
-                                    <td colspan="4">目前無資料</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div style="overflow-x:hidden;margin-top:24px;">
-                    <div ng-if="currentStudent" class="relative overflow-auto max-w-full max-h-full w-full h-full mt-0">
-                        <!--
-                        <button class="btn btn-default btn-sm pull-right" style="margin-bottom:10px;" type="button" data-type="return" ng-click="removeCurrentStudent()">返回 <i class="fa fa-angle-right"></i>
-                        </button>    
-                        -->
-                        <!--<table class="table table-bordered table-striped" data-type="total">
-                            <thead>
-                                <tr>
-                                    <th>座號</th>
-                                    <th>學號</th>
-                                    <th>姓名</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>{{currentStudent.SeatNo}}</td>
-                                    <td>{{currentStudent.StudentNumber}}</td>
-                                    <td>{{currentStudent.StudentName}}</td>
-                                </tr>
-                            </tbody>
-                        </table>-->
-                        <table class="table ntable mx-auto whitespace-nowrap" data-type="detail">
-                            <thead>
-                                <tr>
-                                    <th>學年度</th>
-                                    <th>學期</th>
-                                    <th>日期</th>
-                                    <th style="min-width: 130px;">服務內容</th>
-                                    <th>時數</th>
-                                    <th>主辦單位</th>
-                                    <th>校內/校外</th>
-                                    <th>備註</th>
-                                </tr>
-                            </thead>
-                            <tbody ng-if="currentStudent.records">
-                                <tr ng-repeat="item in currentStudent.records">
-                                    <td class="text-center">{{item.SchoolYear}}</td>
-                                    <td class="text-center">{{item.Semester}}</td>
-                                    <td>{{item.OccurDate}}</td>
-                                    <td style="white-space: normal;">{{item.Reason}}</td>
-                                    <td class="text-center">{{item.Hours}}</td>
-                                    <td>{{item.Organizers}}</td>
-                                    <td>{{item.InternalOrExternal}}</td>
-                                    <td>{{item.Remark}}</td>
-                                </tr>
-                            </tbody>
-                            <tbody ng-if="!currentStudent.records">
-                                <tr>
-                                    <td colspan="8">目前無資料</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+  <div id="gadget" class="my-page">
+    <div id="mainMsg"></div>
+    <div ng-init="getClassList()">
+      <div>
+        <h1>
+          <span id="tabName">服務學習時數總覽</span>
+        </h1>
+        <div class="btn-group">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            {{currentClassList.ClassName}}
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li ng-repeat="item in classList" ng-class="{'active':item.selected}">
+              <a href="javascript:;" ng-click="selectClassList(item)">{{item.ClassName}}</a>
+            </li>
+          </ul>
         </div>
+        <!-- 
+        <div class="btn-group">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <span ng-if="arraySchoolYear">
+              {{currentSchoolYear}}學年度
+              <span class="caret"></span>
+            </span>
+            <span ng-if="!arraySchoolYear">目前無資料</span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li ng-repeat="data in arraySchoolYear" ng-class="{'active':data.selected}">
+              <a href="javascript:;" ng-click="selectSchoolYear(data)">{{data.SchoolYear}}學年度</a>
+            </li>
+          </ul>
+
+
+          old design
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <span ng-if="semesters">{{currentSemester.SchoolYear}}學年度第{{currentSemester.Semester}}學期
+              <span class="caret"></span>
+            </span>
+            <span ng-if="!semesters">目前無資料</span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li ng-repeat="item in semesters" ng-class="{'active':item.selected}">
+              <a href="javascript:;" ng-click="selectSemester(item)">{{item.SchoolYear}}學年度第{{item.Semester}}學期</a>
+            </li>
+          </ul>
+
+        </div> -->
+
+        <!-- <div ng-init="getStudentData()" style="margin-bottom:10px;">
+          <div class="relative overflow-auto max-w-full max-h-full w-full h-full mt-0" style="max-height: 60vh;">
+            <table class="table ctable mx-auto whitespace-nowrap" data-type="all" style="margin-top:10px;">
+              <thead>
+                <tr>
+                  <th colspan="3" ng-repeat="header in colHeaderList">{{header}}</th>
+                </tr>
+                <tr>
+                  <th class="{{col.Class}}" ng-repeat="col in columnList">{{col.Text}}</th>
+                </tr>
+              </thead>
+              <tbody ng-if="studentList">
+                <tr ng-repeat="item in studentList" ng-click="selectStudent(item)" ng-class="{'warning':item.selected}">
+                  <td class="{{col.Class}}" ng-repeat="col in columnList">{{item[col.Name]}}</td>
+                </tr>
+              </tbody>
+              <tbody ng-if="!studentList">
+                <tr>
+                  <td colspan="4">目前無資料</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div> -->
+        <div class="mt-4" ng-init="getStudentData()">
+          <div class="" data-type="all">
+            <div ng-if="studentList" class="flex flex-wrap justify-center items-start" style="gap: 24px;">
+              <div ng-repeat="item in studentList" ng-click="selectStudent(item)"
+                class="col-12 col-xs-2 col-md-3 tsite rounded-xl py-4" style="box-shadow: 0 0 5px 0px #d7d7d7;"
+                ng-class="{'warning': item.selected}">
+                <!-- <div ng-repeat="header in colHeaderList">{{header}}</div> -->
+                <!-- <div class="{{col.Class}}" ng-repeat="col in columnList">{{item[col.Name]}}</div> -->
+                <div class="flex items-center">
+                  <div class="flex justify-center items-center border rounded-full"
+                    style="width: 32px; height: 32px; border-color: #009de7;">{{ item.SeatNo }}</div>
+                  <div class="font-semibold ml-2">{{ item.StudentName }}</div>
+                </div>
+                <div class="flex justify-between" style="margin-left: 42px;">
+                  <div class="text-gray-400">{{ item.StudentNumber }}</div>
+                  <img src="./img/down.svg" ng-style="item.selected ? {'transform': 'rotate(180deg)', 'opacity': 0.7} : {}" alt="" width="24">
+                </div>
+                <hr class="my-3">
+                <div class="grid grid-cols-4 text-center text-14 text-gray-600 mb-1">
+                  <div>學年</div>
+                  <div>上</div>
+                  <div>下</div>
+                  <div>合計</div>
+                </div>
+                <div class="grid grid-cols-4 text-center text-14 text-gray-500 mb-1" ng-repeat="Year in schoolYearList | orderBy:'-SchoolYear'">
+                  <div>{{Year.SchoolYear}}</div>
+                  <div class="font-semibold text-green"><span ng-if="item[Year.SchoolYear + '1'] !== 0">{{ item[Year.SchoolYear + '1'] }}</span></div>
+                  <div class="font-semibold text-blue"><span ng-if="item[Year.SchoolYear + '2'] !== 0">{{ item[Year.SchoolYear + '2'] }}</span></div>
+                  <div class="font-semibold"><span ng-if="item[Year.SchoolYear + 'total'] !== 0">{{ item[Year.SchoolYear + 'total'] }}</span></div>
+                </div>
+                <!-- <div class="{{col.Class}}" ng-repeat="col in columnList">{{col.Text}}</div> -->
+
+                <!-- 詳細資料 -->
+                <div class="bg-slate-100 rounded-lg mt-2 px-2 pt-2" data-type="detail" ng-if="item.selected">
+                  <div ng-if="item.records.length > 0">
+                    <div ng-repeat="record in item.records | orderBy:'-SchoolYear'" class="text-14 text-gray-500">
+                      <div class="flex justify-between items-baseline gap-3 whitespace-nowrap">
+                        <div>
+                          <span>{{record.SchoolYear}}</span>
+                          <span>({{record.Semester}})</span>
+                        </div>
+                        <span>{{record.OccurDate}}</span>
+                        <div>
+                          <span class="text-lg font-semibold" 
+                            ng-class="{'text-green': record.Semester == 1, 'text-blue': record.Semester != 1}">{{record.Hours}}</span>
+                          <span>hrs</span>
+                        </div>
+                      </div>
+                      <div class="text-center"></div>
+                      <div class="mb-2">{{record.Organizers}}/{{record.InternalOrExternal}}</div>
+                      <div class="text-gray-900" style="white-space: normal;">{{record.Reason}}</div>
+                      <div>{{record.Remark}}</div>
+                      <hr class="my-3" style="border-color: #d1d1d1;">
+                    </div>
+                  </div>
+                  <div ng-if="item.records.length === 0">
+                    <div class="text-center text-14 pb-2">目前無資料</div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="col-12 col-xs-2 col-md-3 tsite rounded-xl"></div>
+              <div class="col-12 col-xs-2 col-md-3 tsite rounded-xl"></div>
+              <div class="col-12 col-xs-2 col-md-3 tsite rounded-xl"></div>
+            </div>
+
+            <div ng-if="!studentList || studentList.length === 0" class="text-center">目前無資料</div>
+          </div>
+        </div>
+        <!-- <div style="overflow-x:hidden;margin-top:24px;">
+          <div ng-if="currentStudent" class="relative overflow-auto max-w-full max-h-full w-full h-full mt-0">
+
+            <button class="btn btn-default btn-sm pull-right" style="margin-bottom:10px;" type="button"
+              data-type="return" ng-click="removeCurrentStudent()">返回 <i class="fa fa-angle-right"></i>
+            </button>
+
+            <table class="table table-bordered table-striped" data-type="total">
+              <thead>
+                <tr>
+                  <th>座號</th>
+                  <th>學號</th>
+                  <th>姓名</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{currentStudent.SeatNo}}</td>
+                  <td>{{currentStudent.StudentNumber}}</td>
+                  <td>{{currentStudent.StudentName}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <table class="table ntable mx-auto whitespace-nowrap" data-type="detail">
+              <thead>
+                <tr>
+                  <th>學年度</th>
+                  <th>學期</th>
+                  <th>日期</th>
+                  <th style="min-width: 130px;">服務內容</th>
+                  <th>時數</th>
+                  <th>主辦單位</th>
+                  <th>校內/校外</th>
+                  <th>備註</th>
+                </tr>
+              </thead>
+              <tbody ng-if="currentStudent.records">
+                <tr ng-repeat="item in currentStudent.records">
+                  <td class="text-center">{{item.SchoolYear}}</td>
+                  <td class="text-center">{{item.Semester}}</td>
+                  <td>{{item.OccurDate}}</td>
+                  <td style="white-space: normal;">{{item.Reason}}</td>
+                  <td class="text-center">{{item.Hours}}</td>
+                  <td>{{item.Organizers}}</td>
+                  <td>{{item.InternalOrExternal}}</td>
+                  <td>{{item.Remark}}</td>
+                </tr>
+              </tbody>
+              <tbody ng-if="!currentStudent.records">
+                <tr>
+                  <td colspan="8">目前無資料</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div> -->
+      </div>
     </div>
+  </div>
 </body>
 
 </html>
