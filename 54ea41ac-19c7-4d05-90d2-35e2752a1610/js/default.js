@@ -369,14 +369,14 @@
     my_semester = global.behavior.semester;
 
     // 先取得對照表
-    return gadget.getContract("ischool.AD.student").send({
-      service: "_.GetDisciplineNameMapping",
-      body: "",
+    return gadget.getContract("ischool.behavior.changename").send({
+      service: "_.GetChangeName",
+      body: "<Request><Name>留校察看</Name></Request>",
       result: function(mapping_response, mapping_error, mapping_xhr) {
         // 取得留校察看的對照文字
         var detentionText = "留校察看";  // 預設文字
-        if (!mapping_error && mapping_response && mapping_response.name) {
-          detentionText = mapping_response.name;
+        if (!mapping_error && mapping_response && mapping_response.Result && mapping_response.Result.items && mapping_response.Result.items.NewName ) {
+          detentionText = mapping_response.Result.items.NewName;
         }
 
         // 再取得獎懲紀錄
@@ -407,7 +407,9 @@
                 dd: 0                // detentions
               };
         
-              const disciplines = response?.Result?.Discipline || [];
+              const disciplines = Array.isArray(response?.Result?.Discipline) 
+              ? response.Result.Discipline 
+              : (response?.Result?.Discipline ? [response.Result.Discipline] : []);
         
               disciplines.forEach((record) => {
                 const occurDate = record.OccurDate?.substr(0, 10) || '';
