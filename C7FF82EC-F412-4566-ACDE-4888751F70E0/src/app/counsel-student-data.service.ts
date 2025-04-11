@@ -57,6 +57,7 @@ export class CounselStudentDataService {
     const rsp = await this.dsaSrv.send('GetStudentDiscipline', body);
     const disList: DisciplineRecord[] = [].concat(rsp.Discipline || []) as DisciplineRecord[];
 
+    
     return disList;
   }
 
@@ -181,7 +182,7 @@ export interface DisciplineRecord {
   /**警告 */
   DemeritC: number;
   /**已銷過 */
-  DemeritIsClear: boolean;
+  DemeritIsClear: string;
   /**銷過日期 */
   DemeritClearDate: string;
   /**銷過事由 */

@@ -148,6 +148,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
     await this.GetMyCounselTeacherRole();
 
     if (gadget.params.system_counsel_position === 'referral' || gadget.params.system_counsel_position === 'counselor' || gadget.params.system_counsel_position === 'freshman') {
+      debugger
       this.counselVisable = true;
       this.comprehensiveVisable = true;
       this.adminVisable = true;

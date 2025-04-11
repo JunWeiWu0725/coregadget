@@ -170,6 +170,11 @@ export class RoleService {
       this._role.indexOf("管理者") >= 0 ||
       this._role.indexOf("輔導老師") >= 0
     ) {
+      // this._enableComprehensive.permitted = true;
+    }
+    if (
+      this._role.indexOf("管理者") >= 0 
+    ) {
       this._enableComprehensive.permitted = true;
     }
 
@@ -179,9 +184,17 @@ export class RoleService {
       this._enableTransferStudents.permitted = true; // TODO: 要改成正確的
     }
 
+    // if (
+    //   this._role.indexOf("管理者") >= 0 ||
+    //   this._role.indexOf("輔導老師") >= 0
+    // ) {
+    //   this._enablePsychologicalTest.permitted = true;
+    // }
+
+    
     if (
-      this._role.indexOf("管理者") >= 0 ||
-      this._role.indexOf("輔導老師") >= 0
+      this._role.indexOf("管理者") >= 0 
+      // this._role.indexOf("輔導老師") >= 0
     ) {
       this._enablePsychologicalTest.permitted = true;
     }

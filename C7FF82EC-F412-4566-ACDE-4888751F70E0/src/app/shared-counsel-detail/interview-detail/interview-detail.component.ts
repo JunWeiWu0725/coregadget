@@ -269,10 +269,15 @@ export class InterviewDetailComponent implements OnInit {
           StudentID: StudentID
         }
       });
+      let curObj
 
       [].concat(resp.CounselInterview || []).forEach(counselRec => {
         // 建立輔導資料
+        try{
+
+
         let rec: CounselInterview = new CounselInterview();
+        curObj =rec ;
         rec.UID = counselRec.UID;
         rec.StudentName = counselRec.StudentName;
         rec.SchoolYear = parseInt(counselRec.SchoolYear);
@@ -329,11 +334,15 @@ export class InterviewDetailComponent implements OnInit {
 
         if (rec.isCanView) {
           data.push(rec);
+        }}catch(ex){
+            debugger
+            console.log("curObj",curObj)
+            alert(ex)
         }
 
       });
     } catch (err) {
-      alert('取得透過學生系統編號取得學生輔導資料:' + err.dsaError.message);
+      alert('取得透過學生系統編號取得學生輔導資料:' + err);
     }
 
     return data;
