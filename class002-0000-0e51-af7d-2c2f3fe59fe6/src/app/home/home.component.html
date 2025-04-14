@@ -85,6 +85,9 @@
                           班導師
                         </th>
                         <th scope="col" class="t-title">
+                          副班導
+                        </th>
+                        <th scope="col" class="t-title">
                           學生人數
                         </th>
                         <th scope="col" class="t-title pl-6 pr-10">
@@ -111,6 +114,9 @@
                         </td>
                         <td class="t-content">
                           <div class="t-word">{{item.TeacherNickname ? item.TeacherName + '(' + item.TeacherNickname + ')' : item.TeacherName}}</div>
+                        </td>
+                        <td class="t-content">
+                          <div class="t-word">{{item.TeacherNicknameSecondary ? item.TeacherNameSecondary + '(' + item.TeacherNicknameSecondary + ')' : item.TeacherNameSecondary}}</div>
                         </td>
                         <td class="t-content">
                           <div class="t-word">{{item.ClassStudentCount || 0}}人</div>

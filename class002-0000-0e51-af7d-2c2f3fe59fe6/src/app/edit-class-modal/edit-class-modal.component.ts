@@ -20,6 +20,7 @@ export class EditClassModalComponent implements OnInit {
   className = '';
   teacherList: TeacherRec[] = [];
   teacherId?: string;
+  teacherIdSecondary?: string;
 
   constructor(
     public dialogRef: MatDialogRef<EditClassModalComponent>,
@@ -33,6 +34,7 @@ export class EditClassModalComponent implements OnInit {
     this.mode = (this.cRec.ClassId ? 'edit' : 'add');
     this.teacherList = this.coreSrv.teacherList;
     this.teacherId = data.class.TeacherId;
+    this.teacherIdSecondary = data.class.TeacherIdSecondary;
   }
 
   ngOnInit(): void {
@@ -42,7 +44,7 @@ export class EditClassModalComponent implements OnInit {
     try {
       const mode: ImportMode = (this.cRec.ClassId) ? 'EDIT' : 'ADD';
       const identifyField: ClassFieldName[] = (mode === 'EDIT') ? ['ClassId'] : [];
-      const importField: ClassFieldName[] = ['ClassId', 'ClassName', 'GradeYear', 'TeacherId'];
+      const importField: ClassFieldName[] = ['ClassId', 'ClassName', 'GradeYear', 'TeacherId', 'TeacherIdSecondary'];
       // console.log(importField);
 
       const sourceClassList = this.data.sourceClasses;
@@ -84,6 +86,18 @@ export class EditClassModalComponent implements OnInit {
     this.errMsg = '';
     if (this.saving) { return; }
 
+    //當TeacherIdSecondary和TeacherId重複時，提示不可重複
+    if (this.teacherId && this.teacherIdSecondary && this.teacherId === this.teacherIdSecondary) {
+      this.errMsg = '班導師和副班導不可為同一人';
+      return;
+    }
+
+    // 若有選擇副班導時，班導師不可為空
+    if (this.teacherIdSecondary && !this.teacherId) {
+      this.errMsg = '設定副班導前，請先選擇班導師';
+      return;
+    }
+
     // 驗證資料正確性
     const valid = await this.validate();
     if (valid.info === 'error') { this.errMsg = valid.errorMsg; return; }
@@ -95,6 +109,7 @@ export class EditClassModalComponent implements OnInit {
         ClassName: this.cRec.ClassName,
         GradeYear: this.cRec.GradeYear,
         TeacherId: this.teacherId,
+        TeacherIdSecondary: this.teacherIdSecondary
       };
 
       if (this.cRec.ClassId) {
@@ -104,10 +119,34 @@ export class EditClassModalComponent implements OnInit {
       }
 
       try {
-        if (this.cRec.ClassId) {
-          await this.coreSrv.addLog('Record', '變更班級', `班級系統編號：${this.cRec.ClassId}。\n詳細資料：${JSON.stringify(this.cRec)}`);
+        // 將變更的班級資料整合後寫入log
+        let newRec = { ...this.cRec, ...newData,};
+        if (this.teacherId) {
+          const teacherRec = this.coreSrv.teacherList.find(t => t.TeacherId === this.teacherId);
+          if (teacherRec) {
+            newRec.TeacherName = teacherRec.TeacherName;
+            newRec.TeacherNickname = teacherRec.Nickname;
+          }
+        }else{
+          newRec.TeacherName = '';
+          newRec.TeacherNickname = '';
+        }
+
+        if (this.teacherIdSecondary) {
+          const teacherRecSecondary = this.coreSrv.teacherList.find(t => t.TeacherId === this.teacherIdSecondary);
+          if (teacherRecSecondary) {
+            newRec.TeacherNameSecondary = teacherRecSecondary.TeacherName;
+            newRec.TeacherNicknameSecondary = teacherRecSecondary.Nickname;
+          }
         } else {
-          await this.coreSrv.addLog('Record', '新增班級', `班級名稱：${this.cRec.ClassName}。\n詳細資料：${JSON.stringify(this.cRec)}`);
+          newRec.TeacherNameSecondary = '';
+          newRec.TeacherNicknameSecondary = '';
+        }
+        
+        if (this.cRec.ClassId) {
+          await this.coreSrv.addLog('Record', '變更班級', `班級系統編號：${this.cRec.ClassId}。\n詳細資料：${JSON.stringify(newRec)}`);
+        } else {
+          await this.coreSrv.addLog('Record', '新增班級', `班級名稱：${this.cRec.ClassName}。\n詳細資料：${JSON.stringify(newRec)}`);
         }
       } catch (error) { }
 
@@ -122,5 +161,9 @@ export class EditClassModalComponent implements OnInit {
 
   setTeacherId(teacherId: string | undefined) {
     this.teacherId = teacherId;
+  }
+
+  setSubTeacherId(teacherId: string | undefined) {
+    this.teacherIdSecondary = teacherId;
   }
 }

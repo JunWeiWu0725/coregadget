@@ -9,4 +9,4 @@ export interface ImportFieldRec {
 }
 
 export type ClassFieldName = 'ClassId' | 'ClassName' | 'GradeYear' | 'ClassCode'
-  | 'TeacherFullName' | 'TeacherId';
+  | 'TeacherFullName' | 'TeacherId' | 'TeacherIdSecondary';
