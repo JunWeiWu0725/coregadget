@@ -1,0 +1,207 @@
+<div class="flex justify-end">
+  <span class="cursor-pointer" (click)="dialogRef.close()">
+    <span
+      class="iconify close-window"
+      data-icon="eva:close-fill"
+      data-inline="false"
+    ></span>
+  </span>
+</div>
+<p class="gadget_bigtitle">類別管理</p>
+<mat-dialog-content>
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 mt-6">
+    <div class="">
+      <div class="mb-2 w-full dropdown_box">
+        <mat-select
+          class=""
+          name="groupFilter"
+          [(value)]="selectPrefix"
+          (selectionChange)="filterTagList()"
+        >
+          <mat-option value="all">顯示所有類別</mat-option>
+          <mat-option *ngFor="let item of prefixList" [value]="item.id">
+            {{ item.Prefix || "未分群組" }}
+          </mat-option>
+        </mat-select>
+      </div>
+      <div class="flex bg-primary rounded-t-md p-2">
+        <div class="w-4 h-4 mr-2"></div>
+        <div class="text-white">類別名稱</div>
+        <button
+          class="rounded-full ml-auto whitespace-nowrap text-white cursor-pointer flex justify-center items-center"
+          title="新增類別"
+          (click)="addTagClick()"
+        >
+          <span class="">新增</span>
+          <span
+            class="iconify text-2xl"
+            data-icon="fluent:add-circle-16-regular"
+            data-inline="false"
+          ></span>
+        </button>
+      </div>
+      <div class="table-zebra overflow-auto">
+        <div
+          *ngFor="let item of filteredTagList"
+          class="cursor-pointer p-2"
+          [ngClass]="{ active: item.TagId == tempTag.TagId }"
+          (click)="editTagClick(item)"
+        >
+          <div class="flex items-center">
+            <div
+              class="w-4 h-4 mr-2 border flex-shrink-0"
+              [ngStyle]="{ 'background-color': item.Color }"
+            ></div>
+            <span
+              >{{ item.Prefix ? item.Prefix + ":" : "" }}{{ item.Name }}</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="bg-gray-100 rounded p-4 flex flex-col justify-between gap-6 relative"
+    >
+      <div *ngIf="mode === 'view'" class="space-y-2">
+        <p>如需編輯或刪除類別，請點擊該類別名稱</p>
+        <p>
+          點擊新增按鈕
+          <span
+            class="iconify text-2xl inline-block mx-1 text-white bg-primary rounded-full"
+            data-icon="fluent:add-circle-16-regular"
+            data-inline="false"
+          ></span
+          >可添加新類別
+        </p>
+      </div>
+      <div *ngIf="mode !== 'view'" class="space-y-4">
+        <div class="text-xl font-bold">
+          <div *ngIf="mode === 'edit'" class="">編輯類別</div>
+          <div *ngIf="mode === 'add'" class="">新增類別</div>
+        </div>
+        <div class="">
+          <label class="">群組</label>
+          <div class="flex whitespace-nowrap gap-3 mt-1">
+            <div class="flex-grow">
+              <div class="dropdown_box" *ngIf="!isAddingNewGroup">
+                <mat-select
+                  name="edit-Prefix"
+                  [(value)]="tempTag.Prefix"
+                  [disabled]="IsEnableEdit"
+                >
+                  <mat-option
+                    value="blank"
+                    [defaultSelected]="true"
+                    [disabled]="true"
+                  >
+                    選擇群組或點擊右邊按鈕新增
+                  </mat-option>
+                  <mat-option
+                    *ngFor="let item of prefixList"
+                    [value]="item.Prefix"
+                  >
+                    {{ item.Prefix || "未分群組" }}
+                  </mat-option>
+                </mat-select>
+              </div>
+              <input
+                *ngIf="isAddingNewGroup"
+                type="text"
+                required
+                name="edit-Prefix"
+                placeholder="群組名稱"
+                [(ngModel)]="tempPrefix"
+                autocomplete="off"
+                class="input-outline"
+                style="height: 2.65rem"
+                [disabled]="IsEnableEdit"
+              />
+            </div>
+            <button
+              *ngIf="!isAddingNewGroup"
+              class="rounded border border-gray-300 whitespace-nowrap cursor-pointer w-10 flex-shrink-0 flex justify-center items-center"
+              title="新增群組"
+              (click)="addGroupClick()"
+              [disabled]="IsEnableEdit"
+            >
+              <span
+                class="iconify text-2xl text-gray-500"
+                data-icon="eva:edit-2-outline"
+                data-inline="false"
+              ></span>
+            </button>
+            <div
+              *ngIf="isAddingNewGroup"
+              class="rounded border border-gray-300 whitespace-nowrap cursor-pointer w-10 flex-shrink-0 flex justify-center items-center"
+              title="取消新增"
+              (click)="cancelAddGroup()"
+            >
+              <span
+                class="iconify text-2xl text-gray-500"
+                data-icon="eva:close-outline"
+                data-inline="false"
+              ></span>
+            </div>
+          </div>
+        </div>
+        <div class="">
+          <label class="">名稱</label>
+          <div class="flex gap-3 mt-1">
+            <input
+              type="text"
+              required
+              name="edit-Name"
+              placeholder="類別名稱"
+              [(ngModel)]="tempTag.Name"
+              autocomplete="off"
+              class="input-outline"
+              [disabled]="IsEnableEdit"
+            />
+            <div class="relative flex justify-center items-center">
+              <input
+                type="color"
+                name="edit-Color"
+                [(ngModel)]="tempTag.Color"
+                class="h-full w-10 cursor-pointer"
+                title="類別顏色"
+                [disabled]="IsEnableEdit"
+              />
+              <span
+                class="iconify text-2xl text-gray-500 absolute w-full h-full p-2 pointer-events-none"
+                data-icon="eva:color-palette-outline"
+                data-inline="false"
+              ></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button
+          class="btn rounded-full text-sm text-warning hover:bg-warning hover:bg-opacity-30"
+          (click)="confirmDel()"
+          *ngIf="mode === 'edit'"
+        >
+          刪除
+        </button>
+        <button
+          class="btn btn-primary rounded-full whitespace-nowrap ml-auto"
+          (click)="updateTag()"
+          *ngIf="mode !== 'view'"
+          [disabled]="IsEnableEdit"
+        >
+          儲存
+        </button>
+      </div>
+      <div
+        class="absolute top-0 left-0 w-full h-full bg-gray-300 opacity-50 rounded"
+        *ngIf="IsEnableEdit"
+      ></div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <div class="w-full flex justify-end gap-2 items-center">
+    <p class="text-warning grow">{{ errMsg }}</p>
+  </div>
+</mat-dialog-actions>

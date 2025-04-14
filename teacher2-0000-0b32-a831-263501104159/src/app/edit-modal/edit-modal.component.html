@@ -1,7 +1,10 @@
+<mat-dialog-content style="max-height: 85vh">
 <div class="dailog">
-  <span class="cursor-pointer" (click)="dialogRef.close()">
-    <span class="iconify close-window" data-icon="eva:close-fill" data-inline="false"></span>
-  </span>
+  <div class="flex justify-end">
+    <span class="cursor-pointer" (click)="dialogRef.close()">
+      <span class="iconify close-window" data-icon="eva:close-fill" data-inline="false"></span>
+    </span>
+  </div>
   <ng-container *ngIf="mode === 'edit'">
     <p class="gadget_bigtitle">編輯教師</p>
     <p class="discription">您正在編輯：<span class="text-primary">{{nickname ? teacherName + '(' + nickname + ')' : teacherName }}</span></p>
@@ -11,7 +14,13 @@
     <p class="discription">請填寫以下資訊以新增一位教師</p>
   </ng-container>
 
-  <div class="dialog-content mt-6">
+  <div class="dialog-content">
+    <div class="flex flex-wrap items-center py-4 gap-1">
+      <span *ngFor="let tag of tRec.Tags" class="badge"  [ngStyle]="{'border-color': tag.Color}" title="{{tag.Prefix ? tag.Prefix + ':' + tag.Name : tag.Name }}">{{tag.Prefix ? tag.Prefix + ':' : ''}}{{tag.Name}}</span>
+      <span *ngIf="tRec.Tags?.length === 0" class=""></span>
+      <button class="btn btn-primary ml-auto rounded-full" (click)="openTagModal()">編輯類別<span class="iconify text-2xl ml-1" data-icon="fluent:tag-16-regular" data-inline="false"></span>
+      </button>
+    </div>
     <div class="grid grid-cols-1 gap-y-4 md:grid-cols-2 md:gap-x-6 md:gap-y-6 mb-6 md:mb-0">
 
       <div>
@@ -74,3 +83,4 @@
     </div>
   </div>
 </div>
+</mat-dialog-content>

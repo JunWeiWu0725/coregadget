@@ -5,10 +5,10 @@ import { startWith, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 import { BatchAddComponent } from './batch-add/batch-add.component';
 import { CoreService } from './core.service';
-import { SourceTeacherRec, TeacherRec } from './data/teacher';
+import { SourceTeacherRec, TeacherRec , TagRec } from './data/teacher';
 import { EditModalComponent } from './edit-modal/edit-modal.component';
 import { ClassNamesPipe } from './shared/pipes/classnames.pipe';
-
+import { TagModalComponent } from  './tag-modal/tag-modal.component';
 type ViewMode = 'none' | 'mentor';
 
 @Component({
@@ -28,13 +28,15 @@ export class AppComponent implements OnInit {
   filterTotal = 0;
   curTeacher: TeacherRec = {} as TeacherRec;
 
+  tags : TagRec[] = [];
+
   constructor(
     private coreSrv: CoreService,
     public dialog: MatDialog,
   ) { }
 
   async ngOnInit() {
-    await this.getTeachers();
+    await Promise.all([this.getTeachers(), this.getTags()]);
     this.colForTeacher('none', '');
     this.curTeacher = (this.teachers.size ? this.teachers.values().next().value : {});
 
@@ -64,21 +66,95 @@ export class AppComponent implements OnInit {
             LinkAccount: v.LinkAccount,
             TeacherCode: v.TeacherCode,
             Classes: [],
+            Tags: [],
           });
         }
 
         const data = this.teachers.get(v.TeacherId);
-        if (v.ClassId) {
+        if (v.ClassId && !data.Classes.some(c => c.ClassId === v.ClassId)) {
           data.Classes.push({
             ClassId: v.ClassId,
             ClassName: v.ClassName,
           });
         }
+
+        if (v.TagTeacherId && !data.Tags.some(t => t.TagTeacherId === v.TagTeacherId)) {
+          data.Tags.push({
+            TagId: v.TagId,
+            TagTeacherId: v.TagTeacherId,
+            Prefix: v.Prefix, 
+            Name: v.Name,
+            Color: this.BGR_negative2BGR_hex(v.Color),
+            AccessControlCode: v.AccessControlCode,            
+          });
+        }
+        // 排序tag
+        data.Tags.sort((a, b) => {
+          // 1. 沒有 Prefix 的 tag 在最後面
+          if (!a.Prefix && b.Prefix) return 1;
+          if (a.Prefix && !b.Prefix) return -1;
+
+          // 2. 依照 Prefix 排序
+          const prefixCompare = a.Prefix.localeCompare(b.Prefix, "zh-hant");
+          if (prefixCompare !== 0) return prefixCompare;
+
+          // 3. 若 Prefix 相同，依照 Name 排序
+          return a.Name.localeCompare(b.Name, "zh-hant");
+        });
+        
       });
     } catch (error) {
       this.error = (error.dsaError && error.dsaError.message) ? error.dsaError.message : '發生錯誤';
     } finally {
       this.loading = false;
+    }
+  }
+
+  async getTags() {
+    try {
+      const rsp = await this.coreSrv.getTags();
+      const tagList: TagRec[] = [];
+      rsp.forEach((item) => {
+        const prefix = item.Prefix;
+        const tagNames = item.TagName;
+        if (Array.isArray(tagNames)) {
+          tagNames.forEach((tag) => {
+            tagList.push({
+              TagId: tag.TagId,
+              Prefix: prefix,
+              Name: tag["@text"],
+              Color: this.BGR_negative2BGR_hex(tag.Color),
+              AccessControlCode: tag.AccessControlCode,
+              UsageCount: tag.UsageCount,
+            });
+          });
+        } else {
+          tagList.push({
+            TagId: tagNames.TagId,
+            Prefix: prefix,
+            Name: tagNames["@text"],
+            Color: this.BGR_negative2BGR_hex(tagNames.Color),
+            AccessControlCode: tagNames.AccessControlCode,
+            UsageCount: tagNames.UsageCount,
+          });
+        }
+      });
+      // 排序 tagList
+      tagList.sort((a, b) => {
+        // 1. 沒有 Prefix 的 tag 在最後面
+        if (!a.Prefix && b.Prefix) return 1;
+        if (a.Prefix && !b.Prefix) return -1;
+
+        // 2. 依照 Prefix 排序
+        const prefixCompare = a.Prefix.localeCompare(b.Prefix, "zh-hant");
+        if (prefixCompare !== 0) return prefixCompare;
+
+        // 3. 若 Prefix 相同，依照 Name 排序
+        return a.Name.localeCompare(b.Name, "zh-hant");
+      });
+      this.tags = tagList;
+    } catch (error) {
+      this.error = (error.dsaError && error.dsaError.message) ? error.dsaError.message : '發生錯誤';
     }
   }
 
@@ -93,6 +169,7 @@ export class AppComponent implements OnInit {
           || v.Nickname.indexOf(keyword) > -1
           || v.LinkAccount.indexOf(keyword) > -1
           || v.TeacherCode.indexOf(keyword) > -1
+          || v.Tags.some(tag => tag.Name.indexOf(keyword) > -1 || tag.Prefix.indexOf(keyword) > -1)
         ) {
           list.push(v);
         };
@@ -150,7 +227,7 @@ export class AppComponent implements OnInit {
     const dialogRef = this.dialog.open(EditModalComponent, {
       width: '80vw',
       maxWidth: '1050px',
-      data: { teacher, teachers: Array.from(this.teachers.values()) },
+      data: { teacher, teachers: Array.from(this.teachers.values()) , tags: this.tags },
     });
 
     dialogRef.afterClosed().subscribe(async result => {
@@ -215,5 +292,44 @@ export class AppComponent implements OnInit {
     try {
       await this.coreSrv.addLog('Export', '匯出教師名單', `已進行「匯出名單」操作。`);
     } catch (error) { }
+  }
+
+  // 打開類別管理視窗
+  openTagModal() {
+    const dialogRef = this.dialog.open(TagModalComponent, {
+      width: '80vw',
+      maxWidth: '800px',
+      data: { tags: this.tags },
+    });
+
+    // 關閉視窗後，如果需要refresh則刷新
+    dialogRef.afterClosed().subscribe(async result => {
+      try {
+        if (result && result.state === 'refresh') {
+          this.loading = true;
+          await Promise.all([this.getTeachers(), this.getTags()]);
+          this.colForTeacher(this.viewMode, this.keywordCtrl.value);
+          // 重新開啟視窗
+          this.openTagModal();
+        }
+      } catch (error) {
+
+      } finally {
+        this.loading = false;
+      }
+    });
+  }
+  
+  // 將 BGR 格式的負數值轉換為十六進制顏色
+  BGR_negative2BGR_hex(bgr_negative: string | number): string {
+    if (typeof bgr_negative === 'string') {
+      bgr_negative = parseInt(bgr_negative, 10);
+    }
+
+    const bgr_hex = (~bgr_negative ^ 0xFFFFFF) & 0xFFFFFF;
+    const hexColor = `#${bgr_hex.toString(16).padStart(6, '0').toUpperCase()}`;
+    const isValidColor = /^#[0-9A-F]{6}$/.test(hexColor);
+
+    return isValidColor ? hexColor : '#FFFFFF';
   }
 }

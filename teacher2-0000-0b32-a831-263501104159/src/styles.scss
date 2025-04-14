@@ -31,3 +31,32 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", "PingFangSC-Regular", "
 .mat-form-field-appearance-outline .mat-form-field-wrapper:hover {
   background-color: #f9fafb!important;
 }
+
+.badge {
+  display: inline-block;
+  position: relative;
+  padding: 0.25rem 0.45rem 0.25rem 0.35rem;
+  font-size: 0.875rem;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  border-radius: 0.3rem;
+  margin: 2px;
+  outline: 1px solid #d1d5db;
+  background-color: #ffffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-left: 0.5rem solid;
+  max-width: 100%;
+  .badgeClose {
+    margin-left: 4px;
+    display: inline-block;
+    cursor: pointer;
+    &:hover {
+      color: rgb(255, 56, 56);
+    }
+  }
+  &.badge-mini {
+  max-width: calc(min(300px, 40vw));
+  }
+}

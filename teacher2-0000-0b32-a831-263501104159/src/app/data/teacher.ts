@@ -19,9 +19,28 @@ export interface TeacherRec {
   LinkAccount: string;
   TeacherCode: string;
   Classes: ClassRec[];
+  Tags: TagTeacherRec[];
 }
 
 export interface ClassRec {
   ClassId: string;
   ClassName: string;
+}
+
+export interface TagRec {
+  TagId: string;
+  Prefix: string;
+  Name: string;
+  Color: string;
+  AccessControlCode: string;
+  UsageCount: number;
+}
+
+export interface TagTeacherRec {
+  TagId: string;
+  TagTeacherId: string;
+  Prefix: string;
+  Name: string;
+  Color: string;
+  AccessControlCode: string;
 }

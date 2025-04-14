@@ -19,6 +19,8 @@ import { SearchBarModule } from './shared/search-bar/search-bar.module';
 import { RadioButtonModule } from './shared/radio-button/radio-button.module';
 import { CheckboxModule } from './shared/checkbox/checkbox.module';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { TagModalComponent } from './tag-modal/tag-modal.component';
+import { TagSelectModalComponent } from './tag-select-modal/tag-select-modal.component';
 
 
 @NgModule({
@@ -27,6 +29,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     EditModalComponent,
     BatchAddComponent,
     ObjectCheckboxDirective,
+    TagModalComponent,
+    TagSelectModalComponent,
   ],
   imports: [
     CommonModule,
