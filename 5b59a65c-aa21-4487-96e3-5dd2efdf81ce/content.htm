@@ -7,11 +7,11 @@
 	<script src="js/gadget.js"></script>
 	<script>
 		init({
-			application: "",
+			application: "test.kh.edu.tw",
 			paramValues: {},
 			oAuth: {
 				clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
-				clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
+				clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311'
 			}
 		});
 	</script>
@@ -68,7 +68,11 @@
 						<th>常模</th>
 						<th>仰臥起坐(次)</th>
 						<th>常模</th>
-						<th>心肺適能(秒)</th>
+						<th>800/1600公尺跑走(秒)</th>
+						<th>常模</th>
+						<th>仰臥捲腹(次)</th>
+						<th>常模</th>
+						<th>漸速耐力跑(趟)</th>
 						<th>常模</th>
 					</tr>
 				</thead>
@@ -86,7 +90,11 @@
 						<td>{{f.sit_up}}</td>
 						<td>{{f.sit_up_degree}}</td>
 						<td>{{f.cardiorespiratory}}</td>
-						<td>{{f.cardiorespiratory_degree}}</td>
+            			<td>{{f.cardiorespiratory_degree}}</td>
+						<td>{{f.curl}}</td>
+            			<td>{{f.curl_degree}}</td>
+						<td>{{f.pacer}}</td>
+            			<td>{{f.pacer_degree}}</td>
 					</tr>
 				</tbody>
 			</table>
