@@ -84,7 +84,7 @@ body {
   font-size: 0.875rem;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.428572;
   margin: 0;
 }
@@ -194,7 +194,7 @@ input[type='date'], input[type='datetime-local'], input[type='month'], input[typ
 
 label {
   font-size: 0.75rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.5;
   color: rgba(0, 0, 0, 0.38);
@@ -203,7 +203,7 @@ label {
 
 legend {
   font-size: 1.5rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.333334;
   color: inherit;
@@ -304,7 +304,7 @@ caption {
   text-align: left;
   text-align: start;
   font-size: 0.75rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.5;
   caption-side: bottom;
@@ -1400,7 +1400,7 @@ sup {
 
 .blockquote-footer {
   font-size: 0.75rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.5;
   color: rgba(0, 0, 0, 0.38);
@@ -1422,7 +1422,7 @@ mark,
 small,
 .small {
   font-size: 80%;
-  font-weight: 400;
+  font-weight: 600;
 }
 
 .initialism {
@@ -1439,28 +1439,28 @@ small,
 
 .typography-display-3 {
   font-size: 3.5rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.035715;
 }
 
 .typography-display-2 {
   font-size: 2.8125rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.066667;
 }
 
 .typography-display-1 {
   font-size: 2.125rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.176471;
 }
 
 .typography-headline {
   font-size: 1.5rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.333334;
 }
@@ -1474,7 +1474,7 @@ small,
 
 .typography-subheading {
   font-size: 1.0rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0.04em;
   line-height: 1.5;
 }
@@ -1488,14 +1488,14 @@ small,
 
 .typography-body-1 {
   font-size: 0.875rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.428572;
 }
 
 .typography-caption {
   font-size: 0.75rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.5;
 }
@@ -1520,7 +1520,7 @@ h6,
 h1,
 .h1 {
   font-size: 2.8125rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.066667;
 }
@@ -1528,7 +1528,7 @@ h1,
 h2,
 .h2 {
   font-size: 2.125rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.176471;
 }
@@ -1536,7 +1536,7 @@ h2,
 h3,
 .h3 {
   font-size: 1.5rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.333334;
 }
@@ -1552,7 +1552,7 @@ h4,
 h5,
 .h5 {
   font-size: 1.0rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0.04em;
   line-height: 1.5;
 }
@@ -1574,21 +1574,21 @@ h6,
 
 .display-2 {
   font-size: 3.5rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.035715;
 }
 
 .display-3 {
   font-size: 2.8125rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.066667;
 }
 
 .display-4 {
   font-size: 2.125rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.176471;
 }
@@ -2405,7 +2405,7 @@ pre code {
 
 .form-text {
   font-size: 0.75rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.5;
   color: rgba(0, 0, 0, 0.38);
@@ -2481,7 +2481,7 @@ pre code {
 
 .figure-caption {
   font-size: 0.75rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.5;
   color: rgba(0, 0, 0, 0.38);
@@ -2721,7 +2721,7 @@ pre code {
   text-align: start;
   font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: normal;
   line-break: auto;
   line-height: 1.428572;
@@ -3167,7 +3167,7 @@ fieldset:disabled a.btn {
   border-radius: 0;
   box-shadow: none;
   color: #ff4081;
-  font-weight: 400;
+  font-weight: 600;
   text-decoration: none;
   text-transform: none;
 }
@@ -4009,7 +4009,7 @@ fieldset:disabled a.btn {
 
 .card-subtitle {
   font-size: 0.875rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.428572;
   margin-top: -1rem;
@@ -4022,7 +4022,7 @@ fieldset:disabled a.btn {
 
 .card-title {
   font-size: 1.5rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.333334;
   margin-bottom: 1rem;
@@ -4042,7 +4042,7 @@ fieldset:disabled a.btn {
   display: -ms-inline-flexbox;
   display: inline-flex;
   font-size: 0.875rem;
-  font-weight: 400;
+  font-weight: 600;
   height: 2rem;
   -ms-flex-pack: center;
   justify-content: center;
@@ -4163,7 +4163,7 @@ fieldset:disabled a.btn {
   flex-shrink: 0;
   font-size: 1rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 600;
   height: 2rem;
   -ms-flex-pack: center;
   justify-content: center;
@@ -4221,7 +4221,7 @@ fieldset:disabled a.btn {
 .table tbody td,
 .table tbody th {
   font-size: 0.8125rem;
-  font-weight: 400;
+  font-weight: 600;
   height: 3rem;
   padding-top: 0.919643rem;
   padding-bottom: 0.919643rem;
@@ -4234,7 +4234,7 @@ fieldset:disabled a.btn {
 .table tfoot td,
 .table tfoot th {
   font-size: 0.75rem;
-  font-weight: 400;
+  font-weight: 600;
   height: 3.5rem;
   padding-top: 1.214285rem;
   padding-bottom: 1.214285rem;
@@ -5296,7 +5296,7 @@ fieldset:disabled a.btn {
   display: none;
   float: left;
   font-size: 1rem;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.5rem;
   list-style: none;
   margin: 0;
@@ -6772,7 +6772,7 @@ fieldset:disabled a.btn {
   transition-property: opacity, transform, -webkit-transform;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 0.875rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.428572;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14), 0 4px 5px 0 rgba(0, 0, 0, 0.12), 0 1px 10px 0 rgba(0, 0, 0, 0.2);
@@ -6930,7 +6930,7 @@ fieldset:disabled a.btn {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 2.125rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.176471;
 }
@@ -7874,8 +7874,8 @@ fieldset:disabled a.btn {
 
 .custom-control-label {
   color: inherit;
-  font-size: 0.875rem;
-  line-height: inherit;
+  font-size: 16px;
+  line-height: 24px;
   margin-bottom: 0;
 }
 
@@ -8683,7 +8683,7 @@ fieldset:disabled a.btn {
   border-radius: 50%;
   color: white;
   font-size: 0.75rem;
-  font-weight: 400;
+  font-weight: 600;
   height: 1.5rem;
   line-height: 1.5rem;
   margin-right: 0.5rem;
@@ -8706,7 +8706,7 @@ fieldset:disabled a.btn {
 .stepper-text {
   color: rgba(0, 0, 0, 0.38);
   font-size: 0.875rem;
-  font-weight: 400;
+  font-weight: 600;
   position: relative;
 }
 
@@ -9178,7 +9178,7 @@ textarea.form-control-sm:not([rows='1']) {
 
 .invalid-feedback {
   font-size: 0.75rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.5;
   color: #f44336;
@@ -9347,7 +9347,7 @@ select.is-invalid.form-control:focus[multiple], select.is-invalid.form-control:f
 
 .valid-feedback {
   font-size: 0.75rem;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.5;
   color: #4caf50;
@@ -10831,7 +10831,7 @@ select.is-valid.form-control:focus[multiple], select.is-valid.form-control:focus
   text-align: start;
   font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: normal;
   line-break: auto;
   line-height: 1.428572;
@@ -11538,10 +11538,10 @@ a.bg-light:active, a.bg-light:focus, a.bg-light:hover {
   flex-shrink: 1 !important;
 }
 
-.flex-wrap {
+/* .flex-wrap {
   -ms-flex-wrap: wrap !important;
   flex-wrap: wrap !important;
-}
+} */
 
 .flex-wrap-reverse {
   -ms-flex-wrap: wrap-reverse !important;
@@ -14225,7 +14225,7 @@ a.text-light:active, a.text-light:focus, a.text-light:hover {
 
 .font-weight-normal,
 .font-weight-regular {
-  font-weight: 400;
+  font-weight: 600;
 }
 
 .text-hide {

@@ -44,7 +44,7 @@ export class ComprehensiveFillComponent implements OnInit {
     "%TEXT2%": { element: "input", style: { width: "60px" } },
     "%TEXT3%": { element: "input", style: { width: "100px" } },
     "%TEXT4%": { element: "input", style: { width: "150px" } },
-    "%TEXT5%": { element: "input", style: { width: "300px" } },
+    "%TEXT5%": { element: "input", style: { width: "auto" } },
     "%TEXTAREA%": { element: "textarea", style: { width: "100%" } },
   };
 
