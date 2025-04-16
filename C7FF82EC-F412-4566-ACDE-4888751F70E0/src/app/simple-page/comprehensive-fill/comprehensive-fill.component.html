@@ -88,7 +88,7 @@
                                       [attr.name]="subject.Subject + '_' + group.Group + '_' + query.Query + '_' + questionText.Text"
                                       [attr.id]="option.AnswerID" [checked]="option.AnswerChecked"
                                       (click)="option.change()" />
-                                    <label class="flex flex-wrap custom-control-label" [attr.for]="option.AnswerID">
+                                    <label class="flex flex-wrap custom-control-label w-100" [attr.for]="option.AnswerID">
                                       <ng-container *ngTemplateOutlet="optionLayout"></ng-container>
                                     </label>
                                   </div>
@@ -130,7 +130,7 @@
 
                                       <!-- 長文字區 -->
                                       <ng-container *ngIf="optionPart == '%TEXTAREA%'; else textPart">
-                                        <textarea class="sentence-input mr-3 md:mr-0 w-100 md:w-auto"
+                                        <textarea class="sentence-input mr-3 md:mr-0 w-100 md:w-auto md:min-w-10 sm:max-w-60"
                                           autosize="autosize" [ngStyle]="optionKey[optionPart].style"
                                           [(ngModel)]="option.AnswerMatrix[partIndex]"
                                           (ngModelChange)="refreshMark('填答-長')"></textarea>

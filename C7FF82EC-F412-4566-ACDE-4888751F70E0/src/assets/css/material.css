@@ -7976,7 +7976,7 @@ fieldset:disabled a.btn {
   white-space: nowrap;
   word-wrap: normal;
   content: "check_box_outline_blank";
-  line-height: 1;
+  /* line-height: 1; */
   vertical-align: middle;
 }
 
@@ -8005,7 +8005,7 @@ fieldset:disabled a.btn {
   white-space: nowrap;
   word-wrap: normal;
   content: "radio_button_unchecked";
-  line-height: 1;
+  /* line-height: 1; */
   vertical-align: middle;
 }
 

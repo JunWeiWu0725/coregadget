@@ -387,6 +387,12 @@ pre {
   --tw-ring-shadow: 0 0 #0000
 }
 
+@media (min-width: 578px) {
+  .sm\:max-w-60 {
+    max-width: 240px;
+  }
+}
+
 @media (min-width: 768px) {
   .md\:text-nowrap {
     white-space: nowrap;
@@ -394,6 +400,10 @@ pre {
 
   .md\:w-auto {
     width: auto !important;
+  }
+
+  .md\:min-w-10 {
+    min-width: 160px;
   }
 
   .md\:mr-0 {

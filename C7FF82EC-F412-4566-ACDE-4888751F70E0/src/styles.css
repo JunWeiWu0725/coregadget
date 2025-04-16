@@ -379,21 +379,19 @@ ul.rwd-table .thead li {
 }
 
 .custom-control-input:checked~.custom-control-label::after {
-    color: #2A629A !important;
+    color: #319ff7 !important;
     /* color: #A67B5B !important */
 }
 
 .custom-radio .custom-control-label::after {
-    font-size: 16.5px !important;
-    padding: 2px;
+    font-size: 22px !important;
+    padding: 3px 0px;
     margin: 3px;
-
-
 }
 
 .custom-checkbox .custom-control-label::after {
-    font-size: 16.5px !important;
-    padding: 2px;
+    font-size: 22px !important;
+    padding: 4px 0;
     margin: 3px;
 }
 
@@ -950,3 +948,7 @@ button {
     cursor: default !important;
 }
 
+input.sentence-input:hover, input.sentence-input:focus, .sentence-input[_ngcontent-jun-c2]:hover, .sentence-input[_ngcontent-jun-c2]:focus {
+	border-color: #319ff7 !important;
+	box-shadow: none !important;
+}
