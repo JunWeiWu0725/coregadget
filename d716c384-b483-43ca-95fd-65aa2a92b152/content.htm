@@ -10,7 +10,9 @@
 			application: "test.kh.edu.tw",
 			oAuth: {
 				clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
-				clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311'
+				clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
+				account: '',
+        		password: ''
 			},
 			paramValues: {}
 		});
@@ -77,16 +79,16 @@
 					</div>
 					<div class="text-center py-2">
 						<img src="img/health.svg" alt="" class="w-11 mx-auto">
-						<div class="text-2xl font-bold mt-3 mb-2">{{f.cardiorespiratory}}<span
-								class="text-xl text-gray-400 pl-1">秒</span></div>
+						<div class="text-2xl font-bold mt-3 mb-2">{{formatTime(f.cardiorespiratory)}}<span
+								class="text-xl text-gray-400 pl-1">分'秒"</span></div>
 						<div class="text-sm border border-yellow-300 rounded text-yellow-400 w-fit px-1 mx-auto">
 							{{f.cardiorespiratory_degree}}</div>
 						<div>800/1600公尺跑走</div>
 					</div>
 					<div class="text-center py-2">
-						<img src="img/health.svg" alt="" class="w-11 mx-auto">
+						<img src="img/ups.svg" alt="" class="w-11 mx-auto">
 						<div class="text-2xl font-bold mt-3 mb-2">{{f.curl}}<span
-								class="text-xl text-gray-400 pl-1">秒</span></div>
+								class="text-xl text-gray-400 pl-1">次</span></div>
 						<div class="text-sm border border-yellow-300 rounded text-yellow-400 w-fit px-1 mx-auto">
 							{{f.curl_degree}}</div>
 						<div>仰臥捲腹</div>
@@ -94,7 +96,7 @@
 					<div class="text-center py-2">
 						<img src="img/health.svg" alt="" class="w-11 mx-auto">
 						<div class="text-2xl font-bold mt-3 mb-2">{{f.pacer}}<span
-								class="text-xl text-gray-400 pl-1">秒</span></div>
+								class="text-xl text-gray-400 pl-1">趟</span></div>
 						<div class="text-sm border border-yellow-300 rounded text-yellow-400 w-fit px-1 mx-auto">
 							{{f.pacer_degree}}</div>
 						<div>漸速耐力跑</div>

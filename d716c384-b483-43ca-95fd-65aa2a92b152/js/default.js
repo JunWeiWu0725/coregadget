@@ -21,6 +21,18 @@ angular.module("app", [])
       return output;
   }
     $scope.contract = gadget.getContract("ischool.fitness.inquire.parent");
+    $scope.formatTime = function(value) {
+      if (value !== undefined && value !== null && value !== "") { // 檢查是否為 undefined 或 null
+          const stringValue = value.toString();
+          const parts = stringValue.split('.');
+          if (parts.length === 2) {
+              return `${parts[0]}'${parts[1]}"`; // 有小數部分的情況
+          } else {
+              return `${parts[0]}"`; // 只有整數部分的情況
+          }
+      }
+      return ''; // 如果沒有資料，返回空字符串
+  };
     $scope.init = function(){
           $scope.contract.send({
               service: "GetFitness",
