@@ -49,6 +49,7 @@ export class CoreService {
     TeacherId?: string,
     DisplayOrder?: string,
     ClassCode?: string,
+    TeacherIdSecondary?: string
   }[]): Promise<any> {
     await this.getCNStaff();
 
@@ -67,6 +68,7 @@ export class CoreService {
     TeacherId?: string,
     DisplayOrder?: string,
     ClassCode?: string,
+    TeacherIdSecondary?: string
   }[]): Promise<any> {
 
     await this.getCNStaff();
@@ -136,4 +138,7 @@ export interface ClassRec {
   TeacherNickname?: string;
   ClassStudentCount?: string;
   Checked?: boolean;
+  TeacherIdSecondary?: string;
+  TeacherNameSecondary?: string;
+  TeacherNicknameSecondary?: string;
 }

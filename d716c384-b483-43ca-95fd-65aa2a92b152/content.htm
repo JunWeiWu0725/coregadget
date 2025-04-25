@@ -7,10 +7,12 @@
 	<script src="js/gadget.js"></script>
 	<script>
 		init({
-			application: "",
+			application: "test.kh.edu.tw",
 			oAuth: {
 				clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
 				clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
+				account: '',
+				password: ''
 			},
 			paramValues: {}
 		});
@@ -23,7 +25,7 @@
 	<script src="js/jquery-1.8.1.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script>
-	  //gadget.setExterior({hint:4});
+		//gadget.setExterior({hint:4});
 	</script>
 </head>
 
@@ -36,30 +38,33 @@
 					ng-class="manClass(id_number)">{{man[0].name}}</button>
 			</div>
 
-			<div class="card bg-white rounded-3xl py-4 my-6" ng-repeat="f in fitness | filter:target">
-				<div class="font-semibold mb-6 px-4 sm:px-6">{{f.school_year}} 學年度（測驗日期：{{f.test_date|myDateFormat}}）</div>
-				<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-y-6">
-					<div class="text-center py-2">
+			<div class="card bg-white rounded-3xl py-4 px-2 my-6" ng-repeat="f in fitness | filter:target">
+				<div class="flex flex-wrap font-semibold mb-6 px-4 sm:px-6 gap-1">
+					<div>{{f.school_year}} 學年度</div>
+					<div>（測驗日期：{{f.test_date|myDateFormat}}）</div>
+				</div>
+				<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
+					<div class="text-center py-2 m-2 rounded-md">
 						<img src="img/height.svg" alt="" class="w-11 mx-auto">
 						<div class="text-2xl font-bold mt-3 mb-2">{{f.height}}<span class="text-xl text-gray-400 pl-1">CM</span>
 						</div>
 						<div>身高</div>
 					</div>
-					<div class="text-center py-2">
+					<div class="text-center py-2 m-2 rounded-md">
 						<img src="img/weight.svg" alt="" class="w-11 mx-auto">
 						<div class="text-2xl font-bold mt-3 mb-2">{{f.weight}}<span class="text-xl text-gray-400 pl-1">KG</span>
 						</div>
 						<div>體重</div>
 					</div>
-					<div class="text-center py-2">
+					<div class="text-center py-2 m-2 rounded-md">
 						<img src="img/sit.svg" alt="" class="w-11 mx-auto">
 						<div class="text-2xl font-bold mt-3 mb-2">{{f.sit_and_reach}}<span
 								class="text-xl text-gray-400 pl-1">CM</span></div>
-						<div class="text-sm border border-red-300 rounded text-red-400 w-fit px-1 mx-auto">
+						<div class="text-sm border border-orange-300 rounded text-orange-400 w-fit px-1 mx-auto">
 							{{f.sit_and_reach_degree}}</div>
 						<div>坐姿體前彎</div>
 					</div>
-					<div class="text-center py-2">
+					<div class="text-center py-2 m-2 rounded-md">
 						<img src="img/long.svg" alt="" class="w-11 mx-auto">
 						<div class="text-2xl font-bold mt-3 mb-2">{{f.standing_long_jump}}<span
 								class="text-xl text-gray-400 pl-1">CM</span></div>
@@ -67,7 +72,7 @@
 							{{f.standing_long_jump_degree}}</div>
 						<div>立定跳遠</div>
 					</div>
-					<div class="text-center py-2">
+					<div class="text-center py-2 m-2 rounded-md">
 						<img src="img/ups.svg" alt="" class="w-11 mx-auto">
 						<div class="text-2xl font-bold mt-3 mb-2">{{f.sit_up}}<span class="text-xl text-gray-400 pl-1">次</span>
 						</div>
@@ -75,13 +80,28 @@
 						</div>
 						<div>仰臥起坐</div>
 					</div>
-					<div class="text-center py-2">
-						<img src="img/health.svg" alt="" class="w-11 mx-auto">
-						<div class="text-2xl font-bold mt-3 mb-2">{{f.cardiorespiratory}}<span
-								class="text-xl text-gray-400 pl-1">秒</span></div>
+					<div class="text-center py-2 m-2 rounded-md">
+						<img src="img/run800.svg" alt="" class="w-11 mx-auto">
+						<div class="text-2xl font-bold mt-3 mb-2">{{formatTime(f.cardiorespiratory)}}<span
+								class="text-xl text-gray-400 pl-1">分'秒"</span></div>
 						<div class="text-sm border border-yellow-300 rounded text-yellow-400 w-fit px-1 mx-auto">
 							{{f.cardiorespiratory_degree}}</div>
-						<div>心肺適能</div>
+						<div class="break-keep">800/1600公尺 跑走</div>
+					</div>
+					<div class="text-center py-2 m-2 rounded-md">
+						<img src="img/situpp.svg" alt="" class="w-11 mx-auto">
+						<div class="text-2xl font-bold mt-3 mb-2">{{f.curl}}<span class="text-xl text-gray-400 pl-1">次</span></div>
+						<div class="text-sm border border-red-300 rounded text-red-400 w-fit px-1 mx-auto">
+							{{f.curl_degree}}</div>
+						<div>仰臥捲腹</div>
+					</div>
+					<div class="text-center py-2 m-2 rounded-md">
+						<img src="img/runn.svg" alt="" class="w-11 mx-auto">
+						<div class="text-2xl font-bold mt-3 mb-2">{{f.pacer}}<span class="text-xl text-gray-400 pl-1">趟</span>
+						</div>
+						<div class="text-sm border border-cyan-300 rounded text-cyan-400 w-fit px-1 mx-auto">
+							{{f.pacer_degree}}</div>
+						<div>漸速耐力跑</div>
 					</div>
 
 				</div>

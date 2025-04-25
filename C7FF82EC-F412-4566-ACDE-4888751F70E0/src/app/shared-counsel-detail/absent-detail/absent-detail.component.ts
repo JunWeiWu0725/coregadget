@@ -213,15 +213,22 @@ export class AbsentDetailComponent implements OnInit {
             break;
           case 'Demerit':
             if (dis.DemeritA && dis.DemeritA > 0) {
+              if(dis.DemeritIsClear!=='t'){
               this.demeritACount += Number(dis.DemeritA);
+            }
               this.demeritAList.push(dis);
             }
             if (dis.DemeritB && dis.DemeritB > 0) {
+              if(dis.DemeritIsClear!=='t'){
               this.demeritBCount += Number(dis.DemeritB);
+            }
               this.demeritBList.push(dis);
             }
             if (dis.DemeritC && dis.DemeritC > 0) {
-              this.demeritCCount += Number(dis.DemeritC);
+              if(dis.DemeritIsClear!=='t'){
+                this.demeritCCount += Number(dis.DemeritC);
+
+              }
               this.demeritCList.push(dis);
             }
             break;

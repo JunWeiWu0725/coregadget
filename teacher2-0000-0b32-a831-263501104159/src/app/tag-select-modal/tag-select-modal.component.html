@@ -1,0 +1,79 @@
+<span class="cursor-pointer" (click)="dialogRef.close()">
+  <span
+    class="iconify close-window"
+    data-icon="eva:close-fill"
+    data-inline="false"
+  ></span>
+</span>
+<mat-dialog-content>
+  <div class="grid mt-4">
+    <div class="">
+      <div class="mb-2 w-full dropdown_box">
+        <mat-select
+          class=""
+          name="groupFilter"
+          [(value)]="selectPrefix"
+          (selectionChange)="filterTagList()"
+        >
+          <mat-option value="all">顯示所有類別</mat-option>
+          <mat-option *ngFor="let item of prefixList" [value]="item.Prefix">
+            {{ item.Prefix || "未分群組" }}
+          </mat-option>
+        </mat-select>
+      </div>
+      <div class="flex bg-primary rounded-t-md p-2">
+        <div class="w-4 h-4 mr-2"></div>
+        <div class="w-4 h-4 mr-2"></div>
+        <div class="text-white">類別名稱</div>
+      </div>
+      <div class="table-zebra overflow-auto">
+        <div
+          *ngFor="let item of filteredTagList"
+          class="cursor-pointer p-2"
+          [ngClass]="{ active: isTagIncluded(item) }"
+          (click)="editTagClick(item)"
+        >
+          <div class="flex items-center">
+            <div class="w-4 h-4 mr-2 flex-shrink-0">
+              <div *ngIf="isTagIncluded(item)">
+                <span
+                  class="iconify"
+                  data-icon="quill:checkmark"
+                  data-inline="false"
+                ></span>
+              </div>
+            </div>
+            <div
+              class="w-4 h-4 mr-2 border flex-shrink-0"
+              [ngStyle]="{ 'background-color': item.Color }"
+            ></div>
+            <span class=""
+              >{{ item.Prefix ? item.Prefix + ":" : "" }}{{ item.Name }}</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <div class="w-full flex justify-between items-center">
+    <p class="text-warning"></p>
+    <div class="flex items-center flex-wrap gap-2 justify-end">
+      <div>
+        <button
+          class="btn text-gray-text3 hover:bg-gray-lightest rounded-full"
+          (click)="closeDialog()"
+        >
+          取消
+        </button>
+      </div>
+      <div>
+        <button class="btn btn-primary rounded-full" (click)="updateTag()">
+          確定
+        </button>
+      </div>
+    </div>
+  </div>
+</mat-dialog-actions>

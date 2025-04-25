@@ -1,0 +1,14 @@
+.table-zebra {
+  height: 240px;
+  > :nth-child(even) {
+    background-color: #f3f3f3;
+  }
+
+  > :hover {
+    background-color: #e5e5e5;
+  }
+
+  > .active {
+    background-color: #aee0e3;
+  }
+}

@@ -62,6 +62,7 @@ export class EditClassService {
       'ClassName': [],
       'GradeYear': [],
       'TeacherId': [],
+      'TeacherIdSecondary': [],
     };
     const rowRules: RowValidator[] = [];
 
@@ -77,6 +78,11 @@ export class EditClassService {
 
         if (importField.includes('TeacherId')) {
           rowRules.push(new MatchTo({ fieldNames: ['TeacherId'], data: this.coreSrv.teacherList, skipEmpty: true, message: '資料庫無符合內容' }));
+        }
+
+        if (importField.includes('TeacherIdSecondary')) {
+          fieldRules['TeacherId'].push(new NotEmpty());
+          rowRules.push(new MatchTo({ fieldNames: ['TeacherIdSecondary'], data: this.coreSrv.teacherList, skipEmpty: true, message: '資料庫無符合內容' }));
         }
 
         break;

@@ -43,7 +43,7 @@ a > .my-media {
 .ctable th, .ctable td,
 .ntable th, .ntable td {
     padding: 10px;
-    border: 1px solid #ddd;
+    /* border: 1px solid #ddd; */
 }
 
 .ctable tbody tr:nth-child(odd),
@@ -60,7 +60,7 @@ a > .my-media {
     display: table;
     position: relative;
     width: 100%;
-    text-align: left;
+    text-align: right;
     line-height: 1.25rem;
 }
 

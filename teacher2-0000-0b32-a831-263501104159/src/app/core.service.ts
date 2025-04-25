@@ -29,7 +29,7 @@ export class CoreService {
   async getTeachers(): Promise<SourceTeacherRec[]> {
     await this.getCNStaff();
 
-    const rsp = await this._cnStaff.send('beta.GetTeacher', {
+    const rsp = await this._cnStaff.send('beta.GetTeacher2024', {
       TeacherStatus: '1'
     });
     return [].concat(rsp.Teacher || []);
@@ -41,7 +41,7 @@ export class CoreService {
     const rsp = await this._cnStaff.send('beta.AddTeacher', {
       Teacher: data
     });
-    return rsp.Code || '';
+    return rsp || '';
   }
 
   async updateTeacher(identifyField: string[], data: any): Promise<any> {
@@ -63,6 +63,65 @@ export class CoreService {
     return rsp.Code || '';
   }
 
+  async addAndDelTagTeacher(data: any): Promise<any> {
+    await this.getCNStaff();
+
+    const rsp = await this._cnStaff.send('beta.AddAndDelTagTeacher', {
+      Teacher:{
+        TeacherId: data.TeacherId,
+        TagId: data.TagIds
+      }
+    });
+    return rsp.Code || '';
+  }
+
+  async getTags(): Promise<any> {
+    await this.getCNStaff();
+
+    const rsp = await this._cnStaff.send('beta.GetTag', {
+      Category: 'Teacher'
+    });
+    return [].concat(rsp?.Tag?.Prefixs || [])
+  }
+
+  async addTag(data: any): Promise<any> {
+    await this.getCNStaff();
+    console.log(data);
+    const rsp = await this._cnStaff.send("beta.AddTag", {
+      Tag: {
+        Category: "Teacher",
+        TagName: data.TagName,
+        Color: data.Color,
+        Prefix: data.Prefix,
+      },
+    });
+    return rsp.Code || "";
+  }
+
+  async updateTag(data: any): Promise<any> {
+    await this.getCNStaff();
+    console.log(data);
+    const rsp = await this._cnStaff.send('beta.UpdateTag', {
+      Tag: {
+        Category: "Teacher",
+        TagId: data.TagId,
+        TagName: data.TagName,
+        Color: data.Color,
+        Prefix: data.Prefix,
+      },
+    });
+    return rsp.Code || '';
+  }
+
+  async delTag(data: any): Promise<any> {
+    await this.getCNStaff();
+    console.log(data);
+    const rsp = await this._cnStaff.send('beta.DelTag', {
+      TagId: data.TagId
+    });
+    return rsp.Code || '';
+  }
+  
   // 轉換欄位名稱
   replaceMappingFieldName(txt: string = '') {
     txt = txt.replace(/TeacherId/gi, '教師系統編號');

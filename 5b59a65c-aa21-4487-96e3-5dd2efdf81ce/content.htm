@@ -7,11 +7,13 @@
 	<script src="js/gadget.js"></script>
 	<script>
 		init({
-			application: "",
+			application: "test.kh.edu.tw",
 			paramValues: {},
 			oAuth: {
 				clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
 				clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
+				account: '',
+				password: ''
 			}
 		});
 	</script>
@@ -23,17 +25,17 @@
 	<script src="js/jquery-1.8.1.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script>
-	  //gadget.setExterior({hint:4});
+		//gadget.setExterior({hint:4});
 	</script>
 </head>
 
 <body>
 	<div class="my-page" id="gadget" ng-app="app" ng-controller="Cntl" data-ng-init="init()">
-		<h1>
+		<h1 class="mb-4">
 			體適能查詢
 			<div id="mainMsg" />
 		</h1>
-		<div class="btn-group">
+		<div class="btn-group mr-4">
 			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 				{{class_name}}<span class="caret"></span>
 			</button>
@@ -53,8 +55,8 @@
 				</li>
 			</ul>
 		</div>
-		<div class="relative overflow-auto max-w-full max-h-full w-full h-full mt-0">
-			<table class="table ntable mx-auto whitespace-normal mt-3" style="word-break: keep-all;">
+		<div class="hidden xl:block relative overflow-auto max-w-full max-h-full w-full h-full mt-0">
+			<table class="table mx-auto whitespace-normal mt-3" style="word-break: keep-all;">
 				<thead>
 					<tr>
 						<th class="">座號</th>
@@ -68,7 +70,11 @@
 						<th>常模</th>
 						<th>仰臥起坐(次)</th>
 						<th>常模</th>
-						<th>心肺適能(秒)</th>
+						<th>800/1600公尺跑走(分'秒")</th>
+						<th>常模</th>
+						<th>仰臥捲腹(次)</th>
+						<th>常模</th>
+						<th>漸速耐力跑(趟)</th>
 						<th>常模</th>
 					</tr>
 				</thead>
@@ -85,11 +91,80 @@
 						<td>{{f.standing_long_jump_degree}}</td>
 						<td>{{f.sit_up}}</td>
 						<td>{{f.sit_up_degree}}</td>
-						<td>{{f.cardiorespiratory}}</td>
+						<td>{{formatTime(f.cardiorespiratory)}}</td>
 						<td>{{f.cardiorespiratory_degree}}</td>
+						<td>{{f.curl}}</td>
+						<td>{{f.curl_degree}}</td>
+						<td>{{f.pacer}}</td>
+						<td>{{f.pacer_degree}}</td>
 					</tr>
 				</tbody>
 			</table>
+		</div>
+		<div class="flex flex-wrap row xl:hidden -mx-2 mt-4">
+			<div class="col-12 col-xs-6 col-md-4 col-lg-3 mb-3 px-3" ng-repeat="f in fitness">
+				<div class="card mb-6">
+					<div class="card-body">
+						<p class="card-title">座號: {{f.seat_no}}</p>
+						<p class="card-text"><strong>姓名：</strong>
+							<span class="text-lg font-semibold">{{f.student_name}}</span>
+						</p>
+						<p class="card-text"><strong>測驗日期：</strong>
+							<span class="text-lg font-semibold">{{f.test_date | myDateFormat}}</span>
+						</p>
+						<p class="card-text"><strong>身高：</strong>
+							<span class="text-lg font-semibold">{{f.height}}</span>
+							<span class="text-gray-400" ng-if="f.height">cm</span>
+						</p>
+						<p class="card-text"><strong>體重：</strong>
+							<span class="text-lg font-semibold">{{f.weight}}</span>
+							<span class="text-gray-400" ng-if="f.weight">kg</span>
+						</p>
+						<p class="card-text"><strong>坐姿體前彎：</strong>
+							<span class="text-lg font-semibold">{{f.sit_and_reach}}</span>
+							<span class="text-gray-400" ng-if="f.sit_and_reach">cm</span>
+							<span class="border rounded text-sm px-2 py-1 float-right break-keep"
+								ng-class="getDegreeClass(f.sit_and_reach_degree)"
+								ng-if="f.sit_and_reach_degree">{{f.sit_and_reach_degree}}</span>
+						</p>
+						<p class="card-text"><strong>立定跳遠：</strong>
+							<span class="text-lg font-semibold">{{f.standing_long_jump}}</span>
+							<span class="text-gray-400" ng-if="f.standing_long_jump">cm</span>
+							<span class="border rounded text-sm px-2 py-1 float-right break-keep"
+								ng-class="getDegreeClass(f.standing_long_jump_degree)"
+								ng-if="f.standing_long_jump_degree">{{f.standing_long_jump_degree}}</span>
+						</p>
+						<p class="card-text"><strong>仰臥起坐：</strong>
+							<span class="text-lg font-semibold">{{f.sit_up}}</span>
+							<span class="text-gray-400" ng-if="f.sit_up">次</span>
+							<span class="border rounded text-sm px-2 py-1 float-right break-keep"
+								ng-class="getDegreeClass(f.sit_up_degree)" ng-if="f.sit_up_degree">{{f.sit_up_degree}}</span>
+						</p>
+						<div class="flex flex-wrap card-text">
+							<div class="font-semibold">800/1600公尺跑走：</div>
+							<div class="mr-1">
+								<span class="text-lg font-semibold">{{formatTime(f.cardiorespiratory)}}</span>
+								<span class="text-gray-400" ng-if="f.cardiorespiratory">分'秒"</span>
+							</div>
+							<span class="border rounded text-sm px-2 py-1 ml-auto break-keep"
+								ng-class="getDegreeClass(f.cardiorespiratory_degree)"
+								ng-if="f.cardiorespiratory_degree">{{f.cardiorespiratory_degree}}</span>
+						</div>
+						<p class="card-text"><strong>仰臥捲腹：</strong>
+							<span class="text-lg font-semibold">{{f.curl}}</span>
+							<span class="text-gray-400" ng-if="f.curl">次</span>
+							<span class="border rounded text-sm px-2 py-1 float-right break-keep"
+								ng-class="getDegreeClass(f.curl_degree)" ng-if="f.curl_degree">{{f.curl_degree}}</span>
+						</p>
+						<p class="card-text"><strong>漸速耐力跑：</strong>
+							<span class="text-lg font-semibold">{{f.pacer}}</span>
+							<span class="text-gray-400" ng-if="f.pacer">趟</span>
+							<span class="border rounded text-sm px-2 py-1 float-right break-keep"
+								ng-class="getDegreeClass(f.pacer_degree)" ng-if="f.pacer_degree">{{f.pacer_degree}}</span>
+						</p>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<hr />

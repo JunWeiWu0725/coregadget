@@ -1,0 +1,46 @@
+.appSelect {
+  width: 100%;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-bottom: 8px;
+}
+
+.table-zebra {
+  height: 240px;
+  > :nth-child(even) {
+    background-color: #f3f3f3;
+  }
+
+  > :hover {
+    background-color: #e5e5e5;
+  }
+
+  > .active {
+    background-color: #aee0e3;
+  }
+}
+
+input[type="color"] {
+  border-radius: 0.25rem;
+  padding: 0;
+  border: 1px solid #d1d5db;
+}
+
+input[type="color"]:focus {
+  border: 1px solid #5ec1c7;
+}
+
+input[type="color"]::-moz-color-swatch {
+  border: none;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+}

@@ -142,4 +142,8 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  .dropdown_box {
+    @apply rounded-md border border-gray-300 px-4 py-2 bg-white hover:bg-gray-50 focus:outline-none focus:border-primary;
+  }
 }

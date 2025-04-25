@@ -3,10 +3,11 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { BatchAddService } from '../batch-add/batch-add.service';
 import { CoreService } from '../core.service';
 import { FieldName, ImportMode } from '../data/import-config';
-import { TeacherRec } from '../data/teacher';
+import { TeacherRec, TagRec } from '../data/teacher';
 import { ConfirmDialogService } from '../shared/dialog/confirm-dialog.service';
 import { ModalSize } from '../shared/dialog/confirm-dialog/confirm-dialog';
 import { DocumentValidator, JsonRowSource } from '../shared/validators';
+import { TagSelectModalComponent } from '../tag-select-modal/tag-select-modal.component';
 
 @Component({
   selector: 'app-edit-modal',
@@ -21,10 +22,11 @@ export class EditModalComponent implements OnInit {
   tRec: TeacherRec = {} as TeacherRec;
   teacherName = '';
   nickname = '';
+  tagList: TagRec[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<EditModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { teacher: TeacherRec, teachers: TeacherRec[] },
+    @Inject(MAT_DIALOG_DATA) public data: { teacher: TeacherRec, teachers: TeacherRec[] , tags: TagRec[] },
     private coreSrv: CoreService,
     public dialog: MatDialog,
     public confirmSrv: ConfirmDialogService,
@@ -34,6 +36,7 @@ export class EditModalComponent implements OnInit {
     this.mode = (this.tRec.TeacherId ? 'edit' : 'add');
     this.teacherName = data.teacher.TeacherName;
     this.nickname = data.teacher.Nickname;
+    this.tagList = data.tags;
   }
 
   ngOnInit(): void {
@@ -109,6 +112,11 @@ export class EditModalComponent implements OnInit {
           LinkAccount: this.tRec.LinkAccount,
           TeacherCode: this.tRec.TeacherCode,
         });
+        // 類別處理
+        await this.coreSrv.addAndDelTagTeacher({
+          TeacherId: this.tRec.TeacherId,
+          TagIds: this.tRec.Tags.map(t => t.TagId)
+        })
       } else {
         await this.coreSrv.addTeacher({
           TeacherName: this.tRec.TeacherName,
@@ -116,7 +124,15 @@ export class EditModalComponent implements OnInit {
           Gender: this.tRec.Gender,
           LinkAccount: this.tRec.LinkAccount,
           TeacherCode: this.tRec.TeacherCode,
-        });
+        }).then(async (res) => {
+          // 將已新增完畢的教師加上標籤
+          if ( res.NewId.id && this.tRec.Tags.length > 0) {
+          let teacherId = res.NewId.id;
+          await this.coreSrv.addAndDelTagTeacher({
+            TeacherId: teacherId,
+            TagIds: this.tRec.Tags.map(t => t.TagId)
+          })}
+        })
       }
 
       try {
@@ -168,6 +184,38 @@ export class EditModalComponent implements OnInit {
     } finally {
       this.saving = false;
     }
+  }
+
+  // 開啟選擇類別的視窗
+  openTagModal() {
+    const dialogRef = this.dialog.open(TagSelectModalComponent , {
+      width: '500px', 
+      data: {tags: this.tRec.Tags, tagList: this.tagList} 
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.state === "refresh") {
+        // 1. 刪除 tRec.Tags 中有但 result.tags 中沒有的標籤
+        this.tRec.Tags = this.tRec.Tags.filter((tRecTag) => 
+          result.tags.some((resultTag) => resultTag.TagId === tRecTag.TagId)
+        );
+  
+        // 2. 新增 result.tags 中有但 tRec.Tags 中沒有的標籤
+        result.tags.forEach((resultTag) => {
+          const existsInTRec = this.tRec.Tags.some((tRecTag) => tRecTag.TagId === resultTag.TagId);
+          if (!existsInTRec) {
+            this.tRec.Tags.push({
+              TagId: resultTag.TagId,
+              TagTeacherId: "", 
+              Name: resultTag.Name,
+              Color: resultTag.Color,
+              Prefix: resultTag.Prefix,
+              AccessControlCode: resultTag.AccessControlCode,
+            });
+          }
+        });
+      }
+    });
   }
 
 }

@@ -379,21 +379,19 @@ ul.rwd-table .thead li {
 }
 
 .custom-control-input:checked~.custom-control-label::after {
-    color: #2A629A !important;
+    color: #319ff7 !important;
     /* color: #A67B5B !important */
 }
 
 .custom-radio .custom-control-label::after {
-    font-size: 16.5px !important;
-    padding: 2px;
+    font-size: 22px !important;
+    padding: 3px 0px;
     margin: 3px;
-
-
 }
 
 .custom-checkbox .custom-control-label::after {
-    font-size: 16.5px !important;
-    padding: 2px;
+    font-size: 22px !important;
+    padding: 4px 0;
     margin: 3px;
 }
 
@@ -412,51 +410,45 @@ ul.rwd-table .thead li {
 }
 
 .com-view-first-title {
-    background: #E4F1EF;
-    color: #3C4F81;
+    background: #d6edff;
+    color: #2593ea;
     font-family: PingFang TC;
     font-style: normal;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 20px;
-    line-height: 28px;
-    margin: 0px !important;
+    line-height: 52px;
     height: 52px;
     letter-spacing: 0.05em;
-    padding-top: 13px;
-    border: #E4F1EF 2px;
-    padding-left: 10px;
-
+    padding-left: 16px;
+    border-radius: 8px;
 }
 
 .com-view-second-title {
     font-family: PingFang TC;
     font-style: normal;
-    font-weight: 800;
-    font-size: 17px;
+    font-weight: 600;
+    font-size: 18px;
     line-height: 26px;
-    color: #3C4F81;
-    border-left: 2px solid #a1a9bd;
+    color: #696969;
+    border-left: 4px solid #67bcff;
     padding-left: 10px;
-
 }
 
 .com-view-third-title {
-    font-family: PingFang TC;
-    font-style: normal;
-    font-weight: 500;
+    /* font-family: PingFang TC; */
     font-size: 16px;
     line-height: 20px;
-    color: #3C4F81;
-    padding-left: 15px;
-
+    color: #376990;
+    padding-left: 16px;
 }
 
 /* 綜合紀錄表 */
 .com-view-option {
-    font-family: PingFang TC;
+    /* font-family: PingFang TC; */
     font-size: 16px;
     line-height: 20px;
-    color: #3C4F81;
+    color: #3d3d3d;
+    padding-left: 16px;
 }
 
 ul.rwd-table {
@@ -506,7 +498,7 @@ ul.rwd-table {
     display: flex;
     align-items: center;
     letter-spacing: 0.374px;
-    color: #3C4F81;
+    color: #2593ea;
     cursor: pointer !important;
 }
 
@@ -580,7 +572,7 @@ ul.rwd-table {
     cursor: pointer;
     padding-top: 5px;
     border-left: 5px solid #D2E6E0;
-    color: #3C4F81;
+    color: #2593ea;
 }
 
 
@@ -725,7 +717,7 @@ textarea.form-control:focus:not(.textarea-autosize) {
 
 textarea {
 
-    background: rgba(189, 189, 189, 0.192) !important;
+    background: #e9e9e9 !important;
     border: none !important
 }
 
@@ -954,4 +946,9 @@ button {
 .btn-light:disabled {
     background: #E7E9EB !important;
     cursor: default !important;
+}
+
+input.sentence-input:hover, input.sentence-input:focus, .sentence-input[_ngcontent-jun-c2]:hover, .sentence-input[_ngcontent-jun-c2]:focus {
+	border-color: #319ff7 !important;
+	box-shadow: none !important;
 }

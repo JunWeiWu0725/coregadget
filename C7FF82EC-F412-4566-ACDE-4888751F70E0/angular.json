@@ -37,7 +37,8 @@
             "styles": [
               "src/styles.css",
               "src/assets/css/material.css",
-              "src/assets/css/default.css"
+              "src/assets/css/default.css",
+              "src/assets/css/purge.css"
             ],
             "scripts": [
               "src/assets/js/popper.min.js",
@@ -56,7 +57,7 @@
               ],
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": true ,
               "extractCss": true,
               "namedChunks": false,
               "aot": true,

@@ -49,13 +49,14 @@ export class ComprehensiveComponent implements OnInit {
   public comprehensiveStr: String = "產生綜合紀錄表";
   public comprehensiveStr1: String = "綜合紀錄表資料";
   dsns: string;
-
+    userIP :string =''
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private dsaService: DsaService,
     public roleService: RoleService ,
     public changeDetectorRef: ChangeDetectorRef,
+
     @Optional()
     private appComponent: AppComponent ,
     private globalService :GlobalService ,
@@ -64,9 +65,9 @@ export class ComprehensiveComponent implements OnInit {
 
   }
 
-  ngOnInit() {
-
-
+async   ngOnInit() {
+    this.userIP = await this.fetchIp();
+    // alert('IP'+this.userIP)
     // 設定是否可編輯權限
     this.isEditable =false ;
     // 預設
@@ -89,7 +90,17 @@ export class ComprehensiveComponent implements OnInit {
     this.getSchoolType ();
     this.loadData();
   }
-
+  async fetchIp(): Promise<string | null> {
+    try {
+      const result: any = await this.http
+        .get("https://api.ipify.org/?format=json")
+        .toPromise();
+      return result.ip.trim();
+    } catch (error) {
+      console.error("抓取 IP 失敗", error);
+      return "";
+    }
+  }
 
  /** 取得學制 ['國中','國小','高中']*/
   getSchoolType (){
@@ -259,6 +270,7 @@ export class ComprehensiveComponent implements OnInit {
                 , Semester: this.semester
                 , ClassID: classRec.ClassID
               });
+              await this.dsaService.send("Share.AddLog", {Content :`展開${this.schoolYear}年度 ${this.semester}學期  ${classRec.ClassName} 班 綜合紀錄表` ,IP :this.userIP , Action: '展開綜合紀錄表'})
               this.currentClass = classRec.ClassName + " 題目展開中 ...";
             } catch (err) {
               console.log(err);
@@ -275,6 +287,8 @@ export class ComprehensiveComponent implements OnInit {
                 , AdjusctGradeSapn :adjusctGradeSapn
 
               });
+              // 增加 log 
+              await this.dsaService.send("Share.AddLog", {Content :`展開${this.schoolYear}年度 ${this.semester}學期  ${classRec.ClassName} 班 綜合紀錄表` })
                   this.currentClass = classRec.ClassName + " 題目展開中 ...";
               }
             } catch (err) {
@@ -301,6 +315,8 @@ export class ComprehensiveComponent implements OnInit {
                 , SourceSemester: this.selectSemesterInfo.Semester
                 , ClassID: classRec.ClassID
               });
+              await this.dsaService.send("Share.AddLog", {Content :`帶入${ this.selectSemesterInfo.SchoolYear}年度 ${this.selectSemesterInfo.Semester}學期  ${classRec.ClassName} 班 綜合紀錄表內容` })
+
             } catch (err) {
               alert("發生錯誤:" + err.dsaError.message);
               console.log("error", err);

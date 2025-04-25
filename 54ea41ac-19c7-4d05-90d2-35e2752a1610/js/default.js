@@ -149,12 +149,12 @@
     var items, student, _ref;
     student = global.student;
     items = [];
-    items.push("<button class='btn btn-large active' school-year='" + global.schoolYear + "' semester='" + global.semester + "'>" + (global.schoolYear + '' + global.semester) + "</button>");
+    items.push("<button class='rounded-lg p-4 text-xl text-primary font-semibold bg-base-100 btn active' school-year='" + global.schoolYear + "' semester='" + global.semester + "'>" + (global.schoolYear + '' + global.semester) + "</button>");
     if (((_ref = student.SemsHistory) != null ? _ref.History : void 0) != null) {
       student.SemsHistory.History = myHandleArray(student.SemsHistory.History);
       $(student.SemsHistory.History.sort($.by("desc", "SchoolYear", $.by("desc", "Semester")))).each(function(index, item) {
         if (!(this.SchoolYear === global.schoolYear && this.Semester === global.semester)) {
-          return items.push("<button class='btn btn-large' school-year='" + this.SchoolYear + "' semester='" + this.Semester + "'>" + (this.SchoolYear + '' + this.Semester) + "</button>");
+          return items.push("<button class='rounded-lg p-4 text-xl text-primary font-semibold bg-base-100 btn' school-year='" + this.SchoolYear + "' semester='" + this.Semester + "'>" + (this.SchoolYear + '' + this.Semester) + "</button>");
         }
       });
     }
@@ -174,12 +174,12 @@
     $("#discipline-container").addClass("hide").html("");
     $("#discipline span[data-collapse] i").addClass("icon-chevron-up").removeClass("icon-chevron-down");
     $("#discipline-view").addClass("hide");
-    $("#merit-a").html("<span class='badge'>0</span>");
-    $("#merit-b").html("<span class='badge'>0</span>");
-    $("#merit-c").html("<span class='badge'>0</span>");
-    $("#demerit-a").html("<span class='badge'>0</span>");
-    $("#demerit-b").html("<span class='badge'>0</span>");
-    $("#demerit-c").html("<span class='badge'>0</span>");
+    $("#merit-a").html("<span class=''>0</span>");
+    $("#merit-b").html("<span class=''>0</span>");
+    $("#merit-c").html("<span class=''>0</span>");
+    $("#demerit-a").html("<span class=''>0</span>");
+    $("#demerit-b").html("<span class=''>0</span>");
+    $("#demerit-c").html("<span class=''>0</span>");
     return $("#demerit-d").html("");
   };
 
@@ -202,12 +202,12 @@
     $("#discipline-container").addClass("hide").html("");
     $("#discipline span[data-collapse] i").addClass("icon-chevron-up").removeClass("icon-chevron-down");
     $("#discipline-view").addClass("hide");
-    $("#merit-a").html("<span class='badge'>0</span>");
-    $("#merit-b").html("<span class='badge'>0</span>");
-    $("#merit-c").html("<span class='badge'>0</span>");
-    $("#demerit-a").html("<span class='badge'>0</span>");
-    $("#demerit-b").html("<span class='badge'>0</span>");
-    $("#demerit-c").html("<span class='badge'>0</span>");
+    $("#merit-a").html("<span class=''>0</span>");
+    $("#merit-b").html("<span class=''>0</span>");
+    $("#merit-c").html("<span class=''>0</span>");
+    $("#demerit-a").html("<span class=''>0</span>");
+    $("#demerit-b").html("<span class=''>0</span>");
+    $("#demerit-c").html("<span class=''>0</span>");
     return $("#demerit-d").html("");
   };
 
@@ -228,12 +228,12 @@
           } else {
             items = [];
             if (((_ref = response.Result) != null ? _ref.SbComment : void 0) != null) {
-              items.push("<tr>\n  <th><span>導師評語</span></th>\n  <td><span>" + (this.response.Result.SbComment || '') + "</span></td>\n</tr>");
+              items.push("<div class='mt-3'>\n  <div class='font-semibold'>導師評語</div>\n  <div>" + (this.response.Result.SbComment || '') + "</div>\n</div>");
             }
             if (((_ref1 = global.morality.Response) != null ? _ref1.Morality : void 0) != null) {
               $(global.morality.Response.Morality).each(function() {
                 var morality, that, tmpFace, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7;
-                items.push("<tr>\n  <th><span>" + (this.Face || '') + "</span></th>");
+                items.push("<div class='mt-3'>\n  <div class='font-semibold'>" + (this.Face || '') + "</div>");
                 that = this;
                 tmpFace = '';
                 if (((_ref2 = response.Result) != null ? (_ref3 = _ref2.DailyLifeScore) != null ? (_ref4 = _ref3.Content) != null ? _ref4.Morality : void 0 : void 0 : void 0) != null) {
@@ -250,10 +250,10 @@
                     }
                   });
                 }
-                return items.push("<td><span>" + (tmpFace || '') + "</span></td>\n</tr>");
+                return items.push("<div>" + (tmpFace || '') + "</div>\n</div>");
               });
               $("#morality-view").removeClass("hide");
-              return $("#morality-container").html("<table class=\"table table-striped\">\n  <tbody>\n    " + (items.join("")) + "\n  </tbody>\n</table>");
+              return $("#morality-container").html("<div class='text-base space-y-3'>\n" + (items.join("")) + "\n</div>");
             } else {
               return $("#morality-container").html("目前無資料");
             }
@@ -328,21 +328,34 @@
               }
             });
             $.each(absences_t, function(name, item) {
-              items.push("<div class='thumbnail my-thumbnail-white'>\n  <div class='caption my-subthumbnail-bottom'>\n    <h5><span class='badge badge-warning'>" + (name || '') + " " + (item.total || '') + "</span></h5>\n  </div>\n</div>");
-              items.push("<table class=\"table table-bordered my-table\"><tr>");
+              items.push("<div class='thumbnail my-thumbnail-white rounded-lg py-3'>\n  <div class='caption my-subthumbnail-bottom font-semibold space-y-1'>\n    <div class='text-3xl text-primary'>" + (item.total || '') + "</div>\n<div class='text-base'>" + (name || '') + "</div>  </div>");
+              items.push("<div class='px-3 py-1'><div class='border-t border-gray-100'></div></div><div class='flex flex-wrap gap-1'>");
               $.each(item, function(typename, value) {
                 if (typename !== "total") {
-                  return items.push("<td>" + typename + "：" + value + "</td>");
+                  return items.push("<div class='border-ll'></div><div class='text-gray-500 mx-auto'>" + typename + "：<span class='font-semibold'>" + value + "</span></div>");
                 }
               });
-              return items.push("</tr></table>");
+              return items.push("</div></div>");
             });
             if (items.length === 0) {
               return $("#attendance-container").removeClass("hide").html("目前無資料");
             } else {
               $("#attendance-view").removeClass("hide");
-              $("#attendance .my-thumbnails").html("<ul class='thumbnails'>\n  " + (items.join("")) + "\n</ul>");
-              return $("#attendance-container").addClass("hide").html("<div>\n  <table class=\"table table-striped table-bordered my-table\">\n    <thead>" + thead + "</thead>\n    <tbody>" + tbody + "</tbody>\n  </table>\n</div>");
+              $("#attendance .my-thumbnails").html("<div class='thumbnails grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4'>\n  " + (items.join("")) + "\n</div>");
+              return $("#attendance-container").addClass("hide").html(
+                "<div class='overflow-x-auto mt-3'>"+
+                "<table class='table table-striped table-bordered text-sm md:text-base min-w-full my-table'>"+
+                "<thead>" + thead + "</thead><tbody class='text-gray-600'>" + tbody + "</tbody></table></div>"
+                );
+              // return $("#attendance-container").addClass("hide").html(
+              //   "<div class='overflow-x-auto mt-3'>" +
+              //     "<table class='min-w-full table-auto border border-gray-200'>" +
+              //       "<thead class='bg-gray-100 text-sm text-gray-700'>" + thead + "</thead>" +
+              //       "<tbody class='text-sm text-gray-600'>" + tbody + "</tbody>" +
+              //     "</table>" +
+              //   "</div>"
+              // );
+              
             }
           }
         }
@@ -356,100 +369,162 @@
     my_semester = global.behavior.semester;
 
     // 先取得對照表
-    return gadget.getContract("ischool.AD.student").send({
-      service: "_.GetDisciplineNameMapping",
-      body: "",
+    return gadget.getContract("ischool.behavior.changename").send({
+      service: "_.GetChangeName",
+      body: "<Request><Name>留校察看</Name></Request>",
       result: function(mapping_response, mapping_error, mapping_xhr) {
         // 取得留校察看的對照文字
         var detentionText = "留校察看";  // 預設文字
-        if (!mapping_error && mapping_response && mapping_response.name) {
-          detentionText = mapping_response.name;
+        if (!mapping_error && mapping_response && mapping_response.Result && mapping_response.Result.items && mapping_response.Result.items.NewName ) {
+          detentionText = mapping_response.Result.items.NewName;
         }
 
         // 再取得獎懲紀錄
         return gadget.getContract("ischool.AD.student").send({
           service: "_.GetDisciplineRecord",
-          body: "<Request>\n  <StudentID>" + global.student.StudentID + "</StudentID>\n  <SchoolYear>" + global.behavior.schoolYear + "</SchoolYear>\n  <Semester>" + global.behavior.semester + "</Semester>\n</Request>",
-          result: function(response, error, xhr) {
-            var btn_active, items, sum_merit, _ref;
-            btn_active = $('.my-schoolyear-semester-widget button.active');
-            if (btn_active.attr("school-year") === global.behavior.schoolYear && btn_active.attr("semester") === global.behavior.semester) {
+          body: `<Request>
+            <StudentID>${global.student.StudentID}</StudentID>
+            <SchoolYear>${global.behavior.schoolYear}</SchoolYear>
+            <Semester>${global.behavior.semester}</Semester>
+          </Request>`,
+          result: function (response, error, xhr) {
+            const btnActive = $('.my-schoolyear-semester-widget button.active');
+        
+            if (
+              btnActive.attr("school-year") === global.behavior.schoolYear &&
+              btnActive.attr("semester") === global.behavior.semester
+            ) {
               resetDiscipline();
-              if (error != null) {
+        
+              if (error) {
                 return set_error_message('#mainMsg', 'GetDisciplineRecord', error);
-              } else {
-                items = [];
-                if (((_ref = response.Result) != null ? _ref.Discipline : void 0) != null) {
-                  sum_merit = {
-                    ma: 0,
-                    mb: 0,
-                    mc: 0,
-                    da: 0,
-                    db: 0,
-                    dc: 0,
-                    dd: 0
-                  };
-                  $(response.Result.Discipline).each(function() {
-                    var merit, merit_clear;
-                    merit = {
-                      a: 0,
-                      b: 0,
-                      c: 0
-                    };
-                    if (this.MeritFlag === "1") {
-                      if (!isNaN(parseInt(this.Detail.Discipline.Merit.A, 10))) {
-                        sum_merit.ma += merit.a = parseInt(this.Detail.Discipline.Merit.A, 10);
-                      }
-                      if (!isNaN(parseInt(this.Detail.Discipline.Merit.B, 10))) {
-                        sum_merit.mb += merit.b = parseInt(this.Detail.Discipline.Merit.B, 10);
-                      }
-                      if (!isNaN(parseInt(this.Detail.Discipline.Merit.C, 10))) {
-                        sum_merit.mc += merit.c = parseInt(this.Detail.Discipline.Merit.C, 10);
-                      }
-                      return items.push("<tr>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.a !== 0 ? "badge-success" : "") + "\">" + merit.a + "</span>\n    <br />大功\n  </td>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.b !== 0 ? "badge-success" : "") + "\">" + merit.b + "</span>\n    <br />小功\n  </td>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.c !== 0 ? "badge-success" : "") + "\">" + merit.c + "</span>\n    <br />嘉獎\n  </td>\n  <td>\n    <span>" + (this.OccurDate.substr(0, 10)) + "</span>\n    <br/>\n    <span>" + (this.Reason || '') + "</span>\n  </td>\n</tr>");
-                    } else if (this.MeritFlag === "2") {
-                      sum_merit.dd += 1;
-                      return items.push("<tr>\n  <td colspan=\"3\" class=\"my-detention\">" + detentionText + "</td>\n  <td class=\"my-detention-text\">\n    <span>" + (this.OccurDate.substr(0, 10)) + "</span>\n    <br/>\n    <span>" + (this.Reason || '') + "</span>\n  </td>\n</tr>");
-                    } else {
-                      if (!isNaN(parseInt(this.Detail.Discipline.Demerit.A, 10))) {
-                        merit.a = parseInt(this.Detail.Discipline.Demerit.A, 10);
-                      }
-                      if (!isNaN(parseInt(this.Detail.Discipline.Demerit.B, 10))) {
-                        merit.b = parseInt(this.Detail.Discipline.Demerit.B, 10);
-                      }
-                      if (!isNaN(parseInt(this.Detail.Discipline.Demerit.C, 10))) {
-                        merit.c = parseInt(this.Detail.Discipline.Demerit.C, 10);
-                      }
-                      merit_clear = this.Detail.Discipline.Demerit.Cleared;
-                      if (merit_clear !== '是') {
-                        sum_merit.da += merit.a;
-                        sum_merit.db += merit.b;
-                        sum_merit.dc += merit.c;
-                      }
-                      return items.push("<tr>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.a !== 0 && merit_clear === "是" ? "badge-warning" : (merit.a !== 0 ? "badge-important" : "")) + "\">" + merit.a + "</span>\n    <br />大過\n  </td>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.b !== 0 && merit_clear === '是' ? "badge-warning" : (merit.b !== 0 ? "badge-important" : "")) + "\">" + merit.b + "</span>\n    <br />小過\n  </td>\n  <td class=\"my-flags\">\n    <span class=\"badge " + (merit.c !== 0 && merit_clear === '是' ? "badge-warning" : (merit.c !== 0 ? "badge-important" : "")) + "\">" + merit.c + "</span>\n    <br />警告\n  </td>\n  <td>\n    " + (this.Detail.Discipline.Demerit.Cleared === '是' ? "<span class='my-offset'>" + (this.Detail.Discipline.Demerit.ClearDate.substr(0, 10).replace(/\//ig, "-")) + " 已銷過<br/>" + (this.Detail.Discipline.Demerit.ClearReason || '') + "</span><br/>" : "") + "\n    <span>" + (this.OccurDate.substr(0, 10)) + "</span>\n    <br/>\n    <span>" + (this.Reason || '') + "</span>\n  </td>\n</tr>");
-                    }
-                  });
-                  $("#merit-a").html("<span class='badge " + (sum_merit.ma !== 0 ? "badge-success" : "") + "'>" + sum_merit.ma + "</span>");
-                  $("#merit-b").html("<span class='badge " + (sum_merit.mb !== 0 ? "badge-success" : "") + "'>" + sum_merit.mb + "</span>");
-                  $("#merit-c").html("<span class='badge " + (sum_merit.mc !== 0 ? "badge-success" : "") + "'>" + sum_merit.mc + "</span>");
-                  $("#demerit-a").html("<span class='badge " + (sum_merit.da !== 0 ? "badge-important" : "") + "'>" + sum_merit.da + "</span>");
-                  $("#demerit-b").html("<span class='badge " + (sum_merit.db !== 0 ? "badge-important" : "") + "'>" + sum_merit.db + "</span>");
-                  $("#demerit-c").html("<span class='badge " + (sum_merit.dc !== 0 ? "badge-important" : "") + "'>" + sum_merit.dc + "</span>");
-                  if (sum_merit.dd > 0) {
-                    $("#demerit-d").html("<li class=\"span12\">\n  <div class=\"thumbnail my-thumbnail-white\">\n    <div class=\"caption my-surveillance\">\n      <h5>" + detentionText + "</h5>\n    </div>\n  </div>\n</li>");
-                  }
-                }
-                if (items.length === 0) {
-                  return $("#discipline-container").removeClass("hide").html("目前無資料");
+              }
+        
+              const items = [];
+              const sumMerit = {
+                ma: 0, mb: 0, mc: 0, // merits
+                da: 0, db: 0, dc: 0, // demerits
+                dd: 0                // detentions
+              };
+        
+              const disciplines = Array.isArray(response?.Result?.Discipline) 
+              ? response.Result.Discipline 
+              : (response?.Result?.Discipline ? [response.Result.Discipline] : []);
+        
+              disciplines.forEach((record) => {
+                const occurDate = record.OccurDate?.substr(0, 10) || '';
+                const reason = record.Reason || '';
+                const detail = record.Detail?.Discipline;
+        
+                const buildBadge = (value, successClass, label) =>
+                  `<td class="text-center whitespace-nowrap"><div class="${value !== 0 ? successClass : 'text-gray-300'}">${value}</div><div class='text-sm'>${label}</div></td>`;
+        
+                if (record.MeritFlag === "1") {
+                  // Merits
+                  const a = parseInt(detail?.Merit?.A || 0, 10) || 0;
+                  const b = parseInt(detail?.Merit?.B || 0, 10) || 0;
+                  const c = parseInt(detail?.Merit?.C || 0, 10) || 0;
+                  sumMerit.ma += a;
+                  sumMerit.mb += b;
+                  sumMerit.mc += c;
+        
+                  items.push(`
+                    <tr>
+                      ${buildBadge(a, "text-cyan font-semibold", "大功")}
+                      ${buildBadge(b, "text-cyan font-semibold", "小功")}
+                      ${buildBadge(c, "text-cyan font-semibold", "嘉獎")}
+                      <td class="lg:w-xl">
+                        <div class='flex flex-col md:flex-row flex-wrap gap-x-2'>
+                          <div>${occurDate}</div>
+                          <div>${reason}</div>
+                        </div>
+                      </td>
+                    </tr>
+                  `);
+                } else if (record.MeritFlag === "2") {
+                  // Detention
+                  sumMerit.dd++;
+                  items.push(`
+                    <tr style='height: 55px'>
+                      <td colspan="3" class="my-detention">${detentionText}</td>
+                      <td class="my-detention-text">
+                        <div class='flex flex-col md:flex-row flex-wrap gap-x-2'>
+                          <div>${occurDate}</div>
+                          <div>${reason}</div>
+                        </div>
+                      </td>
+                    </tr>
+                  `);
                 } else {
-                  $("#discipline-view").removeClass("hide");
-                  $("#discipline .my-thumbnails").removeClass("hide");
-                  return $("#discipline-container").addClass("hide").html("<table class=\"table table-striped\">\n  <tbody>\n    " + (items.join("")) + "\n  </tbody>\n</table>");
+                  // Demerits
+                  const a = parseInt(detail?.Demerit?.A || 0, 10) || 0;
+                  const b = parseInt(detail?.Demerit?.B || 0, 10) || 0;
+                  const c = parseInt(detail?.Demerit?.C || 0, 10) || 0;
+                  const cleared = detail?.Demerit?.Cleared === '是';
+                  const clearDate = detail?.Demerit?.ClearDate?.substr(0, 10) || '';
+                  const clearReason = detail?.Demerit?.ClearReason || '';
+        
+                  if (!cleared) {
+                    sumMerit.da += a;
+                    sumMerit.db += b;
+                    sumMerit.dc += c;
+                  }
+        
+                  const badgeClass = (val, cleared) =>
+                    val !== 0 ? "text-red font-semibold" : "text-gray-300";
+        
+                  items.push(`
+                    <tr>
+                      ${buildBadge(a, badgeClass(a, cleared), "大過")}
+                      ${buildBadge(b, badgeClass(b, cleared), "小過")}
+                      ${buildBadge(c, badgeClass(c, cleared), "警告")}
+                      <td class='space-y-1'>
+                        ${cleared ? `<div class='flex flex-col md:flex-row flex-wrap gap-x-2 my-offset'><div>${clearDate}</div><div>已銷過${clearReason}</div></div>` : ""}
+                        <div class='flex flex-col md:flex-row flex-wrap gap-x-2'><div>${occurDate}</div><div>${reason}</div></div>
+                      </td>
+                    </tr>
+                  `);
                 }
+              });
+        
+              // 更新畫面上方統計數字
+              const updateBadge = (selector, value, cssClass) => {
+                $(selector).html(`<span class='text-3xl ${value !== 0 ? cssClass : "text-gray-300"}'>${value}</span>`);
+              };
+        
+              updateBadge("#merit-a", sumMerit.ma, "text-cyan");
+              updateBadge("#merit-b", sumMerit.mb, "text-cyan");
+              updateBadge("#merit-c", sumMerit.mc, "text-cyan");
+              updateBadge("#demerit-a", sumMerit.da, "text-red");
+              updateBadge("#demerit-b", sumMerit.db, "text-red");
+              updateBadge("#demerit-c", sumMerit.dc, "text-red");
+        
+              if (sumMerit.dd > 0) {
+                $("#demerit-d").html(`
+                  <div class="thumbnail my-thumbnail-white rounded-lg p-1">
+                    <div class="caption my-surveillance rounded-lg">
+                      <div class='p-2'>${detentionText}</div>
+                    </div>
+                  </div>
+                `);
+              }
+        
+              // 表格或無資料提示
+              if (items.length === 0) {
+                $("#discipline-container").removeClass("hide").html("目前無資料");
+              } else {
+                $("#discipline-view").removeClass("hide");
+                $("#discipline .my-thumbnails").removeClass("hide");
+                $("#discipline-container").addClass("hide").html(`
+                  <table class="table table-striped font-base mt-3">
+                    <tbody>${items.join("")}</tbody>
+                  </table>
+                `);
               }
             }
           }
         });
+        
       }
     });
   };

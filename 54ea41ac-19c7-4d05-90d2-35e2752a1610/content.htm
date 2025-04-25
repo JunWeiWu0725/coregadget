@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>缺曠獎懲</title>
+  <script src="js/gadget.js"></script>
+  <script>
+
+    init({
+      application: "",
+      oAuth: {
+        clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
+        clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
+        account: '',
+        password: ''
+      },
+      paramValues: {}
+    });
+  </script>
+  <link href="css/bootstrap.css" rel="stylesheet" />
+  <link href="css/bootstrap-responsive.css" rel="stylesheet" />
+  <link href="css/mybootstrap.css" rel="stylesheet" />
+  <!--<link href="css/base.less" rel="stylesheet/less" />
+  <link href="css/default.less" rel="stylesheet/less" />-->
+  <link href="css/default.css" rel="stylesheet" />
+  <link href="css/purge.css" rel="stylesheet" />
+  <link href="css/base.css" rel="stylesheet" />
+  <script src="js/jquery.min.js"></script>
+  <!--<script src="js/less.min.js"></script>-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+  <script src="js/jquery.ui.touch-punch.min.js"></script>
+  <script src="js/facescroll.js"></script>
+  <script src="js/bootstrap.js"></script>
+  <script src="js/default.js"></script>
+</head>
+
+<body>
+  <div id="gadget">
+    <div class="px-4">
+      <div class="row-fluid">
+        <div class="span12">
+          <div id="mainMsg"></div>
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="span12" id="behavior">
+          <div class="row-fluid">
+            <div class="span12">
+              <div class="tab-pane">
+                <div class="my-schoolyear-semester-widget" title="請選擇學年度學期">
+                  <div class="btn-group grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 xl:grid-cols-7 gap-4 mb-5"
+                    data-toggle="buttons-radio">
+                  </div>
+                </div>
+                <h2 class="">德行</h2>
+                <div class="rounded-lg p-4 md:p-6 bg-base-100 mb-5" id="morality">
+                  <div id="morality-view" class="hide flex items-baseline gap-1">
+                    <i class="icon-th-list"></i>
+                    <a href="#" class="text-primary text-base" my-toggle="collapse">查看詳細資料</a>
+                    <span data-collapse=""><i class="icon-chevron-down"></i></span>
+                  </div>
+                  <div id="morality-container"></div>
+                </div>
+                <h2 class="">缺曠記錄</h2>
+                <div class="mb-5" id="attendance">
+                  <div class="my-thumbnails"></div>
+                  <div id="attendance-view" class="hide flex items-baseline gap-1 mt-4">
+                    <i class="icon-th-list"></i>
+                    <a href="#" class="text-primary text-base" my-toggle="collapse">查看詳細資料</a>
+                    <span data-collapse=""><i class="icon-chevron-up"></i></span>
+                  </div>
+                  <div id="attendance-container" class="text-gray-700"></div>
+                </div>
+                <h2 class="">獎懲記錄</h2>
+                <div class="mb-12" id="discipline">
+                  <div class="my-thumbnails" class="hide flex items-baseline gap-1">
+                    <div class="thumbnails" id="demerit-d"></div>
+                    <div class="grid grid-cols-3 lg:grid-cols-6 gap-4 font-semibold mt-4">
+                      <div class="thumbnail my-thumbnail-white py-3 rounded-lg">
+                        <div class="my-subthumbnail-top" id="merit-a"><span class="text-3xl">0</span>
+                        </div>
+                        <div class="caption my-subthumbnail-bottom text-base">
+                          <div>大功</div>
+                        </div>
+                      </div>
+                      <div class="thumbnail my-thumbnail-white py-3 rounded-lg">
+                        <div class="my-subthumbnail-top" id="merit-b"><span class="text-3xl">0</span>
+                        </div>
+                        <div class="caption my-subthumbnail-bottom text-base">
+                          <div>小功</div>
+                        </div>
+                      </div>
+                      <div class="thumbnail my-thumbnail-white py-3 rounded-lg">
+                        <div class="my-subthumbnail-top" id="merit-c"><span class="text-3xl">0</span>
+                        </div>
+                        <div class="caption my-subthumbnail-bottom text-base">
+                          <div>嘉獎</div>
+                        </div>
+                      </div>
+                      <div class="thumbnail my-thumbnail-white py-3 rounded-lg">
+                        <div class="my-subthumbnail-top" id="demerit-a"><span class="text-3xl">0</span> </div>
+                        <div class="caption my-subthumbnail-bottom text-base">
+                          <div>大過</div>
+                        </div>
+                      </div>
+                      <div class="thumbnail my-thumbnail-white py-3 rounded-lg">
+                        <div class="my-subthumbnail-top" id="demerit-b"><span class="text-3xl">0</span> </div>
+                        <div class="caption my-subthumbnail-bottom text-base">
+                          <div>小過</div>
+                        </div>
+                      </div>
+                      <div class="thumbnail my-thumbnail-white py-3 rounded-lg">
+                        <div class="my-subthumbnail-top" id="demerit-c"><span class="text-3xl">0</span> </div>
+                        <div class="caption my-subthumbnail-bottom text-base">
+                          <div>警告</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="discipline-view" class="hide flex items-baseline gap-1 mt-4">
+                    <i class="icon-th-list"></i>
+                    <a href="#" class="text-primary text-base" my-toggle="collapse">查看詳細資料</a>
+                    <span data-collapse=""><i class="icon-chevron-up"></i></span>
+                  </div>
+                  <div id="discipline-container" class="text-gray-700"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
