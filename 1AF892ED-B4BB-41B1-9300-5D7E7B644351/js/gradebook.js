@@ -422,7 +422,8 @@
                 $scope.gradeItemList = [];
                 // 目前定期評量的平時評量
                 $scope.current.gradeItemList = [];
-
+                // 目前評量項目
+                $scope.current.template = null;
                 // --?
                 // 假如有目前試別的話 先將平均分數歸零
                 // if ($scope.current.Exam) {
@@ -600,7 +601,6 @@
                             $scope.templateList.push(temp);
                         }
                     });
-
                     $scope.templateList.forEach(function (examRec) {
                         var useGroup = false;
                         if (examRec.Extension)
@@ -1156,7 +1156,6 @@
                         }
                     }
                 });
-
                 if (chk) {
                     $scope.setCurrentTemplate($scope.current.template);
                 } else {
@@ -1183,7 +1182,7 @@
                 }
             } else {
                 execute = true;
-            }
+            }            
             if (execute) {
                 $scope.current.template = template;
                 $scope.current.gradeItemList = [];
@@ -1328,7 +1327,6 @@
                 // 目前選擇的試別清空
                 // $scope.current.Exam = null;
                 // $scope.setupCurrent();
-
                 $scope.setCurrentTemplate($scope.current.template || $scope.templateList[0]);
             }
         }
@@ -2112,7 +2110,6 @@
                 execute = true;
             }
             // if (execute) {
-
             $scope.current.template = $scope.current.template || $scope.templateList[0];
             $scope.current.gradeItemList = [];
             // 篩選出目前定期的平時評量項目
