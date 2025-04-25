@@ -33,6 +33,22 @@ angular.module("app", [])
       output = angular.fromJson(output);
       return output;
   }
+  $scope.getDegreeClass = function(degree) {
+    switch (degree) {
+        case '金牌':
+            return 'border-gold text-gold';
+        case '銀牌':
+            return 'border-orange text-orange';
+        case '銅牌':
+            return 'border-brown text-brown';
+        case '中等':
+            return 'border-green text-green';
+        case '請加強':
+            return 'border-red text-red';
+        default:
+            return '';
+    }
+};
     $scope.contract = gadget.getContract("ischool.fitness.inquire.teacher");
     $scope.formatTime = function(value) {
       if (value !== undefined && value !== null && value !== "") { // 檢查是否為 undefined 或 null
