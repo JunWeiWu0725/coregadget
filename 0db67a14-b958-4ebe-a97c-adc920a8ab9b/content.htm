@@ -2,404 +2,515 @@
 <html ng-app="app">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script src="js/gadget.js"></script>
-    <script>
-        init({
-            //application: "dev.jh_kh",
-            application: "test.kh.edu.tw",
-            paramValues: {},
-            oAuth: {
-                clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
-                clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-                account :'' ,
-                password :''
-            }
-        });
-    </script>
-    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <link href="css/font-awesome.css" rel="stylesheet" type="text/css">
-    <link href="css/base.css" rel="stylesheet" />
-    <link href="css/defalut.css" rel="stylesheet" />
-    <script src="js/jquery-1.8.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <style type="text/css">
-        .btn-gray {
-            background-color: rgb(215, 215, 215);
-        }
-    </style>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="js/gadget.js"></script>
+  <script>
+    init({
+      //application: "dev.jh_kh",
+      application: "test.kh.edu.tw",
+      paramValues: {},
+      oAuth: {
+        clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
+        clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
+        account: '',
+        password: ''
+      }
+    });
+  </script>
+  <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="css/font-awesome.css" rel="stylesheet" type="text/css">
+  <link href="css/purge.css" rel="stylesheet" />
+  <link href="css/base.css" rel="stylesheet" />
+  <link href="css/defalut.css" rel="stylesheet" />
+  <script src="js/jquery-1.8.1.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <style type="text/css">
+    .btn-gray {
+      background-color: rgb(215, 215, 215);
+    }
+  </style>
 </head>
 
 <body ng-controller="Ctrl" data-ng-init="init()">
-    <div id="gadget" class="my-page">
-        <div class="row">
-            <div class="col-md-12">
-                <h1>
-                    體適能測驗資料輸入
-                    <div class="pull-right" style="position: relative;bottom: 10px;">
-                        <a class="btn btn-info" ng-click="showRule()">說明</a>
-                    </div>
-                </h1>
-                <div role="tabpanel">
-                    <!-- Nav tabs -->
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">輸入</a></li>
-                        <li role="presentation">
-                            <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">查詢</a>
-                        </li>
-                    </ul>
-                    <!-- Tab panes -->
-                    <div class="tab-content" style=" margin-top: 10px;">
-                        <div role="tabpanel" class="tab-pane active" id="home">
-                            <div id="mainMsg"></div>
-                            <div class="alert alert-info" ng-class="{'alert-danger':current.inPeriod}" role="alert" ng-show="current.id" style="margin-top: 10px;">
-                                {{current.school_year}}學年度 體適能測驗資料輸入區間：{{current.start_time}} - {{current.end_time}}
-                            </div>
-                            <div>
-                                <div class="btn-group" style="margin-top: 10px;">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                        {{current.course_name}}
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu" role="menu">
-                                        <li ng-repeat="m in menu">
-                                            <a href="#" ng-click="setCurrent(m)">{{m.course_name}}</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="form-group pull-right col-md-5" style="margin-top: 10px;">
-                                <div class="input-group">
-                                    <div class="input-group-addon">重設測驗日期：</div>
-                                    <input id ="mydate" type="text" disabled class="form-control" datepicker-popup="yyyy/MM/dd" ng-model="test_date" is-open="opened" show-button-bar="false" datepicker-options="{
-    formatYear: 'yy',
-    startingDay: 1
-  }" ng-required="true" ng-change="showIfSaveDate()" close-text="Close" />
-                                    <div class="input-group-btn">
-                                        <button type="button" class="btn btn-default" ng-click="datePickerOpen($event)">
-                                            <i class="fa fa-calendar"></i>
-                                        </button>
-                                        <!--批次按鈕-->
-                                        <div class="btn-group" ng-init="initImportItem()">
-                                            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                                <i class="fa fa-cog" aria-hidden="true"></i>
-                                                <span>匯入</span>
-                                                <span class="caret"></span>
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li ng-repeat="item in arrayTestItem">
-                                                    <a href="javascript:;" ng-click="item.Fn()">
-                                                        {{item.Name}}
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <!-- <input ng-model="test_date" ng-change="showEditForm('test_date',test_date)" type="date" class="form-control" placeholder="EX:2014-08-07"> -->
-                                </div>
-                            </div>
-
-                            <table class="table table-striped table-bordered table-hover" style="margin-top:10px;">
-                                <thead>
-                                    <tr>
-                                        <th>座號</th>
-                                        <th>姓名</th>
-                                        <th>
-                                            <a class="btn btn-primary btn-sm" ng-click="showEditForm('test_date')">
-                                                <i class="fa fa-edit"></i> 測驗日期
-                                            </a>
-                                        </th>
-                                        <th>
-                                            <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]" ng-click="showEditForm('height')"><i class="fa fa-edit"></i> 身高(cm)</a>
-                                        </th>
-                                        <th>
-                                            <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]" ng-click="showEditForm('weight')"><i class="fa fa-edit"></i> 體重(kg)</a>
-                                        </th>
-                                        <th>
-                                            <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]" ng-click="showEditForm('sit_and_reach')"><i class="fa fa-edit"></i> 坐姿體前彎(cm)</a>
-                                        </th>
-                                        <th>
-                                            <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]" ng-click="showEditForm('standing_long_jump')"><i class="fa fa-edit"></i> 立定跳遠(cm)</a>
-                                        </th>
-                                        <th ng-show="current.is_sit_up ==='t'">
-                                            <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]"  ng-click="showEditForm('sit_up')"><i class="fa fa-edit"></i> 仰臥起坐(次)</a>
-                                        </th>
-                                        <th>
-                                            <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]" ng-click="showEditForm('curl')"><i class="fa fa-edit"></i> 仰臥捲腹(次)</a>
-                                        </th>
-                                        <th ng-show="current.item_value ==='心肺耐力'">
-                                            <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]" ng-click="showEditForm('cardiorespiratory')">
-                                                <i class="fa fa-edit"></i>
-                                                800/1600公尺跑走(秒)
-                                            </a>
-                                        </th>                                      
-                                        <th ng-show="current.item_value ==='漸速耐力跑'">
-                                            <a class="btn btn-sm" ng-class="{true:'btn-primary',false:'btn-gray'}[checkListBool]" ng-click="showEditForm('pacer')"><i class="fa fa-edit"></i> 漸速耐力跑(趟)</a>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="l in list">
-                                        <td>{{l.seat_no}}</td>
-                                        <td>{{l.name}}</td>
-                                        <td>{{l.test_date}}</td>
-                                        <td>{{l.height}}</td>
-                                        <td>{{l.weight}}</td>
-                                        <td>{{l.sit_and_reach}}</td>
-                                        <td>{{l.standing_long_jump}}</td>
-                                        <td ng-show="l.is_sit_up ==='t'" >{{l.sit_up}}</td>
-                                        <td>{{l.curl}}</td>
-                                        <td ng-show="l.item_value ==='心肺耐力'">{{l.cardiorespiratory}}</td>                                        
-                                        <td ng-show="l.item_value ==='漸速耐力跑'">{{l.pacer}}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div role="tabpanel" class="tab-pane" id="profile">
-
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default">
-                                    {{current.school_year}}學年第{{current.semester}}學期
-                                </button>
-                            </div>
-
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    {{current.course_name}}
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li ng-repeat="m in menu">
-                                        <a href="#" ng-click="setCurrent(m)">{{m.course_name}}</a>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <table class="table table-striped table-bordered table-hover" style="margin-top:10px;">
-                                <thead>
-                                    <tr>
-                                        <th>座號</th>
-                                        <th style="width: 65px;">姓名</th>
-                                        <th style="width: 95px;">測驗日期</th>
-                                        <th>身高(cm)</th>
-                                        <th>體重(kg)</th>
-                                        <th>坐姿體前彎(cm)</th>
-                                        <th>常模</th>
-                                        <th>立定跳遠(cm)</th>
-                                        <th>常模</th>
-                                        <th ng-show="current.is_sit_up ==='t'" >仰臥起坐(次)</th>
-                                        <th ng-show="current.is_sit_up ==='t'" >常模</th>                                        
-                                        <th>仰臥捲腹(次)</th>
-                                        <th>常模</th>
-                                        <th ng-show="current.item_value ==='心肺耐力'">800/1600公尺跑走(秒)</th>
-                                        <th ng-show="current.item_value ==='心肺耐力'">常模</th>                                        
-                                        <th ng-show="current.item_value ==='漸速耐力跑'">漸速耐力跑(趟)</th>
-                                        <th ng-show="current.item_value ==='漸速耐力跑'">常模</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- ngRepeat: l in list -->
-                                    <tr ng-repeat="l in list">
-                                        <td>{{l.seat_no}}</td>
-                                        <td>{{l.name}}</td>
-                                        <td>{{l.test_date}}</td>
-                                        <td>{{l.height}}</td>
-                                        <td>{{l.weight}}</td>
-                                        <td>{{l.sit_and_reach}}</td>
-                                        <td>{{l.sit_and_reach_degree}}</td>
-                                        <td>{{l.standing_long_jump}}</td>
-                                        <td>{{l.standing_long_jump_degree}}</td>
-                                        <td ng-show="l.is_sit_up ==='t'" >{{l.sit_up}}</td>
-                                        <td ng-show="l.is_sit_up ==='t'" >{{l.sit_up_degree}}</td>
-                                        <td>{{l.curl}}</td>
-                                        <td>{{l.curl_degree}}</td>
-                                        <td ng-show="l.item_value ==='心肺耐力'">{{l.cardiorespiratory}}</td>
-                                        <td ng-show="l.item_value ==='心肺耐力'">{{l.cardiorespiratory_degree}}</td>                                        
-                                        <td ng-show="l.item_value ==='漸速耐力跑'">{{l.pacer}}</td>
-                                        <td ng-show="l.item_value ==='漸速耐力跑'">{{l.pacer_degree}}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <div id="gadget" class="my-page">
+    <div class="">
+      <h1>
+        體適能測驗資料輸入
+        <div class="pull-right" style="position: relative;bottom: 10px;">
+          <a class="btn btn-info" ng-click="showRule()">說明</a>
         </div>
-        <script type="text/ng-template" id="myModalRule.html">
-            <div class="modal-header">
-                <button type="button" class="close" ng-click="cancel()">
-                    <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">Close</span>
-                </button>
-                <h4 class="modal-title" id="myModalLabel"> 說明</h4>
+      </h1>
+      <div role="tabpanel">
+        <!-- Nav tabs -->
+        <!-- <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab"
+              data-toggle="tab">輸入</a></li>
+          <li role="presentation">
+            <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">查詢</a>
+          </li>
+        </ul> -->
+        <!-- Tab panes -->
+        <!-- <div class="tab-content" style=" margin-top: 10px;"> -->
+          <div>
+            <div id="mainMsg"></div>
+            <div class="alert alert-info" ng-class="{'alert-danger':current.inPeriod}" role="alert" ng-show="current.id"
+              style="margin-top: 10px;">
+              {{current.school_year}}學年度 體適能測驗資料輸入區間：<span class="font-semibold text-lg">{{current.start_time}} ~ {{current.end_time}}</span>
             </div>
-            <div class="modal-body">
-                <ul>
-                    <li>仰臥起坐 (次)，例如：45 (整數)</li>
-                    <li>坐姿體前彎 (公分) ，例如：50 (整數)</li>
-                    <li>立定跳遠 (公分) ，例如：170 (整數)</li>
-                    <li>
-                        800/1600公尺跑走 (秒)，例如：200秒可輸入200或3.20<擇一輸入>
-                    </li>
-                    <li>仰臥捲腹 (次) ，例如：60 (整數)</li>
-                    <li>漸速耐力跑 (趟) ，例如：65 (整數)</li>
-                    <li>身心障礙等特殊原因學生經主管機關認定無法施測者，統一輸入"免測"</li>
+
+            <div class="flex flex-wrap justify-between gap-4 mb-6">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default-bt">
+                  {{current.school_year}}學年第{{current.semester}}學期
+                </button>
+              </div>
+              <div class="btn-group mr-auto">
+                <button type="button" class="btn btn-default-bt dropdown-toggle" data-toggle="dropdown">
+                  {{current.course_name}}
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li ng-repeat="m in menu">
+                    <a href="#" ng-click="setCurrent(m)">{{m.course_name}}</a>
+                  </li>
                 </ul>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" ng-click="cancel()">關閉</button>
-            </div>
-        </script>
-        <script type="text/ng-template" id="myModalContent.html">
-            <div class="modal-header">
-                <button style="margin-left:10px;float:right" type="button" class="btn btn-primary" ng-click="ok()">
-                    儲存
-                </button>
-                <button style="float:right" type="button" class="btn btn-default" ng-click="cancel()">取消</button>
-                <h4 class="modal-title" id="myModalLabel">{{column_text}}</h4>
-            </div>
-            <div class="modal-body">
-                <table class="table table-striped">
-                    <tr ng-repeat="tl in tmplist" ng-class="{danger:tl.unvalidated}">
-                        <td>{{tl.seat_no}}</td>
-                        <td>{{tl.name}}</td>
-                        <td>
-                            <input type="text" ng-if="tl.focus" class="form-control" ng-model="tl.value" init-focus key-focus select-on-focus>
-                            <input type="text" ng-if="!tl.focus" class="form-control" ng-model="tl.value" key-focus select-on-focus>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
-                <button type="button" class="btn btn-primary" ng-click="ok()">儲存</button>
-            </div>
-        </script>
-        <script src="js/angular.min.js"></script>
-        <script src="js/ui-bootstrap-tpls.min.js"></script>
-        <script src="js/default.js"></script>
+              </div>
 
-        <!--匯入畫面-->
-        <div id="importModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="importModal">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">{{targetItem.Name}}</h4>
-                    </div>
-                    <div class="modal-body" ng-if="!targetItem.InputValues">
-                        <div style="margin:15px 0px;">
-                            <span>使用說明</span>
-                            <ol class="">
-                                <li>
-                                    <span>從excel中複製成績</span>
-                                    <ul>
-                                        <li class="text-danger">請先確認excel中學生的人數及順序皆與系統相符</li>
-                                        <li class="text-danger">複製成績時，僅需圈選成績的部分，不含學生姓名及表頭</li>
-                                        <li class="text-danger">如有學生沒有成績資料，請輸入"-"，表示無資料，否則系統將認定錯誤</li>
-                                    </ul>
-                                </li>
-                                <li>於下方文字方塊中貼上</li>
-                                <li>使用"解析"按鈕，進行解析</li>
-                                <li>預覽資料確認成績正確</li>
-                                <li>
-                                    <span>使用"匯入"按鈕，進行匯入</span>
-                                    <ul>
-                                        <li class="text-danger">如果輸入資料有錯誤，將無法匯入</li>
-                                    </ul>
-                                </li>
-                            </ol>
-                        </div>
-                        <div class="row" style="margin:20px 0px;">
-                            <textarea class="col-xs-12" 
-                                      rows="5"
-                                      ng-model="targetItem.InputData"></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-body" ng-if="targetItem.InputValues">
-                        <p>預覽</p>
-                        <div class="row">
-                            <div class="visible-md visible-lg">
-                                <div class="col-md-3"
-                                     ng-repeat="col in [1,2,3,4]">
-                                    <div ng-repeat="stuRec in list"
-                                         ng-if="$index < list.length*col/4 && $index >= list.length*(col-1)/4">
-                                        <div class="importStudentPreview" style="display:flex">
-                                            <span class="studentInfo">
-                                                <span ng-if="stuRec.seat_no"
-                                                      style="min-width:24px;display:inline-block;">{{stuRec.seat_no}}.&nbsp;</span>
-                                                <span>{{stuRec.name}}</span>
-                                            </span>
-                                            <div ng-if="targetItem.InputValues[$index]=='錯誤'"
-                                                 class="pull-right label label-danger"
-                                                 style="font-size:inherit;">錯誤</div>
-                                            <div ng-if="targetItem.InputValues[$index]==''"
-                                                 class="pull-right text-danger">--</div>
-                                            <div ng-if="targetItem.InputValues[$index]!='錯誤'&&targetItem.InputValues[$index]!=''"
-                                                 class="pull-right"
-                                                 ng-class="{'text-danger':targetItem.InputValues[$index] < 60}">{{targetItem.InputValues[$index]}}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="visible-sm">
-                                <div class="col-sm-4"
-                                     ng-repeat="col in [1,2,3]">
-                                    <div ng-repeat="stuRec in list"
-                                         ng-if="$index < list.length*col/3 && $index >= list.length*(col-1)/3">
-                                        <div class="importStudentPreview">
-                                            <span class="studentInfo">
-                                                <span ng-if="stuRec.seat_no"
-                                                      style="min-width:24px;display:inline-block;">{{stuRec.seat_no}}.&nbsp;</span>
-                                                <span>{{stuRec.name}}</span>
-                                            </span>
-                                            <div ng-if="targetItem.InputValues[$index]=='錯誤'"
-                                                 class="pull-right label label-danger"
-                                                 style="font-size:inherit;">錯誤</div>
-                                            <div ng-if="targetItem.InputValues[$index]==''"
-                                                 class="pull-right text-danger">--</div>
-                                            <div ng-if="targetItem.InputValues[$index]!='錯誤'&&targetItem.InputValues[$index]!=''"
-                                                 class="pull-right"
-                                                 ng-class="{'text-danger':targetItem.InputValues[$index] < 60}">{{targetItem.InputValues[$index]}}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="visible-xs">
-                                <div class="col-xs-6"
-                                     ng-repeat="col in [1,2]">
-                                    <div ng-repeat="stuRec in list"
-                                         ng-if="$index < list.length*col/2 && $index >= list.length*(col-1)/2">
-                                        <div class="importStudentPreview">
-                                            <span class="studentInfo">
-                                                <span ng-if="stuRec.seat_no"
-                                                      style="min-width:24px;display:inline-block;">{{stuRec.seat_no}}.&nbsp;</span>
-                                                <span>{{stuRec.name}}</span>
-                                            </span>
-                                            <div ng-if="targetItem.InputValues[$index]=='錯誤'"
-                                                 class="pull-right label label-danger"
-                                                 style="font-size:inherit;">錯誤</div>
-                                            <div ng-if="targetItem.InputValues[$index]==''"
-                                                 class="pull-right text-danger">--</div>
-                                            <div ng-if="targetItem.InputValues[$index]!='錯誤'&&targetItem.InputValues[$index]!=''"
-                                                 class="pull-right"
-                                                 ng-class="{'text-danger':targetItem.InputValues[$index] < 60}">{{targetItem.InputValues[$index]}}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default btn-sm" ng-if="!targetItem.InputValues" data-dismiss="modal">取消</button>
-                        <button type="button" class="btn btn-primary btn-sm" ng-if="!targetItem.InputValues" ng-click="targetItem.Parse()">解析</button>
-                        <button type="button" class="btn btn-default btn-sm" ng-if="targetItem.InputValues" ng-click="targetItem.GoBack()">返回</button>
-                        <button type="button" class="btn btn-primary btn-sm" ng-if="targetItem.InputValues" ng-click="targetItem.Import()" ng-class="{disabled:targetItem.HasError}">匯入</button>
-                    </div>
+              <div class="form-group mb-0 ml-auto">
+                <div class="input-group">
+                  <div class="input-group-addon bg-white">重設測驗日期：</div>
+                  <input id="mydate" type="text" disabled class="form-control" datepicker-popup="yyyy/MM/dd"
+                    ng-model="test_date" is-open="opened" show-button-bar="false" datepicker-options="{
+                        formatYear: 'yy',
+                        startingDay: 1
+                      }" ng-required="true" ng-change="showIfSaveDate()" close-text="Close" />
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-default-bt" ng-click="datePickerOpen($event)">
+                      <i class="fa fa-calendar"></i>
+                    </button>
+                    <!--批次按鈕-->
+
+                  </div>
+                  <!-- <input ng-model="test_date" ng-change="showEditForm('test_date',test_date)" type="date" class="form-control" placeholder="EX:2014-08-07"> -->
                 </div>
+
+              </div>
+              <div class="ml-auto">
+                <div class="btn-group mr-4" ng-init="initImportItem()">
+                  <a class="btn btn-default-bt dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-cog" aria-hidden="true"></i>
+                    <span>匯入</span>
+                    <span class="caret"></span>
+                  </a>
+                  <ul class="right-0 dropdown-menu">
+                    <li ng-repeat="item in arrayTestItem">
+                      <a href="javascript:;" ng-click="item.Fn()">
+                        {{item.Name}}
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="btn-group" ng-init="initImportItem()">
+                  <a class="btn btn-default-bt dropdown-toggle" style="background-color: #ca0000 !important;"
+                    data-toggle="dropdown">
+                    <i class="fa fa-edit"></i>
+                    <span>編輯</span>
+                    <span class="caret"></span>
+                  </a>
+                  <ul class="right-0 dropdown-menu">
+                    <li>
+                      <a class="btn-white cursor-pointer" ng-click="showEditForm('test_date')">
+                        <i class="fa fa-edit"></i> 測驗日期
+                      </a>
+                    </li>
+                    <li>
+                      <a class="cursor-pointer" ng-class="{true:'btn-white',false:'btn-gray'}[checkListBool]"
+                        ng-click="showEditForm('height')"><i class="fa fa-edit"></i> 身高(cm)</a>
+                    </li>
+                    <li>
+                      <a class="cursor-pointer" ng-class="{true:'btn-white',false:'btn-gray'}[checkListBool]"
+                        ng-click="showEditForm('weight')"><i class="fa fa-edit"></i> 體重(kg)</a>
+                    </li>
+                    <li>
+                      <a class="cursor-pointer" ng-class="{true:'btn-white',false:'btn-gray'}[checkListBool]"
+                        ng-click="showEditForm('sit_and_reach')"><i class="fa fa-edit"></i>
+                        坐姿體前彎(cm)</a>
+                    </li>
+                    <li>
+                      <a class="cursor-pointer" ng-class="{true:'btn-white',false:'btn-gray'}[checkListBool]"
+                        ng-click="showEditForm('standing_long_jump')"><i class="fa fa-edit"></i>
+                        立定跳遠(cm)</a>
+                    </li>
+                    <li ng-show="current.is_sit_up ==='t'">
+                      <a class="cursor-pointer" ng-class="{true:'btn-white',false:'btn-gray'}[checkListBool]"
+                        ng-click="showEditForm('sit_up')"><i class="fa fa-edit"></i> 仰臥起坐(次)</a>
+                    </li>
+                    <li>
+                      <a class="cursor-pointer" ng-class="{true:'btn-white',false:'btn-gray'}[checkListBool]"
+                        ng-click="showEditForm('curl')"><i class="fa fa-edit"></i> 仰臥捲腹(次)</a>
+                    </li>
+                    <li ng-show="current.item_value ==='心肺耐力'">
+                      <a class="cursor-pointer" ng-class="{true:'btn-white',false:'btn-gray'}[checkListBool]"
+                        ng-click="showEditForm('cardiorespiratory')">
+                        <i class="fa fa-edit"></i>
+                        800/1600公尺跑走(秒)
+                      </a>
+                    </li>
+                    <li ng-show="current.item_value ==='漸速耐力跑'">
+                      <a class="cursor-pointer" ng-class="{true:'btn-white',false:'btn-gray'}[checkListBool]"
+                        ng-click="showEditForm('pacer')"><i class="fa fa-edit"></i> 漸速耐力跑(趟)</a>
+                    </li>
+
+                  </ul>
+                </div>
+              </div>
+
             </div>
+
+            <table class="hidden xl:table table mx-auto whitespace-normal mt-3" style="word-break: keep-all;">
+              <thead>
+                <tr>
+                  <th>座號</th>
+                  <th>姓名</th>
+                  <th>測驗日期</th>
+                  <th>身高(cm)</th>
+                  <th>體重(kg)</th>
+                  <th>坐姿體前彎(cm)</th>
+                  <th>立定跳遠(cm)</th>
+                  <th ng-show="current.is_sit_up ==='t'">仰臥起坐(次)</th>
+                  <th>仰臥捲腹(次)</th>
+                  <th ng-show="current.item_value ==='心肺耐力'">800/1600公尺跑走(秒)</th>
+                  <th ng-show="current.item_value ==='漸速耐力跑'">漸速耐力跑(趟)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="l in list">
+                  <td>{{l.seat_no}}</td>
+                  <td>{{l.name}}</td>
+                  <td>{{l.test_date}}</td>
+                  <td>{{l.height}}</td>
+                  <td>{{l.weight}}</td>
+                  <td>{{l.sit_and_reach}}</td>
+                  <td>{{l.standing_long_jump}}</td>
+                  <td ng-show="l.is_sit_up ==='t'">{{l.sit_up}}</td>
+                  <td>{{l.curl}}</td>
+                  <td ng-show="l.item_value ==='心肺耐力'">{{l.cardiorespiratory}}</td>
+                  <td ng-show="l.item_value ==='漸速耐力跑'">{{l.pacer}}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="flex flex-wrap row xl:hidden -mx-2 mt-4">
+              <div class="col-12 col-xs-6 col-md-4 col-lg-3 mb-3 px-3" ng-repeat="f in list">
+                <div class="card mb-6">
+                  <div class="card-body">
+                    <p class="card-title">座號: {{f.seat_no}}</p>
+                    <p class="card-text"><strong>姓名：</strong>
+                      <span class="text-lg font-semibold">{{f.name}}</span>
+                    </p>
+                    <p class="card-text"><strong>測驗日期：</strong>
+                      <span class="text-lg font-semibold">{{f.test_date}}</span>
+                    </p>
+                    <p class="card-text"><strong>身高：</strong>
+                      <span class="text-lg font-semibold">{{f.height}}</span>
+                      <span class="text-gray-400" ng-if="f.height">cm</span>
+                    </p>
+                    <p class="card-text"><strong>體重：</strong>
+                      <span class="text-lg font-semibold">{{f.weight}}</span>
+                      <span class="text-gray-400" ng-if="f.weight">kg</span>
+                    </p>
+                    <p class="card-text"><strong>坐姿體前彎：</strong>
+                      <span class="text-lg font-semibold">{{f.sit_and_reach}}</span>
+                      <span class="text-gray-400" ng-if="f.sit_and_reach">cm</span>
+                      <span class="border rounded text-sm px-2 py-1 float-right break-keep"
+                        ng-class="getDegreeClass(f.sit_and_reach_degree)"
+                        ng-if="f.sit_and_reach_degree">{{f.sit_and_reach_degree}}</span>
+                    </p>
+                    <p class="card-text"><strong>立定跳遠：</strong>
+                      <span class="text-lg font-semibold">{{f.standing_long_jump}}</span>
+                      <span class="text-gray-400" ng-if="f.standing_long_jump">cm</span>
+                      <span class="border rounded text-sm px-2 py-1 float-right break-keep"
+                        ng-class="getDegreeClass(f.standing_long_jump_degree)"
+                        ng-if="f.standing_long_jump_degree">{{f.standing_long_jump_degree}}</span>
+                    </p>
+                    <p class="card-text" ng-show="current.is_sit_up ==='t'"><strong>仰臥起坐：</strong>
+                      <span class="text-lg font-semibold">{{f.sit_up}}</span>
+                      <span class="text-gray-400" ng-if="f.sit_up">次</span>
+                      <span class="border rounded text-sm px-2 py-1 float-right break-keep"
+                        ng-class="getDegreeClass(f.sit_up_degree)" ng-if="f.sit_up_degree">{{f.sit_up_degree}}</span>
+                    </p>
+                    <p class="card-text"><strong>仰臥捲腹：</strong>
+                      <span class="text-lg font-semibold">{{f.curl}}</span>
+                      <span class="text-gray-400" ng-if="f.curl">次</span>
+                      <span class="border rounded text-sm px-2 py-1 float-right break-keep"
+                        ng-class="getDegreeClass(f.curl_degree)" ng-if="f.curl_degree">{{f.curl_degree}}</span>
+                    </p>
+                    <div class="flex flex-wrap card-text mb-3" ng-show="f.item_value ==='心肺耐力'">
+                      <div class="font-semibold">800/1600公尺跑走：</div>
+                      <div class="mr-1">
+                        <span class="text-lg font-semibold">{{f.cardiorespiratory}}</span>
+                        <span class="text-gray-400" ng-if="f.cardiorespiratory">秒</span>
+                      </div>
+                      <span class="border rounded text-sm px-2 py-1 ml-auto break-keep"
+                        ng-class="getDegreeClass(f.cardiorespiratory_degree)"
+                        ng-if="f.cardiorespiratory_degree">{{f.cardiorespiratory_degree}}</span>
+                    </div>
+                    <p class="card-text" ng-show="f.item_value ==='漸速耐力跑'"><strong>漸速耐力跑：</strong>
+                      <span class="text-lg font-semibold">{{f.pacer}}</span>
+                      <span class="text-gray-400" ng-if="f.pacer">趟</span>
+                      <span class="border rounded text-sm px-2 py-1 float-right break-keep"
+                        ng-class="getDegreeClass(f.pacer_degree)" ng-if="f.pacer_degree">{{f.pacer_degree}}</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- <div role="tabpanel" class="tab-pane" id="profile">
+            <div class="btn-group">
+              <button type="button" class="btn btn-default-bt">
+                {{current.school_year}}學年第{{current.semester}}學期
+              </button>
+            </div>
+
+            <div class="btn-group">
+              <button type="button" class="btn btn-default-bt dropdown-toggle" data-toggle="dropdown">
+                {{current.course_name}}
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li ng-repeat="m in menu">
+                  <a href="#" ng-click="setCurrent(m)">{{m.course_name}}</a>
+                </li>
+              </ul>
+            </div>
+
+            <table class="table mx-auto whitespace-normal mt-3" style="word-break: keep-all;">
+              <thead>
+                <tr>
+                  <th>座號</th>
+                  <th style="width: 65px;">姓名</th>
+                  <th style="width: 95px;">測驗日期</th>
+                  <th>身高(cm)</th>
+                  <th>體重(kg)</th>
+                  <th>坐姿體前彎(cm)</th>
+                  <th>常模</th>
+                  <th>立定跳遠(cm)</th>
+                  <th>常模</th>
+                  <th ng-show="current.is_sit_up ==='t'">仰臥起坐(次)</th>
+                  <th ng-show="current.is_sit_up ==='t'">常模</th>
+                  <th>仰臥捲腹(次)</th>
+                  <th>常模</th>
+                  <th ng-show="current.item_value ==='心肺耐力'">800/1600公尺跑走(秒)</th>
+                  <th ng-show="current.item_value ==='心肺耐力'">常模</th>
+                  <th ng-show="current.item_value ==='漸速耐力跑'">漸速耐力跑(趟)</th>
+                  <th ng-show="current.item_value ==='漸速耐力跑'">常模</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="l in list">
+                  <td>{{l.seat_no}}</td>
+                  <td>{{l.name}}</td>
+                  <td>{{l.test_date}}</td>
+                  <td>{{l.height}}</td>
+                  <td>{{l.weight}}</td>
+                  <td>{{l.sit_and_reach}}</td>
+                  <td>{{l.sit_and_reach_degree}}</td>
+                  <td>{{l.standing_long_jump}}</td>
+                  <td>{{l.standing_long_jump_degree}}</td>
+                  <td ng-show="l.is_sit_up ==='t'">{{l.sit_up}}</td>
+                  <td ng-show="l.is_sit_up ==='t'">{{l.sit_up_degree}}</td>
+                  <td>{{l.curl}}</td>
+                  <td>{{l.curl_degree}}</td>
+                  <td ng-show="l.item_value ==='心肺耐力'">{{l.cardiorespiratory}}</td>
+                  <td ng-show="l.item_value ==='心肺耐力'">{{l.cardiorespiratory_degree}}</td>
+                  <td ng-show="l.item_value ==='漸速耐力跑'">{{l.pacer}}</td>
+                  <td ng-show="l.item_value ==='漸速耐力跑'">{{l.pacer_degree}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div> -->
+        <!-- </div> -->
+      </div>
+    </div>
+    <script type="text/ng-template" id="myModalRule.html">
+      <div class="modal-header">
+          <button type="button" class="close" ng-click="cancel()">
+              <span aria-hidden="true">&times;</span>
+              <span class="sr-only">Close</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel"> 說明</h4>
+      </div>
+      <div class="modal-body">
+          <ul>
+              <li>仰臥起坐 (次)，例如：45 (整數)</li>
+              <li>坐姿體前彎 (公分) ，例如：50 (整數)</li>
+              <li>立定跳遠 (公分) ，例如：170 (整數)</li>
+              <li>800/1600公尺跑走 (秒)，例如：200秒可輸入200或3.20<擇一輸入></li>
+              <li>仰臥捲腹 (次) ，例如：60 (整數)</li>
+              <li>漸速耐力跑 (趟) ，例如：65 (整數)</li>
+              <li>身心障礙等特殊原因學生經主管機關認定無法施測者，統一輸入"免測"</li>
+          </ul>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default-bt" ng-click="cancel()">關閉</button>
+      </div>
+    </script>
+    <script type="text/ng-template" id="myModalContent.html">
+      <div class="modal-header flex items-center">
+        <h4 class="modal-title" id="myModalLabel">{{column_text}}</h4>
+        <button type="button" class="btn btn-default-bt ml-auto mr-4" ng-click="cancel()">取消</button>
+        <button type="button" class="btn btn-default-bt" style="background-color: #428bca !important;" ng-click="ok()">
+            儲存
+        </button>
+      </div>
+      <div class="modal-body">
+          <table class="table">
+            <thead>
+                <tr>
+                  <th>座號</th>
+                  <th>姓名</th>
+                  <th>{{column_text}}</th>
+                </tr>
+            </thead>
+                <tr ng-repeat="tl in tmplist" ng-class="{danger:tl.unvalidated}">
+                  <td>{{tl.seat_no}}</td>
+                  <td>{{tl.name}}</td>
+                  <td>
+                      <input type="text" ng-if="tl.focus" class="form-control text-right" ng-model="tl.value" init-focus key-focus select-on-focus>
+                      <input type="text" ng-if="!tl.focus" class="form-control text-right" ng-model="tl.value" key-focus select-on-focus>
+                  </td>
+              </tr>
+          </table>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default-bt mr-2" ng-click="cancel()">取消</button>
+          <button type="button" class="btn btn-default-bt" style="background-color: #428bca !important;" ng-click="ok()">儲存</button>
+      </div>
+    </script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/ui-bootstrap-tpls.min.js"></script>
+    <script src="js/default.js"></script>
+
+    <!--匯入畫面-->
+    <div id="importModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="importModal">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">{{targetItem.Name}}</h4>
+          </div>
+          <div class="modal-body" ng-if="!targetItem.InputValues">
+            <div style="margin:15px 0px;">
+              <span>使用說明</span>
+              <ol class="">
+                <li>
+                  <span>從excel中複製成績</span>
+                  <ul>
+                    <li class="text-danger">請先確認excel中學生的人數及順序皆與系統相符</li>
+                    <li class="text-danger">複製成績時，僅需圈選成績的部分，不含學生姓名及表頭</li>
+                    <li class="text-danger">如有學生沒有成績資料，請輸入"-"，表示無資料，否則系統將認定錯誤</li>
+                  </ul>
+                </li>
+                <li>於下方文字方塊中貼上</li>
+                <li>使用"解析"按鈕，進行解析</li>
+                <li>預覽資料確認成績正確</li>
+                <li>
+                  <span>使用"匯入"按鈕，進行匯入</span>
+                  <ul>
+                    <li class="text-danger">如果輸入資料有錯誤，將無法匯入</li>
+                  </ul>
+                </li>
+              </ol>
+            </div>
+            <div class="row" style="margin:20px 0px;">
+              <textarea class="textarea p-4" rows="4" ng-model="targetItem.InputData"></textarea>
+            </div>
+          </div>
+          <div class="modal-body" ng-if="targetItem.InputValues">
+            <p>預覽</p>
+            <div class="row">
+              <div class="visible-md visible-lg">
+                <div class="col-md-3" ng-repeat="col in [1,2,3,4]">
+                  <div ng-repeat="stuRec in list" ng-if="$index < list.length*col/4 && $index >= list.length*(col-1)/4">
+                    <div class="importStudentPreview" style="display:flex">
+                      <span class="studentInfo">
+                        <span ng-if="stuRec.seat_no"
+                          style="min-width:24px;display:inline-block;">{{stuRec.seat_no}}.&nbsp;</span>
+                        <span>{{stuRec.name}}</span>
+                      </span>
+                      <div ng-if="targetItem.InputValues[$index]=='錯誤'" class="pull-right label label-danger"
+                        style="font-size:inherit;">錯誤
+                      </div>
+                      <div ng-if="targetItem.InputValues[$index]==''" class="pull-right text-danger">--</div>
+                      <div ng-if="targetItem.InputValues[$index]!='錯誤'&&targetItem.InputValues[$index]!=''"
+                        class="pull-right" ng-class="{'text-danger':targetItem.InputValues[$index] < 60}">
+                        {{targetItem.InputValues[$index]}}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="visible-sm">
+                <div class="col-sm-4" ng-repeat="col in [1,2,3]">
+                  <div ng-repeat="stuRec in list" ng-if="$index < list.length*col/3 && $index >= list.length*(col-1)/3">
+                    <div class="importStudentPreview">
+                      <span class="studentInfo">
+                        <span ng-if="stuRec.seat_no"
+                          style="min-width:24px;display:inline-block;">{{stuRec.seat_no}}.&nbsp;</span>
+                        <span>{{stuRec.name}}</span>
+                      </span>
+                      <div ng-if="targetItem.InputValues[$index]=='錯誤'" class="pull-right label label-danger"
+                        style="font-size:inherit;">錯誤
+                      </div>
+                      <div ng-if="targetItem.InputValues[$index]==''" class="pull-right text-danger">--</div>
+                      <div ng-if="targetItem.InputValues[$index]!='錯誤'&&targetItem.InputValues[$index]!=''"
+                        class="pull-right" ng-class="{'text-danger':targetItem.InputValues[$index] < 60}">
+                        {{targetItem.InputValues[$index]}}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="visible-xs">
+                <div class="col-xs-6" ng-repeat="col in [1,2]">
+                  <div ng-repeat="stuRec in list" ng-if="$index < list.length*col/2 && $index >= list.length*(col-1)/2">
+                    <div class="importStudentPreview">
+                      <span class="studentInfo">
+                        <span ng-if="stuRec.seat_no"
+                          style="min-width:24px;display:inline-block;">{{stuRec.seat_no}}.&nbsp;</span>
+                        <span>{{stuRec.name}}</span>
+                      </span>
+                      <div ng-if="targetItem.InputValues[$index]=='錯誤'" class="pull-right label label-danger"
+                        style="font-size:inherit;">錯誤
+                      </div>
+                      <div ng-if="targetItem.InputValues[$index]==''" class="pull-right text-danger">--</div>
+                      <div ng-if="targetItem.InputValues[$index]!='錯誤'&&targetItem.InputValues[$index]!=''"
+                        class="pull-right" ng-class="{'text-danger':targetItem.InputValues[$index] < 60}">
+                        {{targetItem.InputValues[$index]}}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default-bt" ng-if="!targetItem.InputValues"
+              data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-default-bt" style="background-color: #428bca !important;"
+              ng-if="!targetItem.InputValues" ng-click="targetItem.Parse()">解析</button>
+            <button type="button" class="btn btn-default-bt" ng-if="targetItem.InputValues"
+              ng-click="targetItem.GoBack()">返回</button>
+            <button type="button" class="btn btn-default-bt" style="background-color: #428bca !important;"
+              ng-if="targetItem.InputValues" ng-click="targetItem.Import()"
+              ng-class="{disabled:targetItem.HasError}">匯入</button>
+          </div>
         </div>
+      </div>
+    </div>
 </body>
 
 </html>
