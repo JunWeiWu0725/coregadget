@@ -391,6 +391,16 @@ pre {
   .sm\:max-w-60 {
     max-width: 240px;
   }
+  .sm\:flex-nowrap {
+    flex-wrap: nowrap;
+  }
+  .sm\:text-nowrap {
+    white-space: nowrap;
+  }
+
+  .sm\:-mb-7 {
+    margin-bottom: -30px;
+  }
 }
 
 @media (min-width: 768px) {
@@ -404,6 +414,10 @@ pre {
 
   .md\:min-w-10 {
     min-width: 160px;
+  }
+
+  .md\:min-w-30 {
+    min-width: 120px;
   }
 
   .md\:mr-0 {
@@ -449,3 +463,18 @@ pre {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+
+.sticky {
+  position: sticky;
+}
+
+.top-0 {
+  top: 0;
+}
+.top-4 {
+  top: 16px;
+}
+
+.right-4 {
+  right: 16px;
+} 

@@ -669,12 +669,33 @@ table tbody tr.tbody:nth-of-type(odd) {
 	height: auto;
 }
 
+.custom-control {
+	padding-left: 1rem;
+}
 
+td:has(.titd) .tith {
+	display: none;
+}
 
-	.custom-control {
-		padding-left: 1rem;
+.tarea:has(textarea) {
+	grid-column: 1 / 4;
+}
+
+label span:has(+textarea) {
+	white-space: nowrap;
+}
+/* 
+label:has(span:has(+textarea)) {
+	flex-wrap: nowrap;
+} */
+
+label span+textarea, label textarea {
+	margin-right: 16px;
+}
+
+@media (min-width: 768px) {
+	label span+textarea {
+		margin-right: 0;
 	}
+}
 
-	td:has(.titd) .tith {
-		display: none;
-	}
