@@ -390,7 +390,7 @@
         }
 
         // 再取得獎懲紀錄
-        return gadget.getContract("ischool.AD.student").send({
+        return gadget.getContract("ischool.AD.parent").send({
       service: "_.GetDisciplineRecord",
           body: `<Request>
             <StudentID>${global.student.StudentID}</StudentID>
