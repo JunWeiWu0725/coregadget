@@ -5,22 +5,25 @@
 <div class="max-w-screen-2xl p-3 mx-auto">
   <ng-container *ngIf="schoolInfo && sectionInfo  ">
     <ng-container *ngIf="questionSubject">
+      <div class="text-center "
+        style="font-size: 22px; font-weight: 900; color: #7D7979 !important; padding-bottom: 15px;">
+        <div style="white-space: break-spaces; word-break: keep-all;">{{schoolInfo.SchoolName || '學校名稱未設定'}} {{sectionInfo.SchoolYear}}學年度 第{{sectionInfo.Semester}}學期 綜合表現紀錄表 (
+          {{sectionInfo.Name}})</div>
+      </div>
       <button *ngIf=" isOpen && requireList&&requireList.length"
-        class="btn btn-danger fixed z-10 top-4 right-4 rounded-md"
+        class="btn btn-danger sticky z-10 top-4 right-4 rounded-md ml-auto block sm:-mb-7"
         style="background-color: #ef5826c2; box-shadow: none !important;" (click)="showRequireList()">
         <span>尚有</span>
         <span class="mx-1">{{requireList.length}}</span>
         <span>個項目未填寫</span>
       </button>
-      <div class="text-center "
-        style="font-size: 22px; font-weight: 900; color: #7D7979 !important; padding-bottom: 15px;">
-        <div>{{schoolInfo.SchoolName || '學校名稱未設定'}} {{sectionInfo.SchoolYear}}學年度 第{{sectionInfo.Semester}}學期 綜合表現紀錄表 (
-          {{sectionInfo.Name}})</div>
-      </div>
 
       <ng-container *ngIf="isOpen else elseBlock">
+
+        
         <h4 style="font-family: PingFang TC;">{{studentInfo.ClassName}}班 {{studentInfo.SeatNo}}號 {{studentInfo.Name}}
         </h4>
+
         <ng-container *ngFor="let subject of questionSubject; let subjectIndex = index">
           <div class="card mb-2">
             <h4 class=" com-view-first-title  ">{{subject.Subject |filterChineseNumbers}}</h4>
@@ -88,7 +91,8 @@
                                       [attr.name]="subject.Subject + '_' + group.Group + '_' + query.Query + '_' + questionText.Text"
                                       [attr.id]="option.AnswerID" [checked]="option.AnswerChecked"
                                       (click)="option.change()" />
-                                    <label class="flex flex-wrap custom-control-label w-100" [attr.for]="option.AnswerID">
+                                    <label class="flex flex-wrap sm:flex-nowrap custom-control-label w-100"
+                                      [attr.for]="option.AnswerID">
                                       <ng-container *ngTemplateOutlet="optionLayout"></ng-container>
                                     </label>
                                   </div>
@@ -97,7 +101,7 @@
                                 <!-- 填答 -->
                                 <ng-container *ngIf="questionText.Type == '填答'">
                                   <!-- 題目標題 -->
-                                  <div class="flex items-center flex-wrap md:flex-nowrap flex-shrink-0 gap-2">
+                                  <div class="flex items-center flex-wrap sm:flex-nowrap flex-shrink-0 gap-2 tarea">
                                     <label class="text-nowrap custom-control-label position-relative"
                                       *ngIf="questionText.Text">
                                       <span class="com-view-option -ml-4">
@@ -107,7 +111,7 @@
                                       </span>
                                       <!-- <span class="mx-1">:</span> -->
                                     </label>
-                                    <div class="com-view-option font-bold pl-0 md:text-nowrap titd"
+                                    <div class="com-view-option font-bold pl-0 sm:text-nowrap titd"
                                       *ngIf="!questionText.Text">
                                       <strong class="text-danger -ml-2" *ngIf="query.ShowMark">*</strong>
                                       {{query.Query}}
@@ -130,8 +134,8 @@
 
                                       <!-- 長文字區 -->
                                       <ng-container *ngIf="optionPart == '%TEXTAREA%'; else textPart">
-                                        <textarea class="sentence-input mr-3 md:mr-0 w-100 md:w-auto md:min-w-10 sm:max-w-60"
-                                          autosize="autosize" [ngStyle]="optionKey[optionPart].style"
+                                        <textarea class="sentence-input w-100 md:min-w-30" autosize="autosize"
+                                          [ngStyle]="optionKey[optionPart].style"
                                           [(ngModel)]="option.AnswerMatrix[partIndex]"
                                           (ngModelChange)="refreshMark('填答-長')"></textarea>
                                       </ng-container>
@@ -181,15 +185,15 @@
       </ng-container>
     </ng-container>
 
+    <button *ngIf="isOpen && questionSubject && questionSubject.length"
+      class="btn btn-info sticky z-10 bottom-4 right-4 rounded-md ml-auto block" style="background: #1d94c7c7; " (click)="save()"
+      [disabled]="isSaving">
+      <!-- <i class="material-icons">save_alt</i> -->
+      <span style="letter-spacing: 2px;" *ngIf="!isSaving">儲存</span>
+      <span *ngIf="isSaving">儲存中...</span>
+    </button>
   </ng-container>
 
-  <button *ngIf="isOpen && questionSubject && questionSubject.length"
-    class="btn btn-info fixed z-10 bottom-4 right-4 rounded-md" style="background: #1d94c7c7; " (click)="save()"
-    [disabled]="isSaving">
-    <!-- <i class="material-icons">save_alt</i> -->
-    <span style="letter-spacing: 2px;" *ngIf="!isSaving">儲存</span>
-    <span *ngIf="isSaving">儲存中...</span>
-  </button>
 </div>
 
 <ng-template #elseBlock style="  text-align: center;">

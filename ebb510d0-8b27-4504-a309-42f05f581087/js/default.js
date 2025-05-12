@@ -390,7 +390,7 @@
         }
 
         // 再取得獎懲紀錄
-        return gadget.getContract("ischool.AD.student").send({
+        return gadget.getContract("ischool.AD.parent").send({
       service: "_.GetDisciplineRecord",
           body: `<Request>
             <StudentID>${global.student.StudentID}</StudentID>
@@ -399,36 +399,36 @@
           </Request>`,
           result: function (response, error, xhr) {
             const btnActive = $('.my-schoolyear-semester-widget button.active');
-        
+
             if (
               btnActive.attr("school-year") === global.behavior.schoolYear &&
               btnActive.attr("semester") === global.behavior.semester
             ) {
           resetDiscipline();
-        
+
               if (error) {
             return set_error_message('#mainMsg', 'GetDisciplineRecord', error);
               }
-        
+
               const items = [];
               const sumMerit = {
                 ma: 0, mb: 0, mc: 0, // merits
                 da: 0, db: 0, dc: 0, // demerits
                 dd: 0                // detentions
               };
-        
-              const disciplines = Array.isArray(response?.Result?.Discipline) 
-              ? response.Result.Discipline 
+
+              const disciplines = Array.isArray(response?.Result?.Discipline)
+              ? response.Result.Discipline
               : (response?.Result?.Discipline ? [response.Result.Discipline] : []);
-        
+
               disciplines.forEach((record) => {
                 const occurDate = record.OccurDate?.substr(0, 10) || '';
                 const reason = record.Reason || '';
                 const detail = record.Detail?.Discipline;
-        
+
                 const buildBadge = (value, successClass, label) =>
                   `<td class="text-center whitespace-nowrap"><div class="${value !== 0 ? successClass : 'text-gray-300'}">${value}</div><div class='text-sm'>${label}</div></td>`;
-        
+
                 if (record.MeritFlag === "1") {
                   // Merits
                   const a = parseInt(detail?.Merit?.A || 0, 10) || 0;
@@ -437,7 +437,7 @@
                   sumMerit.ma += a;
                   sumMerit.mb += b;
                   sumMerit.mc += c;
-        
+
                   items.push(`
                     <tr>
                       ${buildBadge(a, "text-cyan font-semibold", "大功")}
@@ -473,16 +473,16 @@
                   const cleared = detail?.Demerit?.Cleared === '是';
                   const clearDate = detail?.Demerit?.ClearDate?.substr(0, 10) || '';
                   const clearReason = detail?.Demerit?.ClearReason || '';
-        
+
                   if (!cleared) {
                     sumMerit.da += a;
                     sumMerit.db += b;
                     sumMerit.dc += c;
                   }
-        
+
                   const badgeClass = (val, cleared) =>
                     val !== 0 ? "text-red font-semibold" : "text-gray-300";
-        
+
                   items.push(`
                     <tr>
                       ${buildBadge(a, badgeClass(a, cleared), "大過")}
@@ -496,19 +496,19 @@
                   `);
                 }
               });
-        
+
               // 更新畫面上方統計數字
               const updateBadge = (selector, value, cssClass) => {
                 $(selector).html(`<span class='text-3xl ${value !== 0 ? cssClass : "text-gray-300"}'>${value}</span>`);
               };
-        
+
               updateBadge("#merit-a", sumMerit.ma, "text-cyan");
               updateBadge("#merit-b", sumMerit.mb, "text-cyan");
               updateBadge("#merit-c", sumMerit.mc, "text-cyan");
               updateBadge("#demerit-a", sumMerit.da, "text-red");
               updateBadge("#demerit-b", sumMerit.db, "text-red");
               updateBadge("#demerit-c", sumMerit.dc, "text-red");
-        
+
               if (sumMerit.dd > 0) {
                 $("#demerit-d").html(`
                   <div class="thumbnail my-thumbnail-white rounded-lg p-1">
@@ -518,7 +518,7 @@
                   </div>
                 `);
               }
-        
+
               // 表格或無資料提示
               if (items.length === 0) {
                 $("#discipline-container").removeClass("hide").html("目前無資料");
@@ -534,7 +534,7 @@
             }
           }
         });
-        
+
       }
     });
   };
