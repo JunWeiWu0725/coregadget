@@ -533,13 +533,14 @@ function Main() {
     setFailedCount(failCount);
   }
 
-  function filterExamAvgList(examAvgList) {
+  function filterExamAvgList(examAvgList) {   
     const filteredList = examAvgList.map(item => ({
-      ...item,
-      Field: item.Field.filter((exam, index, self) =>
-        index === self.findIndex((e) => e.ExamID === exam.ExamID)
-      ),
-    }));
+        ...item,
+        Field: (item.Field?.length > 1
+          ? item.Field.filter((exam, idx, self) => exam?.ExamID && idx === self.findIndex((e) => e.ExamID === exam.ExamID))
+          : item.Field || []
+        ),
+      }));
 
     setExamAvgFilteredList(filteredList);
   }
@@ -612,7 +613,6 @@ function Main() {
               }
 
             </div>
-
 
             <div>{[].concat(courseExamScore || []).length < 1 ? '尚無資料。' : ''}</div>
 
@@ -950,7 +950,6 @@ function Main() {
 
                         </>
                       } else {
-
                         return (
                           <>
                             {
@@ -984,16 +983,16 @@ function Main() {
                                             <div className='text-subject'>{avgSetting}</div>
                                           </div>
                                         </div>
-                                        <Link className={disabledCursor} to={show} onClick={() => { handleShowAvgRankDetail(examAvg); }}>
-                                          <div className='row align-items-center'>
 
+                                        <Link className={disabledCursor} to={show} onClick={() => { handleShowAvgRankDetail(examAvg); }}>
+
+                                          <div className='row align-items-center'>
                                             {avgField.ToView === 'f' ? <div><div>未開放查詢。</div> <div>開放查詢時間：{avgField.ToViewTime}</div></div> :
                                               <>
                                                 <div className='col-12 my-2'>
                                                   <div className='row align-items-center'>
-                                                    <div className='d-flex justify-content-center'>
+                                                    <div className='d-flex justify-content-center'>           
                                                       <div className='row align-items-center'>
-
                                                         {avgField.Score !== '' && Number(avgField.Score) < avgPassingStandard ?
                                                           <div className='fs-4 text-danger me-0 pe-0'>{Math.round(Number(avgField.Score) * 100) / 100}</div>
                                                           : <div className='fs-4 me-0 pe-0'>{avgField.Score === '' ? '-' : Math.round(Number(avgField.Score) * 100) / 100}</div>}
@@ -1050,7 +1049,6 @@ function Main() {
               {/* {總覽} */}
 
               {[].concat(courseExamScore || []).map((nces, index) => {
-
                 if (selectedExam === '0') {
                   return <div className="col" key={index}>
                     <div className={nces.Subject === avgSetting ? 'card shadow h-100' : 'card card-pass shadow h-100'}>
@@ -1103,7 +1101,9 @@ function Main() {
               })}
 
               {/* {總覽 平均} */}
+              
               {[].concat(examAvgFilteredList || []).map((eaf, index) => {
+             
                 if (eaf.ItemName === avgSetting) {
 
                   if (selectedExam === '0') {
@@ -1119,7 +1119,7 @@ function Main() {
 
                             <div className='row align-items-center'>
 
-                              {[].concat(eaf.Field || []).map((nField, index) => {
+                              {[].concat(eaf.Field || []).map((nField, index) => {                                 
                                 let scoreColor = 'fs-4';
                                 if (Number(nField.Score) < avgPassingStandard) {
                                   scoreColor = 'fs-4 text-danger';
@@ -1135,7 +1135,6 @@ function Main() {
                                 return <div className='col-6 col-md-6 col-lg-6' key={index}>
                                   <div className='row align-items-center m-2'>
                                     <div className='d-flex justify-content-center'>
-
                                       <div className={scoreColor}>
                                         {nField.ToView === 't' ?
                                           nField.Score === '' ? '-' : Math.round(Number(nField.Score) * 100) / 100 :
