@@ -637,6 +637,7 @@ ul.rwd-table ol:nth-child(even) {
 	overflow: hidden;
 	display: -webkit-box;
 	-webkit-line-clamp: 2;
+	line-clamp: 2;
 	/* autoprefixer: off */
 	-webkit-box-orient: vertical;
 	/* autoprefixer: on */
@@ -684,18 +685,45 @@ td:has(.titd) .tith {
 label span:has(+textarea) {
 	white-space: nowrap;
 }
+
 /* 
 label:has(span:has(+textarea)) {
 	flex-wrap: nowrap;
 } */
 
-label span+textarea, label textarea {
+/* label span+textarea, label textarea {
 	margin-right: 16px;
-}
+} */
 
 @media (min-width: 768px) {
 	label span+textarea {
 		margin-right: 0;
 	}
+	div>input+label>span+input:not(:has(+ span)) {
+		width: 140px !important;
+	}
+	div:has(>label>span+input+span){
+		margin-right: 0 !important;
+	}
+	/* div>label>span:has(+input){
+		white-space: nowrap;
+	} */
 }
 
+.w-\[70\%\] {
+	width: 70%;
+}
+
+.w-\[60\%\] {
+	width: 60%;
+}
+
+@media (max-width: 768px) {
+	div>label:not(:has(> span))>input:not(:has(+ span)) {
+		width: 100% !important;
+	}
+}
+
+.gap-y-3 {
+	row-gap: .75rem
+}
