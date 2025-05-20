@@ -7891,6 +7891,10 @@ fieldset:disabled a.btn {
   left: 0;
 }
 
+.custom-control-label:has(textarea)::after {
+  top:auto;
+}
+
 .custom-control-label::before {
   transition-duration: 0.3s;
   transition-property: background-color, opacity, -webkit-transform;

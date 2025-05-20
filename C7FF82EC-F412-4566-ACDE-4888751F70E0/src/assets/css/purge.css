@@ -356,6 +356,10 @@ pre {
   padding-left: .25rem
 }
 
+.pl-8 {
+  padding-left: 32px !important;
+}
+
 .text-left {
   text-align: left
 }
@@ -366,6 +370,10 @@ pre {
 
 .font-bold {
   font-weight: 700
+}
+
+.leading-5 {
+  line-height: 20px
 }
 
 .leading-8 {

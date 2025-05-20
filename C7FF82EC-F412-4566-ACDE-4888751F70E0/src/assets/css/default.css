@@ -725,3 +725,7 @@ label:has(span:has(+textarea)) {
 .gap-y-3 {
 	row-gap: .75rem
 }
+
+input[type="checkbox"]+label textarea {
+	width: auto;
+}

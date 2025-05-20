@@ -16,14 +16,13 @@
            </th>
           </tr>
           <ng-container *ngFor="let query of group.QuestionQuery">
-            <tr>
-              <td class="text-left  pr-1"
+            <tr class="tbody">
+              <td class="text-left pr-1 pl-8"
                   style=" width:160px ; border-right: 1px dashed rgb(247, 245, 245);"
                   scope="col">
                 <div class="form-group mb-0">
                   <label class="custom-control-label mt-1 position-relative">
-                    <strong class="text-danger position-absolute"
-                            style="margin-top: -7px;"
+                    <strong class="text-danger position-absolute pl-1 -ml-4"
                             *ngIf="query.ShowMark">*</strong>
                     <div class ="com-view-third-title ">
                       {{query.Query}}
@@ -37,11 +36,10 @@
                 <div class="form-group mb-0">
                   <ng-container *ngFor="let questionText of query.QuestionText;let questionTextIndex = index">
                     <label *ngIf="questionTextIndex > 0"
-                           class="custom-control-label mx-1">;</label>
+                           class="custom-control-label mx-1 pr-4">;</label>
                     <label class="custom-control-label position-relative"
                            *ngIf="questionText.Text">
-                      <strong class="text-danger position-absolute"
-                              style="margin-left: -7px;margin-top: -7px;"
+                      <strong class="text-danger position-absolute pl-1 -ml-4"
                               *ngIf="questionText.ShowMark">*</strong>
                       <span class="com-view-third-title">{{questionText.Text}}</span>
                       <span class="mx-1">:</span>
@@ -72,7 +70,7 @@
                                  [attr.id]="option.AnswerID"
                                  [checked]="option.AnswerChecked"
                                  (click)="option.change()" />
-                          <label class="custom-control-label"
+                          <label class="flex items-center custom-control-label"
                                  for="{{option.AnswerID}}">
                             <ng-container *ngTemplateOutlet="optionLayout"></ng-container>
                           </label>
@@ -93,7 +91,7 @@
                         <ng-container *ngFor="let optionPart of option.Template;let partIndex = index">
                           <ng-container *ngIf="optionKey[optionPart];else normalPart">
                             <ng-container *ngIf="optionPart=='%TEXTAREA%';else textPart">
-                              <textarea   class="sentence-input mx-0"
+                              <textarea class="sentence-input mx-0 leading-5"
                                         autosize="autosize"
                                         [ngStyle]="optionKey[optionPart].style"
                                         [(ngModel)]="option.AnswerMatrix[partIndex]"
