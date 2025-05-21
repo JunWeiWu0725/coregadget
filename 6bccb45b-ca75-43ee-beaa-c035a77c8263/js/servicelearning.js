@@ -38,6 +38,8 @@ angular.module('learning', ['ngAnimate'])
             //$scope.getSemester();
         }
         $scope.getSchoolYear = function () {
+            $scope.studentList = undefined; // 立即清空學生資料
+            $scope.loadingStudentList = true; // 進入載入狀態
             delete $scope.schoolYearList;
             delete $scope.columnList;
             delete $scope.colHeaderList;
@@ -108,6 +110,8 @@ angular.module('learning', ['ngAnimate'])
 
                                     $scope.getStudentData();
                                 }
+                            } else {
+                                $scope.loadingStudentList = false; 
                             }
                         });
                     }
