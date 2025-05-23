@@ -645,7 +645,7 @@ ul.rwd-table ol:nth-child(even) {
 		display: flex;
 		width: auto;
 		min-width: 80px;
-		font-weight: 900;
+		font-weight: 600;
 		padding-right: 1rem;
 		text-align-last: justify;
 		display: inline-block;
