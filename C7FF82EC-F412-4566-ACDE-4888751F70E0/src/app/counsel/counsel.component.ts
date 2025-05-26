@@ -46,6 +46,19 @@ export class CounselComponent implements OnInit {
     });
   }
 
+  modalImport() {
+
+    $("app-import-modal").modal("show");
+    // 關閉畫面
+    $("#app-import-modal").on("hide.bs.modal", () => {
+      // 重整資料
+      // this.loadData();
+      $("#app-import-modal").off("hide.bs.modal");
+
+    });
+  }
+
+
   public setSelectItem(item: string) {
     if (item != '搜尋') {
       this.searchText = '';

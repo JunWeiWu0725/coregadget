@@ -6,6 +6,7 @@ import { AppComponent } from "../../app.component";
 import { GlobalService } from "../../global.service";
 import { AddInterviewModalComponent } from "src/app/shared-counsel-detail/interview-detail/add-interview-modal/add-interview-modal.component";
 import { MatSnackBar } from "@angular/material";
+import { ImportModalComponent } from "../import-modal/import-modal.component";
 
 
 @Component({
@@ -33,7 +34,7 @@ export class CounselListComponent implements OnInit {
 
   // 彈出新稱modal 視窗 
   @ViewChild("addInterview") _addInterview: AddInterviewModalComponent;
-
+  @ViewChild("app_import_modal") app_import_modal: ImportModalComponent;
   constructor(
     private _snackBar: MatSnackBar,
     private activatedRoute: ActivatedRoute,
@@ -216,8 +217,20 @@ addInterviews(event :any ,counsuleObj :CounselStudent){
     }
   }
 
+ 
 
 
+  modalImportShow() {
+alert('ss')
+    $("#app_import_modal").modal("show");
+    // 關閉畫面
+    $("#app_import_modal").on("hide.bs.modal", () => {
+      // 重整資料
+      // this.loadData();
+      $("#app_import_modal").off("hide.bs.modal");
+
+    });
+  }
 
   /**依所選條件 選取*/
   getListByCondition(){
