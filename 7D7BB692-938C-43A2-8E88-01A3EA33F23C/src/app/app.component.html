@@ -1,5 +1,5 @@
 <div id="appcomponent"
-     class="container-fluid cbs d-flex justify-content-between flex-column">
+     class="container-fluid cbs d-flex justify-content-between flex-column" style="max-width: 1300px;">
   <div class="tab-content">
     <!-- TAB 2 輔導統計 -->
 
@@ -17,12 +17,12 @@
       <li class="tbody">
         <ol class="tr"
             *ngFor="let item of fillSectionList">
-          <li style="width: 10%;">{{item.SchoolYear}}</li>
-          <li style="width: 10%;">{{item.Semester}}</li>
-          <li>{{item.SectionName}}</li>
-          <li style="width: 15%;">{{item.StartTime}}</li>
-          <li style="width: 15%;">{{item.EndTime}}</li>
-          <li style="width: 10%;">
+          <li style="width: 10%;" data-title="學年度">{{item.SchoolYear}}</li>
+          <li style="width: 10%;" data-title="學期">{{item.Semester}}</li>
+          <li data-title="名稱">{{item.SectionName}}</li>
+          <li data-title="開始時間" style="width: 15%;">{{item.StartTime}}</li>
+          <li data-title="結束時間" style="width: 15%;">{{item.EndTime}}</li>
+          <li style="width: 10%; justify-content: center; margin: auto;">
             <button class="btn btn-light"
                     (click)="RunCounselReportAUrl(item.KeyID)"
                     [disabled]="item.keyButtonDisable">

@@ -42,7 +42,7 @@ export class ComprehensiveFillComponent implements OnInit {
     "%TEXT%": { element: "input", style: { width: "100px" } },
     "%TEXT1%": { element: "input", style: { width: "30px" } },
     "%TEXT2%": { element: "input", style: { width: "60px" } },
-    "%TEXT3%": { element: "input", style: { width: "100px" } },
+    "%TEXT3%": { element: "input", style: { width: "auto" } },
     "%TEXT4%": { element: "input", style: { width: "150px" } },
     "%TEXT5%": { element: "input", style: { width: "auto" } },
     "%TEXTAREA%": { element: "textarea", style: { width: "100%" } },
@@ -56,6 +56,9 @@ export class ComprehensiveFillComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
+    // this.updateOptionKeyStyle();
+    // window.addEventListener("resize", this.updateOptionKeyStyle.bind(this));
+
     // 抓取 IP
     this.userIP = await this.fetchIp();
     this.activatedRoute.paramMap.subscribe((params: ParamMap): void => {
@@ -64,6 +67,11 @@ export class ComprehensiveFillComponent implements OnInit {
       this.getSchoolInfo();
     });
   }
+
+  // updateOptionKeyStyle() {
+  //   this.optionKey["%TEXT3%"].style = window.innerWidth < 768 ? { width: "auto" } : { width: "140px" };
+  // }
+
   async fetchIp(): Promise<string | null> {
     try {
       const result: any = await this.http

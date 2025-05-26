@@ -54,7 +54,7 @@
                         </div>
                         <div class="text-left p-0 space-y-2 w-full" scope="col">
                           <div
-                            class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 form-group mb-0 leading-8 gap-x-4 gap-y-2">
+                            class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 form-group mb-0 leading-8 gap-x-4 gap-y-3">
 
                             <ng-container
                               *ngFor="let questionText of query.QuestionText; let questionTextIndex = index">
@@ -101,7 +101,7 @@
                                 <!-- 填答 -->
                                 <ng-container *ngIf="questionText.Type == '填答'">
                                   <!-- 題目標題 -->
-                                  <div class="flex items-center flex-wrap sm:flex-nowrap flex-shrink-0 gap-2 tarea">
+                                  <div class="flex items-center flex-wrap sm:flex-nowrap flex-shrink-0 gap-x-2 tarea">
                                     <label class="text-nowrap custom-control-label position-relative"
                                       *ngIf="questionText.Text">
                                       <span class="com-view-option -ml-4">
@@ -116,9 +116,9 @@
                                       <strong class="text-danger -ml-2" *ngIf="query.ShowMark">*</strong>
                                       {{query.Query}}
                                     </div>
-                                    <div class="custom-control-inline m-0 mr-1"
+                                    <div class="custom-control-inline mr-4 ml-2 flex-grow-1 sm:flex-grow-0"
                                       [ngClass]="{ 'w-100': option.IsTextArea }">
-                                      <label class="custom-control-label"
+                                      <label class="custom-control-label w-full"
                                         [ngClass]="{ 'w-100 d-flex flex-wrap': option.IsTextArea }">
                                         <ng-container *ngTemplateOutlet="optionLayout"></ng-container>
                                       </label>
@@ -186,7 +186,7 @@
     </ng-container>
 
     <button *ngIf="isOpen && questionSubject && questionSubject.length"
-      class="btn btn-info sticky z-10 bottom-4 right-4 rounded-md ml-auto block" style="background: #1d94c7c7; " (click)="save()"
+      class="btn btn-info sticky z-10 bottom-4 right-4 rounded-md ml-auto block" style="background: #1dc762c7; " (click)="save()"
       [disabled]="isSaving">
       <!-- <i class="material-icons">save_alt</i> -->
       <span style="letter-spacing: 2px;" *ngIf="!isSaving">儲存</span>

@@ -379,7 +379,7 @@ ul.rwd-table .thead li {
 }
 
 .custom-control-input:checked~.custom-control-label::after {
-    color: #319ff7 !important;
+    color: #69d0c9 !important;
     /* color: #A67B5B !important */
 }
 
@@ -410,8 +410,8 @@ ul.rwd-table .thead li {
 }
 
 .com-view-first-title {
-    background: #d6edff;
-    color: #2593ea;
+    background: #e1f2ef;
+    color: #42c5ae;
     font-family: PingFang TC;
     font-style: normal;
     font-weight: 600;
@@ -430,7 +430,7 @@ ul.rwd-table .thead li {
     font-size: 18px;
     line-height: 26px;
     color: #696969;
-    border-left: 4px solid #67bcff;
+    border-left: 4px solid #6dd2c0;
     padding-left: 10px;
 }
 
@@ -438,8 +438,8 @@ ul.rwd-table .thead li {
     /* font-family: PingFang TC; */
     font-size: 16px;
     line-height: 20px;
-    color: #376990;
-    padding-left: 16px;
+    color: #06835a;
+    /* padding-left: 16px; */
 }
 
 /* 綜合紀錄表 */
@@ -498,7 +498,7 @@ ul.rwd-table {
     display: flex;
     align-items: center;
     letter-spacing: 0.374px;
-    color: #2593ea;
+    color: #42c5ae;
     cursor: pointer !important;
 }
 
@@ -572,7 +572,7 @@ ul.rwd-table {
     cursor: pointer;
     padding-top: 5px;
     border-left: 5px solid #D2E6E0;
-    color: #2593ea;
+    color: #42c5ae;
 }
 
 
@@ -949,6 +949,6 @@ button {
 }
 
 input.sentence-input:hover, input.sentence-input:focus, .sentence-input[_ngcontent-jun-c2]:hover, .sentence-input[_ngcontent-jun-c2]:focus {
-	border-color: #319ff7 !important;
+	border-color: #94d0cc !important;
 	box-shadow: none !important;
 }
