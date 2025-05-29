@@ -43,8 +43,8 @@
  </i> -->
     <ul class="list-group mb-3" *ngIf="!loading;else Loading">
         <li class="grid grid-cols-7 lg:grid-cols-7 items-center list-group-item active py-2 main-bg-color">
-            <div class="col-span-4 md:col-span-3 text-nowrap"><b>{{ 'roll-call-today' | i18next }}</b></div>
-            <div class="col-span-1 md:col-span-2 text-nowrap text-center"><b>{{ 'session' | i18next }}</b></div>
+            <div class="col-span-3 text-nowrap"><b>{{ 'roll-call-today' | i18next }}</b></div>
+            <div class="col-span-2 text-nowrap text-center"><b>{{ 'session' | i18next }}</b></div>
             <div class="hidden md:block mx-auto"><b>{{ 'teacher-called' | i18next }}</b></div>
             <div class="hidden md:block mx-auto"><b>{{ 'assistant-called' | i18next }}</b></div>
             <div class="titl block md:hidden mx-auto">{{ 't-called' | i18next }}</div>
@@ -53,11 +53,11 @@
         <ng-container *ngIf="conf&&conf.Schedule&&conf.Schedule.length; else noSchedule">
             <li class="list-group-item point" *ngFor="let suggest of conf.Schedule" (click)="openSchedule(suggest)">
                 <div class="grid grid-cols-7 lg:grid-cols-7 pointer gap-y-2">
-                    <div class="col-span-4 md:col-span-3" style="font-weight: 600;">
+                    <div class="col-span-3" style="font-weight: 600;">
                         {{suggest.ClassName?suggest.ClassName:suggest.CourseName}}
                     </div>
                     <!-- <div class="block lg:hidden col-span-2"></div> -->
-                    <div class="col-span-1 md:col-span-2 text-nowrap text-center">{{suggest.Period}}</div>
+                    <div class="col-span-2 text-nowrap text-center">{{suggest.Period}}</div>
                     <div class="text-center" style="font-size: 16px;">
                         <ng-container *ngIf="suggest.Checked=='true'">
                             <i class="material-icons icon-green">check_circle</i>
@@ -95,8 +95,8 @@
         <li class="my-4 bg-white"><hr style="border-color: #68b7f6;"></li>
         <li class="list-group-item active d-flex align-items-center py-2  main-bg-color">
 
-            <div class="col-10 text-nowrap"> <b>{{ 'my-courses' | i18next }}</b></div>
-            <div class="col-2 text-nowrap text-center"> <b>{{ 'assistant' | i18next }}</b></div>
+            <div class="col-9 text-nowrap"> <b>{{ 'my-courses' | i18next }}</b></div>
+            <div class="col-3 text-nowrap text-right"> <b>{{ 'assistant' | i18next }}</b></div>
 
 
 
