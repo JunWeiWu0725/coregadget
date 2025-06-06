@@ -14,7 +14,6 @@ declare global {
         }, callback?: () => void) => void;
       };
     };
-    _gg: any;
   }
 }
 
@@ -79,7 +78,7 @@ const App: React.FC = () => {
     connection2.send({
       service: "_.GetSchoolVision",
       body: '',
-      result: function (response: any, error: any, http: any) {
+      result: function (response: any, error: any, _http: any) {
         const newSchoolVersion = {
           OldWebURL: '',
           BannerURL: '',
@@ -116,7 +115,7 @@ const App: React.FC = () => {
     connection.send({
       service: "schoolInformation.GetSchoolInfo",
       body: '',
-      result: function (response: any, error: any, http: any) {
+      result: function (response: any, error: any, _http: any) {
         if (error !== null) {
           setErrorMessage('GetSchoolInfo', error);
         } else {
@@ -180,7 +179,7 @@ const App: React.FC = () => {
       connection2.send({
         service: "_.SetSchoolVision",
         body: `<Request><UID>${schoolVersion.SchoolUrlUID}</UID><BannerUrl>${schoolVersion.BannerURL}</BannerUrl><WebUrl>${formData.WebUrl || ''}</WebUrl></Request>`,
-        result: function (response: any, error: any, http: any) {
+        result: function (response: any, error: any, _http: any) {
           if (error !== null) {
             setErrorMessage('SetSchoolVision', error);
             // 錯誤時恢復舊值
@@ -258,7 +257,7 @@ const App: React.FC = () => {
       connection.send({
         service: "schoolInformation.SetSchoolInfo",
         body: '<Request>' + request.join('') + '</Request>',
-        result: function (response: any, error: any, http: any) {
+        result: function (_response: any, error: any, _http: any) {
           if (error !== null) {
             setErrorMessage('SetSchoolInfo', error);
             reject(error);
