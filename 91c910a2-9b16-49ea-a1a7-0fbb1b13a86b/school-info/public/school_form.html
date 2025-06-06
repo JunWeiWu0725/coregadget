@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="schoolAdminTheme">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>學校基本資料</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.mjs"></script>
+  <style>
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .main-content { padding: 20px; max-width: 1200px; margin: 0 auto; }
+    .form-card { border-radius: 0.5rem; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin-bottom: 20px; }
+    .section-title { font-size: 1.25rem; font-weight: 600; }
+    .form-error { color: #F43F5E; font-size: 0.875rem; margin-top: 4px; }
+    .form-footer { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+    .animate-fadeIn { animation: fadeIn 0.5s ease-in; }
+    .animate-slideIn { animation: slideIn 0.5s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideIn { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const App = () => {
+      return (
+        <div className="main-content">
+          <div className="max-w-4xl mx-auto mb-8">
+            <h1 className="text-2xl font-bold mb-4">學校基本資料</h1>
+            <p className="text-center text-muted-foreground mt-2 animate-fadeIn">設定學校的基本資訊，包括名稱、地址、聯絡方式等。</p>
+          </div>
+
+          <div className="alert alert-success max-w-3xl mx-auto mb-8 shadow-md animate-slideIn flex items-center gap-2 hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>提交成功！</span>
+          </div>
+
+          <form className="space-y-6">
+            <div className="form-card">
+              <div className="flex items-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h2 className="section-title m-0">基本學校資訊</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">學校代碼</span>
+                    <span className="label-text-alt text-error">*</span>
+                  </label>
+                  <input type="text" placeholder="學校代碼..." className="input input-bordered w-full" />
+                </div>
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">學年度</span>
+                    <span className="label-text-alt text-error">*</span>
+                  </label>
+                  <input type="text" placeholder="101" className="input input-bordered w-full" />
+                </div>
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">學期</span>
+                    <span className="label-text-alt text-error">*</span>
+                  </label>
+                  <select className="select select-bordered w-full">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                  </select>
+                </div>
+              </div>
+              <div className="divider my-6"></div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">校園首頁網址</span>
+                </label>
+                <div className="input-group">
+                  <span className="bg-neutral px-3 flex items-center text-sm text-neutral-content">URL</span>
+                  <input type="text" placeholder="請輸入校園首頁網址..." className="input input-bordered flex-1" />
+                </div>
+              </div>
+            </div>
+
+            <div className="form-card">
+              <div className="flex items-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                <h2 className="section-title m-0">學校名稱與地址</h2>
+              </div>
+              <div className="grid grid-cols-1 gap-4">
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">學校中文名稱</span>
+                  </label>
+                  <input type="text" placeholder="學校中文名稱..." className="input input-bordered w-full" />
+                </div>
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">學校英文名稱</span>
+                  </label>
+                  <input type="text" placeholder="學校英文名稱..." className="input input-bordered w-full" />
+                </div>
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">學校中文地址</span>
+                  </label>
+                  <input type="text" placeholder="學校中文地址..." className="input input-bordered w-full" />
+                </div>
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">學校英文地址</span>
+                  </label>
+                  <input type="text" placeholder="學校英文地址..." className="input input-bordered w-full" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="form-control">
+                    <label className="label">
+                      <span className="label-text">學校電話</span>
+                    </label>
+                    <input type="text" placeholder="學校電話..." className="input input-bordered w-full" />
+                  </div>
+                  <div className="form-control">
+                    <label className="label">
+                      <span className="label-text">學校傳真</span>
+                    </label>
+                    <input type="text" placeholder="學校傳真..." className="input input-bordered w-full" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="form-card">
+              <div className="flex items-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <h2 className="section-title m-0">校長與主任資訊</h2>
+              </div>
+              <div className="grid grid-cols-1 gap-4">
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">校長中文姓名</span>
+                  </label>
+                  <input type="text" placeholder="校長中文姓名..." className="input input-bordered w-full" />
+                </div>
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">校長英文姓名</span>
+                  </label>
+                  <input type="text" placeholder="校長英文姓名..." className="input input-bordered w-full" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="form-control">
+                    <label className="label">
+                      <span className="label-text">教務主任姓名</span>
+                    </label>
+                    <input type="text" placeholder="教務主任姓名..." className="input input-bordered w-full" />
+                  </div>
+                  <div className="form-control">
+                    <label className="label">
+                      <span className="label-text">學務主任姓名</span>
+                    </label>
+                    <input type="text" placeholder="學務主任姓名..." className="input input-bordered w-full" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="alert alert-info shadow-sm mt-6 mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current flex-shrink-0 w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <div>
+                <p className="text-sm">
+                  所有標記 <span className="text-error">*</span> 的欄位均為必填。請確保資料的正確性，以便系統能正常運作。
+                </p>
+              </div>
+            </div>
+
+            <div className="form-footer">
+              <button type="button" className="btn btn-secondary gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                取消
+              </button>
+              <button type="submit" className="btn btn-primary gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                儲存
+              </button>
+            </div>
+          </form>
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

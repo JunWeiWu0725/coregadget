@@ -6,7 +6,7 @@ _gg.schoolVersion = {} ;
 
 jQuery(function () {
     $('#cancel').click(function() {
-        // $('#edit-Code').val(_gg.schoolinfo.Code);
+        $('#edit-Code').val(_gg.schoolinfo.Code);
         $('#edit-ChineseName').val(_gg.schoolinfo.ChineseName);
         $('#edit-EnglishName').val(_gg.schoolinfo.EnglishName);
         $('#edit-Address').val(_gg.schoolinfo.Address);
@@ -72,7 +72,7 @@ jQuery(function () {
                                     $('#edit-EnglishName').val(this.EnglishName || '');
                                     $('#edit-Address').val(this.Address || '');
                                     $('#edit-EnglishAddress').val(this.EnglishAddress || '');
-                                    // $('#edit-Code').val(this.Code || '');
+                                    $('#edit-Code').val(this.Code || '');
                                     $('#edit-Fax').val(this.Fax || '');
                                     $('#edit-Telephone').val(this.Telephone || '');
                                     $('#edit-ChancellorChineseName').val(this.ChancellorChineseName || '');
@@ -80,7 +80,7 @@ jQuery(function () {
                                     $('#edit-EduDirectorName').val(this.EduDirectorName || '');
                                     $('#edit-StuDirectorName').val(this.StuDirectorName || '');
 
-                                    // _gg.schoolinfo.Code = (this.Code || '');
+                                    _gg.schoolinfo.Code = (this.Code || '');
                                     _gg.schoolinfo.ChineseName = (this.ChineseName || '');
                                     _gg.schoolinfo.EnglishName = (this.EnglishName || '');
                                     _gg.schoolinfo.Address = (this.Address || '');
@@ -114,17 +114,17 @@ jQuery(function () {
 
 });
 
-/**取得學校網址*/  
+/**取得學校網址*/
 _gg.getWebURL =function(){
 
         //  取得學校網頁URL
-        _gg.connection2.send( 
+        _gg.connection2.send(
             { service: "_.GetSchoolVision",
                 body: '',
               result: function (response, error, http) {
                 _gg.schoolVersion.OldWebURL ='';
                 _gg.schoolVersion.BannerURL ='' ;
-                _gg.schoolVersion.SchoolUrlUID = ''; 
+                _gg.schoolVersion.SchoolUrlUID = '';
             if (error !== null) {
                 _gg.set_error_message('#mainMsg', 'GetSchoolVision', error);
             } else {
@@ -133,9 +133,9 @@ _gg.getWebURL =function(){
                 //將後面可能用到的資料
                 _gg.schoolVersion.OldWebURL = response.Response.weburl||'' ;
                 _gg.schoolVersion.BannerURL = response.Response.bannerurl ||'' ;
-                _gg.schoolVersion.SchoolUrlUID = response.Response.uid||''; 
+                _gg.schoolVersion.SchoolUrlUID = response.Response.uid||'';
                 $('#edit-WebUrl').val(response.Response.weburl)
-            
+
             }
         }
     }});
@@ -161,7 +161,6 @@ _gg.saveSchoolInfo = function() {
         '</SchoolInfo>'
     );
 
-    // '           <Code>' + ($('#edit-Code').val() || '') + '</Code>' +
     request.push(
         '<SchoolInfo>' +
         '    <Field>' +
@@ -171,6 +170,7 @@ _gg.saveSchoolInfo = function() {
         '           <EnglishName>' + ($('#edit-EnglishName').val() || '') + '</EnglishName>' +
         '           <Address>' + ($('#edit-Address').val() || '') + '</Address>' +
         '           <EnglishAddress>' + ($('#edit-EnglishAddress').val() || '') + '</EnglishAddress>' +
+        '           <Code>' + ($('#edit-Code').val() || '') + '</Code>' +
         '           <Fax>' + ($('#edit-Fax').val() || '') + '</Fax>' +
         '           <Telephone>' + ($('#edit-Telephone').val() || '') + '</Telephone>' +
         '           <ChancellorChineseName>' + ($('#edit-ChancellorChineseName').val() || '') + '</ChancellorChineseName>' +
@@ -199,7 +199,7 @@ _gg.saveSchoolInfo = function() {
                 setTimeout("$('#mainMsg').html('')", 1500);
 
                 _gg.schoolinfo = {
-                    // Code                  : ($('#edit-Code').val() || ''),
+                    Code                  : ($('#edit-Code').val() || ''),
                     ChineseName           : ($('#edit-ChineseName').val() || ''),
                     EnglishName           : ($('#edit-EnglishName').val() || ''),
                     Address               : ($('#edit-Address').val() || ''),
@@ -222,14 +222,14 @@ _gg.saveSchoolInfo = function() {
 /**設定學校WebURL*/
 _gg.setWebUrl = function()
 {
-    _gg.connection2.send( 
+    _gg.connection2.send(
         { service: "_.SetSchoolVision",
             body:  '<Request><UID>'+_gg.schoolVersion.SchoolUrlUID +'</UID><BannerUrl>'+_gg.schoolVersion.BannerURL+ '</BannerUrl><WebUrl>' + ($('#edit-WebUrl').val()||'')+ '</WebUrl></Request>',
           result: function (response, error, http) {
         if (error !== null) {
             _gg.set_error_message('#mainMsg', 'SetSchoolVision', error);
             $('#edit-WebUrl').val( _gg.schoolinfo.WebURL)//錯誤就將舊值填入
-        } else { 
+        } else {
             if(response.successItem){ // 新增或修改成功
                 _gg.schoolVersion.SchoolUrlUID=response.successItem.uid || '' ; //成功新增後把UID記下
              }
