@@ -21,11 +21,11 @@ tr.example-element-row:not(.example-expanded-row):active {
     /* min-width: 160px; */
 }
 
-@media (max-width: 318px) {
+/* @media (max-width: 318px) {
     .st-list .card {
         min-width: 200px;
     }
-}
+} */
 .st-list label {
     display: block;
     font-size: 1rem;
