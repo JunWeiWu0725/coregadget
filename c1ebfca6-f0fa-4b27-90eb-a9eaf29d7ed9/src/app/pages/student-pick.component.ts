@@ -296,7 +296,7 @@ getCheckInTime(studentID,date) :any{
   }
   getAttendanceStyle(stu: StudentCheck) {
 
-    let bgColor = 'rgba(255,255,255, 0.1)';
+    let bgColor = 'rgba(255,255,255, 0.2)';
     let fgColor = 'rgba(0,0,0,0.5)';
 
     if (stu.status) {
