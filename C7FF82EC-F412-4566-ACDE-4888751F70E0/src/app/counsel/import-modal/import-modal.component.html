@@ -8,16 +8,25 @@
 >
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modal-title">{{ "匯入一級輔導" }}</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
+      <div class="modal-header justify-content-between">
+        <div class="d-flex align-items-center">
+          <h5 class="modal-title mr-3" id="modal-title">
+            {{ "匯入一級輔導" }}
+          </h5>
+        </div>
+
+        <div class="d-flex align-items-center">
+          <!-- 📘 說明按鈕：右上角白底區域 -->
+
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
       </div>
       <div class="modal-body">
         <div class="form-group">
@@ -55,56 +64,186 @@
             ></div>
           </div>
         </div>
-
+        <button
+          class="btn btn-success mr-2"
+          style="font-size: 1.1rem; text-decoration: underline"
+          type="button"
+          data-toggle="collapse"
+          data-target="#fieldGuide"
+          aria-expanded="false"
+          aria-controls="fieldGuide"
+          style="text-decoration: underline"
+        >
+          欄位說明
+        </button>
+        <button class="btn btn-success mr-2" (click)="downloadTemplate()">
+            <i class="bi bi-download me-1"></i> 下載範本 Excel
+          </button>
         <div class="form-group">
-          <label for="" class="col-form-label"> 需要欄位 </label>
-          <div class="d-flex flex-wrap">
-            {{ "" }}
+          <div class="collapse mt-2" id="fieldGuide">
+            <div class="table-responsive">
+              <table class="table table-bordered table-sm">
+                <thead class="thead-light">
+                  <tr>
+                    <th>欄位名稱</th>
+                    <th>資料型態</th>
+                    <th>必填</th>
+                    <th>填寫說明</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>年級</td>
+                    <td>半型數字</td>
+                    <td>是</td>
+                    <td>如：1、2、3、4、5、6</td>
+                  </tr>
+                  <tr>
+                    <td>學號</td>
+                    <td>半型字母加數字</td>
+                    <td>是</td>
+                    <td>4~10 位英數字</td>
+                  </tr>
+                  <tr>
+                    <td>學年度</td>
+                    <td>半型數字</td>
+                    <td>是</td>
+                    <td>如：113、114</td>
+                  </tr>
+                  <tr>
+                    <td>學期</td>
+                    <td>半型數字</td>
+                    <td>是</td>
+                    <td>請填寫「1」或「2」</td>
+                  </tr>
+                  <tr>
+                    <td>日期</td>
+                    <td>yyyy/mm/dd</td>
+                    <td>是</td>
+                    <td>如：2026/09/02</td>
+                  </tr>
+                  <tr>
+                    <td>晤談時間</td>
+                    <td>文字</td>
+                    <td>否</td>
+                    <td>如：第一節、第二節、上午、下午</td>
+                  </tr>
+                  <tr>
+                    <td>方式</td>
+                    <td>文字</td>
+                    <td>是</td>
+                    <td>如：面談、電話、聯絡簿、其他</td>
+                  </tr>
+                  <tr>
+                    <td>方式其他</td>
+                    <td>文字</td>
+                    <td>若為其他</td>
+                    <td>必填</td>
+                  </tr>
+                  <tr>
+                    <td>對象</td>
+                    <td>文字</td>
+                    <td>是</td>
+                    <td>如：學生、教職員、家長、其他</td>
+                  </tr>
+                  <tr>
+                    <td>對象其他</td>
+                    <td>文字</td>
+                    <td>若為其他</td>
+                    <td>必填</td>
+                  </tr>
+                  <tr>
+                    <td>記錄者</td>
+                    <td>文字</td>
+                    <td>是</td>
+                    <td>請填教師姓名</td>
+                  </tr>
+                  <tr>
+                    <td>公開</td>
+                    <td>文字</td>
+                    <td>否</td>
+                    <td>請填 是 或 否</td>
+                  </tr>
+                  <tr>
+                    <td>聯絡事項</td>
+                    <td>文字</td>
+                    <td>至少一欄</td>
+                    <td>與「輔導內容」擇一填寫</td>
+                  </tr>
+                  <tr>
+                    <td>輔導內容</td>
+                    <td>文字</td>
+                    <td>至少一欄</td>
+                    <td>會顯示於輔導卡</td>
+                  </tr>
+                  <tr>
+                    <td>類別</td>
+                    <td>文字</td>
+                    <td>是</td>
+                    <td>
+                      可填寫多個選項，請以半型逗號隔開。如：人際困擾,師生關係。請填寫以下對象：人際困擾、師生關係、家庭困擾、自我探索、情緒困擾、生活壓力、創傷反應、自我傷害、性別議題、脆弱家庭、兒少保議題、學習困擾、生涯輔導、偏差行為、網路沉迷、中離（輟）拒學、藥物濫用、精神疾患、其他
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>類別其他</td>
+                    <td>文字</td>
+                    <td>若為其他</td>
+                    <td>必填</td>
+                  </tr>
+                  <tr>
+                    <td>狀態</td>
+                    <td>文字</td>
+                    <td>是</td>
+                    <td>請填 一般、休學、延修</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
         <div class="form-group"></div>
 
-        <div class="form-group">
-          <label class="btn btn-info">
+        <div class="d-flex flex-wrap align-items-center gap-3 mt-3">
+  
+          <label class="btn btn-primary m-0">
             <input
               type="file"
               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
               (change)="onFileSelected($event)"
               #fileInput
               (click)="fileInput.value = null"
-              value=""
               style="display: none"
             />
-            <i class=""></i> 請選擇 Excel 檔
+            <i class="bi bi-upload me-1"></i> 選擇 Excel 檔
           </label>
+<div *ngIf="uploadedFileName" class="mt-2">
+  <strong>已選擇檔案：</strong> {{ uploadedFileName }}
+</div>
+          <button
+            *ngIf="showErrorMsg && errorList?.length > 0"
+            class="btn btn-danger m-0 ml-2"
+            (click)="openErrorInNewTab()"
+          >
+            <i class="bi bi-exclamation-circle me-1"></i> 開啟錯誤資訊
+          </button>
         </div>
       </div>
-
-      <div *ngIf="showErrorMsg" class="m-3 ">
-        <h5 class="text-danger">驗證錯誤</h5>
-        <table class="table table-bordered table-sm">
-          <thead class="thead-light">
-            <tr>
-              <th>行號</th>
-              <th>欄位</th>
-              <th>錯誤描述</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let err of errorList">
-              <td>{{ err.row }}</td>
-              <td>{{ err.column }}</td>
-              <td class="text-danger">{{ err.message }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-dark" data-dismiss="modal">
+        <button
+          type="button"
+          class="btn btn-dark"
+          data-dismiss="modal"
+          (click)="onModalClose()"
+        >
           取消
         </button>
-        <button type="button" class="btn btn-info" (click)="insertCunsels()">
+        <button
+          *ngIf="canImport()"
+          type="button"
+          class="btn btn-info"
+          (click)="insertCunsels()"
+        >
           匯入
         </button>
       </div>
