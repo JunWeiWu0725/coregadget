@@ -443,6 +443,10 @@ pre {
     flex-wrap: nowrap;
   }
 
+  .md\:flex-row {
+    flex-direction: row;
+  }
+
 }
 
 @media (min-width: 1024px) {

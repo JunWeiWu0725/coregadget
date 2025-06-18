@@ -411,7 +411,7 @@ ul.rwd-table .thead li {
 
 .com-view-first-title {
     background: #e1f2ef;
-    color: #42c5ae;
+    color: #3C4F81;
     font-family: PingFang TC;
     font-style: normal;
     font-weight: 600;
@@ -429,8 +429,8 @@ ul.rwd-table .thead li {
     font-weight: 600;
     font-size: 18px;
     line-height: 26px;
-    color: #696969;
-    border-left: 4px solid #6dd2c0;
+    color: #3C4F81;
+    border-left: 4px solid #a1a9bd;
     padding-left: 10px;
 }
 
@@ -438,7 +438,7 @@ ul.rwd-table .thead li {
     /* font-family: PingFang TC; */
     font-size: 16px;
     line-height: 20px;
-    color: #06835a;
+    color: #3C4F81;
     /* padding-left: 16px; */
 }
 
@@ -447,7 +447,7 @@ ul.rwd-table .thead li {
     /* font-family: PingFang TC; */
     font-size: 16px;
     line-height: 20px;
-    color: #3d3d3d;
+    color: #3C4F81;
     padding-left: 16px;
 }
 
@@ -498,7 +498,7 @@ ul.rwd-table {
     display: flex;
     align-items: center;
     letter-spacing: 0.374px;
-    color: #42c5ae;
+    color: #3C4F81;
     cursor: pointer !important;
 }
 
@@ -572,7 +572,7 @@ ul.rwd-table {
     cursor: pointer;
     padding-top: 5px;
     border-left: 5px solid #D2E6E0;
-    color: #42c5ae;
+    color: #3C4F81;
 }
 
 
