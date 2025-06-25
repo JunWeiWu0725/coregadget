@@ -268,11 +268,29 @@ const App: React.FC = () => {
             });
 
             // 儲存成功後記錄日誌
+            const logDescription = `修改學校基本資料。\n詳細資料：` +
+              `\n學校代碼「${formData.Code}」` +
+              `\n學年度「${formData.DefaultSchoolYear}」` +
+              `\n學期「${formData.DefaultSemester}」` +
+              `\n校園首頁網址「${formData.WebUrl}」` +
+              `\n學校中文名稱「${formData.ChineseName}」` +
+              `\n學校英文名稱「${formData.EnglishName}」` +
+              `\n學校中文地址「${formData.Address}」` +
+              `\n學校英文地址「${formData.EnglishAddress}」` +
+              `\n學校電話「${formData.Telephone}」` +
+              `\n學校傳真「${formData.Fax}」` +
+              `\n校長中文名稱「${formData.ChancellorChineseName}」` +
+              `\n校長英文名稱「${formData.ChancellorEnglishName}」` +
+              `\n教務主任中文名稱「${formData.EduDirectorName}」` +
+              `\n教務主任英文名稱「${formData.EduDirectorName}」` +
+              `\n學務主任中文名稱「${formData.StuDirectorName}」` +
+              `\n學務主任英文名稱「${formData.StuDirectorName}」`;
+
             const logBody = `<Request>
               <ActionType>Record</ActionType>
               <Action>修改</Action>
               <ActionBy>核心-Web</ActionBy>
-              <Description>修改學校基本資料</Description>
+              <Description>${logDescription}</Description>
             </Request>`;
 
             connection.send({
