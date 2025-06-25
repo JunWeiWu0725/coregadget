@@ -203,7 +203,7 @@ const App: React.FC = () => {
     });
   };
 
-  // 儲存學校資料
+    // 儲存學校資料
   const saveSchoolInfo = async () => {
     const connection = getConnection();
     if (!connection) {
@@ -266,6 +266,28 @@ const App: React.FC = () => {
               type: 'success',
               text: '學校基本資料儲存成功！'
             });
+
+            // 儲存成功後記錄日誌
+            const logBody = `<Request>
+              <ActionType>Record</ActionType>
+              <Action>修改</Action>
+              <ActionBy>核心-Web</ActionBy>
+              <Description>修改學校基本資料</Description>
+            </Request>`;
+
+            connection.send({
+              service: "_.AddLog",
+              body: logBody,
+              result: function (_logResponse: any, logError: any, _logHttp: any) {
+                if (logError !== null) {
+                  console.error('日誌記錄失敗:', logError);
+                } else {
+                  console.log('日誌記錄成功');
+                }
+                // 不論日誌記錄成功或失敗，都不影響主要流程
+              }
+            });
+
             resolve();
           }
         }
