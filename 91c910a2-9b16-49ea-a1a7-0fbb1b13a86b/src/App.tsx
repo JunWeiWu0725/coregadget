@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { SchoolInfo, FormErrors } from './types';
 import { validateSchoolInfo } from './validation';
 
@@ -54,6 +54,9 @@ const App: React.FC = () => {
     BannerURL: '',
     SchoolUrlUID: ''
   });
+
+  // 錯誤訊息區塊的 ref
+  const submitMessageRef = useRef<HTMLDivElement>(null);
 
   // 初始化 gadget 連線
   const getConnection = () => {
@@ -340,6 +343,26 @@ const App: React.FC = () => {
 
     loadData();
   }, []);
+
+  // 滾動到錯誤訊息位置的函數
+  const scrollToError = () => {
+    if (submitMessageRef.current) {
+      submitMessageRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
+  };
+
+  // 監聽錯誤訊息變化，當顯示錯誤時自動滾動
+  useEffect(() => {
+    if (submitMessage && submitMessage.type === 'error') {
+      // 使用 setTimeout 確保 DOM 已更新
+      setTimeout(() => {
+        scrollToError();
+      }, 100);
+    }
+  }, [submitMessage]);
 
   // 處理輸入變更
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -669,7 +692,10 @@ const App: React.FC = () => {
 
         {/* 提交訊息顯示 */}
         {submitMessage && (
-          <div className={`alert ${submitMessage.type === 'success' ? 'alert-success' : 'alert-error'}`}>
+          <div
+            ref={submitMessageRef}
+            className={`alert ${submitMessage.type === 'success' ? 'alert-success' : 'alert-error'}`}
+          >
             {submitMessage.type === 'success' ? (
               <svg className="alert-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
