@@ -14,6 +14,10 @@ declare global {
         }, callback?: () => void) => void;
       };
     };
+    xml2json: {
+      parser: (xmlString: string) => any;
+      show_json_structure?: (obj: any) => string;
+    };
   }
 }
 
@@ -44,6 +48,8 @@ const App: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   // 提交結果訊息
   const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  // 資料載入失敗狀態
+  const [isDataLoadFailed, setIsDataLoadFailed] = useState<boolean>(false);
   // 學校版本資訊（用於 WebURL 相關操作）
   const [schoolVersion, setSchoolVersion] = useState<{
     OldWebURL: string;
@@ -58,19 +64,58 @@ const App: React.FC = () => {
   // 錯誤訊息區塊的 ref
   const submitMessageRef = useRef<HTMLDivElement>(null);
 
-  // 初始化 gadget 連線
-  const getConnection = () => {
-    if (typeof window !== 'undefined' && window.gadget) {
-      return window.gadget.getContract("ischool.CampusLite.staff");
+  // 解析 XML 錯誤回應的函數
+  const parseXmlError = (xmlString: string): { code: string; message: string } | null => {
+    try {
+      // 使用 gadget.js 中的 xml2json.parser 來解析 XML
+      const parsedXml = window.xml2json?.parser(xmlString);
+
+      // 從解析後的物件中提取錯誤代碼和訊息
+      if (parsedXml?.Envelope?.Header?.Status) {
+        const status = parsedXml.Envelope.Header.Status;
+        return {
+          code: status.Code || 'Unknown',
+          message: status.Message || 'Unknown error'
+        };
+      }
+    } catch (error) {
+      console.error('Error parsing XML:', error);
     }
     return null;
   };
 
-  const getConnection2 = () => {
-    if (typeof window !== 'undefined' && window.gadget) {
-      return window.gadget.getContract("1campus.mobile.v2.admin");
+  // 格式化錯誤訊息的函數
+  const formatErrorMessage = (serviceName: string, error: any): string => {
+    // 處理 Gadget 錯誤結構 - 檢查 loginError.XMLHttpRequest.responseText 中的 XML
+    if (error?.loginError?.XMLHttpRequest?.responseText?.includes('<?xml')) {
+      const parsedError = parseXmlError(error.loginError.XMLHttpRequest.responseText);
+      if (parsedError) {
+        return `服務呼叫失敗 (${serviceName}):\n錯誤代碼: ${parsedError.code}\n錯誤訊息: ${parsedError.message}`;
+      }
     }
-    return null;
+
+    // 檢查 loginError.message（已經解析好的訊息）
+    if (error?.loginError?.message) {
+      return `服務呼叫失敗 (${serviceName}): ${error.loginError.message}`;
+    }
+
+    // 檢查 loginError.statusCode（錯誤代碼）
+    if (error?.loginError?.statusCode) {
+      const message = error.loginError.message || '未知錯誤';
+      return `服務呼叫失敗 (${serviceName}):\n錯誤代碼: ${error.loginError.statusCode}\n錯誤訊息: ${message}`;
+    }
+
+    // 預設錯誤訊息
+    return `呼叫服務失敗或網路異常，請稍候重試！(${serviceName})`;
+  };
+
+  // 初始化 gadget 連線
+  const getConnection = () => {
+    return window.gadget?.getContract("ischool.CampusLite.staff");
+  };
+
+  const getConnection2 = () => {
+    return window.gadget?.getContract("1campus.mobile.v2.admin");
   };
 
   // 取得學校網址
@@ -112,16 +157,26 @@ const App: React.FC = () => {
     const connection = getConnection();
     if (!connection) {
       console.warn('Gadget connection not available');
+      setIsDataLoadFailed(true);
+      setSubmitMessage({
+        type: 'error',
+        text: 'Gadget 連線不可用，請重新整理頁面。'
+      });
       return;
     }
+
+    // 重設載入失敗狀態
+    setIsDataLoadFailed(false);
 
     connection.send({
       service: "schoolInformation.GetSchoolInfo",
       body: '',
       result: function (response: any, error: any, _http: any) {
         if (error !== null) {
+          setIsDataLoadFailed(true);
           setErrorMessage('GetSchoolInfo', error);
         } else {
+          setIsDataLoadFailed(false);
           if (response.Response?.SchoolInfo) {
             const newFormData = { ...initialFormData };
 
@@ -318,7 +373,7 @@ const App: React.FC = () => {
 
   // 設定錯誤訊息
   const setErrorMessage = (serviceName: string, error: any) => {
-    const errorMsg = `呼叫服務失敗或網路異常，請稍候重試！(${serviceName})`;
+    const errorMsg = formatErrorMessage(serviceName, error);
     setSubmitMessage({
       type: 'error',
       text: errorMsg
@@ -326,22 +381,10 @@ const App: React.FC = () => {
     console.error(`${serviceName} Error:`, error);
   };
 
-  // 從 gadget 載入資料
+  // 載入資料
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        console.log('Loading school data...');
-        loadSchoolData();
-      } catch (error) {
-        console.error('Error loading data:', error);
-        setSubmitMessage({
-          type: 'error',
-          text: '載入資料失敗，請重新整理頁面。'
-        });
-      }
-    };
-
-    loadData();
+    console.log('Loading school data...');
+    loadSchoolData();
   }, []);
 
   // 滾動到錯誤訊息位置的函數
@@ -715,7 +758,7 @@ const App: React.FC = () => {
             type="button"
             className="btn btn-outline"
             onClick={handleReset}
-            disabled={isSubmitting}
+            disabled={isSubmitting || isDataLoadFailed}
           >
             <svg className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
@@ -725,7 +768,7 @@ const App: React.FC = () => {
           <button
             type="submit"
             className="btn btn-primary"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isDataLoadFailed}
           >
             {isSubmitting ? (
               <>
