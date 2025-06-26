@@ -18,14 +18,14 @@ tr.example-element-row:not(.example-expanded-row):active {
     width: calc(16.66% - 8px);
     margin-right: 8px;
     margin-bottom: 1rem;
-    min-width: 160px;
+    /* min-width: 160px; */
 }
 
-@media (max-width: 390px) {
+/* @media (max-width: 318px) {
     .st-list .card {
-        min-width: 230px;
+        min-width: 200px;
     }
-}
+} */
 .st-list label {
     display: block;
     font-size: 1rem;

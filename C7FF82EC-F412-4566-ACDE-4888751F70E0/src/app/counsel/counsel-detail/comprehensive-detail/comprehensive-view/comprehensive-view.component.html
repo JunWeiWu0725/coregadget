@@ -4,32 +4,32 @@
 </ng-container>
 <div *ngIf="!isLoading; else tmpLoading">
   <ng-container *ngFor="let subject of fillInData">
-    <div class="card mb-2">
+    <div class="card mb-2 md:pl-4">
       <!-- class="align-middle" -->
-      <div class="com-view-first-title align-middle">{{globalService.replaceChineseNum (subject.Subject)}}</div>
-      <table class="table table-sm table-bordered">
+      <div class="com-view-first-title align-middle mb-2">{{globalService.replaceChineseNum (subject.Subject)}}</div>
+      <table class="table table-bordered">
         <ng-container *ngFor="let group of subject.QuestionGroup">
-          <tr>
-            <th *ngIf="group.Group" colspan="2" class=" text-left  ">
-              <div class="com-view-second-title">
+          <tr class="theader">
+            <th *ngIf="group.Group" colspan="2" class="text-left">
+              <div class="com-view-second-title text-nowrap">
                 {{group.Group}}
               </div>
             </th>
           </tr>
           <ng-container *ngFor="let query of group.QuestionQuery">
-            <tr>
-              <td class="text-left pl-4" style="width: 180px" scope="col">
+            <tr class="tbodyv d-flex flex-col md:flex-row gap-2 px-3 py-4">
+              <td class="text-left min-w-[180px]">
                 <div class="com-view-third-title">
                   {{query.Query}}
                 </div>
               </td>
-              <td class="text-left" scope="col">
+              <td class="text-left pl-2 d-flex flex-wrap gap-x-4 gap-y-2" scope="col">
                 <ng-container *ngFor="let questionText of query.QuestionText;let questionTextIndex = index">
                   <span [attr.questionCode]=questionText.QuestionCode>
-                    <span *ngIf="questionTextIndex > 0" class="ml-2 mr-3">;</span>
+                    <!-- <span *ngIf="questionTextIndex > 0" class="ml-2 mr-3">;</span> -->
                     <span *ngIf="questionText.Text">
-                      <span class="com-view-third-title">{{questionText.Text}} </span>
-                      <span class="ml-1 mr-2">:</span>
+                      <span class="com-view-third-title">{{questionText.Text}}</span>
+                      <span>：</span>
                     </span>
                     <span *ngIf="!questionText.HasValue" class="text-muted">未填寫</span>
                     <ng-container *ngFor="let option of questionText.Option;let optionIndex = index">
