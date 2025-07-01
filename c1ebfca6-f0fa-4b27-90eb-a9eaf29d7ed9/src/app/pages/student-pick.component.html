@@ -119,14 +119,14 @@
     <!-- 學生資料 (with photo)-->
     <div class="st-list d-flex flex-wrap justify-center gap-4" *ngIf="showPhoto">
       <div class="card col-stu st-check" *ngFor="let student of studentChecks">
-        <label (click)="changeAttendance(student)" class="con point">
-          <div class="imgst" style="width: 100%;">
-            <div class="pic" style="height:100%;width:100%;background-position: center center;background-size: cover;"
+        <label (mouseover)="showCurrentAbsType(student)"
+              (mouseout)="hideCurrentAbsType(student)" (click)="changeAttendance(student)" class="con point">
+          <div class="imgst" style="width: 100%; ">
+            <div class="pic" style="height:100%;width:100%;background-position: center center;background-size: contain;"
               [style.background-image]="'url(' + student.data.PhotoUrl + ')'"></div>
           </div>
           <div style="margin-top: -54px; width:100%;">
-            <div [ngStyle]="getAttendanceStyle(student)" (mouseover)="showCurrentAbsType(student)"
-              (mouseout)="hideCurrentAbsType(student)"
+            <div [ngStyle]="getAttendanceStyle(student)"
               class="w-100 ad-status text-truncate border-r5 select-abs-section">
               {{showAbsText(student)}}</div>
             <div class="card-body p-2 px-xl-3 w-100 h-100" style="background-color: #f3f3f3 !important; z-index: 99;">
@@ -148,7 +148,7 @@
 
               </div>
 
-              <div class="d-flex flex-wrap text-gray">
+              <div class="d-flex flex-wrap text-gray gap-x-1">
                 <span>{{student.data?.StudentNumber}}</span>
                 <div class="ml-auto">
                   <span class="mr-2">{{student.data?.ClassName}}</span>

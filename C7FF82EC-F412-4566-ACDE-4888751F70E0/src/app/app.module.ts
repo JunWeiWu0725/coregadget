@@ -102,6 +102,7 @@ import { FilterChineseNumbersPipe } from './filter-chinese-numbers.pipe';
 import { SettingComponent } from './admin/setting/setting.component';
 import { RoleService } from './role.service';
 import { appInitializerFactory } from './app-initializer';
+import { ImportModalComponent } from './counsel/import-modal/import-modal.component';
 
 
 @NgModule({
@@ -165,6 +166,7 @@ import { appInitializerFactory } from './app-initializer';
     StudentInfoComponent,
     FilterChineseNumbersPipe,
     SettingComponent,
+    ImportModalComponent,
     // MatSnackBarModule
 
 

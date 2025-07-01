@@ -7877,6 +7877,11 @@ fieldset:disabled a.btn {
   font-size: 16px;
   line-height: 24px;
   margin-bottom: 0;
+  padding-left: 16px;
+}
+
+.card .custom-control-label {
+  padding-left: 0;
 }
 
 .custom-control-label::after {
@@ -7884,6 +7889,10 @@ fieldset:disabled a.btn {
   position: absolute;
   top: -0.125rem;
   left: 0;
+}
+
+.custom-control-label:has(textarea)::after {
+  top:auto;
 }
 
 .custom-control-label::before {
@@ -12543,7 +12552,7 @@ a.bg-light:active, a.bg-light:focus, a.bg-light:hover {
 }
 
 .mr-4 {
-  margin-right: 1.5rem !important;
+  margin-right: 1.5rem;
 }
 
 .mb-4 {

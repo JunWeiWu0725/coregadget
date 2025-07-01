@@ -18,9 +18,12 @@
 
       <div class="font-weight-bold mb-2">
         <h5  class ="base-semester " style ="padding-left: 20px;">
-          {{ currentSchoolYear }}學年度 第{{ currentSemester }}學期 
+          {{ currentSchoolYear }}學年度 第{{ currentSemester }}學期 SS
         </h5>
+        <button   (click)="modalImportShow()">匯入</button>
+        <app-import-modal #app_import_modal  [StudentList]="targetList" ></app-import-modal>
       </div>
+ 
       <ul class="rwd-table">
         <li class="thead">
           <ol class="tr">
