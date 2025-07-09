@@ -256,6 +256,15 @@ export class CounselStudent {
   // lastCaseInterviewContent: string;
 }
 
+
+
+export interface StudentInfo {
+  ClassName: string;
+  StudentID: string;
+  Name: string;
+  SeatNo: string;
+  Status: string;
+}
 export class SemesterInfo {
  public SchoolYear: number;
  public Semester: number;
