@@ -1,4 +1,19 @@
-﻿angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helpers.dimensions', 'mgcrea.ngStrap.helpers.debounce'])
+﻿// 轉換全型字元為半型字元的全域函數
+window.convertToHalfWidth = function(str) {
+    if (!str) return str;
+    
+    return str.replace(/[０-９]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    }).replace(/[Ａ-Ｚ]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    }).replace(/[ａ-ｚ]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    }).replace(/[！-～]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    });
+};
+
+angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helpers.dimensions', 'mgcrea.ngStrap.helpers.debounce'])
 
     .controller('MainCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
         var $scope長這個樣子 = {
@@ -1342,8 +1357,16 @@
             });
         }
 
+
+
         $scope.enterGrade = function (event) {
             if (event && (event.keyCode !== 13 || $scope.isMobile)) return;
+            
+            // 強制轉換輸入內容為英數半型
+            if ($scope.current.Value && typeof $scope.current.Value === 'string') {
+                $scope.current.Value = window.convertToHalfWidth($scope.current.Value);
+            }
+            
             var flag = false;
             if ($scope.current.Exam.Type == 'Number') {
                 var temp = Number($scope.current.Value);
@@ -2458,6 +2481,8 @@
                                 importProcess.ParseValues = importProcess.ParseString.split("\n");
                                 importProcess.HasError = false;
                                 for (var i = 0; i < importProcess.ParseValues.length; i++) {
+                                    // 先轉半型
+                                    importProcess.ParseValues[i] = window.convertToHalfWidth(importProcess.ParseValues[i]);
                                     var flag = false;
                                     var temp = Number(importProcess.ParseValues[i]);
                                     if (!isNaN(temp) && temp <= 100 && temp >= 0 && importProcess.ParseValues[i] != '') {
@@ -2575,6 +2600,8 @@
                                 importProcess.ParseValues = importProcess.ParseString.split("\n");
                                 importProcess.HasError = false;
                                 for (var i = 0; i < importProcess.ParseValues.length; i++) {
+                                    // 先轉半型
+                                    importProcess.ParseValues[i] = window.convertToHalfWidth(importProcess.ParseValues[i]);
                                     var flag = false;
                                     var temp = Number(importProcess.ParseValues[i]);
                                     if (!isNaN(temp) && temp <= 100 && temp >= 0 && importProcess.ParseValues[i] != '') {
