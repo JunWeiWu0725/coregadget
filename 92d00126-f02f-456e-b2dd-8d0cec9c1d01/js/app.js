@@ -995,7 +995,7 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
 
             if (!request.PostLevel.length) return;
             if (request.PostLevel.indexOf("其它") != -1 && !request.PostLevelOther) return;
-            request.PostLevel = request.PostLevel.join(",");
+            // request.PostLevel = request.PostLevel.join(",");
 
             if (!request.DepartmentCategory) return;
             if (request.DepartmentCategory == "其它" && !request.DepartmentCategoryOther) return;
