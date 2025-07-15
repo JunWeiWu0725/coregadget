@@ -52,19 +52,19 @@
           $(response.Result.Absence).each(function (index, item) {
             return items.push(`
               <div class="dis-show">
-                <div class="bd-callout px-4 pt-3 requiredt">
+                <div class="bd-callout px-2 pt-3 requiredt">
                   <div class="card text-muted cursor-pointer collapsed" aria-expanded="false" data-toggle="collapse" data-target="#classlist${index}" aria-controls="classlist${index}">
-                    <div class="flex justify-center items-center gap-x-2 pb-3">
-                      <div></div>
-                      <div class="flex flex-col">
-                        <div class="text-base font-semibold requiredt">${item.CourseName}</div>
-                        <div class="whitespace-pre-line">${(item.StartTime.substr(0, 10))} ( ${(item.StartTime.substr(11, 5))} - ${(item.EndTime.substr(11, 5))} )</div>
-                      </div>
-                      <div class="flex-grow text-xl text-right pr-2">
-                        <i class="collapse-close fa fa-angle-down font-bold text-xl" aria-hidden="true"></i>
-                        <i class="collapse-open fa fa-angle-up font-bold text-xl" aria-hidden="true"></i>
-                      </div>
-                    </div>
+                    <button tabindex="0" id="class${index}" class="flex justify-center items-center w-full gap-x-2 pb-3" aria-describedby="sronly">
+                      <span id="sronly" class="sr-only dis-none" aria-label="點擊展開或收合課程詳細資訊"></span>
+                        <div class="flex flex-col text-left">
+                          <div class="text-base font-semibold requiredt">${item.CourseName}</div>
+                          <div class="whitespace-pre-line">${(item.StartTime.substr(0, 10))} ( ${(item.StartTime.substr(11, 5))} - ${(item.EndTime.substr(11, 5))} )</div>
+                        </div>
+                        <div class="flex-grow text-xl text-right pr-2">
+                          <i class="collapse-close fa fa-angle-down font-bold text-xl" aria-hidden="true"></i>
+                          <i class="collapse-open fa fa-angle-up font-bold text-xl" aria-hidden="true"></i>
+                        </div>
+                    </button>
                   </div>
                   <div class="text-muted -mx-4 px-4 collapse" style="background: rgb(250, 250, 250)" id="classlist${index}" aria-expanded="false">
                     <hr class="mb-2 mt-0" />
@@ -101,7 +101,7 @@
                 `);
           });
         }
-        return $("#absence #absence-detail tbody").html((items.length === 0 ? '<tr><td colspan="7">無資料</td></tr>' : items.join("")));
+        return $("#absence #absence-detail tbody").html((items.length === 0 ? '<tr><td colspan="7">目前沒有符合條件的缺課資料，請輸入學年度及學期進行查詢。</td></tr>' : items.join("")));
       }
     });
   };

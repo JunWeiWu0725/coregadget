@@ -7,10 +7,12 @@
   right: 0;
   bottom: 0px;
   background: #fff;
+  display: none;
 }
 
 @media (min-width: 768px) {
   .footer {
+    display: block;
     position: fixed;
   }
 }
@@ -62,6 +64,7 @@ input[type="text"]:focus-visible {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
+  line-height: 34px;
 }
 
 .dis-none {
@@ -74,6 +77,11 @@ input[type="text"]:focus-visible {
   visibility: visible;
 }
 
+@media (max-width: 768px) {
+  .table-bordered {
+    border: 0;
+  }
+}
 @media (min-width: 768px) {
   .dis-none {
     display: revert;
@@ -135,3 +143,4 @@ input[type="text"]:focus-visible {
   border-left-color: #337ab7;
   color: #337ab7;
 }
+
