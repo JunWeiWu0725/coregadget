@@ -36,8 +36,8 @@ input,
     position: fixed;
     overflow: hidden;
     z-index: 3;
-    width: 55.5px;
-    height: 55.5px;
+    width: 48px;
+    height: 48px;
     line-height: 54px;
     padding: 0;
     border-radius: 50%;
@@ -87,14 +87,27 @@ input,
 .footer {
     border-top: 1px solid #ccc;
     padding-top: 4px;
-    height: 70px;
+    /* height: 70px; */
     position: fixed;
     left: 8px;
     right: 8px;
     bottom: 0px;
     background: #fff;
-    z-index: 10;
-}
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  } 
+  
+  @media (max-width: 767px) {
+    .footer {
+      display: none;
+    }
+    .page-container .content {
+        padding: 20px 20px 20px;
+    }
+  }
 
 .page-container {
     position: fixed;
@@ -112,7 +125,7 @@ input,
     padding-bottom: 160px;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
-    padding: 20px 20px 160px;
+    padding: 20px 20px 120px;
     background: #FFF;
     max-width: 1024px;
     margin: 0 auto;
@@ -132,6 +145,13 @@ input,
     }
 }
 
+@media (max-width: 860px) {
+    .btn-floating {
+        bottom: 150px;
+        right: 45px;
+    }
+}
+
 @media (max-width: 767px) {
     .panel-body hr {
         display: none;
@@ -146,12 +166,21 @@ input,
         box-shadow: none;
     }
     .page-container .content {
-        padding-bottom: 80px;
+        padding-bottom: 20px;
     }
     .btn-floating {
         bottom: 25px;
         right: 25px;
     }
+
+    ol {
+        padding-inline-start: 32px;
+    }
+    .modal-body {
+        padding-left: 0;
+        padding-right: 8px;
+    }
+    
     /*table.responsive-table {
         width: 100%;
         border-collapse: collapse;
@@ -237,4 +266,121 @@ input,
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
     height: 34px;
+}
+
+.dropdown-menu>li {
+    padding: 13px 20px;
+}
+
+.text-base {
+    font-size: 16px;
+}
+
+.checkbox-inline, .radio-inline {
+    padding: 14px 10px;
+}
+
+.p-b {
+    padding: 13px 8px;;
+}
+
+.d-flex {
+    display: flex;
+} 
+
+.flex-col {
+    flex-direction: column;
+}
+
+.just-between {
+    justify-content: space-between;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.modal-header .close {
+    margin-top: -12px;
+    padding: 14px;
+}
+
+.input-group-addon {
+    padding: 16px 12px;
+}
+
+.input-group .form-control, .input-group-addon, .input-group-btn {
+    height: 49px;
+}
+
+.btn {
+    padding: 13px 12px;
+}
+
+ul {
+    padding-inline-start: 24px;
+}
+
+.glyphicon {
+    top: -6px;
+}
+
+.glyphicon-search:before {
+    vertical-align: -webkit-baseline-middle;
+}
+
+@media screen and (max-width: 768px) { /* 設定一個斷點，例如 768px */
+    .responsive-table thead {
+        display: none; /* 在小螢幕上隱藏表頭 */
+    }
+
+    .responsive-table,
+    .responsive-table tbody,
+    .responsive-table tr,
+    .responsive-table td {
+        display: block; /* 將表格元素轉換為區塊級元素 */
+        width: 100%; /* 讓它們佔滿可用寬度 */
+    }
+
+    .responsive-table tr {
+        margin-bottom: 15px; /* 每行之間增加間距，使其看起來像卡片 */
+        border: 1px solid #ddd; /* 添加邊框，使其看起來像卡片 */
+        border-radius: 4px;
+        padding: 10px;
+    }
+
+    .responsive-table td {
+        text-align: right; /* 資料靠右對齊 */
+        padding-left: 50%; /* 為顯示標籤留出空間 */
+        position: relative; /* 啟用偽元素的定位 */
+        border: none; /* 移除單元格邊框 */
+    }
+
+    .responsive-table td::before {
+        content: attr(data-label); /* 使用 data-label 屬性作為偽元素內容 */
+        position: absolute;
+        left: 10px; /* 標籤靠左對齊 */
+        width: 45%; /* 標籤佔據的寬度 */
+        padding-right: 10px;
+        white-space: nowrap; /* 避免標籤換行 */
+        text-align: left; /* 標籤文字靠左 */
+        font-weight: bold; /* 標籤文字加粗 */
+    }
+}
+
+.table-bordered {
+    border: 0;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.table-bordered>tbody>tr>td {
+    border: 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.panel>.table-bordered>tbody>tr:first-child>td {
+    border-bottom: 1px solid #ddd;
 }

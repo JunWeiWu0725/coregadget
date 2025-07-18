@@ -89,6 +89,15 @@ export class CounselInterviewReportComponent implements OnInit {
     }
 
   }
+  modalImportShow() {
+    $("#app_import_modal").modal("show");
+    // 關閉畫面
+    $("#app_import_modal").on("hide.bs.modal", () => {
+      // 重整資料
+      // this.loadData();
+      $("#app_import_modal").off("hide.bs.modal");
+    });
+  }
 
   async exportReport() {
     try {

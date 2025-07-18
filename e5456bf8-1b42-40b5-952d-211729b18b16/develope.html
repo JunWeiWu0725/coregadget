@@ -1,22 +1,30 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="text/html;charset=utf-8">
-    <script src="http://web.ischool.com.tw/devlibrary/gadget.js"></script>
+    <script src="js/gadget.js"></script>
     <script>
         init({
-            application: "http://dev.ischool.com.tw:8080/cs4/tp.ntu.emba.dev",
-            paramValues: {}
+            application: "test.emba.ntu.edu.tw",
+            oAuth: {
+                clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
+                clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
+                account: '',
+                password: ''
+            }
         });
     </script>
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet"/>
-    <link href="css/default.css" rel="stylesheet"/>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" />
+    <link href="css/default.css" rel="stylesheet" />
     <link href="css/base.css" rel="stylesheet" />
     <script src="js/jquery.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="js/default.js"></script>
 </head>
+
 <body>
     <div id="widget" class="my-page">
         <div id="mainMsg"></div>
@@ -35,16 +43,18 @@
                         <div class="tab-pane active">
                             <div class="row-fluid">
                                 <div class="span12">
-                                    <table class="table table-bordered my-table" id="dropout">
+                                    <table class="table table-bordered my-table" id="dropout"
+                                        aria-describedby="dropoutTableCaption" role="table">
+                                        <caption id="dropoutTableCaption" class="sr-only">學生休學紀錄列表</caption>
                                         <thead>
-                                            <tr>
+                                            <tr class="info">
                                                 <th colspan="2">休學紀錄</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
                                     </table>
                                 </div>
-                                <div id="DropoutReminderText">
+                                <div id="DropoutReminderText" role="status" aria-live="polite">
                                 </div>
                             </div>
                         </div>
@@ -52,19 +62,19 @@
                 </div>
             </div>
         </div>
-        <div class="footer-space"></div>
         <div class="footer">
-            <img style="margin: 5px 10px 0px 0px; float: left; display: inline; zoom: 1;" border="0" src="src/red_logo.jpg">
-            <img style="margin: 5px 10px 0px 0px; float: left; display: inline; zoom: 1;" border="0" src="src/bot_logo.png">
+            <img alt="" src="src/red_logo.jpg" aria-hidden="true">
+            <img alt="" src="src/bot_logo.png" aria-hidden="true">
             <p style="text-align: left;">
-                <font color="#999999">
-                    10617台北市大安區羅斯福路四段一號 臺灣大學管理學院一號館六樓 EMBA辦公室<br>
-                    TEL:886-2-33661010 FAX:886-2-23636073<br>
-                    Copyright © National Taiwan University All Rights Reserved
-                </font>
+            <div color="#999999">
+                10617台北市大安區羅斯福路四段一號 臺灣大學管理學院一號館六樓 EMBA辦公室<br>
+                TEL:886-2-33661010 FAX:886-2-23636073<br>
+                Copyright © National Taiwan University All Rights Reserved
+            </div>
             </p>
         </div>
     </div>
 
 </body>
+
 </html>
