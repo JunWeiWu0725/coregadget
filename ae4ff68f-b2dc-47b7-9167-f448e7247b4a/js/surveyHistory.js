@@ -1,7 +1,7 @@
 
 var connection = gadget.getContract("emba.survey.student");
 var oAchievingRate = {};
-var oConfiguration = {}; 
+var oConfiguration = {};
 var oSurveyHistoryTemplateDescriptionSubfix = 'survey-history-description';
 
 var CallbackQueue_History = {
@@ -129,26 +129,26 @@ var GetCanSeeCurriculumEvaluation = function() {
                 // console.log(response);
                 if (response.masterSwitch && response.masterSwitch == "true") {
                     if (response.canSee && response.canSee == "true") {
-                        var msg =  [ 
+                        var msg =  [
                                     "<div style='color:red;'>",
-                                    response.csSchoolYear,  "學年度 " , 
+                                    response.csSchoolYear,  "學年度 " ,
                                     (response.csSemester === '0' ? '夏季學期' : '第' + response.csSemester + '學期'), ' ',
                                     "<a href='#' class='alert-link' ",
                                     "   onclick='showEvaluation(", response.csSchoolYear , "," , response.csSemester ,");'>課程評鑑值</a>"
                                 ].join("");
                         if (response.isNewStudent && response.isNewStudent == "true") {
-                            msg =  [ 
+                            msg =  [
                                     msg,
                                     " (您是新生。)" ,
                                     "</div>"
                                 ].join("");
                         }
                         else {
-                            msg =  [ 
+                            msg =  [
                                     msg,
-                                    "<div>(您的 ", response.targetSchoolYear , "學年度 " , 
+                                    "<div>(您的 ", response.targetSchoolYear , "學年度 " ,
                                     (response.targetSemester === '0' ? '夏季學期' : '第' + response.targetSemester + '學期'),
-                                    " 評鑑填答率為 ", 
+                                    " 評鑑填答率為 ",
                                     response.answerRate , "%  可查看本期評鑑值公告。)" ,
                                     "</div>"
                                 ].join("");
@@ -159,11 +159,11 @@ var GetCanSeeCurriculumEvaluation = function() {
                         $('#show_course_evaluation').html(msg).show();
                     }
                     else {
-                        var msg =  [ 
+                        var msg =  [
                                     "<div style='color:red;'>",
-                                    "( 您的 ", response.targetSchoolYear , "學年度 " , 
+                                    "( 您的 ", response.targetSchoolYear , "學年度 " ,
                                     (response.targetSemester === '0' ? '夏季學期' : '第' + response.targetSemester + '學期'),
-                                    " 評鑑填答率為 ", 
+                                    " 評鑑填答率為 ",
                                     response.answerRate , "% , 無法查看本期課程評鑑值。)" ,
                                     "</div>"
                                 ].join("");
@@ -205,7 +205,7 @@ var showEvaluation = function(schoolyear, semester) {
                 // });
             }
 
-            
+
             // $(myWindow.document).ready(function() {
             //     myWindow.data_content = html;
             //     // myWindow.showContent(html);
@@ -249,6 +249,7 @@ var GetReplyHistory = function() {
                     <Semester>2</Semester>
                     <CourseID>522</CourseID>
                     <CourseName>企業價值衡量 </CourseName>
+                    <Category>期末評鑑</Category>
                     <SurveyCount>1</SurveyCount>
                     <AnswerCount/>
                 </ReplyHistory>
@@ -270,13 +271,13 @@ var GetReplyHistory = function() {
                         if (item.SchoolYear != _school_year || item.Semester != _semester) {
                         	var ret = "<p><h4 align='center'>" + item.SchoolYear + '學年度' + (item.Semester === '0' ? '夏季學期' : '第' + item.Semester + '學期') + "</h4></p>" +
                                     "<table id='" + item.SchoolYear + "-" + item.Semester + "' class='table table-bordered table-striped table-list survey-history-table'>" +
-                                    "<thead><tr><th>課程名稱</th><th>問卷數</th><th>問卷完成數</th></tr></thead>" +
+                                    "<thead><tr><th colspan='2'>課程名稱</th><th>問卷數</th><th>問卷完成數</th></tr></thead>" +
                                     "<tbody></tbody>" +
-                                    "<tfoot><tr><td class='my-totle-style'>合計</td>" +
+                                    "<tfoot><tr><td colspan='2' class='my-totle-style'>合計</td>" +
                                     "<td class='my-surveyCount my-totle-style'></td>" +
                                     "<td class='my-answerCount my-totle-style'></td>" +
-                                    "<tr><td class='my-totle-style'>問卷填答率</td><td colspan='2' class='my-answerRate my-totle-style'></td></tr>" +
-                                    "<tr><td colspan='3' class='my-survey-history-description'></td></tr></tfoot></table><p>&nbsp;</p>";
+                                    "<tr><td colspan='2' class='my-totle-style'>問卷填答率</td><td colspan='2' class='my-answerRate my-totle-style'></td></tr>" +
+                                    "<tr><td colspan='4' class='my-survey-history-description'></td></tr></tfoot></table><p>&nbsp;</p>";
                             // console.log(ret);
                             $('#survey-history').append(ret);
                             //$('tfoot>tr>td').css('text-align', 'center');
@@ -298,7 +299,7 @@ var GetReplyHistory = function() {
                                 }
                             });
                         }
-                        _survey_detail_string = "<tr><td>" + item.CourseName + "</td><td>" + item.SurveyCount + "</td>" +
+                        _survey_detail_string = "<tr><td>" + (item.Category || '').replace('評鑑', '') + "</td><td>" + item.CourseName + "</td><td>" + item.SurveyCount + "</td>" +
                                                 (item.AnswerCount ? "<td>" + item.AnswerCount + "</td>" : "<td style='color:red'>0</td>");
 
                         $("#" + item.SchoolYear + "-" + item.Semester + " tbody").append(_survey_detail_string);

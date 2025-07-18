@@ -120,7 +120,7 @@ border-bottom: none;
 .survey-history-table td,
 .survey-history-table th {
   vertical-align: middle;
-  width: 180px;
+  /* width: 180px; */
 }
 .survey-history-table td.my-totle-style {
   font-weight: 900;
