@@ -347,7 +347,7 @@ const App: React.FC = () => {
             const logBody = `<Request>
               <ActionType>Record</ActionType>
               <Action>修改</Action>
-              <ActionBy>核心-Web</ActionBy>
+              <ActionBy>學校基本資料-Web</ActionBy>
               <Description>${logDescription}</Description>
             </Request>`;
 
