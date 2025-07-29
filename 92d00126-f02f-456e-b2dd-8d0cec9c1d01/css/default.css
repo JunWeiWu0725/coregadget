@@ -576,3 +576,7 @@ div.other.has-error {
 .d-none {
     display: none;
 }
+
+.responsive-table tr~tr {
+    border-top: 1px solid #c0e7f1;
+}
