@@ -7,7 +7,12 @@ export default defineConfig({
   base: './', // 確保在相對路徑下可以正常運作
   build: {
     outDir: 'dist',
-    assetsDir: 'assets'
+    assetsDir: 'assets',
+    rollupOptions: {
+      input: {
+        main: './index.html',
+      },
+    },
   },
   server: {
     open: true
