@@ -9,35 +9,60 @@ body {
 }
 
 .btn-outline-green:hover, .btn-outline-green.active {
-    background-color: #A5CC93
+    background-color: #5ec1c7;
+    color: #fff;
 }
 
 .btn:focus {
     box-shadow: none;
 }
 
+.accordion-button {
+    box-shadow: none !important;
+}
+
+.accordion-button:not(.collapsed):hover {
+    /* border: 1px solid #B4B4BC; */
+    box-shadow: none;
+}
+
 .accordion-button:focus {
     border-color: #859B6D;
+}
+
+.accordion-button:focus {
     box-shadow: none;
 }
 
 .accordion-button:not(.collapsed) {
     color: #000;
     background-color: #fff;
-    box-shadow: none;
+    /* box-shadow: none; */
     /* border: 1px solid #859B6D; */
 }
 .accordion-item {
-    color: #000;
+    color: #414141;
     background-color: #fff;
-    box-shadow: none;
-    border: 1px solid #859B6D;
+    border: 0;
+    box-shadow: 0 0 5px 0px #d7d7d7;
+}
+
+.accordion-item:hover {
+    box-shadow: inset 0px 0px 7px 0px #b4b4bc !important;
 }
 
 .accordion-item:not(:first-of-type) {
-    border-top: 1px solid #859B6D;
+    /* border-top: 1px solid #859B6D; */
 }
 
 .accordion-item:first-of-type .accordion-button {
-    border-radius:10px; 
+    border-radius:12px; 
+}
+
+tbody .oddtr:nth-child(even) {
+    background-color: #eaf8f9;
+}
+
+.table-bordered > :not(caption) > * > *, .table-bordered > :not(caption) > * {
+    border-width: 0;
 }

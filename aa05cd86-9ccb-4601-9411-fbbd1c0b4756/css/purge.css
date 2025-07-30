@@ -387,6 +387,10 @@ img, video {
   font-weight: 600
 }
 
+.font-base {
+  font-size: 16px;
+}
+
 .font-bold {
   font-weight: 700
 }
@@ -550,6 +554,11 @@ img {
   border-color: rgba(229, 231, 235, var(--tw-border-opacity))
 }
 
+.px-2 {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
 .mb-0 {
   margin-bottom: 0
 }
@@ -580,6 +589,14 @@ img {
 
 .max-w-full {
   max-width: 100%
+}
+
+.max-w-20 {
+  max-width: 5rem /* 80px */;
+}
+
+.w-full {
+  width: 100%;
 }
 
 @keyframes spin {
@@ -667,4 +684,10 @@ img {
   --tw-ring-color: rgba(59, 130, 246, 0.5);
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-ring-shadow: 0 0 #0000
+}
+
+@media (min-width: 768px) {
+  .md\:flex-row {
+    flex-direction: row;
+  }
 }

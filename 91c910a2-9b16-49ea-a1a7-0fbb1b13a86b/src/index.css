@@ -1,0 +1,327 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* 全局樣式 - 極簡主義背景 */
+body {
+  @apply bg-gray-50 min-h-screen;
+  font-family: 'Noto Sans TC', sans-serif;
+  color: #323232;
+  font-size: 16px;
+}
+
+/* 主要內容區塊 - 增加留白 */
+.main-content {
+  @apply container mx-auto px-8 py-12 max-w-4xl;
+}
+
+/* 表單標題 - 使用標題色碼 */
+.form-header {
+  @apply text-2xl font-medium mb-3 text-center;
+  color: #323232;
+}
+
+.form-subtitle {
+  @apply text-base text-center mb-12;
+  color: #636363;
+}
+
+/* 表單卡片 - 極簡白色卡片 */
+.form-card {
+  @apply bg-white rounded-lg border border-gray-100 p-8 mb-6;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+}
+
+.form-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* 分區標題 - 使用主色碼的圖標 */
+.section-header {
+  @apply flex items-center mb-6 pb-3 border-b border-gray-100;
+}
+
+.section-title {
+  @apply text-lg font-medium ml-2;
+  color: #5ec1c7;
+}
+
+.section-icon {
+  @apply w-6 h-6;
+  color: #5ec1c7;
+}
+
+/* 表單控制項 - 現代化輸入框 */
+.form-control {
+  @apply mb-6;
+}
+
+.form-label {
+  @apply block text-base font-medium mb-2;
+  color: #323232;
+}
+
+.form-label-required {
+  color: #f43f5e;
+}
+
+.form-input {
+  @apply w-full px-2 py-2 border border-gray-200 rounded-lg text-base;
+  @apply transition-all duration-200;
+  background-color: transparent;
+  color: #323232;
+}
+
+.form-input:hover {
+  background-color: #f9fafb;
+}
+
+.form-input:focus {
+  background-color: #ffffff;
+  outline: none;
+  border-color: #5ec1c7;
+  box-shadow: 0 0 0 3px rgba(94, 193, 199, 0.1);
+}
+
+.form-input.error {
+  @apply border-red-300 bg-red-50;
+}
+
+.form-select {
+  @apply w-full px-2 py-2 border border-gray-200 rounded-lg text-base;
+  @apply transition-all duration-200;
+  background-color: transparent;
+  color: #323232;
+}
+
+.form-select:hover {
+  background-color: #f9fafb;
+}
+
+.form-select:focus {
+  @apply bg-white;
+  outline: none;
+  border-color: #5ec1c7;
+  box-shadow: 0 0 0 3px rgba(94, 193, 199, 0.1);
+}
+
+.form-select.error {
+  @apply border-red-300 bg-red-50;
+}
+
+/* 輸入框組合 */
+.input-group {
+  @apply flex rounded-lg border border-gray-200 overflow-hidden;
+}
+
+.input-group.error {
+  @apply border-red-300;
+}
+
+.input-group:hover {
+  background-color: #f9fafb;
+}
+
+.input-group-prefix {
+  @apply px-2 py-2 text-base border-r border-gray-200;
+  @apply flex items-center;
+  background-color: transparent;
+  color: #636363;
+}
+
+.input-group .form-input {
+  @apply border-0 rounded-none;
+  background-color: transparent;
+}
+
+.input-group .form-input.error {
+  @apply bg-red-50;
+}
+
+.input-group .form-input:focus {
+  @apply bg-white;
+  box-shadow: none;
+}
+
+.input-group:focus-within {
+  border-color: #5ec1c7;
+  box-shadow: 0 0 0 3px rgba(94, 193, 199, 0.1);
+  background-color: #ffffff;
+}
+
+.input-group.error:focus-within {
+  border-color: #f43f5e;
+  box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.1);
+}
+
+/* 錯誤訊息 */
+.form-error {
+  @apply text-sm mt-2 block;
+  color: #f43f5e;
+}
+
+/* 網格布局 */
+.form-grid {
+  @apply grid gap-6;
+}
+
+.form-grid-3 {
+  @apply grid-cols-1 md:grid-cols-3;
+}
+
+.form-grid-2 {
+  @apply grid-cols-1 md:grid-cols-2;
+}
+
+/* 分隔線 */
+.form-divider {
+  @apply border-t border-gray-100 my-6;
+}
+
+/* 提示區塊 - 使用主色碼 */
+.info-alert {
+  @apply rounded-lg p-5 mb-8;
+  @apply flex items-start gap-3;
+  background-color: rgba(94, 193, 199, 0.1);
+  border: 1px solid rgba(94, 193, 199, 0.2);
+}
+
+.info-alert-icon {
+  @apply w-6 h-6 mt-0.5 flex-shrink-0;
+  color: #5ec1c7;
+}
+
+.info-alert-text {
+  @apply text-base;
+  color: #323232;
+}
+
+/* 成功/錯誤訊息 */
+.alert {
+  @apply rounded-lg p-5 mb-8 flex items-center gap-3;
+  @apply animate-slideIn;
+}
+
+.alert-success {
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  color: #065f46;
+}
+
+.alert-error {
+  background-color: rgba(229, 62, 62, 0.1);
+  border: 1px solid rgba(229, 62, 62, 0.2);
+  color: #991b1b;
+}
+
+.alert-icon {
+  @apply w-6 h-6 flex-shrink-0;
+}
+
+/* 表單底部按鈕區域 */
+.form-footer {
+  @apply mt-12 flex justify-end gap-3;
+}
+
+/* 按鈕樣式 - 使用色碼表的顏色 */
+.btn {
+  @apply px-3 py-3 rounded-lg text-base font-medium;
+  @apply transition-all duration-200;
+  @apply focus:outline-none;
+  @apply flex items-center justify-center;
+  min-height: 48px;
+}
+
+.btn-primary {
+  background-color: #5ec1c7;
+  color: #FFFFFF;
+  border: 1px solid #5ec1c7;
+}
+
+.btn-primary:hover {
+  background-color: #4a9ca2;
+  border-color: #4a9ca2;
+}
+
+.btn-primary:focus {
+  box-shadow: 0 0 0 3px rgba(94, 193, 199, 0.3);
+}
+
+.btn-primary:disabled {
+  background-color: #d1d5db;
+  border-color: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  background-color: #ffffff;
+  color: #636363;
+  border: 1px solid #d1d5db;
+}
+
+.btn-outline:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+.btn-outline:focus {
+  box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.2);
+}
+
+.btn-outline:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-icon {
+  @apply w-5 h-5 mr-2;
+  flex-shrink: 0;
+}
+
+/* 載入動畫 */
+.loading-spinner {
+  @apply w-5 h-5 border-2 rounded-full animate-spin mr-2;
+  border-color: #ffffff;
+  border-top-color: transparent;
+}
+
+/* 動畫定義 */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .main-content {
+    @apply px-4 py-8;
+  }
+
+  .form-card {
+    @apply p-6;
+  }
+
+  .form-footer {
+    @apply flex-col gap-2;
+  }
+
+  .btn {
+    @apply w-full justify-center;
+  }
+}
