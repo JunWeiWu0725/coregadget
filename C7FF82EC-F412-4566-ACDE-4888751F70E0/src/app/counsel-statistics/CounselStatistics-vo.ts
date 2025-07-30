@@ -146,7 +146,14 @@ export class CounselClass {
 
     SetClassCheck() {
         this.Checked = !this.Checked;
-       // console.log("");
+    }
+
+    getCheckClass() {
+        if (this.Checked) {
+            return 'class-select-section-selected';
+        } else {
+            return 'class-select-section';
+        }
     }
 }
 

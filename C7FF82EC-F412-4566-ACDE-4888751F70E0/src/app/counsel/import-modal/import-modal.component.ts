@@ -6,6 +6,9 @@ import { GlobalService } from "src/app/global.service";
 import { DsaTransferService } from "src/app/transfer-students/service/dsa-transfer.service";
 import * as XLSX from "xlsx";
 
+declare var d3: any;
+declare var $: any;
+
 export const fieldMap: Record<string, string> = {
   年級: "grade_year",
   班級: "class_name",
@@ -57,6 +60,10 @@ export class ImportModalComponent implements OnInit {
     }
   }
 
+  public openModal() {
+    $("#app_import_modal").modal("show");
+  }
+
   async loadAllTeacher() {
     let rsp = await this.dsaService.send("_.GetAllTeacher", {});
     this.TeacherList = [].concat(rsp.Teacher || []);
@@ -65,7 +72,36 @@ export class ImportModalComponent implements OnInit {
 
   let rsp = await this.dsaService.send("_.GetAllStudent", {});
     this.StudentList = [].concat(rsp.Students || []);
-    console.log("this.StudentList",this.StudentList)
+    console.log("=== 系統內原本學生清單 ===");
+    console.log("學生總數:", this.StudentList.length);
+    console.log("完整學生清單:", this.StudentList);
+    
+    // 印出前5筆學生資料作為範例
+    console.log("前5筆學生資料範例:");
+    const statusText = { "1": "一般", "2": "延修" };
+    (this.StudentList as any[]).slice(0, 5).forEach((student, index) => {
+      console.log(`學生${index + 1}:`, {
+        StudentID: student.StudentID,
+        StudentNumber: student.StudentNumber,
+        ClassName: student.ClassName,
+        SeatNo: student.SeatNo,
+        StudentName: student.StudentName,
+        Status: student.Status,
+        StatusText: statusText[student.Status] || student.Status,
+        Gender: student.Gender
+      });
+    });
+    
+    // 統計各狀態的學生數量
+    const statusCount = {};
+    (this.StudentList as any[]).forEach(student => {
+      const status = student.Status || '未設定';
+      const statusName = statusText[status] || status;
+      const key = `${status}(${statusName})`;
+      statusCount[key] = (statusCount[key] || 0) + 1;
+    });
+    console.log("各狀態學生統計:", statusCount);
+    console.log("=== 學生清單印出完成 ===");
 
   }
 
@@ -218,19 +254,17 @@ export class ImportModalComponent implements OnInit {
   public async readExcelFile(file: File): Promise<any[]> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-
-      reader.onload = (e) => {
-        const result = (e.target as FileReader).result;
-        const data = new Uint8Array(result as ArrayBuffer);
+      reader.onload = (e: any) => {
+        const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-        resolve(jsonData);
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const excelData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        resolve(excelData);
       };
-
-      reader.onerror = (err) => reject(err);
+      reader.onerror = (error) => {
+        reject(error);
+      };
       reader.readAsArrayBuffer(file);
     });
   }
@@ -250,19 +284,23 @@ export class ImportModalComponent implements OnInit {
       // 根據匯入模式決定學生匹配方式
       console.log("=== 匯入組件 - 學生ID獲取檢查 ===");
       console.log("StudentList 總數:", this.StudentList.length);
-      console.log("StudentList 前3筆資料:", this.StudentList.slice(0, 3));
+      console.log("StudentList 前3筆資料:", (this.StudentList as any[]).slice(0, 3));
       console.log("匯入模式:", this.importMode);
       console.log("當前行資料:", row);
       console.log("初始 result[ref_student_id]:", result["ref_student_id"]);
       
       if (this.importMode === "byStudentId") {
-        // 按學號匹配
+        // 按學號+狀態匹配
         if (row["學號"]) {
           const studentNumber = row["學號"].toString().trim();
+          const status = (row["狀態"] || "").toString().trim();
+          // 將中文狀態轉換為系統代碼
+          const statusMapping = { "一般": "1", "延修": "2" };
+          const statusCode = statusMapping[status] || status;
           
           let foundStudent = null;
-          for (const s of this.StudentList) {
-            if ((s as any).StudentNumber === studentNumber) {
+          for (const s of (this.StudentList as any[])) {
+            if ((s as any).StudentNumber === studentNumber && (s as any).Status === statusCode) {
               foundStudent = s;
               break;
             }
@@ -271,40 +309,45 @@ export class ImportModalComponent implements OnInit {
           if (foundStudent) {
             result["ref_student_id"] = (foundStudent as any).StudentID || (foundStudent as any).ref_student_id;
           } else {
-            console.log(`匯入-學號匹配失敗: ${studentNumber}`);
+            console.log(`匯入-學號+狀態匹配失敗: ${studentNumber}, 狀態: ${status} (系統代碼: ${statusCode})`);
             result["ref_student_id"] = null;
           }
         } else {
           console.log("Excel中沒有學號資料");
         }
       } else if (this.importMode === "bySeat") {
-        // 按班級+座號匹配
+        // 按班級+座號+狀態匹配
         const className = (row["班級"] || "").toString().trim();
         const seatNo = (row["座號"] || "").toString().trim();
-        console.log("要查找的班級:", className, "座號:", seatNo);
+        const status = (row["狀態"] || "").toString().trim();
+        // 將中文狀態轉換為系統代碼
+        const statusMapping = { "一般": "1", "延修": "2" };
+        const statusCode = statusMapping[status] || status;
+        console.log("要查找的班級:", className, "座號:", seatNo, "狀態:", status, "系統代碼:", statusCode);
 
         result["ref_student_id"] = null; // 清空學號，強制使用班級座號匹配
 
         let foundStudent = null;
  
-        for (const s of this.StudentList) {
+        for (const s of (this.StudentList as any[])) {
           const studentClassName = (s.ClassName || "").toString();
           const studentSeatNo = s.SeatNo != null ? s.SeatNo.toString() : "";
-          console.log(`比對學生: 班級=${studentClassName}, 座號=${studentSeatNo}, 學生ID=${s.StudentID}`);
-          console.log(`比對條件: 班級=${className}, 座號=${seatNo}`);
-          console.log(`比對結果: 班級相符=${studentClassName === className}, 座號相符=${studentSeatNo === seatNo}`);
+          const studentStatus = (s.Status || "").toString();
+          console.log(`比對學生: 班級=${studentClassName}, 座號=${studentSeatNo}, 狀態=${studentStatus}, 學生ID=${s.StudentID}`);
+          console.log(`比對條件: 班級=${className}, 座號=${seatNo}, 狀態=${status}, 系統代碼=${statusCode}`);
+          console.log(`比對結果: 班級相符=${studentClassName === className}, 座號相符=${studentSeatNo === seatNo}, 狀態相符=${studentStatus === statusCode}`);
           
-          if (studentClassName === className && studentSeatNo === seatNo) {
+          if (studentClassName === className && studentSeatNo === seatNo && studentStatus === statusCode) {
             foundStudent = s;
             result["ref_student_id"] = s.StudentID;
-            console.log(`匯入-班級座號匹配成功: ${className}-${seatNo} -> ${result["ref_student_id"]}`);
+            console.log(`匯入-班級座號狀態匹配成功: ${className}-${seatNo}-${status}(${statusCode}) -> ${result["ref_student_id"]}`);
             console.log("找到的學生完整資料:", foundStudent);
             break;
           }
         }
         
         if (!result["ref_student_id"]) {
-          console.log(`匯入-班級座號匹配失敗: ${className}-${seatNo}`);
+          console.log(`匯入-班級座號狀態匹配失敗: ${className}-${seatNo}-${status}(${statusCode})`);
         }
       }
       

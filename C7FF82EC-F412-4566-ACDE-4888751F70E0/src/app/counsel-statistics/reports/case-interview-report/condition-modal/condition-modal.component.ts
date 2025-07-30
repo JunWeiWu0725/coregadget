@@ -7,6 +7,7 @@ import { CaseQuestionTemplate, IOptionInfo, OptionInfo } from 'src/app/case/case
   styleUrls: ['./condition-modal.component.css']
 })
 export class ConditionModalComponent implements OnInit {
+  classViewList: any[] = []; // 初始化班級列表
   problem_main_category :IOptionInfo[] =[];
   gender_option :IOptionInfo[] =[];
   /**是否有用性別塞選 */
@@ -86,6 +87,10 @@ export class ConditionModalComponent implements OnInit {
     this.getAllSelected();
     $("#conditionModal").modal("hide");
     
+  }
+
+  closeModal() {
+    $("#conditionModal").modal("hide");
   }
 
   /** 選擇全部 */

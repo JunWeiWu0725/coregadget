@@ -1,9 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { CounselClass, GradeClassInfo } from '../../CounselStatistics-vo';
-import { DsaService } from "../../../dsa.service";
-import * as moment from 'moment';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { DsaService } from 'src/app/dsa.service';
+import { GlobalService } from 'src/app/global.service';
 import * as XLSX from 'xlsx';
-import { MatSnackBar } from '@angular/material';
+import { CounselStudentService } from 'src/app/counsel-student.service';
+import { ChartModalComponent } from './chart-modal/chart-modal.component';
+import { CounselClass, GradeClassInfo } from '../../CounselStatistics-vo';
+import * as moment from 'moment';
+
+declare var d3: any;
 
 @Component({
   selector: 'app-counsel-interview-report',
@@ -12,23 +17,51 @@ import { MatSnackBar } from '@angular/material';
 })
 export class CounselInterviewReportComponent implements OnInit {
 
+  list: any;
+  isLoading: boolean;
+  schoolYear: number;
+  semester: number;
+  startDate: string;
+  endDate: string;
+  selectClassIDs: string[] = [];
+  conditionProblemCatag: string[] = [];
+  conditionGender: string;
+  isUseGenderFilter: boolean = false;
+  isUseProblemCatagFilter: boolean = false;
   tmpGradeYear: number[] = [];
   tmpClass: CounselClass[] = [];
   isSelectAllItem: boolean = false;
-  selectClassIDs: string[] = [];
   SelectGradeYearList: GradeClassInfo[] = [];
+  @ViewChild('dialog') dialog: MatDialog;
+  @ViewChild('condition_modal') condition_modal: any;
+  @ViewChild('chartModal') chartModal: ChartModalComponent;
+  @ViewChild('app_import_modal') app_import_modal: any;
   isSaveButtonDisable: boolean = false;
-  startDate: string = "";
-  endDate: string = "";
-  
 
-  constructor(private dsaService: DsaService
-    ) { }
+  constructor(
+    private dsaService: DsaService,
+    public globalService: GlobalService,
+    private counselStudentService: CounselStudentService
+  ) { }
 
   ngOnInit() {
+    this.list = [];
+    this.isLoading = false;
+    this.schoolYear = this.counselStudentService.currentSchoolYear;
+    this.semester = this.counselStudentService.currentSemester;
     this.loadData();
+    // Pre-initialize the modal to prevent 'filter' of undefined error
+    if (this.condition_modal) {
+      this.condition_modal.openModal();
+      setTimeout(() => {
+        this.condition_modal.closeModal();
+      }, 10);
+    }
   }
 
+  openModal() {
+    this.condition_modal.openModal();
+  }
 
   loadData() {
     this.isSelectAllItem = false;
@@ -55,9 +88,14 @@ export class CounselInterviewReportComponent implements OnInit {
   }
 
   report() {
+    if (this.prepareAndValidate()) {
+      this.exportReport();
+    }
+  }
 
-    let chkDataPass: boolean = true;
-
+  private prepareAndValidate(): boolean {
+    console.log('開始驗證資料...');
+    
     this.selectClassIDs = [];
     this.SelectGradeYearList.forEach(item => {
       item.ClassItems.forEach(classItem => {
@@ -67,27 +105,75 @@ export class CounselInterviewReportComponent implements OnInit {
       });
     });
 
+    console.log('選擇的班級 IDs:', this.selectClassIDs);
+    console.log('開始日期:', this.startDate);
+    console.log('結束日期:', this.endDate);
+
     if (!moment(this.startDate).isValid() || !moment(this.endDate).isValid()) {
+      console.log('日期驗證失敗');
       alert("開始或結束日期錯誤！");
-      chkDataPass = false;
+      return false;
     }
 
     if (moment(this.startDate).isValid() && moment(this.endDate).isValid()) {
       if (moment(this.startDate) > moment(this.endDate)) {
+        console.log('日期範圍錯誤');
         alert("開始日期需要小於結束日期！");
-        chkDataPass = false;
+        return false;
       }
     }
 
     if (this.selectClassIDs.length === 0) {
+      console.log('沒有選擇班級');
       alert("請勾選班級！");
-      chkDataPass = false;
+      return false;
     }
 
-    if (chkDataPass) {
-      this.exportReport()
-    }
+    console.log('資料驗證通過');
+    return true;
+  }
 
+    async openChartModal() {
+    console.log('=== 開始產生圖表 ===');
+    if (this.prepareAndValidate()) {
+      try {
+        let StartDate = this.startDate.replace('T', ' ');
+        let EndDate = this.endDate.replace('T', ' ');
+
+        console.log('發送 API 請求參數:', {
+          StartDate: StartDate,
+          EndDate: EndDate,
+          ClassIDs: this.selectClassIDs
+        });
+
+        let resp = await this.dsaService.send("GetCounselInterviewReport1", {
+          Request: {
+            StartDate: StartDate,
+            EndDate: EndDate,
+            ClassIDs: this.selectClassIDs
+          }
+        });
+
+        console.log('API 完整回應:', resp);
+        let data = [].concat(resp.CounselInterview || []);
+        console.log('提取的 CounselInterview 資料:', data);
+        console.log('資料筆數:', data.length);
+        
+        if (data.length > 0) {
+          console.log('第一筆資料範例:', data[0]);
+          console.log('所有欄位名稱:', Object.keys(data[0]));
+          this.chartModal.open(data);
+        } else {
+          console.log('沒有資料');
+          alert("沒有資料可產生圖表");
+        }
+      } catch (error) {
+        console.error('API 錯誤:', error);
+        alert(error.dsaError ? error.dsaError.message : '無法取得圖表資料');
+      }
+    } else {
+      console.log('資料驗證失敗');
+    }
   }
   modalImportShow() {
     $("#app_import_modal").modal("show");
@@ -115,7 +201,7 @@ export class CounselInterviewReportComponent implements OnInit {
       });
 
       let data = [].concat(resp.CounselInterview || []);
-
+      console.log('dataSS', data);
       if (data.length > 0) {
         let data1: any[] = [];
         data.forEach(item => {
@@ -153,7 +239,6 @@ export class CounselInterviewReportComponent implements OnInit {
     }
   }
 
-  // 取得教師輔導班級
   async GetCounselClass() {
     this.SelectGradeYearList = [];
     this.tmpClass = [];
@@ -202,7 +287,6 @@ export class CounselInterviewReportComponent implements OnInit {
     } catch (err) {
       alert(err);
     }
-    //this.isLoading = false;
   }
 
   SetSelectGradeItem(gradeYear: number) {
@@ -215,6 +299,10 @@ export class CounselInterviewReportComponent implements OnInit {
         });
       }
     });
+  }
+
+  toggleClassSelected(classItem: CounselClass) {
+    classItem.SetClassCheck();
   }
 
 }

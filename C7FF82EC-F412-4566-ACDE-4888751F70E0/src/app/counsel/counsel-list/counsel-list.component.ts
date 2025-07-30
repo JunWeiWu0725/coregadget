@@ -70,6 +70,9 @@ export class CounselListComponent implements OnInit {
       this.mod = params.get("mod");
       this.roleType = params.get("roleType");
       this.target = params.get("target");
+      if (!this.roleType) {
+        this.roleType = '班導師';
+      }
       this._semesterInfo = [];
       this.getList();
     });
@@ -232,7 +235,8 @@ export class CounselListComponent implements OnInit {
     // 關閉畫面
     $("#app_import_modal").on("hide.bs.modal", () => {
       // 重整資料
-      // this.loadData();
+      this.counselStudentService.reload();
+      this.getList();
       $("#app_import_modal").off("hide.bs.modal");
     });
   }

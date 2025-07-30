@@ -44,7 +44,7 @@ export class CounselRoutingComponent implements OnInit {
           } else {
             classID = this.globalService.selectTarget;
           }
-          this.router.navigate(["list", "class", classID,'輔導老師'], {
+          this.router.navigate(["list", "class", classID,'班導師'], {
             relativeTo: this.route,
             skipLocationChange: true
           });

@@ -103,6 +103,8 @@ import { SettingComponent } from './admin/setting/setting.component';
 import { RoleService } from './role.service';
 import { appInitializerFactory } from './app-initializer';
 import { ImportModalComponent } from './counsel/import-modal/import-modal.component';
+import { ChartModalComponent } from './counsel-statistics/reports/counsel-interview-report/chart-modal/chart-modal.component';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -167,11 +169,7 @@ import { ImportModalComponent } from './counsel/import-modal/import-modal.compon
     FilterChineseNumbersPipe,
     SettingComponent,
     ImportModalComponent,
-    // MatSnackBarModule
-
-
-
-
+    ChartModalComponent,
     // AddReferralFormComponent
   ],
   imports: [
@@ -206,6 +204,8 @@ import { ImportModalComponent } from './counsel/import-modal/import-modal.compon
     MatSnackBarModule,
     //  AddInterviewModalComponent
     DSUtilNgModule, // DSA 自定連線。
+    FormsModule,
+    MatIconModule
   ],
   providers: [
     {

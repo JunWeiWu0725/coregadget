@@ -18,8 +18,14 @@ export class CounselImportValidationService {
     對象: ["學生", "教職員", "家長", "專業人員", "其他"],
     方式: ["面談", "電話", "聯絡簿", "個別約談家長", "會議", "E-mail", "其他"],
     公開: ["是", "否"],
-    狀態: ["一般", "休學", "延修"],
+    狀態: ["一般", "延修"], // 系統只支援 1=一般, 2=延修
     學期: ["1", "2"],
+  };
+
+  // 狀態中文對應系統代碼
+  private statusMapping: Record<string, string> = {
+    "一般": "1",
+    "延修": "2"
   };
 
   public allowedCategoryList: string[] = [
@@ -161,7 +167,7 @@ export class CounselImportValidationService {
       (v) => (this.isBlank(v) ? "狀態為必填" : null),
       (v) =>
         this.allowedValues["狀態"].indexOf(String(v).trim()) === -1
-          ? "狀態應為 一般、休學 或 延修"
+          ? "狀態應為 一般 或 延修"
           : null,
     ],
   };
@@ -240,17 +246,16 @@ export class CounselImportValidationService {
 
     // 👇 找學生
     let matchedStudent: any = null;
+    const statusCode = this.statusMapping[row["狀態"]] || row["狀態"]; // 將中文狀態轉換為系統代碼
+    
     if (this.importMode === "byStudentId") {
       matchedStudent = this.studentList.find(
-        (s) => s.StudentNumber === row["學號"]
+        (s) => s.StudentNumber === row["學號"] && s.Status === statusCode
       );
     } else {
-  
-      matchedStudent = this.studentList.some(
-        (s) => s.ClassName == row["班級"] && s.SeatNo == row["座號"]
-        //  s.Staus == row["狀態"]
+      matchedStudent = this.studentList.find(
+        (s) => s.ClassName == row["班級"] && s.SeatNo == row["座號"] && s.Status === statusCode
       );
- 
     }
 
     const key = this.importMode === "byStudentId" ? "學號" : "座號";

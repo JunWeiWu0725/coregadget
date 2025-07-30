@@ -76,8 +76,27 @@ export class CounselStudentService {
     // 班導師，輔導老師，會讀取目前學年度學期
     let resp = await this.dsaService.send("GetCounselStudent", {}); 
     // dev_mod_console 
-    console.log("GetCounselStudent",resp ) ;
-    [].concat(resp.Student || []).forEach(stuRec => {
+    console.log("=== GetCounselStudent 原始回應 ===");
+    console.log("完整回應:", resp);
+    console.log("學生資料陣列:", resp.Student || []);
+    console.log("學生總數:", (resp.Student || []).length);
+    [].concat(resp.Student || []).forEach((stuRec, index) => {
+      // 印出前5筆學生資料作為範例
+      if (index < 5) {
+        const statusText = { "1": "一般", "2": "延修" };
+        console.log(`學生${index + 1}資料:`, {
+          StudentID: stuRec.StudentID,
+          StudentNumber: stuRec.StudentNumber,
+          ClassName: stuRec.ClassName,
+          SeatNo: stuRec.SeatNo,
+          StudentName: stuRec.StudentName,
+          Status: stuRec.Status,
+          StatusText: statusText[stuRec.Status] || stuRec.Status,
+          Gender: stuRec.Gender,
+          Role: stuRec.Role
+        });
+      }
+      
       //建立學生
       if (!this.studentMap.has(stuRec.StudentID)) {
         this.studentMap.set(
