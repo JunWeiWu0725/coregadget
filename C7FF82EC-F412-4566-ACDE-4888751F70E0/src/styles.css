@@ -73,7 +73,7 @@ ul.rwd-table .tr li.sticky-top {
 
 .btn_red_rad {
     border-radius: 50px;
-    background: #ff4d4d !important;
+    background: #d64545 !important;
     font-size: 15px;
 
 
@@ -127,7 +127,7 @@ ul.rwd-table .tr li.sticky-top {
 
 /* 紅色的字 */
 .word_red {
-    color: #ff5050;
+    color: #c44646;
     cursor: pointer;
 }
 

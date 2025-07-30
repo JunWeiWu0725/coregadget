@@ -1,19 +1,95 @@
 <div class="modal fade" #chartModal tabindex="-1" role="dialog" aria-labelledby="chartModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-dialog modal-fullscreen-sm-down modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="chartModalLabel">輔導次數圖表</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <div class="d-flex align-items-center">
+          <h5 class="modal-title" id="chartModalLabel">全校輔導數據分析（近一年）</h5>
+          <span id="filter-status" class="filter-tag ml-2 d-flex align-items-center" style="display: none; cursor: pointer;" onclick="window.chartModalComponent.resetFilter()">
+            <span id="filter-teacher-name"></span>
+            <i class="fa fa-times ml-1" style="font-size: 12px;"></i>
+          </span>
+        </div>
+        <div class="d-flex align-items-center">
+          <button id="reset-filter-btn" type="button" class="btn btn-sm btn-outline-secondary mr-2" style="display: none;" onclick="window.chartModalComponent.resetFilter()">
+            <i class="fa fa-refresh"></i> 顯示全校
+          </button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
       </div>
       <div class="modal-body">
+        <!-- 三個圖表在同一行 -->
         <div class="row">
-          <div class="col-md-8">
-            <div id="chart-container-modal"></div>
+          <div class="col-lg-4 col-md-12 mb-3">
+            <div id="chart-container-modal" class="chart-responsive"></div>
           </div>
-          <div class="col-md-4">
-            <div id="pie-chart-container-modal"></div>
+          <div class="col-lg-4 col-md-12 mb-3">
+            <div id="pie-chart-container-modal" class="chart-responsive"></div>
+          </div>
+          <div class="col-lg-4 col-md-12 mb-3">
+            <div id="line-chart-container-modal" class="chart-responsive"></div>
+          </div>
+        </div>
+        
+        <!-- 🔥 新增：3D 圖表區域 -->
+        <div class="row mt-3">
+          <div class="col-lg-6 col-md-12 mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0">3D 長條圖</h6>
+              <div class="btn-group btn-group-sm" role="group">
+                <button type="button" class="btn btn-outline-primary btn-sm" id="toggle-3d-bar" onclick="window.chartModalComponent.toggle3DChart('bar')">
+                  <i class="fa fa-cube"></i> 3D
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-2d-bar" onclick="window.chartModalComponent.toggle3DChart('bar')">
+                  <i class="fa fa-bar-chart"></i> 2D
+                </button>
+              </div>
+            </div>
+            <div id="chart-3d-bar-container" class="chart-responsive" style="height: 350px;"></div>
+          </div>
+          <div class="col-lg-6 col-md-12 mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0">3D 圓餅圖</h6>
+              <div class="btn-group btn-group-sm" role="group">
+                <button type="button" class="btn btn-outline-primary btn-sm" id="toggle-3d-pie" onclick="window.chartModalComponent.toggle3DChart('pie')">
+                  <i class="fa fa-cube"></i> 3D
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-2d-pie" onclick="window.chartModalComponent.toggle3DChart('pie')">
+                  <i class="fa fa-pie-chart"></i> 2D
+                </button>
+              </div>
+            </div>
+            <div id="chart-3d-pie-container" class="chart-responsive" style="height: 350px;"></div>
+          </div>
+        </div>
+        
+        <!-- 🔥 新增：輔導關係網絡圖區域 -->
+        <div class="row mt-3">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0">輔導關係網絡圖</h6>
+              <div class="btn-group btn-group-sm" role="group">
+                <button type="button" class="btn btn-outline-primary btn-sm" id="toggle-tree-hierarchical" onclick="window.chartModalComponent.toggleTreeLayout('hierarchical')">
+                  <i class="fa fa-tree"></i> 階層
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-tree-radial" onclick="window.chartModalComponent.toggleTreeLayout('radial')">
+                  <i class="fa fa-circle-o"></i> 放射
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" id="toggle-tree-force" onclick="window.chartModalComponent.toggleTreeLayout('force')">
+                  <i class="fa fa-share-alt"></i> 網絡
+                </button>
+              </div>
+            </div>
+            <div id="tree-chart-container" class="chart-responsive" style="height: 400px;"></div>
+          </div>
+        </div>
+        
+        <!-- 明細表格獨立一行 -->
+        <div class="row mt-3">
+          <div class="col-12">
+            <h6 class="text-center mb-3">輔導紀錄明細表</h6>
+            <div id="summary-table-container-modal" class="table-responsive"></div>
           </div>
         </div>
       </div>

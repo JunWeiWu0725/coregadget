@@ -134,45 +134,63 @@ export class CounselInterviewReportComponent implements OnInit {
   }
 
     async openChartModal() {
-    console.log('=== 開始產生圖表 ===');
-    if (this.prepareAndValidate()) {
-      try {
-        let StartDate = this.startDate.replace('T', ' ');
-        let EndDate = this.endDate.replace('T', ' ');
+    console.log('=== 開始數據分析 ===');
+    
+    // 數據分析使用全校資料，自動收集所有班級 ID
+    this.selectClassIDs = [];
+    this.SelectGradeYearList.forEach(item => {
+      item.ClassItems.forEach(classItem => {
+        this.selectClassIDs.push(classItem.ClassID);
+      });
+    });
 
-        console.log('發送 API 請求參數:', {
-          StartDate: StartDate,
-          EndDate: EndDate,
+    console.log('數據分析使用全校班級:', this.selectClassIDs.length, '個班級');
+
+    if (this.selectClassIDs.length === 0) {
+      console.log('沒有可用的班級資料');
+      alert("無法取得班級資料，請稍後再試！");
+      return;
+    }
+
+    try {
+      // 自動設定近一年的日期範圍
+      const now = new Date();
+      const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+      
+      const startDate = oneYearAgo.toISOString().split('T')[0] + ' 00:00:00';
+      const endDate = now.toISOString().split('T')[0] + ' 23:59:59';
+
+      console.log('全校數據分析參數:', {
+        StartDate: startDate,
+        EndDate: endDate,
+        ClassIDs: this.selectClassIDs,
+        ClassCount: this.selectClassIDs.length
+      });
+
+      let resp = await this.dsaService.send("GetCounselInterviewReport1", {
+        Request: {
+          StartDate: startDate,
+          EndDate: endDate,
           ClassIDs: this.selectClassIDs
-        });
-
-        let resp = await this.dsaService.send("GetCounselInterviewReport1", {
-          Request: {
-            StartDate: StartDate,
-            EndDate: EndDate,
-            ClassIDs: this.selectClassIDs
-          }
-        });
-
-        console.log('API 完整回應:', resp);
-        let data = [].concat(resp.CounselInterview || []);
-        console.log('提取的 CounselInterview 資料:', data);
-        console.log('資料筆數:', data.length);
-        
-        if (data.length > 0) {
-          console.log('第一筆資料範例:', data[0]);
-          console.log('所有欄位名稱:', Object.keys(data[0]));
-          this.chartModal.open(data);
-        } else {
-          console.log('沒有資料');
-          alert("沒有資料可產生圖表");
         }
-      } catch (error) {
-        console.error('API 錯誤:', error);
-        alert(error.dsaError ? error.dsaError.message : '無法取得圖表資料');
+      });
+
+      console.log('API 完整回應:', resp);
+      let data = [].concat(resp.CounselInterview || []);
+      console.log('提取的 CounselInterview 資料:', data);
+      console.log('資料筆數:', data.length);
+      
+      if (data.length > 0) {
+        console.log('第一筆資料範例:', data[0]);
+        console.log('所有欄位名稱:', Object.keys(data[0]));
+        this.chartModal.open(data);
+      } else {
+        console.log('沒有資料');
+        alert("近一年全校沒有輔導資料可進行數據分析");
       }
-    } else {
-      console.log('資料驗證失敗');
+    } catch (error) {
+      console.error('API 錯誤:', error);
+      alert(error.dsaError ? error.dsaError.message : '無法取得數據分析資料');
     }
   }
   modalImportShow() {
