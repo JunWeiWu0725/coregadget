@@ -212,6 +212,7 @@ export class AppService {
         const periodPermissionMap: Map<string, string> = new Map<string, string>();
 
         let crossDate = false;
+        let crossDateReadOnly = false;
 
         // 可設定的假別
         if (rsp.List && rsp.List.Content && rsp.List.Content.AbsenceList && rsp.List.Content.AbsenceList.Absence) {
@@ -244,11 +245,14 @@ export class AppService {
 
         if (rsp.List && rsp.List.Content && rsp.List.Content.AbsenceList && rsp.List.Content.AbsenceList.CrossDate) {
           crossDate = (rsp.List.Content.AbsenceList.CrossDate === 'True');
+          crossDateReadOnly = (rsp.List.Content.AbsenceList.CrossDateReadOnly === 'True');
+          console.log("crossDate" ,rsp.List.Content.AbsenceList);
         }
         return {
           absenceNames: absenceNames,
           periodPermissionMap: periodPermissionMap,
           crossDate: crossDate,
+          crossDateOnlyRead: crossDateReadOnly,
         };
       }
     }) as Rx.Observable<Config>;

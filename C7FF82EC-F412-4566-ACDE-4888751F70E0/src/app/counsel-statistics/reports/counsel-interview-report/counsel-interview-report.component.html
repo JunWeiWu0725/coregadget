@@ -9,9 +9,9 @@
 <div class="d-flex"  style =" width: 90%;">
 
   <app-import-modal #app_import_modal  [StudentList]="[]" [Role]="'管理者'" ></app-import-modal>
-  <div class="d-flex    justify-content-start   " style =" width: 90%;"> 
-    <div class="date-label   " style="font-size: 18px; margin-right: 10px;padding-top: 8px;"> 開始日期</div>
-    <div style="margin-left: 10px;">
+  <div class="d-flex align-items-center" style="width: 90%;"> 
+    <div class="date-label" style="font-size: 18px; margin-right: 10px; min-width: 80px;">開始日期</div>
+    <div style="margin-right: 20px;">
       <input required
              type="date"
              class="form-control"
@@ -20,8 +20,8 @@
              placeholder="請輸入開始日期"
              [(ngModel)]="startDate" />
     </div>
-    <div class="date-label" style="font-size: 18px; margin-right: 10px;;padding-top: 8px;">結束日期</div>
-    <div style="margin-left: 10px;">
+    <div class="date-label" style="font-size: 18px; margin-right: 10px; min-width: 80px;">結束日期</div>
+    <div style="margin-right: 20px;">
       <input required
              type="date"
              class="form-control"
@@ -45,7 +45,7 @@
   (click)="modalImportShow()">
   匯入一級晤談紀錄
 </button>
-<button type="button" class="btn btn-info btn-sm" (click)="openChartModal()">數據分析</button>
+<button type="button" class="btn btn-info btn-sm" (click)="openChartModal()" *ngIf="true">數據分析</button>
 <app-chart-modal #chartModal></app-chart-modal>
 </div>
 

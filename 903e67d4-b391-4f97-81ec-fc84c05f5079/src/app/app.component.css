@@ -1,6 +1,166 @@
 .setBtn {
     cursor: pointer;
 }
+/* 整體容器樣式 */
+.container-fluid {
+    padding: 20px;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+}
+
+/* 標題樣式 */
+.title-item {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 3px solid #3498db;
+}
+
+/* 表單區域樣式 */
+.control-section {
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* 標籤樣式 */
+.control-label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    display: inline-block;
+    width: 120px;
+    vertical-align: top;
+}
+
+/* 日期控制區域 */
+.date-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* 日期顯示 */
+.date-display {
+    font-size: 16px;
+    color: #2c3e50;
+    font-weight: 500;
+    padding: 8px 12px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* 按鈕組樣式 */
+.btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.btn-group .btn {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-group .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* 表格樣式 */
+.table {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* 可點擊區域樣式 */
+.setBtn {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.setBtn:hover {
+    background-color: #e3f2fd !important;
+    transform: scale(1.02);
+}
+
+.setBtn.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
 .thBorder {
     background: #eee;
+}
+
+/* 今天的日期按鈕 - 只在未選中時顯示特殊樣式 */
+.today-date:not(.btn-warning) {
+    background-color: #e9ecef !important;
+    color: #495057 !important;
+    font-weight: bold !important;
+    font-size: inherit !important;
+    border: none !important;
+}
+
+.today-date:hover:not(.btn-warning) {
+    background-color: #d6d8db !important;
+}
+
+/* 被選中的日期按鈕 - 統一顏色 */
+.btn-warning {
+    background-color: #f0ad4e !important;
+    color: white !important;
+    border-color: #eea236 !important;
+    font-weight: bold !important;
+}
+
+/* 日期按鈕 hover 效果 - 只對未選中的按鈕生效 */
+.input-group-append .btn.btn-outline-secondary:hover:not(.btn-warning):not(.btn-primary):not(.today-date) {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+    transition: background-color 0.2s ease;
+}
+
+.input-group-append .btn.btn-outline-primary:hover:not(.btn-primary) {
+    background-color: rgba(0, 123, 255, 0.1) !important;
+    transition: background-color 0.2s ease;
+}
+
+/* 警告訊息樣式 */
+.alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+    border-radius: 6px;
+    padding: 12px 16px;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 10px;
+    }
+    
+    .date-section, .class-section, .absence-section {
+        padding: 15px;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        margin-bottom: 5px;
+    }
 }

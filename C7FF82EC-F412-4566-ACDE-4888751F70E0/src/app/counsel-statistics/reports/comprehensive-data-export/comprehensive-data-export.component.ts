@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import * as XLSX from 'xlsx';
@@ -6,6 +6,7 @@ import { DsaService } from 'src/app/dsa.service';
 import { CounselClass } from '../../CounselStatistics-vo';
 import { GradeClassInfo } from 'src/app/admin/counsel-class/counsel-class-vo';
 import { SectionInfo, QuestionSubject, QuestionGroup, QuestionInfo, QuestionText, QuestionQuery } from './comprehensive-data-export-vo';
+import { ChartModalComponent } from '../counsel-interview-report/chart-modal/chart-modal.component';
 
 
 
@@ -38,6 +39,8 @@ export class ComprehensiveDataExportComponent implements OnInit {
   SelectSections: SectionInfo[] = [];
   SelectSection: SectionInfo;
   IsWorking: boolean = false;
+  
+  @ViewChild('chartModal') chartModal: ChartModalComponent;
 
 
   constructor(private dsaService: DsaService) {
@@ -381,6 +384,65 @@ export class ComprehensiveDataExportComponent implements OnInit {
         classItem.Checked = this.isSelectAllItem;
       });
     });
+  }
+
+  // 🔥 新增：數據分析方法
+  async openChartAnalysis() {
+    console.log('=== 開始綜合數據分析 ===');
+    
+    // 收集選中的班級ID
+    this.selectClassIDs = [];
+    this.SelectGradeYearList.forEach(item => {
+      item.ClassItems.forEach(classItem => {
+        if (classItem.Checked) {
+          this.selectClassIDs.push(classItem.ClassID);
+        }
+      });
+    });
+
+    if (this.selectClassIDs.length === 0) {
+      alert("請先選擇班級！");
+      return;
+    }
+
+    try {
+      // 設置日期範圍（當前學年度學期）
+      const now = new Date();
+      const startDate = `${this.SelectSchoolYear}-08-01 00:00:00`;
+      const endDate = `${this.SelectSchoolYear}-07-31 23:59:59`;
+
+      console.log('綜合數據分析參數:', {
+        StartDate: startDate,
+        EndDate: endDate,
+        ClassIDs: this.selectClassIDs,
+        SchoolYear: this.SelectSchoolYear,
+        Semester: this.SelectSemester
+      });
+
+      let resp = await this.dsaService.send("GetCounselInterviewReport1", {
+        Request: {
+          StartDate: startDate,
+          EndDate: endDate,
+          ClassIDs: this.selectClassIDs
+        }
+      });
+
+      console.log('API 完整回應:', resp);
+      let data = [].concat(resp.CounselInterview || []);
+      console.log('提取的 CounselInterview 資料:', data);
+      console.log('資料筆數:', data.length);
+      
+      if (data.length > 0) {
+        console.log('第一筆資料範例:', data[0]);
+        this.chartModal.open(data);
+      } else {
+        console.log('沒有資料');
+        alert("選定班級在當前學年度沒有輔導資料可進行數據分析");
+      }
+    } catch (error) {
+      console.error('API 錯誤:', error);
+      alert(error.dsaError ? error.dsaError.message : '無法取得數據分析資料');
+    }
   }
 
 

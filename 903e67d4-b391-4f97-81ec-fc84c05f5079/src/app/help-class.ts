@@ -80,4 +80,6 @@ export interface Config {
   absenceNames: string[];
   periodPermissionMap : Map<string, string>;
   crossDate: boolean;
+  crossDateOnlyRead: boolean;
+
 }

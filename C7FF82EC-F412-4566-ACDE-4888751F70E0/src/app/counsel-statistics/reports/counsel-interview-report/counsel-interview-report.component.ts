@@ -7,6 +7,7 @@ import { CounselStudentService } from 'src/app/counsel-student.service';
 import { ChartModalComponent } from './chart-modal/chart-modal.component';
 import { CounselClass, GradeClassInfo } from '../../CounselStatistics-vo';
 import * as moment from 'moment';
+import { ChartAnalysisService, ChartAnalysisConfig, ChartAnalysisResult } from '../../../shared/services/chart-analysis.service';
 
 declare var d3: any;
 
@@ -37,11 +38,15 @@ export class CounselInterviewReportComponent implements OnInit {
   @ViewChild('chartModal') chartModal: ChartModalComponent;
   @ViewChild('app_import_modal') app_import_modal: any;
   isSaveButtonDisable: boolean = false;
+  
+  // 🔥 新增：控制數據分析按鈕顯示的變數
+  showChartButton: boolean = false;
 
   constructor(
     private dsaService: DsaService,
     public globalService: GlobalService,
-    private counselStudentService: CounselStudentService
+    private counselStudentService: CounselStudentService,
+    private chartAnalysisService: ChartAnalysisService
   ) { }
 
   ngOnInit() {
@@ -49,6 +54,10 @@ export class CounselInterviewReportComponent implements OnInit {
     this.isLoading = false;
     this.schoolYear = this.counselStudentService.currentSchoolYear;
     this.semester = this.counselStudentService.currentSemester;
+    
+    // 🔥 新增：設置結束日期為今天的預設值
+    this.setDefaultEndDate();
+    
     this.loadData();
     // Pre-initialize the modal to prevent 'filter' of undefined error
     if (this.condition_modal) {
@@ -57,10 +66,83 @@ export class CounselInterviewReportComponent implements OnInit {
         this.condition_modal.closeModal();
       }, 10);
     }
+    
+    // 🔥 新增：監聽鍵盤事件
+    this.setupKeyboardListener();
   }
 
   openModal() {
     this.condition_modal.openModal();
+  }
+
+  // 🔥 新增：設置鍵盤事件監聽器
+  private setupKeyboardListener() {
+    document.addEventListener('keydown', (event: KeyboardEvent) => {
+      // 檢查是否按下 Ctrl+T
+      if (event.ctrlKey && event.key === 't') {
+        event.preventDefault(); // 防止預設行為
+        this.showChartButton = !this.showChartButton; // 切換顯示狀態
+        console.log('Ctrl+T pressed, showChartButton:', this.showChartButton);
+      }
+    });
+  }
+
+  // 🔥 新增：設置結束日期為今天的預設值
+  private setDefaultEndDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    this.endDate = `${year}-${month}-${day}`;
+    console.log('設置結束日期為今天:', this.endDate);
+  }
+
+  // 🔥 新增：使用可重用服務的數據分析方法
+  async openChartAnalysisWithService() {
+    console.log('=== 使用可重用服務進行數據分析 ===');
+    
+    // 收集所有班級ID
+    this.selectClassIDs = [];
+    this.SelectGradeYearList.forEach(item => {
+      item.ClassItems.forEach(classItem => {
+        this.selectClassIDs.push(classItem.ClassID);
+      });
+    });
+
+    if (this.selectClassIDs.length === 0) {
+      alert("無法取得班級資料，請稍後再試！");
+      return;
+    }
+
+    // 創建配置
+    const config: ChartAnalysisConfig = {
+      title: '輔導晤談數據分析',
+      apiEndpoint: 'GetCounselInterviewReport1',
+      dateRange: this.chartAnalysisService.getDefaultDateRange(),
+      filters: {
+        classIDs: this.selectClassIDs
+      },
+      chartTypes: {
+        bar: true,
+        pie: true,
+        line: true,
+        network: true
+      }
+    };
+
+    try {
+      const result = await this.chartAnalysisService.analyzeData(config);
+      
+      if (result.success && result.data) {
+        this.chartModal.open(result.data);
+        console.log('數據分析完成:', result.metadata);
+      } else {
+        alert(result.error || '數據分析失敗');
+      }
+    } catch (error) {
+      console.error('數據分析錯誤:', error);
+      alert('數據分析過程中發生錯誤');
+    }
   }
 
   loadData() {

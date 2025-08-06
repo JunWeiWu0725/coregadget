@@ -52,7 +52,7 @@ export class CounselClassComponent implements OnInit {
         let tea: CounselTeacherClass = new CounselTeacherClass();
         tea.TeacherID = CounselTeacher.TeacherID;
         tea.TeacherName = CounselTeacher.TeacherName;
-        if (CounselTeacher.Role === '認輔老師' || CounselTeacher.Role === '') {
+        if (CounselTeacher.Role === '認輔老師' || CounselTeacher.Role === '校外心理師' || CounselTeacher.Role === '') {
           tea.SetClassButtonDisable = true;
         } else
           tea.SetClassButtonDisable = false;

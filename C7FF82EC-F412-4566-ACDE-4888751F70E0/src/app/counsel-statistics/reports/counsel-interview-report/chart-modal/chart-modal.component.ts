@@ -26,7 +26,7 @@ export class ChartModalComponent implements OnInit {
   private is3DMode: { bar: boolean, pie: boolean } = { bar: true, pie: true };
 
   // 🔥 新增：樹狀圖相關屬性
-  private currentTreeLayout: 'hierarchical' | 'radial' | 'force' = 'force';
+  private currentTreeLayout: 'hierarchical' | 'force' = 'force';
 
   constructor() {
     // 將此組件實例暴露給全域，供 HTML onclick 使用
@@ -1062,10 +1062,7 @@ export class ChartModalComponent implements OnInit {
       .delay((d, i) => i * 100 + 500)
       .style("opacity", 1);
 
-    // 🔥 新增：在長條圖上添加小人圖示
-    if (this.is3DMode.bar) {
-      this.addPeopleIcons(svg, data, x, y);
-    }
+    // 小人圖示已移除
   }
 
   private generatePieChart(rawData: any[]) {
@@ -1220,22 +1217,24 @@ export class ChartModalComponent implements OnInit {
       .style("opacity", 1)
       .style("transform", "scale(1)");
 
-    // 9. 加上標籤（如果螢幕夠大才顯示）
+    // 🔥 9. 加上標籤（老師名稱 + 百分比 + 案件數）
     if (!isMobile) {
       // 計算總數用於百分比計算
       const totalCount = data.reduce((sum, d) => sum + d.count, 0);
       
-      pieGroup.selectAll('allLabels')
+      // 🔥 添加老師名稱標籤（在切片中心）
+      pieGroup.selectAll('teacherLabels')
         .data(pie(data))
         .enter()
         .append('text')
         .text(d => {
-          const percentage = Math.round((d.data.count / totalCount) * 100);
-          return `${percentage}%`;
+          // 如果老師名稱太長，進行縮短
+          const teacherName = d.data.teacher;
+          return teacherName.length > 4 ? teacherName.substring(0, 4) + '...' : teacherName;
         })
         .attr("transform", d => `translate(${arcLabel.centroid(d)})`)
         .style("text-anchor", "middle")
-        .style("font-size", "12px")
+        .style("font-size", "11px")
         .style("fill", "white")
         .style("font-weight", "bold")
         .style("opacity", 0) // 初始透明
@@ -1243,6 +1242,31 @@ export class ChartModalComponent implements OnInit {
         .transition()
         .duration(600)
         .delay((d, i) => i * 150 + 600) // 在扇形動畫後出現
+        .ease(d3.easeQuadOut)
+        .style("opacity", 1);
+
+      // 添加百分比標籤（在老師名稱下方）
+      pieGroup.selectAll('percentageLabels')
+        .data(pie(data))
+        .enter()
+        .append('text')
+        .text(d => {
+          const percentage = Math.round((d.data.count / totalCount) * 100);
+          return `${percentage}%`;
+        })
+        .attr("transform", d => {
+          const centroid = arcLabel.centroid(d);
+          return `translate(${centroid[0]}, ${centroid[1] + 12})`;
+        })
+        .style("text-anchor", "middle")
+        .style("font-size", "10px")
+        .style("fill", "white")
+        .style("font-weight", "500")
+        .style("opacity", 0) // 初始透明
+        // 添加淡入動畫
+        .transition()
+        .duration(600)
+        .delay((d, i) => i * 150 + 700) // 在老師名稱後出現
         .ease(d3.easeQuadOut)
         .style("opacity", 1);
 
@@ -1254,17 +1278,17 @@ export class ChartModalComponent implements OnInit {
         .text(d => `(${d.data.count})`)
         .attr("transform", d => {
           const centroid = arcLabel.centroid(d);
-          return `translate(${centroid[0]}, ${centroid[1] + 15})`;
+          return `translate(${centroid[0]}, ${centroid[1] + 24})`;
         })
         .style("text-anchor", "middle")
-        .style("font-size", "10px")
+        .style("font-size", "9px")
         .style("fill", "white")
-        .style("font-weight", "500")
+        .style("font-weight", "400")
         .style("opacity", 0) // 初始透明
         // 添加淡入動畫
         .transition()
         .duration(600)
-        .delay((d, i) => i * 150 + 700) // 在百分比後出現
+        .delay((d, i) => i * 150 + 800) // 在百分比後出現
         .ease(d3.easeQuadOut)
         .style("opacity", 1);
     }
@@ -2728,10 +2752,7 @@ export class ChartModalComponent implements OnInit {
         .delay((d, i) => i * 100 + 500)
         .style("opacity", 1);
 
-      // 🔥 新增：在長條圖上添加小人圖示
-      if (this.is3DMode.bar) {
-        this.addPeopleIcons(svg, data, x, y);
-      }
+      // 小人圖示已移除
 
     } catch (error) {
       console.error('3D 長條圖產生錯誤:', error);
@@ -2955,12 +2976,10 @@ export class ChartModalComponent implements OnInit {
         .delay((d, i) => i * 150 + 600)
         .style("opacity", 1);
 
-      // 🔥 新增：在圓餅圖上添加小人圖示
-      if (this.is3DMode.pie) {
-        this.addPeopleToPieChart(svg, pieData, radius, width, height, data);
-      }
+      // 🔥 新增：在圓餅圖上添加小人圖示（以人數呈現）
+      this.addPeopleToPieChart(svg, pieData, radius, width, height, data);
 
-             // 9. 標題
+      // 9. 標題
        svg.append("text")
          .attr("x", width / 2)
          .attr("y", 20)
@@ -3487,50 +3506,44 @@ export class ChartModalComponent implements OnInit {
           .attr("ry", personSize * 0.025)
           .attr("fill", "#FFE4B5"); // 改為皮膚色
 
-        // 🔥 走動動畫函數 - 添加真實走路感覺
-        const startWalking = () => {
-          const walkAnimation = () => {
+        // 🔥 飄浮動畫函數 - 添加自然飄浮感
+        const startFloating = () => {
+          const floatAnimation = () => {
             // 計算新的隨機位置（在切片範圍內）
             const newPersonRadius = radius * 0.25 + Math.random() * (radius * 0.4);
             const newPersonAngle = midAngle + (Math.random() - 0.5) * sliceWidth * 0.7;
             const newPersonX = Math.cos(newPersonAngle - Math.PI / 2) * newPersonRadius;
             const newPersonY = Math.sin(newPersonAngle - Math.PI / 2) * newPersonRadius;
             
-            // 🔥 走路動畫 - 腿部擺動 + 身體搖擺
-            const walkDuration = 2000 + Math.random() * 2000;
-            const steps = 8; // 走路步數
-            const stepDuration = walkDuration / steps;
+            // 🔥 飄浮動畫 - 輕柔的上下飄動
+            const floatDuration = 3000 + Math.random() * 2000;
+            const floatSteps = 12; // 飄浮步數
+            const stepDuration = floatDuration / floatSteps;
             
-            // 開始走路動畫序列
+            // 開始飄浮動畫序列
             let currentStep = 0;
             const stepAnimation = () => {
-              if (currentStep >= steps) {
-                // 走完了，停頓一下再繼續
-                setTimeout(walkAnimation, 500 + Math.random() * 1500);
+              if (currentStep >= floatSteps) {
+                // 飄浮完了，停頓一下再繼續
+                setTimeout(floatAnimation, 1000 + Math.random() * 2000);
                 return;
               }
               
-              // 計算當前步驟的位置（線性插值）
-              const progress = currentStep / steps;
+              // 計算當前步驟的位置（使用正弦波創造更自然的飄動）
+              const progress = currentStep / floatSteps;
               const currentX = personX + (newPersonX - personX) * progress;
               const currentY = personY + (newPersonY - personY) * progress;
               
-              // 走路時的身體搖擺（左右搖擺）
-              const bodySwing = Math.sin(currentStep * Math.PI) * 5; // 身體左右搖擺
-              const headBob = Math.sin(currentStep * Math.PI * 2) * 2; // 頭部上下點動
-              
-              // 腿部擺動動畫
-              const leftLegSwing = currentStep % 2 === 0 ? -15 : 15; // 左腿擺動
-              const rightLegSwing = currentStep % 2 === 0 ? 15 : -15; // 右腿擺動
-              
-              // 手臂擺動
-              const armSwing = currentStep % 2 === 0 ? -10 : 10;
+              // 輕柔的上下飄動
+              const floatY = Math.sin(currentStep * Math.PI * 0.5) * 3; // 上下飄動
+              const floatX = Math.sin(currentStep * Math.PI * 0.3) * 2; // 左右輕微搖擺
+              const rotation = Math.sin(currentStep * Math.PI * 0.2) * 5; // 輕微旋轉
               
               person
                 .transition()
                 .duration(stepDuration)
-                .ease(d3.easeLinear)
-                .attr("transform", `translate(${currentX + bodySwing}, ${currentY + headBob}) scale(1.2) rotate(${bodySwing * 0.3})`)
+                .ease(d3.easeQuadInOut)
+                .attr("transform", `translate(${currentX + floatX}, ${currentY + floatY}) scale(1.1) rotate(${rotation})`)
                 .on("end", () => {
                   currentStep++;
                   stepAnimation();
@@ -3540,8 +3553,8 @@ export class ChartModalComponent implements OnInit {
             stepAnimation();
           };
           
-          // 開始走動（隨機延遲）
-          setTimeout(walkAnimation, Math.random() * 3000);
+          // 開始飄浮（隨機延遲）
+          setTimeout(floatAnimation, Math.random() * 2000);
         };
         
         // 🔥 添加動畫效果（延遲出現）
@@ -3551,15 +3564,18 @@ export class ChartModalComponent implements OnInit {
           .ease(d3.easeBackOut)
           .style("opacity", 1)
           .attr("transform", `translate(${personX}, ${personY}) scale(1.2)`) // 初始放大
-          .on("end", startWalking); // 出現動畫完成後開始走動
+          .on("end", startFloating); // 出現動畫完成後開始飄浮
         
         // 🔥 增強懸浮效果（變得更可愛）
-        person.on("mouseover", function() {
+        person.on("mouseover", function(event) {
           d3.select(this)
             .transition()
             .duration(200)
             .attr("transform", `translate(${personX}, ${personY}) scale(1.8)`) // 懸停時更大
             .style("filter", "drop-shadow(3px 3px 8px rgba(255,182,193,0.8))"); // 更強的粉色陰影
+          
+          // 🔥 顯示學生資料小div
+          this.showStudentHoverCard(student, event.pageX, event.pageY);
         })
         .on("mouseout", function() {
           d3.select(this)
@@ -3567,10 +3583,23 @@ export class ChartModalComponent implements OnInit {
             .duration(200)
             .attr("transform", `translate(${personX}, ${personY}) scale(1.2)`) // 回到走動大小
             .style("filter", "none");
+          
+          // 🔥 隱藏學生資料小div
+          this.hideStudentHoverCard();
         })
         .on("click", (event) => {
-          // 🔥 點擊顯示學生證卡片
+          // 🔥 點擊顯示學生證卡片並添加放大效果
           event.stopPropagation();
+          
+          // 添加點擊時的放大動畫
+          d3.select(event.currentTarget)
+            .transition()
+            .duration(200)
+            .attr("transform", `translate(${personX}, ${personY}) scale(2.0)`) // 點擊時放大
+            .transition()
+            .duration(200)
+            .attr("transform", `translate(${personX}, ${personY}) scale(1.2)`); // 恢復正常大小
+          
           this.showStudentCard(student, personX, personY, sliceIndex, i);
         });
       }
@@ -3607,6 +3636,62 @@ export class ChartModalComponent implements OnInit {
           .style("opacity", 1);
       }
     });
+  }
+
+  // 🔥 新增：顯示學生資料小div（hover時）
+  private showStudentHoverCard(student: any, x: number, y: number) {
+    // 移除現有的hover卡片
+    d3.selectAll('.student-hover-card').remove();
+    
+    // 創建學生資料小div
+    const card = d3.select('body')
+      .append('div')
+      .attr('class', 'student-hover-card')
+      .style('position', 'absolute')
+      .style('left', (x + 10) + 'px')
+      .style('top', (y - 60) + 'px')
+      .style('background', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)')
+      .style('color', 'white')
+      .style('padding', '8px 12px')
+      .style('border-radius', '8px')
+      .style('font-size', '11px')
+      .style('font-weight', 'bold')
+      .style('box-shadow', '0 4px 12px rgba(0,0,0,0.3)')
+      .style('z-index', '9999')
+      .style('pointer-events', 'none')
+      .style('opacity', '0')
+      .style('transform', 'scale(0.8)')
+      .style('transition', 'all 0.2s ease');
+    
+    // 添加學生資料內容
+    card.html(`
+      <div style="text-align: center;">
+        <div style="font-size: 10px; margin-bottom: 2px;">學生資料</div>
+        <div style="font-size: 12px; margin-bottom: 2px;">${student.name}</div>
+        <div style="font-size: 9px; opacity: 0.9;">輔導次數: ${student.count}次</div>
+        <div style="font-size: 9px; opacity: 0.9;">班級: ${student.className}</div>
+      </div>
+    `);
+    
+    // 動畫顯示
+    setTimeout(() => {
+      card.style('opacity', '1')
+          .style('transform', 'scale(1)');
+    }, 10);
+  }
+
+  // 🔥 新增：隱藏學生資料小div
+  private hideStudentHoverCard() {
+    const card = d3.select('.student-hover-card');
+    if (!card.empty()) {
+      card.style('opacity', '0')
+          .style('transform', 'scale(0.8)')
+          .transition()
+          .duration(200)
+          .on('end', function() {
+            d3.select(this).remove();
+          });
+    }
   }
 
   // 🔥 新增：顯示學生證卡片
@@ -3729,26 +3814,38 @@ export class ChartModalComponent implements OnInit {
   // 🔥 新增：生成樹狀圖
   private generateTreeChart(rawData: any[]) {
     try {
-      console.log('產生樹狀圖，資料筆數:', rawData.length);
+      console.log('=== 開始產生樹狀圖 ===');
+      console.log('資料筆數:', rawData.length);
+      console.log('目前佈局模式:', this.currentTreeLayout);
       
       if (!rawData || rawData.length === 0) {
+        console.log('沒有資料，顯示空狀態');
         d3.select("#tree-chart-container").html('<div style="text-align:center;padding:50px;color:#666;">沒有輔導資料</div>');
         return;
       }
 
-      // 1. 建立樹狀結構資料
-      const treeData = this.buildTreeData(rawData);
-      
-      // 2. 設定尺寸
+      // 1. 檢查容器是否存在
       const container = document.getElementById('tree-chart-container');
-      const containerWidth = container ? container.offsetWidth : 800;
+      if (!container) {
+        console.error('找不到樹狀圖容器');
+        return;
+      }
+
+      // 2. 建立樹狀結構資料
+      console.log('建立樹狀資料...');
+      const treeData = this.buildTreeData(rawData);
+      console.log('樹狀資料建立完成:', treeData);
+      
+      // 3. 設定尺寸
+      const containerWidth = container.offsetWidth || 800;
       const width = containerWidth - 40;
       const height = 400;
+      console.log('圖表尺寸:', { width, height });
 
-      // 3. 移除舊圖表
+      // 4. 移除舊圖表
       d3.select("#tree-chart-container").select("svg").remove();
 
-      // 4. 建立 SVG
+      // 5. 建立 SVG
       const svg = d3.select("#tree-chart-container")
         .append("svg")
         .attr("width", width)
@@ -3758,22 +3855,34 @@ export class ChartModalComponent implements OnInit {
         .style("max-width", "100%")
         .style("height", "auto");
 
-      // 5. 根據佈局類型生成不同的樹狀圖
+      // 6. 根據佈局類型生成不同的樹狀圖
+      console.log('開始生成圖表，佈局類型:', this.currentTreeLayout);
       switch (this.currentTreeLayout) {
         case 'hierarchical':
           this.generateHierarchicalTree(svg, treeData, width, height);
           break;
-        case 'radial':
-          this.generateRadialTree(svg, treeData, width, height);
-          break;
         case 'force':
           this.generateForceDirectedTree(svg, treeData, width, height);
           break;
+        default:
+          console.error('未知的佈局類型:', this.currentTreeLayout);
+          throw new Error('未知的佈局類型');
       }
+      
+      console.log('=== 樹狀圖產生完成 ===');
 
     } catch (error) {
-      console.error('樹狀圖產生錯誤:', error);
-      d3.select("#tree-chart-container").html('<div style="text-align:center;padding:50px;color:#666;">樹狀圖產生失敗</div>');
+      console.error('=== 樹狀圖產生錯誤 ===');
+      console.error('錯誤詳情:', error);
+      console.error('錯誤堆疊:', error.stack);
+      
+      const errorMessage = error.message || '未知錯誤';
+      d3.select("#tree-chart-container").html(`
+        <div style="text-align:center;padding:50px;color:#666;">
+          <div>樹狀圖產生失敗</div>
+          <div style="font-size:12px;margin-top:10px;color:#999;">錯誤: ${errorMessage}</div>
+        </div>
+      `);
     }
   }
 
@@ -4074,12 +4183,16 @@ export class ChartModalComponent implements OnInit {
 
   // 🔥 力導向網絡圖（仿移動專利訴訟圖）
   private generateForceDirectedTree(svg: any, data: any, width: number, height: number) {
-    const g = svg.append("g");
+    try {
+      console.log('=== 開始生成力導向網絡圖 ===');
+      console.log('接收到的資料:', data);
+      
+      const g = svg.append("g");
 
-    // 建立網絡結構資料 - 以老師為中心節點
-    const nodes = [];
-    const links = [];
-    const nodeMap = new Map();
+      // 建立網絡結構資料 - 以老師為中心節點
+      const nodes = [];
+      const links = [];
+      const nodeMap = new Map();
 
     // 添加中心節點（輔導系統）
     const centerNode = {
@@ -4097,43 +4210,60 @@ export class ChartModalComponent implements OnInit {
     const teacherStudentMap = new Map();
     const teacherClassMap = new Map();
     
-    if (data.children) {
-      data.children.forEach(grade => {
-        if (grade.children) {
-          grade.children.forEach(classData => {
-            if (classData.children) {
-              classData.children.forEach(group => {
-                if (group.type === "teacher_group" && group.children) {
-                  group.children.forEach(teacher => {
+    console.log('開始處理資料，資料結構:', data);
+    
+    if (!data || !data.children) {
+      console.error('資料結構不正確，缺少 children 屬性');
+      throw new Error('資料結構不正確');
+    }
+    
+    data.children.forEach((grade, gradeIndex) => {
+      console.log(`處理年級 ${gradeIndex}:`, grade.name);
+      if (grade.children) {
+        grade.children.forEach((classData, classIndex) => {
+          console.log(`  處理班級 ${classIndex}:`, classData.name);
+          if (classData.children) {
+            classData.children.forEach(group => {
+              if (group.type === "teacher_group" && group.children) {
+                console.log(`    處理老師群組，老師數量:`, group.children.length);
+                group.children.forEach(teacher => {
+                  if (teacher && teacher.name) {
                     const teacherId = `teacher_${teacher.name}`;
                     if (!teacherStudentMap.has(teacherId)) {
                       teacherStudentMap.set(teacherId, new Set());
                       teacherClassMap.set(teacherId, new Set());
                     }
                     teacherClassMap.get(teacherId).add(classData.name);
-                  });
-                } else if (group.type === "student_group" && group.children) {
-                  group.children.forEach(student => {
+                  }
+                });
+              } else if (group.type === "student_group" && group.children) {
+                console.log(`    處理學生群組，學生數量:`, group.children.length);
+                group.children.forEach(student => {
+                  if (student && student.name) {
                     // 找到這個班級的老師，建立老師-學生關係
                     if (classData.children) {
                       const teacherGroup = classData.children.find(g => g.type === "teacher_group");
                       if (teacherGroup && teacherGroup.children) {
                         teacherGroup.children.forEach(teacher => {
-                          const teacherId = `teacher_${teacher.name}`;
-                          if (teacherStudentMap.has(teacherId)) {
-                            teacherStudentMap.get(teacherId).add(`student_${student.name}`);
+                          if (teacher && teacher.name) {
+                            const teacherId = `teacher_${teacher.name}`;
+                            if (teacherStudentMap.has(teacherId)) {
+                              teacherStudentMap.get(teacherId).add(`student_${student.name}`);
+                            }
                           }
                         });
                       }
                     }
-                  });
-                }
-              });
-            }
-          });
-        }
-      });
-    }
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+    
+    console.log('資料處理完成，老師-學生對應關係:', teacherStudentMap.size, '位老師');
 
     // 添加老師節點
     for (const [teacherId, students] of teacherStudentMap) {
@@ -4174,56 +4304,104 @@ export class ChartModalComponent implements OnInit {
       }
     }
 
-    // 只顯示被2位以上老師輔導的學生（重點關注對象）
-    for (const [studentId, teachers] of studentTeacherCount) {
-      if (teachers.size >= 2) {
-        const studentName = studentId.replace('student_', '');
-        const studentNode = {
-          id: studentId,
-          name: studentName,
-          type: "student",
-          count: teachers.size,
-          radius: Math.max(6, 6 + teachers.size * 2),
-          color: "#FFEAA7"
-        };
-        nodes.push(studentNode);
-        nodeMap.set(studentId, studentNode);
+    // 顯示所有學生節點（限制數量避免過於擁擠）
+    const studentEntries = Array.from(studentTeacherCount.entries());
+    const maxStudents = 15; // 最多顯示15個學生節點
+    
+    // 優先顯示被多位老師輔導的學生，其次是隨機選擇
+    const priorityStudents = studentEntries
+      .sort((a, b) => b[1].size - a[1].size) // 按老師數量排序
+      .slice(0, maxStudents); // 取前15個
+    
+    for (const [studentId, teachers] of priorityStudents) {
+      const studentName = studentId.replace('student_', '');
+      const isImportant = teachers.size >= 2;
+      
+      const studentNode = {
+        id: studentId,
+        name: studentName,
+        type: isImportant ? "important_student" : "student",
+        count: teachers.size,
+        radius: isImportant ? Math.max(8, 6 + teachers.size * 2) : 6,
+        color: isImportant ? "#FFEAA7" : "#F0E68C"
+      };
+      nodes.push(studentNode);
+      nodeMap.set(studentId, studentNode);
 
-        // 連接到相關老師
-        for (const teacherId of teachers) {
-          links.push({
-            source: teacherId,
-            target: studentId,
-            type: "teacher_to_student",
-            value: 1
-          });
-        }
+      // 連接到相關老師
+      for (const teacherId of teachers) {
+        links.push({
+          source: teacherId,
+          target: studentId,
+          type: "teacher_to_student",
+          value: 1
+        });
       }
     }
 
     console.log('網絡圖節點:', nodes);
     console.log('網絡圖連線:', links);
 
-    // 設定力導向模擬（類似專利訴訟圖的布局）
+    console.log('準備設定力導向模擬，節點數量:', nodes.length, '連線數量:', links.length);
+    
+    // 檢查節點和連線的完整性
+    nodes.forEach((node, i) => {
+      if (!node.id) {
+        console.error(`節點 ${i} 缺少 id:`, node);
+      }
+    });
+    
+    links.forEach((link, i) => {
+      if (!link.source || !link.target) {
+        console.error(`連線 ${i} 缺少 source 或 target:`, link);
+      }
+    });
+
+    // 🔥 設定力導向模擬 - 添加動態旋轉和飄浮感
     const simulation = d3.forceSimulation(nodes)
       .force("link", d3.forceLink(links)
-        .id(d => d.id)
-        .distance(d => {
+        .id((d: any) => d.id)
+        .distance((d: any) => {
           if (d.type === "center_to_teacher") return 80;
           if (d.type === "teacher_to_student") return 40;
           return 50;
         })
         .strength(0.8))
       .force("charge", d3.forceManyBody()
-        .strength(d => {
+        .strength((d: any) => {
           if (d.type === "center") return -800;
           if (d.type === "teacher") return -300;
           return -150;
         }))
       .force("center", d3.forceCenter(width / 2, height / 2))
       .force("collision", d3.forceCollide()
-        .radius(d => d.radius + 5)
-        .strength(0.8));
+        .radius((d: any) => d.radius + 5)
+        .strength(0.8))
+      // 🔥 新增：添加輕微的旋轉力，創造飄浮感
+      .force("rotation", () => {
+        nodes.forEach(node => {
+          if (node.type !== "center") {
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const dx = node.x - centerX;
+            const dy = node.y - centerY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 0) {
+              // 添加輕微的切向力，創造旋轉效果
+              const rotationForce = 0.05; // 輕微的旋轉力
+              const angle = Math.atan2(dy, dx);
+              const tangentialAngle = angle + Math.PI / 2;
+              
+              const fx = Math.cos(tangentialAngle) * rotationForce;
+              const fy = Math.sin(tangentialAngle) * rotationForce;
+              
+              node.vx = (node.vx || 0) + fx;
+              node.vy = (node.vy || 0) + fy;
+            }
+          }
+        });
+      });
 
     // 繪製連線（類似專利圖的箭頭線條）
     const link = g.selectAll(".link")
@@ -4291,7 +4469,7 @@ export class ChartModalComponent implements OnInit {
         return d.name;
       });
 
-    // 添加節點提示訊息
+    // 🔥 添加節點交互功能
     node.on("mouseover", function(event, d) {
         const tooltip = d3.select(".chart-tooltip");
         let tooltipText = "";
@@ -4300,8 +4478,10 @@ export class ChartModalComponent implements OnInit {
           tooltipText = `<strong>輔導系統</strong><br/>管理 ${teacherStudentMap.size} 位老師`;
         } else if (d.type === "teacher") {
           tooltipText = `<strong>老師：${d.name}</strong><br/>輔導 ${d.count} 位學生<br/>負責 ${d.classCount} 個班級`;
-        } else if (d.type === "student") {
+        } else if (d.type === "important_student") {
           tooltipText = `<strong>學生：${d.name}</strong><br/>被 ${d.count} 位老師輔導<br/>（重點關注對象）`;
+        } else if (d.type === "student") {
+          tooltipText = `<strong>學生：${d.name}</strong><br/>被 ${d.count} 位老師輔導`;
         }
         
         tooltip.transition().duration(200).style("opacity", .9);
@@ -4311,6 +4491,37 @@ export class ChartModalComponent implements OnInit {
       })
       .on("mouseout", function() {
         d3.select(".chart-tooltip").transition().duration(500).style("opacity", 0);
+      })
+      // 🔥 新增：點擊節點時的交互效果
+      .on("click", function(event, d) {
+        // 重置所有節點的樣式
+        d3.selectAll(".node circle").style("stroke-width", d => d.type === "center" ? 4 : 2);
+        d3.selectAll(".node text").style("font-weight", d => d.type === "center" ? "bold" : "normal");
+        
+        // 突出顯示被點擊的節點
+        const clickedNode = d3.select(this);
+        clickedNode.select("circle")
+          .style("stroke-width", d.type === "center" ? 6 : 4)
+          .style("stroke", "#FFD700"); // 金色邊框
+        
+        clickedNode.select("text")
+          .style("font-weight", "bold")
+          .style("font-size", d => {
+            const baseSize = d.type === "center" ? 12 : d.type === "teacher" ? 10 : 8;
+            return (baseSize + 2) + "px"; // 放大字體
+          })
+          .style("fill", "#415E72"); // 變為深藍灰色
+        
+        // 添加脈衝動畫效果
+        clickedNode.select("circle")
+          .transition()
+          .duration(300)
+          .style("opacity", 0.7)
+          .transition()
+          .duration(300)
+          .style("opacity", 0.9);
+        
+        console.log(`點擊節點: ${d.name} (${d.type})`);
       });
 
     // 節點進入動畫
@@ -4326,25 +4537,40 @@ export class ChartModalComponent implements OnInit {
       .delay(500)
       .style("opacity", 0.7);
 
-    // 更新位置
+    // 🔥 更新位置 - 添加動態效果
     simulation.on("tick", () => {
-      link.attr("x1", d => d.source.x)
-          .attr("y1", d => d.source.y)
-          .attr("x2", d => d.target.x)
-          .attr("y2", d => d.target.y);
+      link.attr("x1", d => d.source && d.source.x ? d.source.x : 0)
+          .attr("y1", d => d.source && d.source.y ? d.source.y : 0)
+          .attr("x2", d => d.target && d.target.x ? d.target.x : 0)
+          .attr("y2", d => d.target && d.target.y ? d.target.y : 0);
 
-      node.attr("transform", d => `translate(${d.x},${d.y})`);
+      node.attr("transform", d => `translate(${d.x || 0},${d.y || 0})`);
+      
+      // 🔥 新增：為節點添加輕微的呼吸效果
+      node.select("circle").style("opacity", d => {
+        const time = Date.now() * 0.001;
+        const breath = 0.1 * Math.sin(time + d.id.length) + 0.9;
+        return breath;
+      });
     });
+    
+    // 🔥 新增：定期重新啟動模擬以保持動態效果
+    setInterval(() => {
+      if (simulation.alpha() < 0.1) {
+        simulation.alpha(0.3).restart();
+      }
+    }, 5000); // 每5秒重新啟動一次
 
     // 添加圖例
     const legend = svg.append("g")
       .attr("transform", `translate(20, 30)`);
 
-    const legendData = [
-      { type: "center", color: "#FF6B6B", label: "輔導系統", size: 12 },
-      { type: "teacher", color: "#4ECDC4", label: "輔導老師", size: 10 },
-      { type: "student", color: "#FFEAA7", label: "重點學生", size: 8 }
-    ];
+         const legendData = [
+       { type: "center", color: "#FF6B6B", label: "輔導系統", size: 12 },
+       { type: "teacher", color: "#4ECDC4", label: "輔導老師", size: 10 },
+       { type: "important_student", color: "#FFEAA7", label: "重點學生", size: 8 },
+       { type: "student", color: "#F0E68C", label: "一般學生", size: 6 }
+     ];
 
     const legendItems = legend.selectAll(".legend-item")
       .data(legendData)
@@ -4374,33 +4600,35 @@ export class ChartModalComponent implements OnInit {
       .style("font-weight", "bold")
       .style("fill", "#333")
       .text("輔導關係網絡圖");
+      
+    console.log('=== 力導向網絡圖生成完成 ===');
+    
+    } catch (error) {
+      console.error('=== 力導向網絡圖生成錯誤 ===');
+      console.error('錯誤詳情:', error);
+      throw error; // 重新拋出錯誤讓上層處理
+    }
   }
 
   // 🔥 切換樹狀圖佈局
-  public toggleTreeLayout(layout: 'hierarchical' | 'radial' | 'force') {
+  public toggleTreeLayout(layout: 'hierarchical' | 'force') {
     console.log(`切換樹狀圖佈局: ${layout}`);
     
     this.currentTreeLayout = layout;
     
     // 更新按鈕狀態
-    d3.selectAll("#toggle-tree-hierarchical, #toggle-tree-radial, #toggle-tree-force")
+    d3.selectAll("#toggle-tree-hierarchical, #toggle-tree-force")
       .classed("btn-primary", false)
-      .classed("btn-outline-primary", true)
-      .classed("btn-outline-secondary", true)
-      .classed("btn-outline-info", true);
+      .classed("btn-outline-primary", true);
     
     if (layout === 'hierarchical') {
       d3.select("#toggle-tree-hierarchical")
         .classed("btn-primary", true)
         .classed("btn-outline-primary", false);
-    } else if (layout === 'radial') {
-      d3.select("#toggle-tree-radial")
-        .classed("btn-primary", true)
-        .classed("btn-outline-secondary", false);
     } else {
       d3.select("#toggle-tree-force")
         .classed("btn-primary", true)
-        .classed("btn-outline-info", false);
+        .classed("btn-outline-primary", false);
     }
     
     // 重新生成樹狀圖

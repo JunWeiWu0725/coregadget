@@ -33,6 +33,7 @@ export class AppComponent implements OnInit {
 
   /**允許跨日設定 */
   canCrossDate = false;
+  canCrossDateReadOnly = false;
 
   currentDate: Date = new Date(new Date().toDateString());
   todayDate: Date = new Date(new Date().toDateString());
@@ -68,6 +69,7 @@ export class AppComponent implements OnInit {
       this.appService.getPeriods(),
       this.appService.getMyClass(), (config, x, y, z) => {
         this.canCrossDate = config.crossDate;
+        this.canCrossDateReadOnly = config.crossDateOnlyRead;
         // 比對設定檔，為 true 的假別才顯示
         if (config.absenceNames.length) {
           const absencesList: Absence[] = [];
@@ -170,6 +172,11 @@ export class AppComponent implements OnInit {
       + "/" + (dateTime.getDate() <= 9 ? "0" : "") + + dateTime.getDate()
       + " (" + ["日", "一", "二", "三", "四", "五", "六"][dateTime.getDay()] + ")"
     );
+  }
+
+  /**檢查是否為今天 */
+  isToday(): boolean {
+    return this.getDateString(this.currentDate) === this.getDateString(this.todayDate);
   }
 
   checkDate(input: string) {
