@@ -28,27 +28,31 @@
     href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
     rel="stylesheet">
   <!-- CSS Files -->
-  <link id="pagestyle" href="assets/css/bootstrap.css" rel="stylesheet" />
-  <link id="pagestyle" href="assets/css/default.css" rel="stylesheet" />
+  <link id="pagestyle" href="%PUBLIC_URL%/assets/css/bootstrap.css" rel="stylesheet" />
+  <link id="pagestyle" href="%PUBLIC_URL%/assets/css/default.css" rel="stylesheet" />
 
 
 
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/gadget.js"></script>
+    <script src="%PUBLIC_URL%/assets/js/bootstrap.min.js"></script>
+    <script src="%PUBLIC_URL%/assets/js/gadget.js"></script>
 
     <script>
-      init({
-       application :"demo.h.vicky.chang",
-        paramValues: {
-          "system_position": "",//"parent","student"
-        },
-        oAuth: {
-          clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
-          clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
-          account: '',
-          password: ''
-        }
-      });
+      if (typeof init === 'function') {
+        init({
+         application :"demo.h.vicky.chang",
+          paramValues: {
+            "system_position": "student",//"parent","student"
+          },
+          oAuth: {
+            clientID: 'b88fbfbbaa848c5b5b01ce51853eac7f',
+            clientSecret: '0911245ae08323086790244cd319c1c3bbde1096520154f0cbcb71f0ff76e311',
+            account: '',
+            password: ''
+          }
+        });
+      } else {
+        console.error('init() not found. Ensure %PUBLIC_URL%/assets/js/gadget.js is loaded.');
+      }
     </script>
 
 

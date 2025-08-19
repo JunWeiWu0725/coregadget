@@ -11,6 +11,8 @@ import { mode } from '../vo';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { GlobalService } from "../../global.service";
 @Component({
   selector: 'app-counsel-teacher-role',
   templateUrl: './counsel-teacher-role.component.html',
@@ -31,22 +33,29 @@ export class CounselTeacherRoleComponent implements OnInit {
   /** 輔導人力身分選項 */
   reportRolesOptions = ['專任輔導教師', '兼任輔導教師', '合聘專任輔導教師-主聘學校', '合聘專任輔導教師-從聘學校','不列入統計']
   selectReportRolesOptions = null;
+  userIP: string = '';
+  /** 儲存原始資料用於比對變更 */
+  originalTeacherRoles: TeacherCounselRole[] = [];
   constructor(
     private activatedRoute: ActivatedRoute,
     private dsaService: DsaService,
     private router: Router,
     @Optional()
-    public adminComponent: AdminComponent) { }
+    public adminComponent: AdminComponent,
+    private http: HttpClient,
+    private globalService: GlobalService) { }
 
 
   @ViewChild("addCounselTeacherRole") _addCounselTeacherRole: AddCounselTeacherRoleModalComponent;
   @ViewChild("delCounselTeacherRole") _delCounselTeacherRole: DelCounselTeacherRoleModalComponent;
 
-  ngOnInit() {
+  async ngOnInit() {
 
 
     this.teacherTypeStr = "教師輔導身分";
     setTimeout(() => { this.adminComponent.currentItem = "counsel_teacher_role"; });
+
+    this.userIP = await this.fetchIp();
 
     if (gadget.params.system_counsel_position === 'freshman') {
       this.teacherTypeStr = "教師身分";
@@ -177,10 +186,62 @@ export class CounselTeacherRoleComponent implements OnInit {
       let resp = await this.dsaService.send("Admin.SetTeacherRoleAndNumbers", {
         Request: req
       });
+      // 確保 IP 有值，如果沒有就重新抓取
+      if (!this.userIP) {
+        this.userIP = await this.fetchIp();
+      }
+      console.log('saveAllTeacher - userIP:', this.userIP); // debug
+      
+      // 比對變更並記錄詳細內容
+      const changes = this.getDetailedChanges();
+              if (changes.length > 0) {
+          // alert(`準備記錄 log，IP: ${this.userIP}`); // 確認 IP
+          const executor = `${this.globalService.teacherName || '未知使用者'}`;
+          const content = `修改教師輔導身分與編碼：\n${changes.join('\n')}\n執行者：${executor}`;
+          await this.dsaService.send("Share.AddLog", { Request: { Content: content, IP: this.userIP, Action: '修改教師輔導身分' } });
+        }
+      
+      // 更新原始資料
+      this.originalTeacherRoles = JSON.parse(JSON.stringify(this.teachersCounselRoles));
       alert("儲存成功!");
     } catch (ex) {
-      alert("儲存發生錯誤!")
+      console.error("儲存錯誤詳細資訊:", ex);
+      alert("儲存發生錯誤!\n錯誤訊息: " + JSON.stringify(ex, null, 2));
     }
+  }
+
+  /**
+   * 取得詳細的變更內容
+   */
+  getDetailedChanges(): string[] {
+    const changes: string[] = [];
+    
+    this.teachersCounselRoles.forEach(current => {
+      const original = this.originalTeacherRoles.find(o => o.TeacherID === current.TeacherID);
+      if (original) {
+        const teacherChanges: string[] = [];
+        
+        // 檢查各欄位變更
+        if (original.Role !== current.Role) {
+          teacherChanges.push(`身分：${original.Role || '(空白)'} → ${current.Role || '(空白)'}`);
+        }
+        if (original.TeacherCounselNumber !== current.TeacherCounselNumber) {
+          teacherChanges.push(`教師編碼：${original.TeacherCounselNumber || '(空白)'} → ${current.TeacherCounselNumber || '(空白)'}`);
+        }
+        if (original.TeacherReportRole !== current.TeacherReportRole) {
+          teacherChanges.push(`呈報身分：${original.TeacherReportRole || '(空白)'} → ${current.TeacherReportRole || '(空白)'}`);
+        }
+        if (original.JobTitle !== current.JobTitle) {
+          teacherChanges.push(`職稱：${original.JobTitle || '(空白)'} → ${current.JobTitle || '(空白)'}`);
+        }
+        
+        if (teacherChanges.length > 0) {
+          changes.push(`教師：${current.TeacherName}\n${teacherChanges.join('\n')}`);
+        }
+      }
+    });
+    
+    return changes;
   }
 
 
@@ -254,6 +315,9 @@ export class CounselTeacherRoleComponent implements OnInit {
 
 
         });
+        
+        // 深度複製原始資料用於比對
+        this.originalTeacherRoles = JSON.parse(JSON.stringify(this.teachersCounselRoles));
       }
     } catch (err) {
       alert('無法取得輔導教師身分：' + err.dsaError.message);
@@ -265,6 +329,8 @@ export class CounselTeacherRoleComponent implements OnInit {
   // 批次設定教師角色
   async SetTeachersCounselRole() {
     let reqTeacherCounselRole = [];
+    const changedTeachers: string[] = [];
+    
     this.teachersCounselRoles.forEach(tea => {
       if (tea.isChage) {
         let itItm = {
@@ -272,16 +338,53 @@ export class CounselTeacherRoleComponent implements OnInit {
           Role: tea.Role
         }
         reqTeacherCounselRole.push(itItm);
+        
+        // 記錄變更的教師詳細資訊
+        const original = this.originalTeacherRoles.find(o => o.TeacherID === tea.TeacherID);
+        const originalRole = original ? original.Role : '';
+        changedTeachers.push(`教師：${tea.TeacherName}\n身分：${originalRole || '(空白)'} → ${tea.Role || '(空白)'}`);
       }
     });
-    try {
-      let resp = await this.dsaService.send("SetTeachersCounselRole", {
-        Request: { TeacherCounselRole: reqTeacherCounselRole }
-      });
-    } catch (err) {
-      alert('無法設定輔導教師身分：' + err.dsaError.message);
-    }
+    
+          try {
+        let resp = await this.dsaService.send("SetTeachersCounselRole", {
+          Request: { TeacherCounselRole: reqTeacherCounselRole }
+        });
+        
+        if (changedTeachers.length > 0) {
+          alert(`準備記錄批次設定 log，IP: ${this.userIP}`); // 確認 IP
+          const executor = `${this.globalService.teacherName || '未知使用者'}`;
+          const content = `批次設定教師輔導身分：\n${changedTeachers.join('\n')}\n執行者：${executor}`;
+          await this.dsaService.send("Share.AddLog", { Request: { Content: content, IP: this.userIP, Action: '修改教師輔導身分' } });
+        }
+          } catch (err) {
+        console.error("批次設定錯誤詳細資訊:", err);
+        alert('無法設定輔導教師身分：' + (err.dsaError ? err.dsaError.message : JSON.stringify(err, null, 2)));
+      }
     //console.log(resp);
+  }
+
+  async fetchIp(): Promise<string | null> {
+    try {
+      const result: any = await this.http
+        .get("https://api.ipify.org/?format=json")
+        .toPromise();
+      console.log('fetchIp result:', result); // debug
+      return result.ip.trim();
+    } catch (error) {
+      console.error("抓取 IP 失敗", error);
+      // 嘗試其他方式
+      try {
+        const result2: any = await this.http
+          .get("https://httpbin.org/ip")
+          .toPromise();
+        console.log('fetchIp backup result:', result2); // debug
+        return result2.origin;
+      } catch (error2) {
+        console.error("備用 IP 抓取也失敗", error2);
+        return "unknown";
+      }
+    }
   }
 }
 

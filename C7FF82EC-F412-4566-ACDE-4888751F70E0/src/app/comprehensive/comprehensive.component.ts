@@ -288,7 +288,7 @@ async   ngOnInit() {
 
               });
               // 增加 log 
-              await this.dsaService.send("Share.AddLog", {Content :`展開${this.schoolYear}年度 ${this.semester}學期  ${classRec.ClassName} 班 綜合紀錄表` })
+              await this.dsaService.send("Share.AddLog", {Content :`展開${this.schoolYear}年度 ${this.semester}學期  ${classRec.ClassName} 班 綜合紀錄表`, IP: this.userIP, Action: '展開綜合紀錄表' })
                   this.currentClass = classRec.ClassName + " 題目展開中 ...";
               }
             } catch (err) {

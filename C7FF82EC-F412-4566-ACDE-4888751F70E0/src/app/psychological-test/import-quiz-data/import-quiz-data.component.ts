@@ -288,7 +288,7 @@ export class ImportQuizDataComponent implements OnInit {
             });
             this.StudentQuizDataList.push(studQ);
           });
-          return r();
+          return r(true);
         };
       }
 
@@ -648,5 +648,37 @@ export class ImportQuizDataComponent implements OnInit {
     this.isSelectImportTypeIDNumber = (name === '身分證號');
     this.isSelectImportTypeStudentNumber = (name === '學號');
     this.loadImportFieldName();
+  }
+
+  // 匯出 Excel 範本
+  exportTemplate() {
+    if (!this.importFieldNameList || this.importFieldNameList.length === 0) {
+      alert('請先選擇學生匯入方式');
+      return;
+    }
+
+    // 建立工作簿
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+
+    // 準備標題列資料
+    const headers = [...this.importFieldNameList];
+    
+    // 只建立標題列，不含示例資料
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet([headers]);
+
+    // 設定欄寬
+    const colWidths = headers.map(header => ({
+      wch: Math.max(header.length * 1.5, 12)
+    }));
+    ws['!cols'] = colWidths;
+
+    // 新增工作表到工作簿
+    XLSX.utils.book_append_sheet(wb, ws, '心理測驗資料');
+
+    // 產生檔案名稱
+    const fileName = `${this.QuizData.QuizName || '心理測驗'}_匯入範本_${this.selectImportStudentType}.xlsx`;
+
+    // 匯出檔案
+    XLSX.writeFile(wb, fileName);
   }
 }

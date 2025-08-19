@@ -23,10 +23,17 @@ function App() {
   }, [studentID]);
 
 
-  var _connection = window.gadget.getContract("1campus.counsel.parent");
+  var _connection = (window.gadget && typeof window.gadget.getContract === 'function')
+    ? window.gadget.getContract("1campus.counsel.parent")
+    : null;
 
   // 取得小孩清單
   async function GetChildList() {
+    if (!_connection) {
+      console.error('gadget not ready');
+      setText("系統尚未載入，請稍後重試。");
+      return;
+    }
     await _connection.send({
       service: "_.GetChildList",
       body: {},
@@ -51,6 +58,7 @@ function App() {
 
   // 取得心理測驗內容
   async function GetPsychologicalTestData() {
+    if (!_connection) return;
     await _connection.send({
       service: "_.GetPsychologicalTestData",
       body: {
