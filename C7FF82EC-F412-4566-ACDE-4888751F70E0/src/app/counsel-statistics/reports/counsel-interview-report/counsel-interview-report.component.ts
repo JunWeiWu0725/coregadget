@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { DsaService } from 'src/app/dsa.service';
 import { GlobalService } from 'src/app/global.service';
@@ -403,6 +403,16 @@ export class CounselInterviewReportComponent implements OnInit {
 
   toggleClassSelected(classItem: CounselClass) {
     classItem.SetClassCheck();
+  }
+
+  // 🔥 新增：監聽 Ctrl + Q 組合鍵
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.ctrlKey && event.key.toLowerCase() === 'q') {
+      event.preventDefault(); // 防止瀏覽器預設行為
+      this.showChartButton = !this.showChartButton; // 切換顯示狀態
+      console.log('數據分析按鈕顯示狀態:', this.showChartButton);
+    }
   }
 
 }

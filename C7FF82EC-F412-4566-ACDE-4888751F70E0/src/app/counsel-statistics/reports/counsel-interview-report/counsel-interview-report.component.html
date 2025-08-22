@@ -45,7 +45,7 @@
   (click)="modalImportShow()">
   匯入一級晤談紀錄
 </button>
-<button type="button" class="btn btn-info btn-sm" (click)="openChartModal()" *ngIf="true">數據分析</button>
+<button type="button" class="btn btn-info btn-sm" (click)="openChartModal()" *ngIf="showChartButton">數據分析</button>
 <app-chart-modal #chartModal></app-chart-modal>
 </div>
 
