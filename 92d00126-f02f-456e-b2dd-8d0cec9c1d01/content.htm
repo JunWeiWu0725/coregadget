@@ -1357,7 +1357,8 @@
             <tbody ng-repeat-end>
               <tr style="width: 100%;">
 
-                <td><span class=labelw>產業別</span>{{exp.IndustryDesc || '&nbsp;'}}
+                <td><span class=labelw>產業別</span>
+                  <span style="white-space: normal; word-break: keep-all;">{{exp.IndustryDesc || '&nbsp;'}}</span>
                   <span ng-show="exp.IndustryOther">({{exp.IndustryOther}})</span></td>
                 <td><span class=labelw>工作地點</span>{{exp.WorkPlace.join(',') || '&nbsp;'}}
                   <span ng-show="exp.WorkPlaceOther">({{exp.WorkPlaceOther}})</span></td>
