@@ -223,7 +223,7 @@ input {
 .footer {
     border-top: 1px solid #ccc;
     padding-top: 4px;
-    height: 70px;
+    /* height: 70px; */
     position: fixed;
     left: 8px;
     right: 8px;
@@ -579,4 +579,8 @@ div.other.has-error {
 
 .responsive-table tr~tr {
     border-top: 1px solid #c0e7f1;
+}
+
+.ml-4 {
+    margin-left: 16px;
 }

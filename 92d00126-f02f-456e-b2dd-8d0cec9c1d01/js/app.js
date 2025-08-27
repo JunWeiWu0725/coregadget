@@ -994,8 +994,17 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
             if (request.Position == "其它" && !request.PositionOther) return;
 
             if (!request.PostLevel.length) return;
+
+            if (!Array.isArray(request.PostLevel)) {
+                request.PostLevel = request.PostLevel ? [request.PostLevel] : [];
+            }
+        
+            // 確保 PostLevel 是陣列後再執行 join
+            const postLevelString = request.PostLevel.join(',');
+
+            
             if (request.PostLevel.indexOf("其它") != -1 && !request.PostLevelOther) return;
-            // request.PostLevel = request.PostLevel.join(",");
+            request.PostLevel = request.PostLevel.join(",");
 
             if (!request.DepartmentCategory) return;
             if (request.DepartmentCategory == "其它" && !request.DepartmentCategoryOther) return;

@@ -153,8 +153,7 @@
       </div>
     </div>
     <!--modal 經歷-->
-    <div class="modal fade" id="experience" tabindex="-1" role="dialog" aria-labelledby="myexperience"
-      >
+    <div class="modal fade" id="experience" tabindex="-1" role="dialog" aria-labelledby="myexperience">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -173,10 +172,8 @@
               <button type="button" ng-click="experiences.del(experiences.current.result)"
                 aria-label="確定刪除">確定</button>
             </div>
-            <div class="switch">
-              分享：
-              <label>
-                否
+            <div class="switch">分享：
+              <label>否
                 <input type="checkbox" target="top" name="share" ng-model="experiences.current.result.IsSharing"
                   aria-label="是否分享經歷">
                 <span class="lever"></span> 是
@@ -239,32 +236,45 @@
                   ng-model="experiences.current.result.DepartmentCategoryOther" aria-label="請填寫其它部門">
               </div>
             </div>
+
             <div class="form-group" ng-class="{'has-error': !experiences.current.result.IndustryID}">
               <label for="industry-select" class="control-label">產業別</label>
               <select 
                 id="industry-select" 
                 class="form-control h-12" 
-                ng-model="experiences.current.result.IndustryID" 
-                aria-label="請選擇產業別">
-                <option value="">...請選擇產業別...</option>
+                ng-model="experiences.current.menu.Domain.Domain" 
+                aria-label="請選擇產業別" 
+                ng-change="experiences.toggleExperienceDomain(experiences.current.menu.Domain.Domain)">
+                <option value="" ng-click="experiences.setEmpty()">...請選擇產業別...</option>
                 <option ng-repeat="domain in AdditionalSetup['S_Industry'].Domains" value="{{domain}}">{{domain}}</option>
-                <option value="其它">其它</option>
               </select>
-              <div 
-                ng-show="experiences.current.result.Industry === '其它'" 
-                class="input-group" 
-                ng-class="{'has-error': !experiences.current.result.IndustryOther}">
-                <label for="industry-other" class="input-group-addon p-3">請註明</label>
-                <input 
-                  type="text" 
-                  class="form-control h-12" 
-                  id="industry-other" 
-                  name="industry-other" 
-                  placeholder="必填" 
-                  ng-model="experiences.current.result.IndustryOther" 
-                  aria-label="請填寫其它產業別">
-              </div>
             </div>
+          
+            <div ng-if="experiences.current.menu.Domain.Categorys.length" class="form-group ml-4">
+              <label for="industry-category-select" class="control-label">子類別</label>
+              <select 
+                  id="industry-category-select" 
+                  class="form-control h-12" 
+                  ng-model="experiences.current.menu.Category.Category" 
+                  aria-label="請選擇子類別" 
+                  ng-change="experiences.toggleExperienceCategory(experiences.current.menu.Category.Category)">
+                  <option value="" disabled>...請選擇子類別...</option>
+                  <option ng-repeat="category in experiences.current.menu.Domain.Categorys" value="{{category}}">{{category}}</option>
+              </select>
+            </div>
+          
+            <div ng-if="experiences.current.menu.Category.Items.length" class="form-group ml-4">
+              <label for="industry-item-select" class="control-label">子項目</label>
+              <select 
+                  id="industry-item-select" 
+                  class="form-control h-12" 
+                  ng-model="experiences.current.menu.Item.Item" 
+                  aria-label="請選擇子項目" 
+                  ng-change="experiences.toggleExperienceItem(experiences.current.menu.Item.Item)">
+                  <option value="" disabled>...請選擇子項目...</option>
+                  <option ng-repeat="item in experiences.current.menu.Category.Items" value="{{item}}">{{item}}</option>
+              </select>
+            </div>            
             
             <div class="form-group" ng-class="{'has-error': !experiences.current.result.WorkPlace.length}">
               <label for="workplace-input" class="control-label">工作地點</label>
@@ -1333,7 +1343,7 @@
                 <td><span class=labelw>層級別</span>{{exp.PostLevel.join(',') || '&nbsp;'}} <span
                     ng-show="exp.PostLevelOther">({{exp.PostLevelOther}})</span></td>
                 <td><span class=labelw>部門</span>{{exp.DepartmentCategory || '&nbsp;'}} <span
-                    ng-show="exp.DepartmentCategoryOther">({{exp.DepartmentCategoryOther}})</span< /td>
+                    ng-show="exp.DepartmentCategoryOther">({{exp.DepartmentCategoryOther}})</span></td>
               </tr>
             </tbody>
             <thead>
@@ -1346,12 +1356,13 @@
             </thead>
             <tbody ng-repeat-end>
               <tr style="width: 100%;">
-                <td><span class=labelw>產業別</span>{{exp.IndustryID || '&nbsp;'}} <span
-                    ng-show="exp.IndustryOther">({{exp.IndustryOther}})</span></td>
-                <td><span class=labelw>工作地點</span>{{exp.WorkPlace.join(',') || '&nbsp;'}} <span
-                    ng-show="exp.WorkPlaceOther">({{exp.WorkPlaceOther}})</span></td>
-                <td><span class=labelw>工作狀態</span>{{exp.WorkStatus || '&nbsp;'}} <span
-                    ng-show="exp.WorkStatusOther">({{exp.WorkStatusOther}})</span></td>
+
+                <td><span class=labelw>產業別</span>{{exp.IndustryDesc || '&nbsp;'}}
+                  <span ng-show="exp.IndustryOther">({{exp.IndustryOther}})</span></td>
+                <td><span class=labelw>工作地點</span>{{exp.WorkPlace.join(',') || '&nbsp;'}}
+                  <span ng-show="exp.WorkPlaceOther">({{exp.WorkPlaceOther}})</span></td>
+                <td><span class=labelw>工作狀態</span>{{exp.WorkStatus || '&nbsp;'}}
+                  <span ng-show="exp.WorkStatusOther">({{exp.WorkStatusOther}})</span></td>
                 <td class="text-right">
                   <span class="pull-left">
                     <span class=labelw></span><span>{{exp.IsSharing ? '已分享' : '未分享'}}</span>
@@ -1902,15 +1913,15 @@
 
     <div class="footer-space"></div>
     <div class="footer">
-      <img style="margin: 5px 10px 0px 0px; float: left; display: inline; zoom: 1;" border="0" src="src/red_logo.jpg">
-      <img style="margin: 5px 10px 0px 0px; float: left; display: inline; zoom: 1;" border="0" src="src/bot_logo.png">
-      <p style="text-align: left;">
-        <font color="#999999">
-          10617台北市大安區羅斯福路四段一號 臺灣大學管理學院一號館六樓 EMBA辦公室
-          <br> TEL:886-2-33661010 FAX:886-2-23636073
-          <br> Copyright © National Taiwan University All Rights Reserved
-        </font>
-      </p>
+      <div style="max-width: 1024px; margin: auto;">
+        <img style="margin: 5px 10px 0px 0px; float: left; display: inline; zoom: 1;" src="src/red_logo.jpg">
+        <img style="margin: 5px 10px 0px 0px; float: left; display: inline; zoom: 1;" src="src/bot_logo.png">
+        <div style="text-align: left; color: #878787; font-size: 14px; line-height: 24px">
+          <div>10617台北市大安區羅斯福路四段一號 臺灣大學管理學院一號館六樓 EMBA辦公室</div>
+          <div> TEL:886-2-33661010 FAX:886-2-23636073</div>
+        </div>
+        <div style="color: #525252"> Copyright © National Taiwan University All Rights Reserved</div>
+      </div>
     </div>
   </div>
 </body>
