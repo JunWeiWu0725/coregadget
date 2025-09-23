@@ -354,8 +354,8 @@
           </div>
           <div class="modal-body row">
             <div class="col-sm-4" ng-repeat="item in ExperienceDataSource['C_層級別']">
-              <label class="checkbox-inline">
-                <input type="checkbox" checklist-model="experiences.current.result.PostLevel" checklist-value="item"
+              <label class="checkbox-inline" for="postlevel-{{ $index }}">
+                <input type="checkbox" id="postlevel-{{ $index }}" checklist-model="experiences.current.result.PostLevel" checklist-value="item"
                   aria-label="選擇層級別：{{item}}">
                 {{item}}
               </label>
@@ -371,7 +371,7 @@
                 </div>
                 <div ng-show="experiences.current.result.PostLevel.indexOf('其它')!=-1" class="col-xs-9"
                   ng-class="{'has-error': (!experiences.current.result.PostLevelOther)}">
-                  <input type="text" class="form-control h-12" placeholder="必填"
+                  <input type="text" id="postlevel-other" class="form-control h-12" placeholder="必填"
                     ng-model="experiences.current.result.PostLevelOther" aria-label="請填寫其它層級別">
                 </div>
               </div>
@@ -406,8 +406,8 @@
           </div>
           <div class="modal-body row">
             <div class="col-sm-3" ng-repeat="item in ExperienceDataSource['C_工作地點']">
-              <label class="checkbox-inline">
-                <input type="checkbox" checklist-model="experiences.current.result.WorkPlace" checklist-value="item"
+              <label class="checkbox-inline" for="workplace-{{ $index }}">
+                <input type="checkbox" id="workplace-{{ $index }}" checklist-model="experiences.current.result.WorkPlace" checklist-value="item"
                   aria-label="選擇工作地點：{{item}}">
                 {{item}}
               </label>
@@ -748,38 +748,67 @@
                 <td>
                   <div class="input-group">
                     <label for="name" class="labelh">姓名</label>
-                    <input type="text" class="form-control h-12 nochange" id="name" name="name" readonly
-                      ng-model="myInfo.StudentInfo.Name">
-                    <span class="input-group-addon p-3" target="need-sharing" id="name-share-status">
+                    <input 
+                      type="text" 
+                      class="form-control h-12 nochange" 
+                      id="name" 
+                      name="name" 
+                      readonly 
+                      ng-model="myInfo.StudentInfo.Name" 
+                      aria-label="姓名，{{myInfo.StudentInfo.Name}}，不可編輯">
+                    <span class="input-group-addon p-3" 
+                      target="need-sharing" 
+                      id="name-share-status"
+                      tabindex="0"
+                      aria-label="姓名已分享，不可更改" >
                       <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                      <span class="sr-only">姓名已分享</span> </span>
+                    </span>
                   </div>
                 </td>
                 <td>
                   <div class="input-group">
                     <label for="gender" class="labelh">性別</label>
-                    <input type="text" class="form-control h-12 nochange" id="gender" name="gender" readonly
-                      ng-model="myInfo.StudentInfo.Gender">
-                    <span class="input-group-addon p-3" target="need-sharing" id="gender-share-status">
+                    <input 
+                      type="text" 
+                      class="form-control h-12 nochange" 
+                      id="gender" 
+                      name="gender" 
+                      readonly
+                      ng-model="myInfo.StudentInfo.Gender"
+                      aria-label="性別，{{myInfo.StudentInfo.Gender}}，不可編輯">
+                    <span class="input-group-addon p-3" 
+                      target="need-sharing" 
+                      id="gender-share-status"
+                      tabindex="0"
+                      aria-label="性別已分享，不可更改" 
+                      >
                       <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                      <span class="sr-only">性別已分享</span> </span>
                   </div>
                 </td>
                 <td>
                   <div class="input-group">
                     <label for="birthdate" class="labelh">出生日期</label>
-                    <input type="text" class="form-control h-12 nochange" id="birthdate" name="birthdate" readonly
-                      ng-model="myInfo.StudentInfo.Birthdate" aria-describedby="birthdate-share-status">
-                    <span class="input-group-addon p-3" target="data-sharing"
+                    <input 
+                      type="text" 
+                      class="form-control h-12 nochange" 
+                      id="birthdate" 
+                      name="birthdate" 
+                      readonly
+                      ng-model="myInfo.StudentInfo.Birthdate" 
+                      aria-label="出生日期，{{myInfo.StudentInfo.Birthdate | date:'yyyy年MM月dd日'}}，不可編輯">
+                    <span 
+                      class="input-group-addon p-3" 
+                      target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.Birthdate = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.Birthdate)"
-                      tabindex="0" role="button"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.Birthdate == 'true' ? '點擊不公開出生日期' : '點擊公開出生日期' }}">
+                      tabindex="0" 
+                      role="button"
+                      aria-label="{{ myInfo.DataSharing.DataSharing.Birthdate == 'true' ? '已分享出生日期，按鈕，輕觸兩下即可關閉' : '未分享出生日期，按鈕，輕觸兩下即可開啟' }}">
                       <span class="glyphicon glyphicon-ok" aria-hidden="true"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.Birthdate!='true'}"></span>
-                      <span class="sr-only" aria-live="polite"> {{
+                      <!-- <span class="sr-only" aria-live="polite"> {{
                         myInfo.DataSharing.DataSharing.Birthdate == 'true' ? '出生日期已分享' :
                         '出生日期未分享' }}
-                      </span>
+                      </span> -->
                     </span>
                   </div>
                 </td>
@@ -789,9 +818,13 @@
                     <input type="text" class="form-control h-12" id="custodian-name" name="custodian-name"
                     placeholder="請輸入緊急聯絡人姓名"
                       ng-model="myInfo.StudentInfo.CustodianName" aria-label="請輸入緊急聯絡人姓名" aria-required="false">
-                    <span class="input-group-addon p-3" target="cannt-sharing" id="custodian-name-share-status">
+                    <span class="input-group-addon p-3" 
+                      target="cannt-sharing" 
+                      id="custodian-name-share-status"
+                      tabindex="0"
+                      aria-label="緊急聯絡人姓名不分享，不可更改">
                       <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                      <span class="sr-only">緊急聯絡人姓名不公開</span>
+                      <!-- <span class="sr-only">緊急聯絡人姓名不分享，不可更改</span> -->
                     </span>
                   </div>
                 </td>
@@ -808,9 +841,12 @@
                       ng-model="myInfo.StudentInfo.CustodianOtherInfo.CustodianOtherInfo.Phone"
                       ng-change="myInfo.StudentInfo.CustodianOtherInfo.CustodianOtherInfo.Phone = cleanPhoneNo(myInfo.StudentInfo.CustodianOtherInfo.CustodianOtherInfo.Phone)"
                       aria-label="請輸入聯絡人電話號碼" placeholder="請輸入聯絡人電話號碼" aria-required="false" autocomplete="off">
-                    <span class="input-group-addon p-3" target="cannt-sharing" id="custodian-phone-share-status">
+                    <span class="input-group-addon p-3" 
+                      target="cannt-sharing" 
+                      id="custodian-phone-share-status"
+                      tabindex="0"
+                      aria-label="聯絡人電話不分享，不可更改">
                       <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                      <span class="sr-only">聯絡人電話不公開</span>
                     </span>
                   </div>
                 </td>
@@ -1051,21 +1087,28 @@
             <tbody>
               <tr>
                 <td>
-                  <div class="input-group"
-                    ng-class="{'has-error': !myInfo.StudentBrief2.EmailList.email1 || !myInfo.validEmail(myInfo.StudentBrief2.EmailList.email1)}">
-                    <label for="email1" class="labelh">Email 1
+                  <div class="input-group" ng-class="{'has-error': !myInfo.StudentBrief2.EmailList.email1}">
+                    <label for="email1" class="labelh" tabindex="0" aria-label="Email 1，必填">
+                      Email 1(必填)
                       <img ng-src="./css/images/{{ maskedField.email1.eyeIcon }}" alt="切換 Email 1 顯示狀態"
-                        style="cursor: pointer; margin-left: 8px; padding: 12px; height: 48px; width: 48px;"
-                        ng-click="toggleEyeIcon(maskedField.email1)" role="button" tabindex="0"
-                        aria-label="點擊切換 Email 1 地址的顯示與隱藏"
-                        onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                      style="cursor: pointer; margin-left: 8px; padding: 12px; height: 48px; width: 48px;"
+                      ng-click="toggleEyeIcon(maskedField.email1)" role="button" tabindex="0"
+                      aria-label="點擊切換 Email 1 地址的顯示與隱藏"
+                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
                     </label>
-                    <input type="{{ maskedField.email1.inputType }}" maxlength="50"
-                    placeholder="請輸入 Email 地址1"
-                      class="{email:true} form-control h-12" id="email1" name="email1"
+                    <input 
+                      type="{{ maskedField.email1.inputType }}" 
+                      maxlength="50"
+                      placeholder="請輸入 Email 地址1"
+                      class="{email:true} form-control h-12" 
+                      id="email1" 
+                      name="email1"
                       ng-model="myInfo.StudentBrief2.EmailList.email1"
                       aria-label="{{ maskedField.email1.inputType === 'password' ? 'Email 1，內容已遮蔽' : '請輸入 Email 1 地址' }}"
-                      aria-required="false" autocomplete="off">
+                      aria-required="true" 
+                      aria-describedby="email1-required"
+                      autocomplete="off">
+                    <span id="email1-required" class="sr-only">此欄位為必填</span>
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.EmailList.Email1=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email1)"
                       role="button" tabindex="0"
@@ -1882,17 +1925,16 @@
       </div>
     </div>
 
-    <div class="modal fade" id="messageBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      aria-hidden="true">
+    <div class="modal fade" id="messageBox" tabindex="-1" role="dialog" aria-labelledby="messageTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close h-12 w-12" data-dismiss="modal" aria-label="關閉訊息框">
               <span aria-hidden="true">&times;</span>
             </button>
-            <div style="font-size: 18px; line-height: 40px;" id="myModalLabel">訊息</div>
+            <div style="font-size: 18px; line-height: 40px;" id="messageTitle">訊息</div>
           </div>
-          <div class="modal-body" id="messageContent" tabindex="0" aria-live="polite">
+          <div class="modal-body" id="messageContent" tabindex="-1" aria-live="polite" aria-atomic="true">
             <!-- 動態訊息內容將顯示於此 -->
           </div>
           <div class="modal-footer">

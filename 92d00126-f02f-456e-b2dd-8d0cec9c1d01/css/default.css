@@ -376,8 +376,8 @@ input[type=checkbox]:not(:disabled)~.lever:active:after {
         padding-bottom: 80px;
     }
     .btn-floating {
-        bottom: 25px;
-        right: 25px;
+        bottom: 28px;
+        right: 16px;
     }
     table.responsive-table {
         width: 100%;
@@ -583,4 +583,8 @@ div.other.has-error {
 
 .ml-4 {
     margin-left: 16px;
+}
+
+.has-error .labelh {
+    color: #a94442;
 }
