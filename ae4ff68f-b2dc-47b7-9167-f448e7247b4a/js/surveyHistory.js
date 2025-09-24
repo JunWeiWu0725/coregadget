@@ -134,7 +134,7 @@ var GetCanSeeCurriculumEvaluation = function() {
                                     response.csSchoolYear,  "學年度 " ,
                                     (response.csSemester === '0' ? '夏季學期' : '第' + response.csSemester + '學期'), ' ',
                                     "<a href='#' class='alert-link' ",
-                                    "   onclick='showEvaluation(", response.csSchoolYear , "," , response.csSemester ,");'>課程評鑑值</a>"
+                                    "   onclick='showEvaluation(", response.csSchoolYear , "," , response.csSemester ,");'>課程教學意見調查值</a>"
                                 ].join("");
                         if (response.isNewStudent && response.isNewStudent == "true") {
                             msg =  [
@@ -148,14 +148,14 @@ var GetCanSeeCurriculumEvaluation = function() {
                                     msg,
                                     "<div>(您的 ", response.targetSchoolYear , "學年度 " ,
                                     (response.targetSemester === '0' ? '夏季學期' : '第' + response.targetSemester + '學期'),
-                                    " 評鑑填答率為 ",
-                                    response.answerRate , "%  可查看本期評鑑值公告。)" ,
+                                    " 教學意見調查填答率為 ",
+                                    response.answerRate , "%  可查看本期教學意見調查值公告。)" ,
                                     "</div>"
                                 ].join("");
                         }
                         //msg += ["<div>查看參考依據，是依前2學期之問卷填答率達到：",
                                  //response.ansRateStandard ,
-                                  //"% 才可以查看選課課程之評鑑值</div>"].join("");
+                                  //"% 才可以查看選課課程之教學意見調查值</div>"].join("");
                         $('#show_course_evaluation').html(msg).show();
                     }
                     else {
@@ -163,14 +163,14 @@ var GetCanSeeCurriculumEvaluation = function() {
                                     "<div style='color:red;'>",
                                     "( 您的 ", response.targetSchoolYear , "學年度 " ,
                                     (response.targetSemester === '0' ? '夏季學期' : '第' + response.targetSemester + '學期'),
-                                    " 評鑑填答率為 ",
-                                    response.answerRate , "% , 無法查看本期課程評鑑值。)" ,
+                                    " 教學意見調查填答率為 ",
+                                    response.answerRate , "% , 無法查看本期課程教學意見調查值。)" ,
                                     "</div>"
                                 ].join("");
                                 //2016/8/16 -  依據芝儀說明不需要此行訊息
                         //msg += ["<div>查看參考依據，是依前2學期之問卷填答率達到：",
                                  //response.ansRateStandard ,
-                                  //"% 才可以查看選課課程之評鑑值</div>"].join("");
+                                  //"% 才可以查看選課課程之教學意見調查值</div>"].join("");
                         $('#show_course_evaluation').html(msg).show();
                     }
                     $('#course_evaluation_panel').show();
@@ -216,7 +216,7 @@ var showEvaluation = function(schoolyear, semester) {
     var parseEvaluation = function(response, schoolyear, semester) {
         console.log(response);
         var content= "<table class='table'>";
-        content += "<thead><tr><th>課程(" + schoolyear + "/" + semester + ")</th><th>課程代碼</th><th>評鑑值</th></thead><tbody>";
+        content += "<thead><tr><th>課程(" + schoolyear + "/" + semester + ")</th><th>課程代碼</th><th>教學意見調查值</th></thead><tbody>";
         if (response.Response && response.Response.Evaluation) {
             $(response.Response.Evaluation).each(function(index, item) {
                 content += "<tr>";
@@ -249,7 +249,7 @@ var GetReplyHistory = function() {
                     <Semester>2</Semester>
                     <CourseID>522</CourseID>
                     <CourseName>企業價值衡量 </CourseName>
-                    <Category>期末評鑑</Category>
+                    <Category>期末教學意見調查</Category>
                     <SurveyCount>1</SurveyCount>
                     <AnswerCount/>
                 </ReplyHistory>
@@ -299,7 +299,7 @@ var GetReplyHistory = function() {
                                 }
                             });
                         }
-                        _survey_detail_string = "<tr><td>" + (item.Category || '').replace('評鑑', '') + "</td><td>" + item.CourseName + "</td><td>" + item.SurveyCount + "</td>" +
+                        _survey_detail_string = "<tr><td>" + (item.Category || '').replace('教學意見調查', '').replace('評鑑', '') + "</td><td>" + item.CourseName + "</td><td>" + item.SurveyCount + "</td>" +
                                                 (item.AnswerCount ? "<td>" + item.AnswerCount + "</td>" : "<td style='color:red'>0</td>");
 
                         $("#" + item.SchoolYear + "-" + item.Semester + " tbody").append(_survey_detail_string);
