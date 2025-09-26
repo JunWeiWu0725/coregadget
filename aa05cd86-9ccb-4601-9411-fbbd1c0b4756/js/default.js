@@ -12,7 +12,7 @@
       $("#absence span[target='semester']").html($(this).html());
       return $("#absence span[target='semester']").attr("value", $(this).attr("value"));
     });
-    return gadget.getContract("emba.student").send({
+    gadget.getContract("emba.student").send({
       service: "default.GetSemester",
       body: "",
       result: function (response, error, http) {
@@ -30,7 +30,8 @@
         if (semester === "2") {
           semester = "第 2 學期";
         }
-        return $("#absence span[target='semester']").html(semester);
+        $("#absence span[target='semester']").html(semester);
+        // query_absence(); // 預設載入查詢結果
       }
     });
   });
