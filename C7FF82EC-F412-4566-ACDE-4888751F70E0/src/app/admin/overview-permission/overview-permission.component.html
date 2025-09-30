@@ -1,0 +1,111 @@
+<div class="permission-container">
+  <div class="header-section">
+    <h2 class="page-title">輔導學生</h2>
+    <p class="page-subtitle">新增、修改或移除使用者，並設定他們的權限</p>
+  </div>
+
+  <div *ngIf="!isLoading; else tmpLoading">
+    <div class="tab-content">
+      <!-- 新增使用者按鈕 -->
+      <div class="action-header">
+        <button class="btn btn-light" (click)="openAddUserModal()">
+          <i class="fa fa-plus"></i> 新增使用者
+        </button>
+      </div>
+
+      <!-- 原始資料顯示區（用於除錯） - 暫時註解 -->
+      <!--
+      <div class="debug-section" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 6px;">
+        <h4>原始權限記錄資料：</h4>
+        <pre>{{ permissionRecords | json }}</pre>
+        
+        <h4 style="margin-top: 15px;">轉換後的教師權限：</h4>
+        <pre>{{ teachers | json }}</pre>
+      </div>
+      -->
+
+      <!-- 權限表格 -->
+      <table class="rwd-table">
+        <thead>
+          <tr>
+            <th>姓名</th>
+            <th>編號</th>
+            <th>綜合紀錄表</th>
+            <th>一級晤談</th>
+            <th>個案檢視</th>
+            <th>心理測驗</th>
+            <th>統計報表</th>
+            <th>開放時間</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let teacher of teachers">
+            <td data-title="姓名">{{ teacher.teacher_name }}</td>
+            <td data-title="編號">{{ teacher.teacherId }}</td>
+            <td data-title="綜合紀錄表">
+              <div class="permission-display">{{ teacher.permissions['comp_record'] ? '✓' : '-' }}</div>
+            </td>
+            <td data-title="一級晤談">
+              <div class="permission-display">{{ teacher.permissions['first_level_counsel'] ? '✓' : '-' }}</div>
+            </td>
+            <td data-title="個案檢視">
+              <div class="permission-display">{{ teacher.permissions['case_view'] ? '✓' : '-' }}</div>
+            </td>
+            <td data-title="心理測驗">
+              <div class="permission-display">{{ teacher.permissions['psych_test'] ? '✓' : '-' }}</div>
+            </td>
+            <td data-title="統計報表">
+              <div class="permission-display">{{ teacher.permissions['statistics'] ? '✓' : '-' }}</div>
+            </td>
+            <td data-title="開放時間">
+              <div class="time-display">
+                <div class="start-time" *ngIf="teacher.start_at">
+                  <small class="text-muted">開始：</small>
+                  {{ formatDateTime(teacher.start_at) }}
+                </div>
+                <div class="end-time" *ngIf="teacher.end_at">
+                  <small class="text-muted">結束：</small>
+                  {{ formatDateTime(teacher.end_at) }}
+                </div>
+                <div class="no-limit" *ngIf="teacher.start_at && !teacher.end_at">
+                  <small class="text-info">無限期</small>
+                </div>
+                <div class="no-time" *ngIf="!teacher.start_at">
+                  <small class="text-muted">未設定</small>
+                </div>
+              </div>
+            </td>
+            <td data-title="操作">
+              <button class="btn btn-sm btn-outline-info" (click)="openEditUserModal(teacher)">編輯</button>
+              <button class="btn btn-sm btn-outline-danger ml-2" (click)="deleteUser(teacher.teacherId)">刪除</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- 儲存按鈕 -->
+      <div class="save-section">
+        <!-- <button class="btn btn-light" (click)="saveAllSettings()">
+          <i class="fa fa-save"></i> 儲存所有設定
+        </button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 使用新的 Modal Component，支援新增和編輯 -->
+<app-add-permission-user-modal 
+  [isVisible]="showUserModal"
+  [editMode]="isEditMode"
+  [editUser]="currentEditUser"
+  (onSave)="onUserSaved($event)"
+  (onClose)="onModalClosed()">
+</app-add-permission-user-modal>
+
+<!-- Loading 模板 -->
+<ng-template #tmpLoading class="container">
+  <div class="row justify-content-center" style="margin-top:250px;margin-bottom:200px;">
+    Loading...
+  </div>
+</ng-template>

@@ -53,8 +53,8 @@
             </div>
           </div>
           <div *ngIf="selClass" class="form-group">
-      <!-- 今天顯示假別選擇 -->
-      <div *ngIf="isToday()" class="form-group">
+      <!-- 可編輯時顯示假別選擇 -->
+      <div *ngIf="canEdit()" class="form-group">
         <label class="control-label">請選擇假別：</label>
         <div class="btn-group" role="group" aria-label="假別選擇">
           <button (click)="currAbs=clearAbs"
@@ -70,10 +70,10 @@
       </div>
         </div>
       
-    <!-- 非今天顯示說明文字 -->
-    <div *ngIf="!isToday()" class="form-group">
+    <!-- 不可編輯時顯示說明文字 -->
+    <div *ngIf="!canEdit()" class="form-group">
       <div class="alert alert-info" role="alert">
-        <i class="fas fa-info-circle"></i> 非今日點名僅提供查閱
+        <i class="fas fa-info-circle"></i> 目前僅提供查閱
       </div>
     </div>
     <table class="table table-bordered table-hover table-striped"
@@ -82,8 +82,8 @@
         <tr class= "sticky">
           <th class="thBorder"
               style="min-width:110px;">
-              <!-- 所選日期是今日 -->
-            <div *ngIf="getDateString(currentDate)==getDateString(todayDate)">
+              <!-- 可編輯時顯示儲存按鈕 -->
+            <div *ngIf="canEdit()">
               <div class="btn-group">
                 <button  [disabled]="isLoading" (click)="saveData()"
                         type="button"
@@ -97,13 +97,13 @@
                 已點名
               </span>
             </div>
-            <!-- 所選日期非今日 - 不顯示儲存按鈕 -->
+            <!-- 不可編輯時不顯示儲存按鈕 -->
           </th>
           <th *ngIf="isShowCheckInTime"   class=" text-center" > 入校時間 </th>
           <th *ngFor="let period of periods"
-              (click)="isToday() && setAllStudentsAbs(period)"
+              (click)="canEdit() && setAllStudentsAbs(period)"
               class="setBtn thBorder text-center"
-              [class.disabled]="!isToday()">
+              [class.disabled]="!canEdit()">
             {{period.name}}
           </th>
         </tr>
@@ -121,9 +121,9 @@
           </tr> -->
           <tr>
       
-            <td (click)="isToday() && setStudentAllPeriodAbs(stu)"
+            <td (click)="canEdit() && setStudentAllPeriodAbs(stu)"
                 class="setBtn"
-                [class.disabled]="!isToday()">
+                [class.disabled]="!canEdit()">
                <span class="name-item">
                  {{stu.seatNo}}. {{stu.name}}
 
@@ -133,10 +133,10 @@
               {{getCheckInTime(stu.sid)?.checkin_only_time|| "--"}}
             </td>
             <td *ngFor="let period of periods"  class=" text-center"
-                (click)="isToday() && setStudentPeroidAbs(stu, period)"
+                (click)="canEdit() && setStudentPeroidAbs(stu, period)"
                 title="{{period.name}}"
                 [class.setBtn]="!(stu.leaveList.get(period.name)?.isLock)"
-                [class.disabled]="!isToday()"
+                [class.disabled]="!canEdit()"
                 style="position:relative">
               <div *ngIf="stu.leaveList.get(period.name)?.absName != stu.orileaveList.get(period.name)?.absName"
                    style="display:inline-block;background-color:red;position:absolute;left:3px;top:3px;width:5px;height:6px;border-radius:5px;"></div>

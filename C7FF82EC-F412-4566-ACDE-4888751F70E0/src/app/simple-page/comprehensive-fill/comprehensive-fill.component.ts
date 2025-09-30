@@ -42,9 +42,9 @@ export class ComprehensiveFillComponent implements OnInit {
     "%TEXT%": { element: "input", style: { width: "100px" } },
     "%TEXT1%": { element: "input", style: { width: "30px" } },
     "%TEXT2%": { element: "input", style: { width: "60px" } },
-    "%TEXT3%": { element: "input", style: { width: "auto" } },
+    "%TEXT3%": { element: "input", style: { width: "100px" } },
     "%TEXT4%": { element: "input", style: { width: "150px" } },
-    "%TEXT5%": { element: "input", style: { width: "auto" } },
+    "%TEXT5%": { element: "input", style: { width: "300px" } },
     "%TEXTAREA%": { element: "textarea", style: { width: "100%" } },
   };
 
@@ -181,14 +181,14 @@ export class ComprehensiveFillComponent implements OnInit {
                         }
                       });
                       console.log("單選");
-                      this.refreshMark("單選");
+                      this.refreshMark();
                     };
                     break;
                   case "複選":
                     option.change = () => {
                       option.AnswerChecked = !option.AnswerChecked;
                       console.log("複選");
-                      this.refreshMark("複選");
+                      this.refreshMark();
                     };
                     break;
                   case "填答":
@@ -258,7 +258,7 @@ export class ComprehensiveFillComponent implements OnInit {
       this.studentInfo = rsp.Student;
       this.questionSubject = rsp.QuestionSubject;
 
-      this.refreshMark("");
+                        this.refreshMark();
     } else {
       alert("代碼錯誤");
     }
@@ -270,11 +270,8 @@ export class ComprehensiveFillComponent implements OnInit {
     this.loadingFillInData = false;
   }
 
-  refreshMark(param: string) {
-    
-    if (param != "") {
-      this.isChangeNotSave = true;
-    }
+  refreshMark() {
+    this.isChangeNotSave = true;
 
     this.requireList = [];
     this.logUnfilled = [];

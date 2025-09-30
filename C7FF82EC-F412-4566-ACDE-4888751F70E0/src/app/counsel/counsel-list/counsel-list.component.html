@@ -22,15 +22,26 @@
         </h5>
 <button 
   *ngIf="this.roleType=='班導師'"  
+  class="btn import-btn"
   style="
-    color:#2f8e80;
-    border: 1px solid #a0cfc8; 
-    padding: 6px 16px; 
-    font-size: 14px; 
+    background-color: #83AFB8;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: normal;
     border-radius: 4px;
     cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: none !important;
   "
+  onmouseover="this.style.backgroundColor='#6d9aa5'"
+  onmouseout="this.style.backgroundColor='#83AFB8'"
   (click)="modalImportShow()">
+  <i class="bi bi-upload" style="font-size: 14px;"></i>
   匯入一級晤談紀錄
 </button>
 

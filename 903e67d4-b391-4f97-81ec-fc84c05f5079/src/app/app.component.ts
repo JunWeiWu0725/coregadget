@@ -179,6 +179,20 @@ export class AppComponent implements OnInit {
     return this.getDateString(this.currentDate) === this.getDateString(this.todayDate);
   }
 
+  /**檢查是否可以編輯 - 考慮跨日設定 */
+  canEdit(): boolean {
+    // 如果兩個屬性都是 true，則只能查看
+    if (this.canCrossDate && this.canCrossDateReadOnly) {
+      return false;
+    }
+    // 如果只有 CrossDate 是 true，則可以編輯
+    if (this.canCrossDate && !this.canCrossDateReadOnly) {
+      return true;
+    }
+    // 原本的邏輯：只有今天可以編輯
+    return this.isToday();
+  }
+
   checkDate(input: string) {
     var d = Date.parse(input);
     if (d) {

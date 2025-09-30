@@ -38,6 +38,7 @@ import { CounselHistoryPsychologicaltestComponent } from './simple-page/print/co
 import { StudentInfoComponent } from './comprehensive/student-info/student-info.component';
 import { ComprehensiveComponent as AdminComprehensiveComponent } from './admin/comprehensive/comprehensive.component';
 import { SettingComponent } from './admin/setting/setting.component';
+import { OverviewPermissionComponent } from './admin/overview-permission/overview-permission.component';
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "counsel" },
   { path: "pd", component: PermissionDeniedComponent },
@@ -90,6 +91,7 @@ const routes: Routes = [
       { path: "psychological_quiz_setup", component: PsychologicalQuizSetupComponent },
       { path: "admin_comprehensive", component: AdminComprehensiveComponent },
       { path: "setting", component: SettingComponent },
+      { path: "overview-permission", component: OverviewPermissionComponent },
     ]
   },{
     path: "teacher-service",
