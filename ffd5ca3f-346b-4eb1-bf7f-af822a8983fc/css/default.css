@@ -276,6 +276,10 @@ input,
     font-size: 16px;
 }
 
+.text-large {
+    font-size: 18px;
+}
+
 .checkbox-inline, .radio-inline {
     padding: 14px 10px;
 }

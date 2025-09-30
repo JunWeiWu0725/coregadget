@@ -336,8 +336,12 @@ app.controller('MainCtrl', ['$scope', function($scope) {
             body_obj.willingness.description_entrpreneurial = ['%', flt.willingness.description_entrpreneurial, '%'].join('');
             cdt.push(flt.willingness.description_entrpreneurial);
         }
-
-        if (cdt.length) {
+        // 檢查是否有查詢條件
+        if (cdt.length === 0) {
+            $('#noConditionModal').modal('show');
+            $scope.isLoading = false;
+            return;
+        }
             $scope.conditions = cdt;
 
             // 至資料庫比對
@@ -366,7 +370,6 @@ app.controller('MainCtrl', ['$scope', function($scope) {
             //         }
             //     }
             // });
-        }
     };
 
     $scope.previewDetail = function(student) {

@@ -15,7 +15,7 @@ jQuery(function () {
                         }
                         switch (error_code) {
                             case '501':
-                                tmp_msg = '<strong>很抱歉，您已完成評鑑！</strong>';
+                                tmp_msg = '<strong>很抱歉，您已完成教學意見調查！</strong>';
                                 break;
                             case '502':
                                 tmp_msg = '<strong>很抱歉，目前未開放！</strong>';
@@ -49,7 +49,7 @@ jQuery(function () {
     };
     //#endregion
 
-    // 點選課程評鑑
+    // 點選課程教學意見調查
     $('#tab_survey_list').on('click', 'a[data-index]', function() {
     	var index = $(this).attr('data-index');
     	var survey_category = $(this).attr('data-survey-category');
@@ -62,7 +62,7 @@ jQuery(function () {
         $('#tab_form').show();
     });
 
-    // 評鑑表單的按鈕事件
+    // 教學意見調查表單的按鈕事件
     $('#tab_form')
         .hide().find('[data-type=preview]').hide().end()
         .on('click', '[data-action=form_cancel]', function() { formCancel(); })
@@ -190,7 +190,7 @@ jQuery(function () {
     };
     //#endregion
 
-    //#region 返回評鑑列表
+    //#region 返回教學意見調查列表
     var formCancel = function () {
         $('#tab_survey_list').html('');
     	SurveyManger.load();
@@ -265,7 +265,7 @@ jQuery(function () {
         // };
         //#endregion
 
-        //#region 取得評鑑注意事項 2014/12/4 elvira marker
+        //#region 取得教學意見調查注意事項 2014/12/4 elvira marker
         // var getPrecautions = function() {
         //     _connection.send({
         //         service: "_.GetCSConfiguration",
@@ -628,7 +628,7 @@ jQuery(function () {
 
                 if (reply_status === '1') {
                     // 已送出
-                    $('#tab_form tbody[data-type=questions]').html('<tr><td colspan="2">本評鑑已作答<br/><button type="button" class="btn" data-action="form_cancel">返回</button></td></tr>');
+                    $('#tab_form tbody[data-type=questions]').html('<tr><td colspan="2">本教學意見調查已作答<br/><button type="button" class="btn" data-action="form_cancel">返回</button></td></tr>');
                 } else {
                     if (survey_id && course_id && teacher_id) {
                         //#region 取得個案
@@ -867,7 +867,7 @@ jQuery(function () {
             } else {
                 $(_category).each(function (index, item) {
                     var title = '(' + item.SchoolYear + '學年度' + (item.Semester === '0' ? '夏季學期' : '第' + item.Semester + '學期') + ')';
-                    var ret = "<div class='panel-group' id='SurveyCategory-" + item.Name + "-" + item.SchoolYear + "-" + item.Semester + "'><h4>" + item.Name + title + "</h4></div>";
+                    var ret = "<div class='panel-group' id='SurveyCategory-" + item.Name + "-" + item.SchoolYear + "-" + item.Semester + "'><h4>" + (item.Name || '').replace('評鑑', '教學意見調查') + title + "</h4></div>";
                     //  "<div class='panel panel-default'>" +
                     //      "<div class='panel-heading'>" +
                     //          "<h4 class='panel-title'>" +
@@ -941,7 +941,7 @@ jQuery(function () {
                                                     "<th style='background-color:" + category.TitleBGColor + ";background:" + category.TitleBGColor + "'>課程名稱</th>" +
                                                     "<th style='background-color:" + category.TitleBGColor + ";background:" + category.TitleBGColor + "'>任課教師</th>" +
                                                     "<th style='background-color:" + category.TitleBGColor + ";background:" + category.TitleBGColor + "'>填寫期間</th>" +
-                                                    "<th style='background-color:" + category.TitleBGColor + ";background:" + category.TitleBGColor + "'>填寫評鑑</th>" +
+                                                    "<th style='background-color:" + category.TitleBGColor + ";background:" + category.TitleBGColor + "'>意見調查</th>" +
                                                 "</tr>" +
                                             "</thead>" +
                                             "<tbody></tbody>" +
@@ -950,7 +950,7 @@ jQuery(function () {
                             $('#SurveyCategory-' + category.Name + "-" + category.SchoolYear + "-" + category.Semester).append(ret);
                             if (_survey_category && _survey_category[category.Name + "-" + category.SchoolYear + "-" + category.Semester]) {
                                 $(_survey_category[category.Name + "-" + category.SchoolYear + "-" + category.Semester]).each(function (index, item) {
-                                    // 填寫評鑑鈕
+                                    // 意見調查鈕
                                     var items = [];
                                     var status_html;
                                     if (item.ReplyStatus !== '1') {
@@ -1013,7 +1013,7 @@ jQuery(function () {
                     show_question();
                 }
             },
-            //#region 儲存評鑑結果
+            //#region 儲存教學意見調查結果
             saveReply: function(status, answer) {
                 if (_curr_survey) {
                     var valid_status = false;
@@ -1101,7 +1101,7 @@ jQuery(function () {
                                     '「' + _curr_survey.SchoolYear + '學年度' + (_curr_survey.Semester === '0' ? '夏季學期' : '第' + _curr_survey.Semester + '學期') + '」' +
                                     ' 課程「' + (_curr_survey.CourseName || '') + '」' +
                                     ' 老師「' + (_curr_survey.TeacherName || '') + '」' +
-                                    '的教學評鑑'
+                                    '的教學意見調查'
                                 );
 
                                 $('#tab_form tbody[data-type=questions] tr').each(function() {
@@ -1113,7 +1113,7 @@ jQuery(function () {
 
                                 gadget.getContract("emba.student").send({
                                     service: "public.AddLog",
-                                    body: "<Request>\n  <Log>\n     <Actor>" + _conn_log.getUserInfo().UserName + "</Actor>\n        <ActionType>" + status_name + "</ActionType>\n       <Action>" + status_name + "評鑑</Action>\n       <TargetCategory>student</TargetCategory>\n      <ClientInfo><ClientInfo></ClientInfo></ClientInfo>\n        <ActionBy>ischool web 教學評鑑小工具</ActionBy>\n      <Description>" + log_add_content.join('\n') + "</Description>\n    </Log>\n</Request>"
+                                    body: "<Request>\n  <Log>\n     <Actor>" + _conn_log.getUserInfo().UserName + "</Actor>\n        <ActionType>" + status_name + "</ActionType>\n       <Action>" + status_name + "教學意見調查</Action>\n       <TargetCategory>student</TargetCategory>\n      <ClientInfo><ClientInfo></ClientInfo></ClientInfo>\n        <ActionBy>ischool web 教學意見調查小工具</ActionBy>\n      <Description>" + log_add_content.join('\n') + "</Description>\n    </Log>\n</Request>"
                                 });
                                 //#endregion
                             }

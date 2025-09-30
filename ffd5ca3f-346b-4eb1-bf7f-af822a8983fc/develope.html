@@ -29,6 +29,26 @@
 
 <body ng-controller="MainCtrl">
     <div id="gadget" class="my-page">
+
+        <div class="modal fade" id="noConditionModal" tabindex="-1" role="dialog" aria-labelledby="noConditionModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!-- <h5 class="modal-title" id="noConditionModalLabel">提示</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="關閉">
+                            <span aria-hidden="true">&times;</span>
+                        </button> -->
+                    </div>
+                    <div class="modal-body text-center text-large">
+                        請設定查詢條件。
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">確定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -262,7 +282,7 @@
             <!-- 查詢 -->
             <div class="content" ng-show="panel=='filter'">
                 <div style="margin-bottom: 10px">
-                    <button class="btn btn-info" ng-click="showPublicCountModal()" aria-label="顯示公開總覽數">顯示公開總覽數</button>
+                    <button class="btn btn-info" ng-click="showPublicCountModal()" aria-label="顯示公開總覽數，按鈕，輕觸兩下即可啟用">顯示公開總覽數</button>
                 </div>
                 <div class="panel panel-info">
                     <div class="panel-heading">
@@ -272,10 +292,10 @@
                         <div class="col-sm-3">
                             <div class="dropdown">
                                 <button id="enrollYearMenu" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                    aria-label="{{filter.enroll_year || '選擇入學年度'}}">
-                                    <span target="enrollyear" ng-bind="filter.enroll_year ? ('入學年度' + filter.enroll_year ) : '入學年度'"></span>
-                                    <span class="caret" aria-hidden="true"></span>
-                                </button>
+                                aria-label="入學年度 {{filter.enroll_year}}，下拉式選單，輕觸兩下即可啟用">
+                                <span target="enrollyear" ng-bind="filter.enroll_year ? ('入學年度' + filter.enroll_year ) : '入學年度'" aria-hidden="true"></span>
+                                <span class="caret" aria-hidden="true"></span>
+                            </button>                                
                                 <ul class="dropdown-menu text-base">
                                     <li ng-click="filter.enroll_year=null" aria-label="清除入學年度篩選">入學年度</li>
                                     <li ng-repeat="item in EnrollYears" ng-click="filter.enroll_year=item.EnrollYear" aria-label="選擇入學年度 {{item.EnrollYear}}">
@@ -287,20 +307,20 @@
                         <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-addon">學生姓名</span>
-                                <input type="text" id="student_name" class="form-control" placeholder="輸入學生姓名" ng-model="filter.student_name" aria-label="學生姓名">
+                                <input type="text" id="student_name" class="form-control" placeholder="請輸入學生姓名" ng-model="filter.student_name" aria-label="輸入學生姓名，編輯方塊，輕觸兩下即可啟用">
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-addon">學歷</span>
-                                <input type="text" id="edu" class="form-control" placeholder="輸入學歷" ng-model="filter.edu" aria-label="學歷">
+                                <input type="text" id="edu" class="form-control" placeholder="請輸入學歷" ng-model="filter.edu" aria-label="輸入學歷，編輯方塊，輕觸兩下即可啟用">
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="dropdown" tabindex="0">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="departmentMenu" 
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                    aria-label="{{filter.dept.Name || '選擇系所組別'}}">
+                                    aria-label="系所組別 {{filter.dept.Name}}，下拉式選單，輕觸兩下即可啟用">
                                     <span>{{filter.dept.Name || '系所組別'}}</span>
                                     <span class="caret" aria-hidden="true"></span>
                                 </button>
@@ -321,14 +341,16 @@
                             <div class="col-sm-3">
                                 <div class="input-group">
                                     <span class="input-group-addon">公司名稱</span>
-                                    <input type="text" id="company_name" class="form-control" placeholder="輸入公司名稱" ng-model="filter.additional.company_name" aria-label="公司名稱">
+                                    <input type="text" id="company_name" class="form-control" placeholder="輸入公司名稱" 
+                                        ng-model="filter.additional.company_name" 
+                                        aria-label="輸入公司名稱，編輯方塊，輕觸兩下即可啟用">
                                 </div>
                             </div>
                             <div class="col-sm-3">
                                 <div class="input-group">
                                     <span class="input-group-addon">層級別</span>
                                     <button type="button" class="form-control" data-toggle="modal" data-target="#myModal"
-                                        aria-label="層級別篩選，目前選取：{{filter.additional.level.length > 0 ? filter.additional.level.join(',') : '無'}}">
+                                        aria-label="選擇層級別，下拉式選單，輕觸兩下即可啟用，目前選取：{{filter.additional.level.length > 0 ? filter.additional.level.join(',') : '無'}}">
                                         {{filter.additional.level.length ? filter.additional.level.join(',') : '選擇層級別'}}
                                     </button>
                                 </div>
@@ -336,7 +358,7 @@
                             <div class="col-sm-3">
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle" type="button" id="branchMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                        aria-label="{{filter.additional.department || '選擇部門'}}">
+                                        aria-label="部門，{{filter.additional.department}}，下拉式選單，輕觸兩下即可啟用">
                                         <span ng-bind="filter.additional.department || '部門'"></span>
                                         <span class="caret" aria-hidden="true"></span>
                                     </button>
@@ -352,7 +374,7 @@
                             <div class="col-sm-3">
                                 <div class="dropdown"> 
                                     <button class="btn btn-default dropdown-toggle" type="button" id="industry" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                        aria-label="{{filter.additional.menu.Domain.name || '選擇產業別'}}">
+                                        aria-label="產業別 {{filter.additional.menu.Domain.name}}，下拉式選單，輕觸兩下即可啟用">
                                         <span ng-bind="filter.additional.menu.Domain.name || '產業別'"></span>
                                         <span class="caret" aria-hidden="true"></span>
                                     </button>
@@ -366,7 +388,7 @@
                             <div class="col-sm-3" ng-if="filter.additional.menu.objDomain.Categorys.length">
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle" type="button" id="industryC" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                        aria-label="{{filter.additional.menu.Category.name || '選擇產業子類別'}}">
+                                        aria-label="產業子類別 {{filter.additional.menu.Category.name}}，下拉式選單，輕觸兩下即可啟用">
                                         <span ng-bind="filter.additional.menu.Category.name || '產業子類別'"></span>
                                         <span class="caret" aria-hidden="true"></span>
                                     </button>
@@ -378,7 +400,7 @@
                             <div class="col-sm-3" ng-if="filter.additional.menu.objCategory.Items.length">
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle" type="button" id="industryI" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                        aria-label="{{filter.additional.menu.Item.name || '選擇產業子項目'}}">
+                                        aria-label="產業子項目{{filter.additional.menu.Item.name}}，下拉式選單，輕觸兩下即可啟用">
                                         <span ng-bind="filter.additional.menu.Item.name || '產業子項目'"></span>
                                         <span class="caret" aria-hidden="true"></span>
                                     </button>
@@ -392,13 +414,13 @@
                             <div class="col-sm-3">
                                 <div class="input-group">
                                     <span class="input-group-addon">工作地點</span>
-                                    <input type="button" class="form-control" data-toggle="modal" data-target="#placeModal" value="{{filter.additional.place.join(',') || '選擇工作地點'}}" readonly aria-label="選擇工作地點，點擊開啟選單">
+                                    <input type="button" class="form-control" data-toggle="modal" data-target="#placeModal" value="{{filter.additional.place.join(',') || '選擇工作地點'}}" readonly aria-label="工作地點 {{filter.additional.place.join(',')}}，輕觸兩下即可開啟選單'">
                                 </div>
                             </div>
                             <div class="col-sm-3">
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle" type="button" id="statusMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                        aria-label="{{filter.additional.status || '選擇工作狀態'}}">
+                                        aria-label="工作狀態{{filter.additional.status}}，下拉式選單，輕觸兩下即可啟用">
                                         <span ng-bind="filter.additional.status || '工作狀態'"></span>
                                         <span class="caret" aria-hidden="true"></span>
                                     </button>
@@ -420,7 +442,7 @@
                         <div class="col-sm-3">
                             <div class="dropdown">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="bfieldMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                    aria-label="{{filter.experience.interest.domain || '選擇興趣領域'}}">
+                                    aria-label="興趣領域{{filter.experience.interest.domain}}，下拉式選單，輕觸兩下即可啟用">
                                     <span target="field" ng-bind="filter.experience.interest.domain || '領域'"></span>
                                     <span class="caret" aria-hidden="true"></span>
                                 </button>
@@ -433,7 +455,7 @@
                         <div class="col-sm-3">
                             <div class="dropdown">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="categoryMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                    aria-label="{{filter.experience.interest.category || '選擇興趣類別'}}">
+                                    aria-label="興趣類別{{filter.experience.interest.category}}，下拉式選單，輕觸兩下即可啟用">
                                     <span target="category" ng-bind="filter.experience.interest.category || '類別'"></span>
                                     <span class="caret" aria-hidden="true"></span>
                                 </button>
@@ -446,7 +468,7 @@
                         <div class="col-sm-3">
                             <div class="dropdown">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="projectMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                    aria-label="{{filter.experience.interest.item || '選擇興趣項目'}}">
+                                    aria-label="興趣項目{{filter.experience.interest.item}}，下拉式選單，輕觸兩下即可啟用">
                                     <span target="project" ng-bind="filter.experience.interest.item || '項目'"></span>
                                     <span class="caret" aria-hidden="true"></span>
                                 </button>
@@ -467,7 +489,7 @@
                         <div class="col-sm-3">
                             <div class="dropdown">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="groupMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                    aria-label="{{filter.experience.emba_groups.domain || '選擇EMBA團體領域'}}">
+                                    aria-label="EMBA團體領域{{filter.experience.emba_groups.domain}}，下拉式選單，輕觸兩下即可啟用">
                                     <span target="group" ng-bind="filter.experience.emba_groups.domain || '領域'"></span>
                                     <span class="caret" aria-hidden="true"></span>
                                 </button>
@@ -480,7 +502,7 @@
                         <div class="col-sm-3">
                             <div class="dropdown">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="group2Menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                    aria-label="{{filter.experience.emba_groups.category || '選擇EMBA團體類別'}}">
+                                    aria-label="EMBA團體類別{{filter.experience.emba_groups.category}}，下拉式選單，輕觸兩下即可啟用">
                                     <span target="group2" ng-bind="filter.experience.emba_groups.category || '類別'"></span>
                                     <span class="caret" aria-hidden="true"></span>
                                 </button>
@@ -501,7 +523,7 @@
                         <div class="col-sm-3">
                             <div class="dropdown">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="group4Menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                    aria-label="{{filter.experience.external_organization.domain || '選擇校外團體領域'}}">
+                                    aria-label="校外團體領域{{filter.experience.external_organization.domain}}，下拉式選單，輕觸兩下即可啟用">
                                     <span target="group4" ng-bind="filter.experience.external_organization.domain || '領域'"></span>
                                     <span class="caret" aria-hidden="true"></span>
                                 </button>
@@ -514,7 +536,7 @@
                         <div class="col-sm-3">
                             <div class="dropdown">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="group5Menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                    aria-label="{{filter.experience.external_organization.category || '選擇校外團體類別'}}">
+                                    aria-label="校外團體類別 {{filter.experience.external_organization.category}}，下拉式選單，輕觸兩下即可啟用">
                                     <span target="group5" ng-bind="filter.experience.external_organization.category || '類別'"></span>
                                     <span class="caret" aria-hidden="true"></span>
                                 </button>
@@ -535,33 +557,61 @@
                         <div class="col-sm-3">
                             <label class="input-group">
                                 <span class="input-group-addon" ng-class="{'nochecked': !filter.willingness.is_social_enterprise}" tabindex="0">
-                                    <input type="checkbox" id="social_enterprise" ng-model="filter.willingness.is_social_enterprise" aria-label="社會企業篩選"><span style="padding: 4px;">社會企業</span> 
+                                    <input type="checkbox" id="social_enterprise" 
+                                        ng-model="filter.willingness.is_social_enterprise" 
+                                        aria-label="社會企業，核取方塊，點兩下來設定">
+                                        <span style="padding: 4px;">社會企業</span> 
                                 </span>
-                                <input type="text" id="social_enterprise" ng-show="filter.willingness.is_social_enterprise" class="form-control" placeholder="輸入關鍵字篩選社會企業" ng-model="filter.willingness.description_enterprise" aria-label="社會企業關鍵字">
+                                <input type="text" id="social_enterprise_text" class="form-control" 
+                                    ng-show="filter.willingness.is_social_enterprise" 
+                                    placeholder="輸入社會企業參與經驗" 
+                                    ng-model="filter.willingness.description_enterprise" 
+                                    aria-label="社會企業參與經驗，文字欄位，點兩下來編輯">
                             </label>
                         </div>
                         <div class="col-sm-3">
                             <label class="input-group">
                                 <span class="input-group-addon" ng-class="{'nochecked': !filter.willingness.is_non_porfit_organizations}" tabindex="0">
-                                    <input type="checkbox" id="non_porfit_organizations" ng-model="filter.willingness.is_non_porfit_organizations" aria-label="非營利組織篩選"><span style="padding: 4px;">非營利組織</span>
+                                    <input type="checkbox" id="non_porfit_organizations" 
+                                        ng-model="filter.willingness.is_non_porfit_organizations" 
+                                        aria-label="非營利組織，核取方塊，點兩下來設定">
+                                        <span style="padding: 4px;">非營利組織</span>
                                 </span>
-                                <input type="text" id="non_porfit_organizations_text" ng-show="filter.willingness.is_non_porfit_organizations" class="form-control" placeholder="輸入關鍵字篩選非營利組織" ng-model="filter.willingness.description_organizations" aria-label="非營利組織關鍵字">
+                                <input type="text" id="non_porfit_organizations_text" class="form-control"
+                                    ng-show="filter.willingness.is_non_porfit_organizations" 
+                                    placeholder="輸入非營利組織參與經驗" 
+                                    ng-model="filter.willingness.description_organizations" 
+                                    aria-label="非營利組織參與經驗，文字欄位，點兩下來編輯">
                             </label>
                         </div>
                         <div class="col-sm-3">
                             <label class="input-group">
                                 <span class="input-group-addon" ng-class="{'nochecked': !filter.willingness.is_corporate_social_responsibility}" tabindex="0">
-                                    <input type="checkbox" id="corporate_social_responsibility" ng-model="filter.willingness.is_corporate_social_responsibility" aria-label="企業社會責任篩選"><span style="padding: 4px;">企業社會責任</span> 
+                                    <input type="checkbox" id="corporate_social_responsibility" 
+                                        ng-model="filter.willingness.is_corporate_social_responsibility" 
+                                        aria-label="企業社會責任，核取方塊，點兩下來設定">
+                                        <span style="padding: 4px;">企業社會責任</span> 
                                 </span>
-                                <input type="text" id="corporate_social_responsibility_input" ng-show="filter.willingness.is_corporate_social_responsibility" class="form-control" placeholder="輸入關鍵字篩選企業社會責任" ng-model="filter.willingness.description_responsibility" aria-label="企業社會責任關鍵字">
+                                <input type="text" id="corporate_social_responsibility_input" class="form-control" 
+                                    ng-show="filter.willingness.is_corporate_social_responsibility" 
+                                    placeholder="輸入企業社會責任參與經驗" 
+                                    ng-model="filter.willingness.description_responsibility" 
+                                    aria-label="企業社會責任參與經驗，文字欄位，點兩下來編輯">
                             </label>
                         </div>
                         <div class="col-sm-3">
                             <label class="input-group">
                                 <span class="input-group-addon" ng-class="{'nochecked': !filter.willingness.is_venture}" tabindex="0">
-                                    <input type="checkbox" id="venture" ng-model="filter.willingness.is_venture" aria-label="創業篩選"><span style="padding: 4px;">創業</span> 
+                                    <input type="checkbox" id="venture" 
+                                        ng-model="filter.willingness.is_venture" 
+                                        aria-label="創業，核取方塊，點兩下來設定">
+                                        <span style="padding: 4px;">創業</span> 
                                 </span>
-                                <input type="text" id="venture_input" ng-show="filter.willingness.is_venture" class="form-control" placeholder="輸入關鍵字篩選創業經驗" ng-model="filter.willingness.description_venture" aria-label="創業關鍵字">
+                                <input type="text" id="venture_input" class="form-control" 
+                                    ng-show="filter.willingness.is_venture" 
+                                    placeholder="輸入創業參與經驗" 
+                                    ng-model="filter.willingness.description_venture" 
+                                    aria-label="創業參與經驗，文字欄位，點兩下來編輯">
                             </label>
                         </div>
                     </div>
@@ -574,15 +624,24 @@
                         <div class="col-sm-3">
                             <label class="input-group">
                                 <span class="input-group-addon" ng-class="{'nochecked': !filter.willingness.is_entrpreneurial_team}" tabindex="0">
-                                    <input type="checkbox" id="entrpreneurial_team" ng-model="filter.willingness.is_entrpreneurial_team" aria-label="擔任業師意願篩選"><span style="padding: 4px;">擔任業師意願</span> 
+                                    <input type="checkbox" id="entrpreneurial_team" 
+                                        ng-model="filter.willingness.is_entrpreneurial_team" 
+                                        aria-label="擔任業師意願，核取方塊，點兩下來設定">
+                                        <span style="padding: 4px;">擔任業師意願</span> 
                                 </span>
-                                <input type="text" id="entrpreneurial_team_input" ng-show="filter.willingness.is_entrpreneurial_team" class="form-control" placeholder="輸入經驗分享關鍵字" ng-model="filter.willingness.description_entrpreneurial" aria-label="擔任業師經驗分享關鍵字">
+                                <input type="text" id="entrpreneurial_team_input" class="form-control" 
+                                    ng-show="filter.willingness.is_entrpreneurial_team" 
+                                    placeholder="輸入擔任業師意願查詢" 
+                                    ng-model="filter.willingness.description_entrpreneurial" 
+                                    aria-label="擔任業師意願，文字欄位，點兩下來編輯">
                             </label>
                         </div>
                     </div>
                 </div>
                 <button type="button" class="btn btn-danger btn-floating btn-large" style="padding: 8px;" 
-                    ng-click="queryStudent();" ng-show="panel=='filter'" aria-label="搜尋同學校友">
+                    ng-click="queryStudent();" 
+                    ng-show="panel=='filter'" 
+                    aria-label="搜尋同學校友，按鈕，輕觸兩下即可啟用">
                     <span class="glyphicon glyphicon-search" aria-hidden="true" style="vertical-align: top; font-size: 20px;"></span>
                 </button>
 
@@ -591,20 +650,21 @@
             <div class="content search-list" ng-show="panel=='result'">
 
                 <ol class="breadcrumb row">
-                    <div class="col-sm-10">
+                    <div class="col-sm-10 text-base">
                     <span class="glyphicon glyphicon-search" aria-hidden="true"></span> 查詢條件：
-                    <li ng-repeat="condition in conditions">{{condition}}</li>
+                    <li ng-repeat="condition in conditions" aria-label="{{condition}}">{{condition}}</li>
                     <!-- <span style="margin-left:40px;">{{ "(產業別資料 共計 " + experienceCount.TotalCount + " 筆 / 公開分享 共 " + experienceCount.ShareCount +" 筆)"}} </span> -->
                     </div>
                     <div class="col-sm-2">
-                        <button type="button" class="btn btn-primary btn-block" ng-click="resetFilter()" aria-label="重新查詢">
+                        <button type="button" class="btn btn-primary btn-block" ng-click="resetFilter()" 
+                            aria-label="重新選擇，按鈕，輕觸兩下即可啟用">
                             <span class="glyphicon glyphicon-repeat" aria-hidden="true" style="vertical-align: -webkit-baseline-middle; padding-right: 8px;"></span>重新查詢
                         </button>
                     </div>
                 </ol>
             
                 <table class="table table-bordered table-hover table-striped responsive-table"
-                    role="grid"
+                    
                     aria-label="學生查詢結果列表"
                     id="studentResultsTable">
                     <thead>
@@ -630,7 +690,8 @@
                             <td data-label="系所組別">{{stu.DepartmentName}}</td>
                         </tr>
                         <tr ng-show="(isLoadComplete && students.length==0)">
-                            <td colspan="6" role="alert" aria-live="polite" style="text-align: center;">無符合的資料</td>
+                            <td colspan="6" role="alert" aria-live="polite" style="text-align: center;"
+                                aria-label="無符合的條件">無符合的資料</td>
                         </tr>
                         <tr ng-show="(isLoading)">
                             <td colspan="6" role="status" aria-live="polite">讀取資料中...</td>
@@ -641,16 +702,20 @@
             <!-- 個人資料 -->
             <div class="content" ng-show="panel=='detail'">
                 <ol class="breadcrumb">
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 text-base">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span> 查詢條件：
-                        <li ng-repeat="condition in conditions">{{condition}}</li>
+                        <li ng-repeat="condition in conditions" aria-label="{{condition}}">{{condition}}</li>
                         <!-- <span style="margin-left:40px;">{{ "(產業別資料 共計 " + experienceCount.TotalCount + " 筆 / 公開分享 共 " + experienceCount.ShareCount +" 筆)"}} </span> -->
                     </div>
                     <div class="d-flex" style="gap: 16px; padding: 0 16px">
-                        <button type="button" class="btn btn-primary w-full" ng-click="resetFilter()" aria-label="重新查詢">
+                        <button type="button" class="btn btn-primary w-full" 
+                            ng-click="resetFilter()" 
+                            aria-label="重新選擇，按鈕，輕觸兩下即可啟用">
                             <span class="glyphicon glyphicon-repeat" aria-hidden="true" style="vertical-align: -webkit-baseline-middle; padding-right: 8px;"></span>重新查詢
                         </button>
-                        <button type="button" class="btn btn-primary w-full" ng-click="panel='result'" aria-label="返回查詢結果">
+                        <button type="button" class="btn btn-primary w-full" 
+                            ng-click="panel='result'" 
+                            aria-label="返回查詢結果，按鈕，輕觸兩下即可啟用">
                             <span class="glyphicon glyphicon-menu-left" aria-hidden="true" style="vertical-align: -webkit-baseline-middle; padding-right: 8px;"></span>返回
                         </button>
                     </div>

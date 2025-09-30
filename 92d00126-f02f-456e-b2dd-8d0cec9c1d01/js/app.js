@@ -220,28 +220,39 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
     /** 處理 行動電話與 email 的遮蔽效果 */
     const resetMaskedFields = () => {
         $scope.maskedField = {};
-        $scope.maskedField.smsPhone1 = { eyeIcon: 'eyec.png', inputType: 'password' };
-        $scope.maskedField.smsPhone2 = { ...($scope.maskedField.smsPhone1) };
-        $scope.maskedField.contactPhone = { ...($scope.maskedField.smsPhone1) }
-        $scope.maskedField.homePhone = { ...($scope.maskedField.smsPhone1) }
-        $scope.maskedField.companyPhone = { ...($scope.maskedField.smsPhone1) };
-        $scope.maskedField.secretaryPhone = { ...($scope.maskedField.smsPhone1) };
-        $scope.maskedField.email1 = { ...($scope.maskedField.smsPhone1) };
-        $scope.maskedField.email2 = { ...($scope.maskedField.smsPhone1) };
-        $scope.maskedField.email3 = { ...($scope.maskedField.smsPhone1) };
-        $scope.maskedField.email4 = { ...($scope.maskedField.smsPhone1) };
-        $scope.maskedField.email5 = { ...($scope.maskedField.smsPhone1) };
+    
+        // phone 預設
+        const phoneField = { eyeIcon: 'eyec.png', inputType: 'password', fieldType: 'phone' };
+        // email 預設
+        const emailField = { eyeIcon: 'eyec.png', inputType: 'password', fieldType: 'email' };
+    
+        // 電話類
+        $scope.maskedField.smsPhone1 = { ...phoneField };
+        $scope.maskedField.smsPhone2 = { ...phoneField };
+        $scope.maskedField.contactPhone = { ...phoneField };
+        $scope.maskedField.homePhone = { ...phoneField };
+        $scope.maskedField.companyPhone = { ...phoneField };
+        $scope.maskedField.secretaryPhone = { ...phoneField };
+    
+        // Email 類
+        $scope.maskedField.email1 = { ...emailField };
+        $scope.maskedField.email2 = { ...emailField };
+        $scope.maskedField.email3 = { ...emailField };
+        $scope.maskedField.email4 = { ...emailField };
+        $scope.maskedField.email5 = { ...emailField };
+    
         $scope.toggleEyeIcon = function(field) {
             if (field.eyeIcon === 'eye.png') {
                 field.eyeIcon = 'eyec.png';
                 field.inputType = 'password';
             } else {
                 field.eyeIcon = 'eye.png';
-                field.inputType = 'text';
+                field.inputType = (field.fieldType === 'phone') ? 'tel' : 'email';
             }
-        }
-        // console.log({ name: 'resetMaskedFields()', maskedField: $scope.maskedField});
-    }
+        };
+    };
+    
+    
     resetMaskedFields();
 
     $scope.cleanPhoneNo = (rawPhoneNo) => {
@@ -368,8 +379,14 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
         // 判斷是否正在處理中
         if ($scope.myInfo.StudentInfo.saveing) return;
 
+        // 判斷 email1 是否填寫
+        if (!$scope.myInfo.StudentBrief2.EmailList.email1) {
+            $('#email1').focus(); // 將焦點移回 email1 欄位
+            return;
+        }
+
         // 判斷必填未填
-        $('#main .has-error').first().find('input').focus();
+        // $('#main .has-error').first().find('input').focus();
         // if (!$scope.myInfo.StudentInfo.CustodianName) return;
         // if (!$scope.myInfo.StudentInfo.CustodianOtherInfo.CustodianOtherInfo.Phone) return;
         // if (!$scope.myInfo.StudentInfo.PermanentPhone) return;
@@ -383,12 +400,12 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
         // if ($scope.myInfo.Willingness.IsVenture && !$scope.myInfo.Willingness.DescriptionVenture) return;
         // if ($scope.myInfo.Willingness.IsEntrepreneurialTeam && !$scope.myInfo.Willingness.DescriptionEntrpreneurial) return;
 
-        if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email1) == false) return;
-        if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email2) == false) return;
-        if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email3) == false) return;
-        if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email4) == false) return;
-        if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email5) == false) return;
-        if ($scope.myInfo.validEmail($scope.myInfo.Publicist.PublicistEmail) == false) return;
+        // if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email1) == false) return;
+        // if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email2) == false) return;
+        // if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email3) == false) return;
+        // if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email4) == false) return;
+        // if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email5) == false) return;
+        // if ($scope.myInfo.validEmail($scope.myInfo.Publicist.PublicistEmail) == false) return;
 
         // if (!$scope.stu_additionals.result['my_ExternalOrganization_desc']) return;
         // if (!$scope.stu_additionals.result['my_Interest_desc']) return;
@@ -736,9 +753,18 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
             if ($scope.educations.current.saveing) return;
 
             // 判斷必填未填
-            if (!$scope.educations.current.result.SchoolName) return;
-            if (!$scope.educations.current.result.Department) return;
-            if (!$scope.educations.current.result.Degree) return;
+            if (!$scope.educations.current.result.SchoolName) {
+                $('#schoolname').focus();
+                return;
+            };
+            if (!$scope.educations.current.result.Department) {
+                $('#department').focus();
+                return;
+            };
+            if (!$scope.educations.current.result.Degree) {
+                $('#degree').focus();
+                return;
+            };
 
             // 開始儲存
             $scope.educations.current.saveing = true;
@@ -988,27 +1014,75 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
             // 判斷必填未填
             var request = angular.copy($scope.experiences.current.result);
 
-            if (!request.CompanyName) return;
+            if (!request.CompanyName) {
+                $('#companyname').focus();
+                return;
+            };
 
-            if (!request.Position) return;
-            if (request.Position == "其它" && !request.PositionOther) return;
+            if (!request.Position) {
+                $('#position').focus();
+                return;
+            };
+            if (request.Position == "其它" && !request.PositionOther) {
+                $('#postlevel-other').focus();
+                return;
+            };
 
-            if (!request.PostLevel.length) return;
-            if (request.PostLevel.indexOf("其它") != -1 && !request.PostLevelOther) return;
-            // request.PostLevel = request.PostLevel.join(",");
+            if (!request.PostLevel.length) {
+                $('#postlevel').focus();
+                return;
+            };
 
-            if (!request.DepartmentCategory) return;
-            if (request.DepartmentCategory == "其它" && !request.DepartmentCategoryOther) return;
+            if (!Array.isArray(request.PostLevel)) {
+                request.PostLevel = request.PostLevel ? [request.PostLevel] : [];
+            }
+        
+            // 確保 PostLevel 是陣列後再執行 join
+            const postLevelString = request.PostLevel.join(',');
 
-            if (!request.IndustryID) return;
-            if (request.Industry == "其它" && !request.IndustryOther) return;
+            
+            if (request.PostLevel.indexOf("其它") != -1 && !request.PostLevelOther) {
+                $('#postlevel-other').focus();
+                return;
+            };
+            request.PostLevel = request.PostLevel.join(",");
 
-            if (!request.WorkPlace.length) return;
-            if (request.WorkPlace.indexOf("其它") != -1 && !request.WorkPlaceOther) return;
+            if (!request.DepartmentCategory) {
+                $('#department').focus();
+                return;
+            };
+            if (request.DepartmentCategory == "其它" && !request.DepartmentCategoryOther) {
+                $('#department-other').focus();
+                return;
+            };
+
+            if (!request.IndustryID) {
+                $('#industry-select').focus();
+                return;
+            };
+            if (request.Industry == "其它" && !request.IndustryOther) {
+                $('#industry-category-select').focus();
+                return;
+            };
+
+            if (!request.WorkPlace.length) {
+                $('#workplace-input').focus();
+                return;
+            };
+            if (request.WorkPlace.indexOf("其它") != -1 && !request.WorkPlaceOther) {
+                $('#workplace-other').focus();
+                return;
+            };
             request.WorkPlace = request.WorkPlace.join(',');
 
-            if (!request.WorkStatus) return;
-            if (request.WorkStatus == "其它" && !request.WorkStatusOther) return;
+            if (!request.WorkStatus) {
+                $('#workstatus-select').focus();
+                return;
+            };
+            if (request.WorkStatus == "其它" && !request.WorkStatusOther) {
+                $('#workstatus-other').focus();
+                return;
+            };
 
             // 處理儲存的資料
             $scope.experiences.current.saveing = true;
