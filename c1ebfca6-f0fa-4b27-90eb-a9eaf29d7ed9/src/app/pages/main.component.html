@@ -107,9 +107,13 @@
                     <div class="">
                         <span class="pr-3">{{course.CourseName}}</span>
                     </div>
-                    <div class="align-middle pl-1 ml-auto" *ngIf="course.StudentName != ''"
-                        style="padding-top: 2px; border-left:2px solid #1891ce; color: #1891ce; line-height: 18px; white-space: normal; font-size: 16px;">
-                        {{course.StudentName}} {{course.StudentNumber}}
+                    <div class="align-middle pl-1 ml-auto" *ngIf="course.Students && course.Students.length"
+                        style="padding-top: 2px; color: #1891ce; line-height: 18px; white-space: normal; font-size: 16px;">
+                        <ng-container *ngFor="let stud of course.Students | slice:0:2">
+                          <span *ngIf="stud.StudentName != ''" class="pl-1" style="border-left:2px solid #1891ce; color: #1891ce; line-height: 18px; white-space: normal; font-size: 16px;">
+                            <span [innerHTML]="stud.StudentName"></span><span class="mx-2">{{stud.StudentNumber}}</span>
+                          </span>
+                        </ng-container>
                     </div>
                 </div>
             </li>

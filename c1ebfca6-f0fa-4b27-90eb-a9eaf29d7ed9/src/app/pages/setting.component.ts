@@ -56,8 +56,42 @@ export class SettingComponent implements OnInit {
       this.settingList = this.objectKeys(this.teacherSetting);
       //取得班級、課程資料
       var rsp = await this.dsa.send("GetClassHelper");
-      this.classList = [].concat(rsp.Class || []);
-      this.courseList = [].concat(rsp.Course || []);
+      //this.classList = [].concat(rsp.Class || []);
+      
+      const targetClasses = [];
+      const tempClassList = [].concat(rsp.Class || []);
+      tempClassList.forEach(cls => {
+        let targetCls = targetClasses.find(c => cls.ClassID === c.ClassID);
+
+        if(!targetCls){
+          targetCls = {...cls}
+          targetCls.Students = [{StudentID : cls.StudentID , StudentName : cls.StudentName}];
+          targetClasses.push(targetCls);
+        } else {
+          targetCls.Students.push({StudentID : cls.StudentID , StudentName : cls.StudentName});
+        }
+
+      });
+      this.classList = targetClasses;
+      
+      console.log(this.classList);
+      
+      
+      // courseList 處理方式改為與 classList 相同
+      const targetCourses = [];
+      const tempCourseList = [].concat(rsp.Course || []);
+      tempCourseList.forEach(course => {
+        let targetCourse = targetCourses.find(c => course.CourseID === c.CourseID);
+        if (!targetCourse) {
+          targetCourse = { ...course };
+          targetCourse.Students = [{ StudentID: course.StudentID, StudentName: course.StudentName }];
+          targetCourses.push(targetCourse);
+        } else {
+          targetCourse.Students.push({ StudentID: course.StudentID, StudentName: course.StudentName });
+        }
+      });
+      this.courseList = targetCourses;
+      
       this.today = await this.dsa.getToday();
       // 取得點名母數 
      this.isUseWeekFromCourse  =   await this.dsa.getAbsenRateDenominatorDepen() ;

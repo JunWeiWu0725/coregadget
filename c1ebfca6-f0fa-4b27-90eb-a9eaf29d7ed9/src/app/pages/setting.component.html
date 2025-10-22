@@ -92,9 +92,11 @@
             <span class="text-muted pr-3">{{ 'home-room' | i18next }}</span>
           </div>
           <div class="ml-auto" style="color: #5eaafb;">
-            <span *ngIf="class.StudentName != ''" class="pl-1" style="border-left:2px solid #1891ce; color: #1891ce; line-height: 18px; white-space: normal; font-size: 16px;">
-              {{class.StudentName}}<span class="mx-2">{{class.StudentNumber}}</span>
-            </span>
+            <div *ngFor="let stud of class.Students">
+              <span *ngIf="stud.StudentName != ''" class="pl-1" style="border-left:2px solid #1891ce; color: #1891ce; line-height: 18px; white-space: normal; font-size: 16px;">
+                <span [innerHTML]="stud.StudentName"></span><span class="mx-2">{{stud.StudentNumber}}</span>
+              </span>
+            </div>
           </div>
         </div>
       </li>
@@ -104,9 +106,11 @@
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-1">
           <div class="mr-auto" style="font-weight: 600;">{{course.CourseName}}</div>
           <div class="ml-auto" style="color: #5eaafb;">
-            <span *ngIf="course.StudentName != ''" class="pl-1" style="border-left:2px solid #1891ce; color: #1891ce; line-height: 18px; white-space: normal; font-size: 16px;">
-              {{course.StudentName}}<span class="mx-2">{{course.StudentNumber||''}}</span>
-            </span>
+            <div *ngFor="let stud of course.Students">
+              <span *ngIf="stud.StudentName != ''" class="pl-1" style="border-left:2px solid #1891ce; color: #1891ce; line-height: 18px; white-space: normal; font-size: 16px;">
+                <span [innerHTML]="stud.StudentName"></span><span class="mx-2">{{stud.StudentNumber || ''}}</span>
+              </span>
+            </div>
           </div>
         </div>
       </li>
