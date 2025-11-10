@@ -89,6 +89,7 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
             Course: null,
             SchoolYear: "",
             Semester: "",
+            templateId: null, // [TemplateGuard] 以 ExamID 作為唯一選取依據
         };
         $scope.params = gadget.params;
         $scope.params.DefaultRound = gadget.params.DefaultRound || '2';
@@ -295,6 +296,30 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
 
 
         /**
+         * [TemplateGuard] 重建 templateList 後回填 current.template
+         * 以 templateId 對應回新陣列中的物件，避免參考失配
+         */
+        function rebuildTemplateList(newList) {
+            $scope.templateList = [].concat(newList || []);
+
+            // 以 ID 對應回新陣列中的物件
+            if ($scope.current.templateId) {
+                var hit = $scope.templateList.find(function (t) { return t.ExamID === $scope.current.templateId; });
+                if (hit) {
+                    $scope.current.template = hit;
+                } else {
+                    // 找不到同 ID，退回第一筆或 null
+                    $scope.current.template = $scope.templateList[0] || null;
+                    $scope.current.templateId = $scope.current.template ? $scope.current.template.ExamID : null;
+                }
+            } else {
+                // 尚未選取過，預設第一筆
+                $scope.current.template = $scope.templateList[0] || null;
+                $scope.current.templateId = $scope.current.template ? $scope.current.template.ExamID : null;
+            }
+        }
+
+        /**
          * 設定目前課程
          * 整理試別項目 examList
          */
@@ -431,7 +456,7 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                 });
 
                 // 課程評分樣板：定期評量清單
-                $scope.templateList = [];
+                var builtTemplateList = []; // [TemplateGuard] 先建構暫存清單
                 $scope.examList = [];
                 // 平時評量
                 $scope.gradeItemList = [];
@@ -613,9 +638,11 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                             }
                             //temp.Lock = !(new Date(temp.InputStartTime) < new Date(timestampWrapper(rsp.Timestamp.Now)) && new Date(timestampWrapper(rsp.Timestamp.Now)) < new Date(temp.InputEndTime));
 
-                            $scope.templateList.push(temp);
+                            builtTemplateList.push(temp); // [TemplateGuard] 先加入暫存清單
                         }
                     });
+                    // [TemplateGuard] 以封裝函式回填 current.template / templateId
+                    rebuildTemplateList(builtTemplateList);
                     $scope.templateList.forEach(function (examRec) {
                         var useGroup = false;
                         if (examRec.Extension)
@@ -1164,13 +1191,12 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
             if ($scope.current.mode == '平時評量') {
                 var chk = false;
 
-                $scope.templateList.forEach(function (rec) {
-                    if ($scope.current.template) {
-                        if ($scope.current.template.Name === rec.Name) {
-                            chk = true;
-                        }
-                    }
-                });
+                // [TemplateGuard] 改用 ExamID 比對而非 Name
+                if ($scope.current.templateId) {
+                    chk = $scope.templateList.some(function (rec) {
+                        return rec.ExamID === $scope.current.templateId;
+                    });
+                }
                 if (chk) {
                     $scope.setCurrentTemplate($scope.current.template);
                 } else {
@@ -1185,6 +1211,8 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
 
         // 目前試別的切換
         $scope.setCurrentTemplate = function (template) {
+            if (!template) return; // [TemplateGuard] 防護檢查
+            
             var execute = false;
             // 檢查資料是否更動
             var data_changed = !$scope.checkAllTable($scope.current.mode);
@@ -1199,7 +1227,9 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                 execute = true;
             }            
             if (execute) {
-                $scope.current.template = template;
+                // [TemplateGuard] 以 ID 作為唯一依據
+                $scope.current.templateId = template.ExamID;
+                $scope.current.template = template; // 保留供舊邏輯使用，但不再當唯一依據
                 $scope.current.gradeItemList = [];
                 // 篩選出目前定期的平時評量項目
                 $scope.gradeItemList.forEach(item => {
@@ -2133,7 +2163,13 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                 execute = true;
             }
             // if (execute) {
-            $scope.current.template = $scope.current.template || $scope.templateList[0];
+            // [TemplateGuard] 確保 templateId 與 template 同步
+            if (!$scope.current.template && $scope.templateList[0]) {
+                $scope.current.template = $scope.templateList[0];
+                $scope.current.templateId = $scope.current.template.ExamID;
+            } else if ($scope.current.template && !$scope.current.templateId) {
+                $scope.current.templateId = $scope.current.template.ExamID;
+            }
             $scope.current.gradeItemList = [];
             // 篩選出目前定期的平時評量項目
             $scope.gradeItemList.forEach(item => {
