@@ -356,6 +356,19 @@ app.controller('MainCtrl', ['$scope', function($scope) {
                             $scope.isLoading = false;
                             $scope.panel = "result"; // 呈現查詢結果
                         });
+                        
+                        // 無障礙功能：查詢完成後將焦點移至查詢結果區域
+                        setTimeout(function() {
+                            var resultElement;
+                            if ($scope.students.length > 0) {
+                                resultElement = document.getElementById('searchResultSummary');
+                            } else {
+                                resultElement = document.getElementById('searchResultEmpty');
+                            }
+                            if (resultElement) {
+                                resultElement.focus();
+                            }
+                        }, 300);
                     }
                 }
             });
@@ -542,6 +555,14 @@ app.controller('MainCtrl', ['$scope', function($scope) {
         });
 
         $scope.panel = "detail"; // 呈現個人資料
+        
+        // 無障礙功能：切換到詳細資料頁面後將焦點移至基本資料標題
+        setTimeout(function() {
+            var detailHeading = document.getElementById('studentDetailHeading');
+            if (detailHeading) {
+                detailHeading.focus();
+            }
+        }, 100);
     };
 
     // 取得公開總覽數

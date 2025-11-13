@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html ng-app="app">
+<html ng-app="app" lang="zh-Hant-TW">
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,7 +48,6 @@
                 </div>
             </div>
         </div>
-
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -271,13 +270,11 @@
             </div>
         </div>
         <div class="page-container">
-            <!--
-            <div class="header">
+            <!-- <div class="header">
                 <ul class="breadcrumb">
                   <li><a href="http://web.ischool.com.tw/main.htm#menu" target="_blank">回myEMBA首頁</a>
                 </ul>
-            </div>
-            -->
+            </div> -->
             <div class="header-space"></div>
             <!-- 查詢 -->
             <div class="content" ng-show="panel=='filter'">
@@ -317,7 +314,7 @@
                             </div>
                         </div>
                         <div class="col-sm-3">
-                            <div class="dropdown" tabindex="0">
+                            <div class="dropdown">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="departmentMenu" 
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                     aria-label="系所組別 {{filter.dept.Name}}，下拉式選單，輕觸兩下即可啟用">
@@ -414,7 +411,7 @@
                             <div class="col-sm-3">
                                 <div class="input-group">
                                     <span class="input-group-addon">工作地點</span>
-                                    <input type="button" class="form-control" data-toggle="modal" data-target="#placeModal" value="{{filter.additional.place.join(',') || '選擇工作地點'}}" readonly aria-label="工作地點 {{filter.additional.place.join(',')}}，輕觸兩下即可開啟選單'">
+                                    <input type="button" class="form-control" data-toggle="modal" data-target="#placeModal" value="{{filter.additional.place.join(',') || '選擇工作地點'}}" readonly aria-label="工作地點 {{filter.additional.place.join(',')}}，下拉式選單，輕觸兩下即可啟用'">
                                 </div>
                             </div>
                             <div class="col-sm-3">
@@ -662,39 +659,39 @@
                         </button>
                     </div>
                 </ol>
+                <div id="searchResultSummary" class="py-4" ng-show="students.length > 0" 
+                     tabindex="-1">查詢結果：共{{students.length}}筆</div>
+                <div id="searchResultEmpty" class="py-4" ng-show="isLoadComplete && students.length == 0" 
+                     tabindex="-1">查詢結果：無符合資料</div>
             
-                <table class="table table-bordered table-hover table-striped responsive-table"
-                    
-                    aria-label="學生查詢結果列表"
-                    id="studentResultsTable">
-                    <thead>
+                <table id="studentResultsTable" class="table table-bordered table-hover table-striped responsive-table"
+                    aria-label="學生查詢結果列表，點擊兩下即可開啟學生詳細資料">
+                   <thead>
                         <tr class="info">
-                            <th scope="col">級別</th>
-                            <th scope="col">班別</th>
-                            <th scope="col">學生姓名</th>
-                            <th scope="col">學號</th>
-                            <th scope="col">性別</th>
-                            <th scope="col">系所組別</th>
+                           <th scope="col">級別</th>
+                           <th scope="col">班別</th>
+                           <th scope="col">學生姓名</th>
+                           <th scope="col">學號</th>
+                           <th scope="col">性別</th>
+                           <th scope="col">系所組別</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="stu in students" ng-click="previewDetail(stu)"
-                            tabindex="0"
-                            
-                            aria-label="點擊查看 {{stu.Name}} 的詳細資料">
-                            <td data-label="級別">{{stu.EnrollYear}}</td>
-                            <td data-label="班別">{{stu.ClassName}}</td>
-                            <td data-label="學生姓名">{{stu.Name}}</td>
-                            <td data-label="學號">{{stu.StudentNumber}}</td>
-                            <td data-label="性別">{{stu.Gender}}</td>
-                            <td data-label="系所組別">{{stu.DepartmentName}}</td>
+                            tabindex="0" aria-label="點擊兩下即可開啟{{stu.Name}}詳細資料">
+                           <td data-label="級別">{{stu.EnrollYear}}</td>
+                           <td data-label="班別">{{stu.ClassName}}</td>
+                           <td data-label="學生姓名">{{stu.Name}}</td>
+                           <td data-label="學號">{{stu.StudentNumber}}</td>
+                           <td data-label="性別">{{stu.Gender}}</td>
+                           <td data-label="系所組別">{{stu.DepartmentName}}</td>
                         </tr>
-                        <tr ng-show="(isLoadComplete && students.length==0)">
-                            <td colspan="6" role="alert" aria-live="polite" style="text-align: center;"
+                        <!-- <tr ng-show="(isLoadComplete && students.length==0)">
+                           <td colspan="6" role="alert" style="text-align: center;"
                                 aria-label="無符合的條件">無符合的資料</td>
-                        </tr>
+                        </tr> -->
                         <tr ng-show="(isLoading)">
-                            <td colspan="6" role="status" aria-live="polite">讀取資料中...</td>
+                           <td colspan="6" role="status">讀取資料中...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -721,85 +718,92 @@
                     </div>
                 </ol>
                 <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <i class="fa fa-fw fa-tasks" aria-hidden="true"></i> 基本資料
+                    <div id="studentDetailHeading" class="panel-heading" tabindex="0" aria-label="{{currStudent.Name}}基本資料">
+                        <i class="fa fa-fw fa-tasks" aria-hidden="true"></i> <span aria-hidden="true">基本資料</span>
                     </div>
-                    <table class="table table-bordered" role="presentation" aria-label="學生基本資料"> <tbody>
+                    <table class="table table-bordered">
+                        <tbody>
                             <tr>
-                                <th scope="row">姓名</th> <td>{{currStudent.Name || '&nbsp;'}}</td>
+                               <th scope="row">姓名</th>
+                               <td>{{currStudent.Name || '&nbsp;'}}</td>
                             </tr>
                             <tr>
-                                <th scope="row">學號</th> <td>{{currStudent.StudentNumber || '&nbsp;'}}</td>
+                               <th scope="row">學號</th>
+                               <td>{{currStudent.StudentNumber || '&nbsp;'}}</td>
                             </tr>
                             <tr>
-                                <th scope="row">性別</th> <td>{{currStudent.Gender || '&nbsp;'}}</td>
+                               <th scope="row">性別</th>
+                               <td>{{currStudent.Gender || '&nbsp;'}}</td>
                             </tr>
                             <tr>
-                                <th scope="row">出生日期</th> <td ng-show="currStudent.shareInfo.Birthdate=='true'">{{currStudent.Birthdate || '&nbsp;'}}</td> <td ng-show="currStudent.shareInfo.Birthdate!='true'">不分享</td> </tr>
-                            <tr>
-                                <th scope="row">住家電話</th>
-                                <td ng-show="currStudent.shareInfo.PermanentPhone=='true'">{{currStudent.PermanentPhone || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo.PermanentPhone!='true'">不分享</td>
+                               <th scope="row">出生日期</th>
+                                <td ng-show="currStudent.shareInfo.Birthdate=='true'">{{currStudent.Birthdate || '&nbsp;'}}</td>
+                                <td ng-show="currStudent.shareInfo.Birthdate!='true'">不分享</td>
                             </tr>
                             <tr>
-                                <th scope="row">公司電話</th>
-                                <td ng-show="currStudent.shareInfo['公司電話']=='true'">{{currStudent.OfficePhone || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo['公司電話']!='true'">不分享</td>
+                               <th scope="row">住家電話</th>
+                               <td ng-show="currStudent.shareInfo.PermanentPhone=='true'">{{currStudent.PermanentPhone || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo.PermanentPhone!='true'">不分享</td>
                             </tr>
                             <tr>
-                                <th scope="row">秘書電話</th>
-                                <td ng-show="currStudent.shareInfo['秘書電話']=='true'">{{currStudent.OtherPhone || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo['秘書電話']!='true'">不分享</td>
+                               <th scope="row">公司電話</th>
+                               <td ng-show="currStudent.shareInfo['公司電話']=='true'">{{currStudent.OfficePhone || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo['公司電話']!='true'">不分享</td>
                             </tr>
                             <tr>
-                                <th scope="row">行動電話 1</th>
-                                <td ng-show="currStudent.shareInfo.SMSPhone=='true'">{{currStudent.SMSPhone1 || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo.SMSPhone!='true'">不分享</td>
+                               <th scope="row">秘書電話</th>
+                               <td ng-show="currStudent.shareInfo['秘書電話']=='true'">{{currStudent.OtherPhone || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo['秘書電話']!='true'">不分享</td>
                             </tr>
                             <tr>
-                                <th scope="row">行動電話 2</th>
-                                <td ng-show="currStudent.shareInfo['行動電話2']=='true'">{{currStudent.SMSPhone2 || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo['行動電話2']!='true'">不分享</td>
+                               <th scope="row">行動電話 1</th>
+                               <td ng-show="currStudent.shareInfo.SMSPhone=='true'">{{currStudent.SMSPhone1 || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo.SMSPhone!='true'">不分享</td>
                             </tr>
                             <tr>
-                                <th scope="row">Email 1</th>
-                                <td ng-show="currStudent.shareInfo.EmailList.email1=='true'">{{currStudent.Email1 || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo.EmailList.email1!='true'">不分享</td>
+                               <th scope="row">行動電話 2</th>
+                               <td ng-show="currStudent.shareInfo['行動電話2']=='true'">{{currStudent.SMSPhone2 || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo['行動電話2']!='true'">不分享</td>
                             </tr>
                             <tr>
-                                <th scope="row">Email 2</th>
-                                <td ng-show="currStudent.shareInfo.EmailList.email2=='true'">{{currStudent.Email2 || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo.EmailList.email2!='true'">不分享</td>
+                               <th scope="row">Email 1</th>
+                               <td ng-show="currStudent.shareInfo.EmailList.email1=='true'">{{currStudent.Email1 || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo.EmailList.email1!='true'">不分享</td>
                             </tr>
                             <tr>
-                                <th scope="row">Email 3</th>
-                                <td ng-show="currStudent.shareInfo.EmailList.email3=='true'">{{currStudent.Email3 || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo.EmailList.email3!='true'">不分享</td>
+                               <th scope="row">Email 2</th>
+                               <td ng-show="currStudent.shareInfo.EmailList.email2=='true'">{{currStudent.Email2 || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo.EmailList.email2!='true'">不分享</td>
                             </tr>
                             <tr>
-                                <th scope="row">Email 4</th>
-                                <td ng-show="currStudent.shareInfo.EmailList.email4=='true'">{{currStudent.Email4 || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo.EmailList.email4!='true'">不分享</td>
+                               <th scope="row">Email 3</th>
+                               <td ng-show="currStudent.shareInfo.EmailList.email3=='true'">{{currStudent.Email3 || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo.EmailList.email3!='true'">不分享</td>
                             </tr>
                             <tr>
-                                <th scope="row">Email 5</th>
-                                <td ng-show="currStudent.shareInfo.EmailList.email5=='true'">{{currStudent.Email5 || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo.EmailList.email5!='true'">不分享</td>
+                               <th scope="row">Email 4</th>
+                               <td ng-show="currStudent.shareInfo.EmailList.email4=='true'">{{currStudent.Email4 || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo.EmailList.email4!='true'">不分享</td>
                             </tr>
                             <tr>
-                                <th scope="row">聯絡地址</th>
-                                <td ng-show="currStudent.shareInfo.ContactAddress=='true'">{{currStudent.ContactAddress || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo.ContactAddress!='true'">不分享</td>
+                               <th scope="row">Email 5</th>
+                               <td ng-show="currStudent.shareInfo.EmailList.email5=='true'">{{currStudent.Email5 || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo.EmailList.email5!='true'">不分享</td>
                             </tr>
                             <tr>
-                                <th scope="row">住家地址</th>
-                                <td ng-show="currStudent.shareInfo.PermanentAddress=='true'">{{currStudent.PermanentAddress || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo.PermanentAddress!='true'">不分享</td>
+                               <th scope="row">聯絡地址</th>
+                               <td ng-show="currStudent.shareInfo.ContactAddress=='true'">{{currStudent.ContactAddress || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo.ContactAddress!='true'">不分享</td>
                             </tr>
                             <tr>
-                                <th scope="row">公司地址</th>
-                                <td ng-show="currStudent.shareInfo.OtherAddressList.Address[0]=='true'">{{currStudent.OtherAddress || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo.OtherAddressList.Address[0]!='true'">不分享</td>
+                               <th scope="row">住家地址</th>
+                               <td ng-show="currStudent.shareInfo.PermanentAddress=='true'">{{currStudent.PermanentAddress || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo.PermanentAddress!='true'">不分享</td>
+                            </tr>
+                            <tr>
+                               <th scope="row">公司地址</th>
+                               <td ng-show="currStudent.shareInfo.OtherAddressList.Address[0]=='true'">{{currStudent.OtherAddress || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo.OtherAddressList.Address[0]!='true'">不分享</td>
                             </tr>
                         </tbody>
                     </table>
@@ -808,22 +812,24 @@
                     <div class="panel-heading">
                         <i class="fa fa-fw fa-graduation-cap" aria-hidden="true"></i> 學歷
                     </div>
-                    <div ng-if="!currStudent.eduBackground || currStudent.eduBackground.length==0" style="padding: 15px" aria-live="polite">不分享</div> <table class="table table-bordered" ng-show="currStudent.eduBackground.length > 0" aria-label="學生學歷列表"> <tbody ng-repeat="item in currStudent.eduBackground">
+                    <div ng-if="!currStudent.eduBackground || currStudent.eduBackground.length==0" style="padding: 15px">不分享</div> 
+                    <table class="table table-bordered" ng-show="currStudent.eduBackground.length > 0" aria-label="學生學歷列表"> 
+                        <tbody ng-repeat="item in currStudent.eduBackground">
                             <tr>
-                                <th scope="row">學校</th>
-                                <td>{{item.SchoolName || '&nbsp;'}}</td>
+                               <th scope="row">學校</th>
+                               <td>{{item.SchoolName || '&nbsp;'}}</td>
                             </tr>
                             <tr>
-                                <th scope="row">系所</th>
-                                <td>{{item.Department || '&nbsp;'}}</td>
+                               <th scope="row">系所</th>
+                               <td>{{item.Department || '&nbsp;'}}</td>
                             </tr>
                             <tr>
-                                <th scope="row">學位</th>
-                                <td>{{item.Degree || '&nbsp;'}}</td>
+                               <th scope="row">學位</th>
+                               <td>{{item.Degree || '&nbsp;'}}</td>
                             </tr>
                             <tr>
-                                <th scope="row">最高學歷</th>
-                                <td>{{item.IsTop == 't' ? '是' : '否'}}</td>
+                               <th scope="row">最高學歷</th>
+                               <td>{{item.IsTop == 't' ? '是' : '否'}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -832,36 +838,36 @@
                     <div class="panel-heading">
                         <i class="fa fa-fw fa-suitcase" aria-hidden="true"></i> 經歷
                     </div>
-                    <div ng-if="!currStudent.experience || currStudent.experience.length==0" style="padding: 15px" aria-live="polite">不分享</div>
+                    <div ng-if="!currStudent.experience || currStudent.experience.length==0" style="padding: 15px">不分享</div>
                     <table class="table table-bordered" ng-show="currStudent.experience.length > 0" aria-label="學生經歷列表">
                         <tbody ng-repeat="item in currStudent.experience">
                             <tr>
-                                <th scope="row">公司名稱</th>
-                                <td>{{item.CompanyName || '&nbsp;'}}</td>
+                               <th scope="row">公司名稱</th>
+                               <td>{{item.CompanyName || '&nbsp;'}}</td>
                             </tr>
                             <tr>
-                                <th scope="row">職稱</th>
-                                <td>{{item.Position || '&nbsp;'}}</td>
+                               <th scope="row">職稱</th>
+                               <td>{{item.Position || '&nbsp;'}}</td>
                             </tr>
                             <tr>
-                                <th scope="row">層級別</th>
-                                <td>{{['其他','其它'].indexOf(item.PostLevel) !== -1 ? item.PostLevelOther || '&nbsp;' : item.PostLevel || '&nbsp;'}}</td>
+                               <th scope="row">層級別</th>
+                               <td>{{['其他','其它'].indexOf(item.PostLevel) !== -1 ? item.PostLevelOther || '&nbsp;' : item.PostLevel || '&nbsp;'}}</td>
                             </tr>
                             <tr>
-                                <th scope="row">部門</th>
-                                <td>{{['其他','其它'].indexOf(item.DepartmentCategory) !== -1 ? item.DepartmentCategoryOther || '&nbsp;' : item.DepartmentCategory || '&nbsp;'}}</td>
+                               <th scope="row">部門</th>
+                               <td>{{['其他','其它'].indexOf(item.DepartmentCategory) !== -1 ? item.DepartmentCategoryOther || '&nbsp;' : item.DepartmentCategory || '&nbsp;'}}</td>
                             </tr>
                             <tr>
-                                <th scope="row">產業別</th>
-                                <td>{{['其他','其它'].indexOf(item.Industry) !== -1 ? item.IndustryOther || '&nbsp;' : filterExperiences(item.UID) || '&nbsp;'}}</td>
+                               <th scope="row">產業別</th>
+                               <td>{{['其他','其它'].indexOf(item.Industry) !== -1 ? item.IndustryOther || '&nbsp;' : filterExperiences(item.UID) || '&nbsp;'}}</td>
                             </tr>
                             <tr>
-                                <th scope="row">工作地點</th>
-                                <td>{{['其他','其它'].indexOf(item.WorkPlace) !== -1 ? item.WorkPlaceOther || '&nbsp;' : item.WorkPlace || '&nbsp;'}}</td>
+                               <th scope="row">工作地點</th>
+                               <td>{{['其他','其它'].indexOf(item.WorkPlace) !== -1 ? item.WorkPlaceOther || '&nbsp;' : item.WorkPlace || '&nbsp;'}}</td>
                             </tr>
                             <tr>
-                                <th scope="row">工作狀態</th>
-                                <td>{{['其他','其它'].indexOf(item.WorkStatus) !== -1 ? item.WorkStatusOther || '&nbsp;' : item.WorkStatus || '&nbsp;'}}</td>
+                               <th scope="row">工作狀態</th>
+                               <td>{{['其他','其它'].indexOf(item.WorkStatus) !== -1 ? item.WorkStatusOther || '&nbsp;' : item.WorkStatus || '&nbsp;'}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -870,53 +876,54 @@
                     <div class="panel-heading">
                         <i class="fa fa-fw fa-tasks" aria-hidden="true"></i> 經驗調查
                     </div>
-                    <div ng-show="currStudent.willingness.IsInexperience=='t'" style="padding: 15px" aria-live="polite">無經驗</div>
+                    <div ng-show="currStudent.willingness.IsInexperience=='t'" style="padding: 15px">無經驗</div>
                     <table ng-show="currStudent.willingness.IsInexperience=='f'" class="table table-bordered" aria-label="參與活動經驗調查">
-                        <thead>
+                       <thead>
                             <tr>
-                                <th scope="col">你個人或所屬組織，是否參與「社會企業」相關活動？</th> </tr>
+                               <th scope="col">你個人或所屬組織，是否參與「社會企業」相關活動？</th>
+                            </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>
+                               <td>
                                     <span>{{currStudent.willingness.IsSocialEnterprise === 't' ? '是' : '否'}}</span>
                                     <span ng-show="currStudent.willingness.IsSocialEnterprise === 't' && currStudent.willingness.IsSharingEnterprise=='t'">，{{currStudent.willingness.DescriptionEnterprise}}</span> </td>
                             </tr>
                         </tbody>
-                        <thead>
+                       <thead>
                             <tr>
-                                <th scope="col">你個人或所屬組織，是否參與「非營利組織」相關活動？</th>
+                               <th scope="col">你個人或所屬組織，是否參與「非營利組織」相關活動？</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>
+                               <td>
                                     <span>{{currStudent.willingness.IsNonPorfitOrganizations === 't' ? '是' : '否'}}</span>
                                     <span ng-show="currStudent.willingness.IsNonPorfitOrganizations === 't' && currStudent.willingness.IsSharingOrganizations=='t'">，{{currStudent.willingness.DescriptionOrganizations}}</span>
                                 </td>
                             </tr>
                         </tbody>
-                        <thead>
+                       <thead>
                             <tr>
-                                <th scope="col">你個人或所屬組織，是否參與「企業社會責任(CSR)」相關活動？</th>
+                               <th scope="col">你個人或所屬組織，是否參與「企業社會責任(CSR)」相關活動？</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>
+                               <td>
                                     <span>{{currStudent.willingness.IsCorporateSocialResponsibility === 't' ? '是' : '否'}}</span>
                                     <span ng-show="currStudent.willingness.IsCorporateSocialResponsibility === 't' && currStudent.willingness.IsSharingResponsibility=='t'">，{{currStudent.willingness.DescriptionResponsibility}}</span>
                                 </td>
                             </tr>
                         </tbody>
-                        <thead>
+                       <thead>
                             <tr>
-                                <th scope="col">你個人或所屬組織，是否參與「創業」相關活動？</th>
+                               <th scope="col">你個人或所屬組織，是否參與「創業」相關活動？</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>
+                               <td>
                                     <span>{{currStudent.willingness.IsVenture === 't' ? '是' : '否'}}</span>
                                     <span ng-show="currStudent.willingness.IsVenture === 't' && currStudent.willingness.IsSharingVenture=='t'">，{{currStudent.willingness.DescriptionVenture}}</span>
                                 </td>
@@ -927,16 +934,16 @@
                 
                 <div class="panel panel-info">
                     <div class="panel-heading"><i class="fa fa-fw fa-tasks" aria-hidden="true"></i> 意願調查</div>
-                    <div ng-show="currStudent.willingness.IsNoSurvey=='t'" style="padding: 15px" aria-live="polite">無意願</div>
+                    <div ng-show="currStudent.willingness.IsNoSurvey=='t'" style="padding: 15px">無意願</div>
                     <table ng-show="currStudent.willingness.IsNoSurvey=='f'" class="table table-bordered" aria-label="擔任業師意願調查">
-                        <thead>
+                       <thead>
                             <tr>
-                                <th scope="col">是否擔任台大管理學院相關課程「業師」意願？</th>
+                               <th scope="col">是否擔任台大管理學院相關課程「業師」意願？</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>
+                               <td>
                                     <span>{{currStudent.willingness.IsEntrpreneurialTeam === 't' ? '是' : '否'}}</span>
                                     <span ng-show="currStudent.willingness.IsEntrpreneurialTeam === 't' && currStudent.willingness.IsSharingEntrpreneurial=='t'">，{{currStudent.willingness.DescriptionEntrpreneurial}}</span>
                                 </td>
@@ -949,7 +956,7 @@
                         <i class="fa fa-fw fa-group" aria-hidden="true"></i> 參加校外團體
                     </div>
                     <div class="panel-body">
-                        <span ng-if="!currStudent.externalOrg || currStudent.externalOrg.length==0" aria-live="polite">不分享</span>
+                        <span ng-if="!currStudent.externalOrg || currStudent.externalOrg.length==0">不分享</span>
                         <ul ng-show="currStudent.externalOrg.length > 0" aria-label="參加校外團體列表"> 
                             <li ng-repeat="item in currStudent.externalOrg">
                                 <span>【{{item.Domain}}】{{['其他','其它'].indexOf(item.Category) == -1 ? item.Category : item.Description}}</span>
@@ -962,7 +969,7 @@
                         <i class="fa fa-fw fa-heart" aria-hidden="true"></i> 興趣
                     </div>
                     <div class="panel-body">
-                        <span ng-if="!currStudent.interest || currStudent.interest.length==0" aria-live="polite">不分享</span>
+                        <span ng-if="!currStudent.interest || currStudent.interest.length==0">不分享</span>
                         <ul ng-show="currStudent.interest.length > 0" aria-label="興趣列表"> 
                             <li ng-repeat="item in currStudent.interest">
                                 <span>{{['其他','其它'].indexOf(item.Domain) == -1 ? ['【', item.Domain, '】', item.Category].join('') : item.Description}}</span>
@@ -975,7 +982,7 @@
                         <i class="fa fa-fw fa-group" aria-hidden="true"></i> 參加台大EMBA團體
                     </div>
                     <div class="panel-body">
-                        <span ng-if="!currStudent.embaGroups || currStudent.embaGroups.length==0" aria-live="polite">不分享</span>
+                        <span ng-if="!currStudent.embaGroups || currStudent.embaGroups.length==0">不分享</span>
                         <ul ng-show="currStudent.embaGroups.length > 0" aria-label="參加台大EMBA團體列表"> 
                             <li ng-repeat="item in currStudent.embaGroups">
                                 <span>【{{item.Domain}}】{{item.Category}}</span>
@@ -987,31 +994,31 @@
                     <div class="panel-heading">
                         <i class="fa fa-fw fa-coffee" aria-hidden="true"></i> 其它聯絡資訊
                     </div>
-                    <table class="table table-bordered" role="presentation" aria-label="其他聯絡資訊"> <tbody>
+                    <table class="table table-bordered" aria-label="其他聯絡資訊"> <tbody>
                             <tr>
-                                <th scope="row">Line</th>
-                                <td ng-show="currStudent.shareInfo.Line=='true'">{{currStudent.Line || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo.Line!='true'">不分享</td>
+                               <th scope="row">Line</th>
+                               <td ng-show="currStudent.shareInfo.Line=='true'">{{currStudent.Line || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo.Line!='true'">不分享</td>
                             </tr>
                             <tr>
-                                <th scope="row">Facebook</th>
-                                <td ng-show="currStudent.shareInfo.Facebook=='true'">{{currStudent.Facebook || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo.Facebook!='true'">不分享</td>
+                               <th scope="row">Facebook</th>
+                               <td ng-show="currStudent.shareInfo.Facebook=='true'">{{currStudent.Facebook || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo.Facebook!='true'">不分享</td>
                             </tr>
                             <tr>
-                                <th scope="row">LinkedIn</th>
-                                <td ng-show="currStudent.shareInfo.LinkedIn=='true'">{{currStudent.LinkedIn || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo.LinkedIn!='true'">不分享</td>
+                               <th scope="row">LinkedIn</th>
+                               <td ng-show="currStudent.shareInfo.LinkedIn=='true'">{{currStudent.LinkedIn || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo.LinkedIn!='true'">不分享</td>
                             </tr>
                             <tr>
-                                <th scope="row">WhatsApp</th>
-                                <td ng-show="currStudent.shareInfo.WhatsApp=='true'">{{currStudent.WhatsApp || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo.WhatsApp!='true'">不分享</td>
+                               <th scope="row">WhatsApp</th>
+                               <td ng-show="currStudent.shareInfo.WhatsApp=='true'">{{currStudent.WhatsApp || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo.WhatsApp!='true'">不分享</td>
                             </tr>
                             <tr>
-                                <th scope="row">WeChat</th>
-                                <td ng-show="currStudent.shareInfo.WeChat=='true'">{{currStudent.WeChat || '&nbsp;'}}</td>
-                                <td ng-show="currStudent.shareInfo.WeChat!='true'">不分享</td>
+                               <th scope="row">WeChat</th>
+                               <td ng-show="currStudent.shareInfo.WeChat=='true'">{{currStudent.WeChat || '&nbsp;'}}</td>
+                               <td ng-show="currStudent.shareInfo.WeChat!='true'">不分享</td>
                             </tr>
                         </tbody>
                     </table>
