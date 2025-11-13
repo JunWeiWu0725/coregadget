@@ -17,8 +17,19 @@
       body: "",
       result: function (response, error, http) {
         var semester;
+        var defaultSchoolYear = response.Result.SystemConfig.DefaultSchoolYear;
 
-        $("#absence input[target='schoolYear']").val(response.Result.SystemConfig.DefaultSchoolYear);
+        // 設定學年度預設值
+        var schoolYearInput = $("#absence input[target='schoolYear']");
+        schoolYearInput.val(defaultSchoolYear);
+
+        // 只有當有值時才更新 title 屬性
+        if (defaultSchoolYear && defaultSchoolYear.toString().trim() !== '') {
+          schoolYearInput.attr("title", "學年度，輕觸兩下即可啟用");
+        } else {
+          schoolYearInput.removeAttr("title");
+        }
+        
         semester = response.Result.SystemConfig.DefaultSemester;
         $("#absence span[target='semester']").attr("value", semester);
         if (semester === "0") {
@@ -46,17 +57,18 @@
         }
       },
       result: function (response, error, http) {
-        var items;
+        var cardItems = [];
+        var tableItems = [];
 
-        items = [];
         if (response.Result != null) {
           $(response.Result.Absence).each(function (index, item) {
-            return items.push(`
+            // 卡片式顯示資料
+            cardItems.push(`
               <div class="dis-show">
                 <div class="bd-callout px-2 pt-3 requiredt">
                   <div class="card text-muted cursor-pointer collapsed" aria-expanded="false" data-toggle="collapse" data-target="#classlist${index}" aria-controls="classlist${index}">
                     <button tabindex="0" id="class${index}" class="flex justify-center items-center w-full gap-x-2 pb-3" aria-describedby="sronly">
-                      <span id="sronly" class="sr-only dis-none" aria-label="點擊展開或收合課程詳細資訊"></span>
+                        <span id="sronly" class="sr-only dis-none" aria-label="點擊展開或收合課程詳細資訊"></span>
                         <div class="flex flex-col text-left">
                           <div class="text-base font-semibold requiredt">${item.CourseName}</div>
                           <div class="whitespace-pre-line">${(item.StartTime.substr(0, 10))} ( ${(item.StartTime.substr(11, 5))} - ${(item.EndTime.substr(11, 5))} )</div>
@@ -68,29 +80,35 @@
                     </button>
                   </div>
                   <div class="text-muted -mx-4 px-4 collapse" style="background: rgb(250, 250, 250)" id="classlist${index}" aria-expanded="false">
-                    <hr class="mb-2 mt-0" />
+                    <hr tabindex="-1" aria-hidden="true" class="mb-2 mt-0" />
                     <div class="flex justify-between mb-3">
-                    <div class="text-center">
-                      <div>課程識別碼</div>
-                      <div class="font-bold">${item.SubjectCode}</div>
-                    </div>
-                      <div class="text-center">
-                        <div>學年度</div>
-                        <div class="font-bold">${item.SchoolYear}</div>
+                      <div tabindex="0" class="text-center" aria-label="課程識別碼 ${item.SubjectCode}">
+                        <div aria-hidden="true">課程識別碼</div>
+                        <div class="font-bold" aria-hidden="true">${item.SubjectCode}</div>
                       </div>
-                      <div class="text-center">
-                        <div>學期</div>
-                        <div class="font-bold">${item.Semester === "0" ? "夏季學期" : "第" + item.Semester + "學期"}</div>
+                      <div tabindex="0" class="text-center" aria-label="學年度 ${item.SchoolYear}">
+                        <div aria-hidden="true">學年度</div>
+                        <div class="font-bold" aria-hidden="true">${item.SchoolYear}</div>
+                      </div>
+                      <div tabindex="0" class="text-center" aria-label="學期 ${item.Semester === "0" ? "夏季學期" : "第" + item.Semester + "學期"}">
+                        <div aria-hidden="true">學期</div>
+                        <div class="font-bold" aria-hidden="true">${item.Semester === "0" ? "夏季學期" : "第" + item.Semester + "學期"}</div>
                       </div>
                     </div>
-                    <hr class="my-2" />
-                    <div>補課訊息</div>
-                    <div class="font-bold pb-2">${item.MakeUpDescription}</div>
+                    <hr tabindex="-1" aria-hidden="true" class="my-2" />
+                    <div tabindex="0" class="text-center" aria-label="補課訊息 ${item.MakeUpDescription}">
+                      <div aria-hidden="true">補課訊息</div>
+                      <div aria-hidden="true" class="font-bold pb-2">${item.MakeUpDescription}</div>
+                    </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <tr class="dis-none">
+            `);
+            
+            // 表格式顯示資料
+            tableItems.push(`
+              <tr>
                 <td>${item.SchoolYear}</td>
                 <td>${item.Semester === "0" ? "夏季學期" : "第" + item.Semester + "學期"}</td>
                 <td>${item.CourseName}</td>
@@ -99,10 +117,36 @@
                 <td>${(item.StartTime.substr(11, 5))} - ${(item.EndTime.substr(11, 5))}</td>
                 <td>${item.MakeUpDescription}</td>
               </tr>
-                `);
+            `);
           });
         }
-        return $("#absence #absence-detail tbody").html((items.length === 0 ? '<tr><td colspan="7">目前沒有符合條件的缺課資料，請輸入學年度及學期進行查詢。</td></tr>' : items.join("")));
+        
+        // 更新查詢結果筆數顯示
+        var resultCount = cardItems.length;
+        var resultElement = $("#query-result-count");
+        var resultText;
+        
+        if (resultCount > 0) {
+          resultText = "查詢結果：共" + resultCount + "筆";
+        } else {
+          resultText = "查詢結果：無符合資料";
+        }
+        
+        // 更新結果顯示並顯示元素
+        resultElement.text(resultText).show();
+        
+        // 更新卡片容器內容（假設有一個專門的卡片容器）
+        $("#absence #absence-cards").html((cardItems.length === 0 ? '' : cardItems.join("")));
+        
+        // 更新表格內容
+        $("#absence #absence-detail tbody").html((tableItems.length === 0 ? '' : tableItems.join("")));
+        
+        // 無障礙：將焦點定位到結果區域並報讀結果
+        setTimeout(function() {
+          resultElement.focus();
+        }, 100);
+        
+        return;
       }
     });
   };
