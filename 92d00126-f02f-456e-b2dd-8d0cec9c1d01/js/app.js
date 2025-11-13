@@ -286,6 +286,12 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
         return (!!!mail) || /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(mail);
     };
 
+    // 顯示驗證錯誤訊息
+    $scope.showValidationError = function (message) {
+        $('#messageContent').html(message.replace(/\n/g, '<br>'));
+        $('#messageBox').modal();
+    };
+
     // 個人基本資料管理
     $scope.myInfo.load = function () {
         $scope.connection.send({
@@ -379,37 +385,216 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
         // 判斷是否正在處理中
         if ($scope.myInfo.StudentInfo.saveing) return;
 
-        // 判斷 email1 是否填寫
+        // 表單驗證 - 收集所有錯誤訊息
+        var errors = [];
+
+        // 判斷必填欄位
+        if (!$scope.myInfo.StudentInfo.CustodianName) {
+            errors.push('緊急聯絡人為必填欄位');
+        }
+        if (!$scope.myInfo.StudentInfo.CustodianOtherInfo.CustodianOtherInfo.Phone) {
+            errors.push('聯絡人電話為必填欄位');
+        }
+        // if (!$scope.myInfo.StudentInfo.PermanentPhone) {
+        //     errors.push('住家電話為必填欄位');
+        // }
+        if (!$scope.myInfo.StudentInfo.SMSPhone) {
+            errors.push('行動電話1為必填欄位');
+        }
         if (!$scope.myInfo.StudentBrief2.EmailList.email1) {
-            $('#email1').focus(); // 將焦點移回 email1 欄位
-            return;
+            errors.push('E-MAIL 1為必填欄位');
+        }
+        // if (!$scope.myInfo.StudentInfo.MailingAddress_desc) {
+        //     errors.push('聯絡地址為必填欄位');
+        // }
+        // if (!$scope.myInfo.StudentInfo.PermanentAddress_desc) {
+        //     errors.push('住家地址為必填欄位');
+        // }
+
+        // 驗證條件性必填欄位
+        if ($scope.myInfo.Willingness.IsSocialEnterprise && !$scope.myInfo.Willingness.DescriptionEnterprise) {
+            errors.push('請簡述社會企業相關活動內容');
+        }
+        if ($scope.myInfo.Willingness.IsNonProfitOrganizations && !$scope.myInfo.Willingness.DescriptionOrganizations) {
+            errors.push('請簡述非營利組織相關活動內容');
+        }
+        if ($scope.myInfo.Willingness.IsCorporateSocialResponsibility && !$scope.myInfo.Willingness.DescriptionResponsibility) {
+            errors.push('請簡述企業社會責任相關活動內容');
+        }
+        if ($scope.myInfo.Willingness.IsVenture && !$scope.myInfo.Willingness.DescriptionVenture) {
+            errors.push('請簡述創業相關活動內容');
+        }
+        if ($scope.myInfo.Willingness.IsEntrepreneurialTeam && !$scope.myInfo.Willingness.DescriptionEntrpreneurial) {
+            errors.push('請簡述業師意願相關內容');
         }
 
-        // 判斷必填未填
-        // $('#main .has-error').first().find('input').focus();
-        // if (!$scope.myInfo.StudentInfo.CustodianName) return;
-        // if (!$scope.myInfo.StudentInfo.CustodianOtherInfo.CustodianOtherInfo.Phone) return;
-        // if (!$scope.myInfo.StudentInfo.PermanentPhone) return;
-        // if (!$scope.myInfo.StudentInfo.SMSPhone) return;
-        // if (!$scope.myInfo.StudentBrief2.EmailList.email1) return;
-        // if (!$scope.myInfo.StudentInfo.MailingAddress_desc) return;
-        // if (!$scope.myInfo.StudentInfo.PermanentAddress_desc) return;
-        // if ($scope.myInfo.Willingness.IsSocialEnterprise && !$scope.myInfo.Willingness.DescriptionEnterprise) return;
-        // if ($scope.myInfo.Willingness.IsNonProfitOrganizations && !$scope.myInfo.Willingness.DescriptionOrganizations) return;
-        // if ($scope.myInfo.Willingness.IsCorporateSocialResponsibility && !$scope.myInfo.Willingness.DescriptionResponsibility) return;
-        // if ($scope.myInfo.Willingness.IsVenture && !$scope.myInfo.Willingness.DescriptionVenture) return;
-        // if ($scope.myInfo.Willingness.IsEntrepreneurialTeam && !$scope.myInfo.Willingness.DescriptionEntrpreneurial) return;
+        // Email 格式驗證
+        if ($scope.myInfo.StudentBrief2.EmailList.email1 && !$scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email1)) {
+            errors.push('E-MAIL 1 格式不正確');
+        }
+        if ($scope.myInfo.StudentBrief2.EmailList.email2 && !$scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email2)) {
+            errors.push('E-MAIL 2 格式不正確');
+        }
+        if ($scope.myInfo.StudentBrief2.EmailList.email3 && !$scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email3)) {
+            errors.push('E-MAIL 3 格式不正確');
+        }
+        if ($scope.myInfo.StudentBrief2.EmailList.email4 && !$scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email4)) {
+            errors.push('E-MAIL 4 格式不正確');
+        }
+        if ($scope.myInfo.StudentBrief2.EmailList.email5 && !$scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email5)) {
+            errors.push('E-MAIL 5 格式不正確');
+        }
+        // if ($scope.myInfo.Publicist.PublicistEmail && !$scope.myInfo.validEmail($scope.myInfo.Publicist.PublicistEmail)) {
+        //     errors.push('公關室 E-MAIL 格式不正確');
+        // }
 
-        // if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email1) == false) return;
-        // if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email2) == false) return;
-        // if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email3) == false) return;
-        // if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email4) == false) return;
-        // if ($scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email5) == false) return;
-        // if ($scope.myInfo.validEmail($scope.myInfo.Publicist.PublicistEmail) == false) return;
+        // 檢查額外資訊必填
+        // if (!$scope.stu_additionals.result['my_ExternalOrganization_desc']) {
+        //     errors.push('參加校外團體為必填欄位');
+        // }
+        // if (!$scope.stu_additionals.result['my_Interest_desc']) {
+        //     errors.push('興趣為必填欄位');
+        // }
+        // if (!$scope.stu_additionals.result['my_EMBAGroups_desc']) {
+        //     errors.push('參加台大EMBA團體為必填欄位');
+        // }
 
-        // if (!$scope.stu_additionals.result['my_ExternalOrganization_desc']) return;
-        // if (!$scope.stu_additionals.result['my_Interest_desc']) return;
-        // if (!$scope.stu_additionals.result['my_EMBAGroups_desc']) return;
+        // 如果有錯誤，顯示錯誤訊息並停止保存
+        if (errors.length > 0) {
+            $scope.showValidationError(errors.join('\n'));
+            
+            // 將錯誤欄位加上 has-error 樣式並設置焦點到第一個錯誤欄位
+            $('#main .has-error').removeClass('has-error');
+            var firstErrorElement = null;
+            
+            // 按照優先順序檢查並標記錯誤欄位，同時記錄第一個錯誤元素
+            if (!$scope.myInfo.StudentInfo.CustodianName) {
+                var custodianInput = $('input[ng-model*="CustodianName"]');
+                custodianInput.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = custodianInput[0];
+            }
+            
+            if (!$scope.myInfo.StudentInfo.CustodianOtherInfo.CustodianOtherInfo.Phone) {
+                var custodianPhoneInput = $('input[ng-model*="CustodianOtherInfo.CustodianOtherInfo.Phone"]');
+                custodianPhoneInput.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = custodianPhoneInput[0];
+            }
+            
+            if (!$scope.myInfo.StudentInfo.PermanentPhone) {
+                var permanentPhoneInput = $('input[ng-model*="PermanentPhone"]');
+                permanentPhoneInput.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = permanentPhoneInput[0];
+            }
+            
+            if (!$scope.myInfo.StudentInfo.SMSPhone) {
+                var smsPhoneInput = $('input[ng-model*="SMSPhone"]');
+                smsPhoneInput.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = smsPhoneInput[0];
+            }
+            
+            if (!$scope.myInfo.StudentBrief2.EmailList.email1) {
+                var email1Input = $('#email1, input[ng-model*="email1"]');
+                email1Input.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = email1Input[0];
+            }
+            
+            if (!$scope.myInfo.StudentInfo.MailingAddress_desc) {
+                var mailingAddressInput = $('input[name="mailing-address-display"]');
+                mailingAddressInput.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = mailingAddressInput[0];
+            }
+            
+            if (!$scope.myInfo.StudentInfo.PermanentAddress_desc) {
+                var permanentAddressInput = $('input[name="permanent-address-display"]');
+                permanentAddressInput.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = permanentAddressInput[0];
+            }
+            
+            // Email 格式錯誤的欄位也要標記
+            if ($scope.myInfo.StudentBrief2.EmailList.email1 && !$scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email1)) {
+                var email1Input = $('#email1, input[ng-model*="email1"]');
+                email1Input.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = email1Input[0];
+            }
+            
+            if ($scope.myInfo.StudentBrief2.EmailList.email2 && !$scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email2)) {
+                var email2Input = $('#email2, input[ng-model*="email2"]');
+                email2Input.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = email2Input[0];
+            }
+            
+            if ($scope.myInfo.StudentBrief2.EmailList.email3 && !$scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email3)) {
+                var email3Input = $('#email3, input[ng-model*="email3"]');
+                email3Input.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = email3Input[0];
+            }
+            
+            if ($scope.myInfo.StudentBrief2.EmailList.email4 && !$scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email4)) {
+                var email4Input = $('#email4, input[ng-model*="email4"]');
+                email4Input.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = email4Input[0];
+            }
+            
+            if ($scope.myInfo.StudentBrief2.EmailList.email5 && !$scope.myInfo.validEmail($scope.myInfo.StudentBrief2.EmailList.email5)) {
+                var email5Input = $('#email5, input[ng-model*="email5"]');
+                email5Input.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = email5Input[0];
+            }
+            
+            // 條件性必填欄位的錯誤標記和聚焦
+            if ($scope.myInfo.Willingness.IsSocialEnterprise && !$scope.myInfo.Willingness.DescriptionEnterprise) {
+                var descriptionEnterpriseInput = $('#description-enterprise-input, input[name="description-enterprise"]');
+                descriptionEnterpriseInput.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = descriptionEnterpriseInput[0];
+            }
+            
+            if ($scope.myInfo.Willingness.IsNonProfitOrganizations && !$scope.myInfo.Willingness.DescriptionOrganizations) {
+                var descriptionOrganizationsInput = $('#description-organizations-input, input[name="description-organizations"]');
+                descriptionOrganizationsInput.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = descriptionOrganizationsInput[0];
+            }
+            
+            if ($scope.myInfo.Willingness.IsCorporateSocialResponsibility && !$scope.myInfo.Willingness.DescriptionResponsibility) {
+                var descriptionResponsibilityInput = $('#description-responsibility-input, input[name="description-responsibility"]');
+                descriptionResponsibilityInput.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = descriptionResponsibilityInput[0];
+            }
+            
+            if ($scope.myInfo.Willingness.IsVenture && !$scope.myInfo.Willingness.DescriptionVenture) {
+                var descriptionVentureInput = $('#description-venture-input, input[name="description-venture"]');
+                descriptionVentureInput.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = descriptionVentureInput[0];
+            }
+            
+            if ($scope.myInfo.Willingness.IsEntrepreneurialTeam && !$scope.myInfo.Willingness.DescriptionEntrpreneurial) {
+                var descriptionEntrepreneurialInput = $('input[ng-model*="DescriptionEntrpreneurial"]');
+                descriptionEntrepreneurialInput.closest('.input-group').addClass('has-error');
+                if (!firstErrorElement) firstErrorElement = descriptionEntrepreneurialInput[0];
+            }
+            
+            // 在錯誤訊息對話框關閉後，將焦點設置到第一個錯誤欄位
+            $('#messageBox').on('hidden.bs.modal.focusToError', function() {
+                // 移除這個一次性事件處理器
+                $('#messageBox').off('hidden.bs.modal.focusToError');
+                
+                if (firstErrorElement) {
+                    setTimeout(function() {
+                        // 確保元素可見
+                        firstErrorElement.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center' 
+                        });
+                        
+                        // 設置焦點
+                        $(firstErrorElement).focus();
+                        
+                        console.log('焦點設置到第一個錯誤欄位:', firstErrorElement.id || firstErrorElement.name || 'unnamed');
+                    }, 200);
+                }
+            });
+            
+            return;
+        }
 
         // 驗證有無勾選其它，但未填
         var stu_additionals_content = [];
@@ -1628,3 +1813,32 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
         });
     });
 }]);
+
+// 全域 modal 事件處理 - 無障礙支援
+$(document).ready(function() {
+    // 當任何 modal 顯示時，設置 main 容器的無障礙屬性
+    $(document).on('show.bs.modal', '.modal', function() {
+        // var contentContainer = document.querySelector('.content');
+        var mainContainer = document.getElementById('main');
+        if (mainContainer) {
+            // contentContainer.setAttribute('tabindex', '-1');
+            // mainContainer.setAttribute('aria-hidden', 'true');
+            mainContainer.style.display = 'none';
+        }
+    });
+    
+    // 當任何 modal 隱藏時，移除 main 容器的無障礙屬性
+    $(document).on('hidden.bs.modal', '.modal', function() {
+        var mainContainer = document.getElementById('main');
+        if (mainContainer) {
+            mainContainer.style.display = '';            
+            mainContainer.setAttribute('tabindex', '-1');
+            // 恢復焦點到 main 容器
+            mainContainer.focus();
+            // 移除 tabindex（避免影響正常的鍵盤導覽）
+            setTimeout(function() {
+                mainContainer.removeAttribute('tabindex');
+            }, 100);
+        }
+    });
+});
