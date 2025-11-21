@@ -97,6 +97,10 @@
 
               </div>
               <div class="ml-auto">
+                <label class="checkbox-inline mr-4 align-middle text-nowrap">
+                  <input type="checkbox" ng-model="showNorm">
+                  顯示常模
+                </label>
                 <div class="btn-group mr-4" ng-init="initImportItem()">
                   <a class="btn btn-default-bt dropdown-toggle" data-toggle="dropdown">
                     <i class="fa fa-cog" aria-hidden="true"></i>
@@ -192,12 +196,30 @@
                   <td>{{l.test_date}}</td>
                   <td>{{l.height}}</td>
                   <td>{{l.weight}}</td>
-                  <td>{{l.sit_and_reach}}</td>
-                  <td>{{l.standing_long_jump}}</td>
-                  <td ng-show="l.is_sit_up ==='t'">{{l.sit_up}}</td>
-                  <td>{{l.curl}}</td>
-                  <td ng-show="l.item_value ==='心肺耐力'">{{l.cardiorespiratory}}</td>
-                  <td ng-show="l.item_value ==='漸速耐力跑'">{{l.pacer}}</td>
+                  <td>
+                    {{l.sit_and_reach}}
+                    <span ng-if="showNorm && l.sit_and_reach_degree">({{l.sit_and_reach_degree}})</span>
+                  </td>
+                  <td>
+                    {{l.standing_long_jump}}
+                    <span ng-if="showNorm && l.standing_long_jump_degree">({{l.standing_long_jump_degree}})</span>
+                  </td>
+                  <td ng-show="l.is_sit_up ==='t'">
+                    {{l.sit_up}}
+                    <span ng-if="showNorm && l.sit_up_degree">({{l.sit_up_degree}})</span>
+                  </td>
+                  <td>
+                    {{l.curl}}
+                    <span ng-if="showNorm && l.curl_degree">({{l.curl_degree}})</span>
+                  </td>
+                  <td ng-show="l.item_value ==='心肺耐力'">
+                    {{l.cardiorespiratory}}
+                    <span ng-if="showNorm && l.cardiorespiratory_degree">({{l.cardiorespiratory_degree}})</span>
+                  </td>
+                  <td ng-show="l.item_value ==='漸速耐力跑'">
+                    {{l.pacer}}
+                    <span ng-if="showNorm && l.pacer_degree">({{l.pacer_degree}})</span>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -224,28 +246,22 @@
                     <p class="card-text"><strong>坐姿體前彎：</strong>
                       <span class="text-lg font-semibold">{{f.sit_and_reach}}</span>
                       <span class="text-gray-400" ng-if="f.sit_and_reach">cm</span>
-                      <span class="border rounded text-sm px-2 py-1 float-right break-keep"
-                        ng-class="getDegreeClass(f.sit_and_reach_degree)"
-                        ng-if="f.sit_and_reach_degree">{{f.sit_and_reach_degree}}</span>
+                      <span class="text-sm text-gray-600 ml-2" ng-if="showNorm && f.sit_and_reach_degree">({{f.sit_and_reach_degree}})</span>
                     </p>
                     <p class="card-text"><strong>立定跳遠：</strong>
                       <span class="text-lg font-semibold">{{f.standing_long_jump}}</span>
                       <span class="text-gray-400" ng-if="f.standing_long_jump">cm</span>
-                      <span class="border rounded text-sm px-2 py-1 float-right break-keep"
-                        ng-class="getDegreeClass(f.standing_long_jump_degree)"
-                        ng-if="f.standing_long_jump_degree">{{f.standing_long_jump_degree}}</span>
+                      <span class="text-sm text-gray-600 ml-2" ng-if="showNorm && f.standing_long_jump_degree">({{f.standing_long_jump_degree}})</span>
                     </p>
                     <p class="card-text" ng-show="current.is_sit_up ==='t'"><strong>仰臥起坐：</strong>
                       <span class="text-lg font-semibold">{{f.sit_up}}</span>
                       <span class="text-gray-400" ng-if="f.sit_up">次</span>
-                      <span class="border rounded text-sm px-2 py-1 float-right break-keep"
-                        ng-class="getDegreeClass(f.sit_up_degree)" ng-if="f.sit_up_degree">{{f.sit_up_degree}}</span>
+                      <span class="text-sm text-gray-600 ml-2" ng-if="showNorm && f.sit_up_degree">({{f.sit_up_degree}})</span>
                     </p>
                     <p class="card-text"><strong>仰臥捲腹：</strong>
                       <span class="text-lg font-semibold">{{f.curl}}</span>
                       <span class="text-gray-400" ng-if="f.curl">次</span>
-                      <span class="border rounded text-sm px-2 py-1 float-right break-keep"
-                        ng-class="getDegreeClass(f.curl_degree)" ng-if="f.curl_degree">{{f.curl_degree}}</span>
+                      <span class="text-sm text-gray-600 ml-2" ng-if="showNorm && f.curl_degree">({{f.curl_degree}})</span>
                     </p>
                     <div class="flex flex-wrap card-text mb-3" ng-show="f.item_value ==='心肺耐力'">
                       <div class="font-semibold">800/1600公尺跑走：</div>
@@ -253,15 +269,12 @@
                         <span class="text-lg font-semibold">{{f.cardiorespiratory}}</span>
                         <span class="text-gray-400" ng-if="f.cardiorespiratory">秒</span>
                       </div>
-                      <span class="border rounded text-sm px-2 py-1 ml-auto break-keep"
-                        ng-class="getDegreeClass(f.cardiorespiratory_degree)"
-                        ng-if="f.cardiorespiratory_degree">{{f.cardiorespiratory_degree}}</span>
+                      <span class="text-sm text-gray-600 ml-2" ng-if="showNorm && f.cardiorespiratory_degree">({{f.cardiorespiratory_degree}})</span>
                     </div>
                     <p class="card-text" ng-show="f.item_value ==='漸速耐力跑'"><strong>漸速耐力跑：</strong>
                       <span class="text-lg font-semibold">{{f.pacer}}</span>
                       <span class="text-gray-400" ng-if="f.pacer">趟</span>
-                      <span class="border rounded text-sm px-2 py-1 float-right break-keep"
-                        ng-class="getDegreeClass(f.pacer_degree)" ng-if="f.pacer_degree">{{f.pacer_degree}}</span>
+                      <span class="text-sm text-gray-600 ml-2" ng-if="showNorm && f.pacer_degree">({{f.pacer_degree}})</span>
                     </p>
                   </div>
                 </div>
