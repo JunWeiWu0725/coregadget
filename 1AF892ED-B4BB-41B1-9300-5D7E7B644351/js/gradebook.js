@@ -127,6 +127,59 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
             return (arg1 * m + arg2 * m) / m;
         }
 
+        /**
+         * 建立 Score 和 Extension 資料
+         * @param {string|number} rawValue - 原始輸入值
+         * @param {Array} examExtensionMap - 評量缺考設定對照表
+         * @returns {Object} {score: number|null, extension: Object|null, error: string|null}
+         */
+        function buildScoreAndExtension(rawValue, examExtensionMap) {
+            var val = (rawValue || '').toString().trim();
+
+            var result = {
+                score: null,
+                extension: null,
+                error: null
+            };
+
+            if (val === '') {
+                result.score = null;
+                result.extension = null;
+                return result;
+            }
+
+            var mapHit = null;
+
+            if (Array.isArray(examExtensionMap)) {
+                mapHit = examExtensionMap.find(function (m) {
+                    return (m.use_text && m.use_text.toString() === val)
+                        || (m.use_value != null && m.use_value.toString() === val);
+                });
+            }
+
+            if (mapHit) {
+                result.score = mapHit.use_value;
+
+                result.extension = {
+                    Score: mapHit.use_value,
+                    UseText: mapHit.use_text || '',
+                    Text: mapHit.report_value || ''
+                };
+
+                return result;
+            }
+
+            var num = Number(val);
+            if (!isNaN(num)) {
+                result.score = num;
+                result.extension = null;
+                return result;
+            }
+
+            result.error = '成績格式錯誤（非數字且不在缺考設定）';
+            return result;
+        }
+
         /** 
          * 取得評量缺考設定 examExtensionMap
          */
@@ -1571,31 +1624,63 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                             };
                             [].concat($scope.studentList || []).forEach(function (studentRec) {
 
-                                var text = '' + studentRec['Exam' + examRec.ExamID + '_文字評量'];
-                                var score = studentRec['Exam' + examRec.ExamID];
-                                var score_type = studentRec['Exam' + examRec.ExamID + 'score_type'];
-                                var use_text = '';
+                                var rawValue = studentRec['Exam' + examRec.ExamID];
 
-                                if (score_type == '0分') {
-                                    score = -1;
-                                    use_text = studentRec['Exam' + examRec.ExamID];
+                                var be = buildScoreAndExtension(rawValue, $scope.examExtensionMap);
+
+                                if (be.error) {
+                                    return;
                                 }
-                                if (score_type == '免試') {
-                                    score = -2;
-                                    use_text = studentRec['Exam' + examRec.ExamID];
-                                }
-                                //ext.use_text=='' && ext.Score =='缺' && Score =='-1'  >>>> 舊制的缺
+
                                 var data = {
                                     '@StudentID': studentRec.StudentID,
-                                    '@Score': score,
-                                    Extension: {
-                                        Extension: {
-                                            Score: studentRec['Exam' + examRec.ExamID]
-                                            , UseText: use_text
-                                            , Text: text.replace(/'/g, "''")
-                                        }
-                                    }
+                                    '@Score': (be.score == null ? '' : be.score)
                                 };
+
+                                // B-1: 判斷是否需要建立 Extension 殼
+                                var needExtensionShell = false;
+                                
+                                // 特殊成績需要 Extension
+                                if (be.extension) {
+                                    needExtensionShell = true;
+                                }
+                                
+                                // 檢查是否有文字評量欄位
+                                var hasText = studentRec['Exam' + examRec.ExamID + '_文字評量'];
+                                if (hasText) {
+                                    needExtensionShell = true;
+                                }
+                                
+                                // 讀卡子成績需要 Extension
+                                if (examRec.isSubScoreMode) {
+                                    needExtensionShell = true;
+                                }
+                                
+                                // 一般分數時，需要保留 Extension 結構以便清空三欄位
+                                var isNormalScore = (be.extension == null) && (be.score != null);
+                                if (isNormalScore) {
+                                    needExtensionShell = true;
+                                }
+                                
+                                // 建立 Extension 殼
+                                if (needExtensionShell) {
+                                    data.Extension = { Extension: {} };
+                                }
+
+                                // B-2: 寫入特殊成績的 Extension 內容
+                                if (be.extension && data.Extension) {
+                                    data.Extension.Extension.Score = be.extension.Score;
+                                    data.Extension.Extension.UseText = be.extension.UseText;
+                                    data.Extension.Extension.Text = be.extension.Text;
+                                }
+
+                                // B-3: 一般分數時，保留 Extension 結構但清空三欄位
+                                if (isNormalScore && data.Extension) {
+                                    // 只清空這次功能使用的三個欄位，其餘欄位保留
+                                    data.Extension.Extension.Score = '';
+                                    data.Extension.Extension.UseText = '';
+                                    data.Extension.Extension.Text = '';
+                                }
 
                                 if (studentRec['Exam' + examRec.ExamID] != studentRec['Exam' + examRec.ExamID + 'Origin']) {
                                     isChange = true;
@@ -1619,12 +1704,13 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
 
                                 }
 
+                                // B-4: 讀卡子成績 CScore / PScore 寫入
+                                if (examRec.isSubScoreMode && data.Extension) {
+                                    var cScore = studentRec['Exam' + examRec.ExamID + 'CScore'] || '';
+                                    var pScore = studentRec['Exam' + examRec.ExamID + 'PScore'] || '';
 
-                                // 是否為讀卡子成績項目
-                                if (examRec.isSubScoreMode) {
-                                    data.Extension.Extension['CScore'] = studentRec['Exam' + examRec.ExamID + 'CScore'];
-                                    data.Extension.Extension['PScore'] = studentRec['Exam' + examRec.ExamID + 'PScore'];
-
+                                    data.Extension.Extension.CScore = cScore;
+                                    data.Extension.Extension.PScore = pScore;
                                 }
 
                                 eItem.Student.push(data);
