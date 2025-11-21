@@ -36,52 +36,56 @@
       <div class="content container-fluid">
         <div id="absence">
           <div class="row-fluid">
-            <div class="flex mb-4 whitespace-nowrap" style="height: 48px;">
-              <div class="btn btn-inverse disabled" tabindex="0" aria-labelledby="schoolYearLabel">
-                <span id="schoolYearLabel" aria-hidden="true">學年度</span>
-              </div>
+            <div class="flex whitespace-nowrap mb-4">
+              <label for="schoolYearInput" class="btn btn-inverse disabled px-2">學年度</label>
               <input
                 type="text"
-                class="w-full max-w-20 !mb-0"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                class="w-full max-w-28 !mb-0 text-md"
                 placeholder="請輸入學年度"
                 id="schoolYearInput"
                 target="schoolYear"
-                aria-label="學年度，文字欄位，輕觸兩下即可編輯"
+                aria-label="學年度，輕觸兩下即可啟用"
               />
     
               <div class="btn-group">
                 <button
                   class="btn btn-inverse dropdown-toggle"
-                  style="padding: 13px 12px;"
+                  style="height: 48px; padding: 6px 8px;"
                   data-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
                   aria-controls="semester-options-list"
+                  aria-label="學期，選單，輕觸兩下即可啟用"
                   id="semester-dropdown-button"
                 >
                   <span id="selected-semester-text" for="semester-options-list" target="semester">學期</span>
                   <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu font-base" target="semester-options" id="semester-options-list" role="menu" aria-labelledby="semester-dropdown-button">
+                <ul class="dropdown-menu font-base" target="semester-options" id="semester-options-list" role="menu" 
+                  aria-labelledby="semester-dropdown-button">
                   <li role="none"><a href="#" value="0" role="menuitem" style="line-height: 42px;">夏季學期</a></li>
                   <li role="none"><a href="#" value="1" role="menuitem" style="line-height: 42px;">第 1 學期</a></li>
                   <li role="none"><a href="#" value="2" role="menuitem" style="line-height: 42px;">第 2 學期</a></li>
                 </ul>
               </div>
     
-              <a href="#" class="flex items-center btn btn-primary rounded-none" target="query" id="query-button" role="button" aria-label="查詢，按鈕，輕觸兩下即可啟用">
+              <a href="#" class="flex items-center btn btn-primary rounded-none px-2" target="query" id="query-button" role="button" aria-label="查詢，按鈕，輕觸兩下即可啟用">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                   <path fill="currentColor" d="m18.031 16.617l4.283 4.282l-1.415 1.415l-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9s9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617m-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.867-3.133-7-7-7s-7 3.133-7 7s3.133 7 7 7a6.977 6.977 0 0 0 4.875-1.975z" />
                 </svg>
                 <span class="ml-1">查詢</span>
               </a>
             </div>
+            <div class="py-4" tabindex="0" id="query-result-count" style="display: none;">查詢結果：共0筆</div>
           </div>
           <div class="row-fluid">
-            <div class="span12 !min-h-[65vh]" id="absence-detail">
-              <table class="table table-bordered my-table" role="grid" aria-describedby="absence-table-description">
+            <div class="dis-show" id="absence-cards"></div>
+            <div class="dis-none !min-h-[65vh]" id="absence-detail">
+              <table class="table table-bordered my-table">
                 <!-- <caption id="absence-table-description" class="sr-only">顯示學生的缺課紀錄，包含學年度、學期、課程名稱、課程識別碼、上課日期、上課時間及補課訊息。</caption> -->
-                <thead class="dis-none">
+                <thead>
                   <tr>
                     <th class='whitespace-nowrap' scope="col">學年度</th>
                     <th scope="col">學期</th>

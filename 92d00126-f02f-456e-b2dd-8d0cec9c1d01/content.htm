@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html ng-app="app">
+<html ng-app="app" lang="zh-Hant-TW">
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,48 +27,54 @@
   <script src="js/checklist-model.js"></script>
 </head>
 
-<body ng-controller="MainCtrl">
+<body ng-controller="MainCtrl">  
   <div id="gadget" class="my-page text-16">
     <!--modal 地址-->
-    <div class="modal fade" id="address" tabindex="-1" role="dialog" aria-labelledby="myaddress" aria-hidden="true">
+    <div class="modal fade" id="address" tabindex="-1" role="dialog" aria-labelledby="myaddress">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close h-12 w-12" data-dismiss="modal" aria-label="關閉地址編輯框">
+          <div class="modal-header d-flex">
+            <h4 class="modal-title" style="font-size: 18px; line-height: 40px;" id="myaddress">編輯地址</h4>
+            <button type="button" class="close h-12 w-12 float-none ml-auto" data-dismiss="modal" aria-label="關閉地址編輯框">
               <span aria-hidden="true">&times;</span>
             </button>
-            <div style="font-size: 18px; line-height: 40px;" id="myaddress">編輯地址</div>
           </div>
           <div class="modal-body">
             <div class="input-group">
               <label for="zipcode" class="input-group-addon p-3">郵遞區號</label>
-              <input type="text" class="form-control h-12" id="zipcode" name="zipcode" placeholder="郵遞區號"
-                ng-model="myInfo.current.address.AddressList.Address.ZipCode" aria-label="請輸入郵遞區號">
+              <input type="number" class="form-control h-12" id="zipcode" name="zipcode" placeholder="郵遞區號"
+                ng-model="myInfo.current.address.AddressList.Address.ZipCode" 
+                aria-label="郵遞區號，編輯方塊，輕觸兩下即可啟用">
             </div>
             <div class="input-group">
               <label for="county" class="input-group-addon p-3">縣市</label>
               <input type="text" class="form-control h-12" id="county" name="county" placeholder="縣市"
-                ng-model="myInfo.current.address.AddressList.Address.County" aria-label="請輸入縣市">
+                ng-model="myInfo.current.address.AddressList.Address.County" 
+                aria-label="縣市，編輯方塊，輕觸兩下即可啟用">
             </div>
             <div class="input-group">
               <label for="town" class="input-group-addon p-3">鄉鎮市區</label>
               <input type="text" class="form-control h-12" id="town" name="town" placeholder="鄉鎮市區"
-                ng-model="myInfo.current.address.AddressList.Address.Town" aria-label="請輸入鄉鎮市區">
+                ng-model="myInfo.current.address.AddressList.Address.Town" 
+                aria-label="鄉鎮市區，編輯方塊，輕觸兩下即可啟用">
             </div>
             <div class="input-group">
               <label for="district" class="input-group-addon p-3">村里</label>
               <input type="text" class="form-control h-12" id="district" name="district" placeholder="村里"
-                ng-model="myInfo.current.address.AddressList.Address.District" aria-label="請輸入村里">
+                ng-model="myInfo.current.address.AddressList.Address.District" 
+                aria-label="村里，編輯方塊，輕觸兩下即可啟用">
             </div>
             <div class="input-group">
               <label for="area" class="input-group-addon p-3">鄰</label>
               <input type="text" class="form-control h-12" id="area" name="area" placeholder="鄰"
-                ng-model="myInfo.current.address.AddressList.Address.Area" aria-label="請輸入鄰">
+                ng-model="myInfo.current.address.AddressList.Address.Area" 
+                aria-label="鄰，編輯方塊，輕觸兩下即可啟用">
             </div>
             <div class="input-group">
               <label for="detailAddress" class="input-group-addon p-3">其它</label>
               <input type="text" class="form-control h-12" id="detailAddress" name="detailAddress" placeholder="其它"
-                ng-model="myInfo.current.address.AddressList.Address.DetailAddress" aria-label="請輸入其它地址資訊">
+                ng-model="myInfo.current.address.AddressList.Address.DetailAddress" 
+                aria-label="其它，編輯方塊，輕觸兩下即可啟用">
             </div>
           </div>
           <div class="modal-footer">
@@ -80,16 +86,16 @@
       </div>
     </div>
     <!--modal 學歷-->
-    <div class="modal fade" id="education" tabindex="-1" role="dialog" aria-labelledby="myeducation" aria-hidden="true">
+    <div class="modal fade" id="education" tabindex="-1" role="dialog" aria-labelledby="myeducation">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close h-12 w-12" data-dismiss="modal" aria-label="關閉學歷編輯框">
+          <div class="modal-header d-flex">
+            <h4 class="modal-title" style="font-size: 18px; line-height: 40px;" id="myeducation">
+              {{educations.current.type === 'edit' ? '編輯學歷' : '新增學歷'}}
+            </h4>
+            <button type="button" class="close h-12 w-12 float-none ml-auto" data-dismiss="modal" aria-label="關閉學歷編輯框">
               <span aria-hidden="true">&times;</span>
             </button>
-            <div style="font-size: 18px; line-height: 40px;" id="myeducation">
-              {{educations.current.type === 'edit' ? '編輯學歷' : '新增學歷'}}
-            </div>
           </div>
           <div class="modal-body">
             <div ng-show="educations.current.confirm" class="alert alert-danger" target="confirm-message" role="alert">
@@ -106,7 +112,7 @@
                 <input type="checkbox" target="top" role="switch" aria-hidden="true" class="d-none" name="share"
                   ng-model="educations.current.result.IsSharing" aria-label="是否分享學歷">
                 <span id="share2" tabindex="0" class="lever" role="switch"
-                  aria-label="{{ educations.current.result.IsSharing ? '是否選單，目前狀態已分享學歷' : '是否選單，目前狀態不分享學歷' }}"></span>
+                  aria-label="{{ educations.current.result.IsSharing ? '是否選單，現在狀態已分享學歷，按鈕，輕觸兩下即可啟用' : '是否選單，現在狀態不分享學歷，按鈕，輕觸兩下即可啟用' }}"></span>
                 是
               </label>
             </div>
@@ -117,24 +123,27 @@
                 <input type="checkbox" target="top" role="switch" aria-hidden="true" class="d-none" name="top"
                   ng-model="educations.current.result.IsTop" aria-label="是否為最高學歷">
                 <span id="share3" tabindex="0" class="lever" role="switch"
-                  aria-label="{{ educations.current.result.IsTop ? '是否選單，目前狀態是最高學歷' : '是否選單，目前狀態不是最高學歷' }}"></span>
+                  aria-label="{{ educations.current.result.IsTop ? '是否選單，現在狀態是最高學歷，按鈕，輕觸兩下即可啟用' : '是否選單，現在狀態不是最高學歷，按鈕，輕觸兩下即可啟用' }}"></span>
                 是
               </label>
             </div>
             <div class="input-group" ng-class="{'has-error': !educations.current.result.SchoolName}">
               <label for="schoolname" class="input-group-addon p-3">學校</label>
               <input type="text" class="form-control h-12" id="schoolname" name="schoolname" placeholder="必填"
-                target="schoolname" ng-model="educations.current.result.SchoolName" aria-label="請輸入學校名稱">
+                target="schoolname" ng-model="educations.current.result.SchoolName" 
+                aria-label="學校名稱，編輯方塊，輕觸兩下即可啟用">
             </div>
             <div class="input-group" ng-class="{'has-error': !educations.current.result.Department}">
               <label for="department" class="input-group-addon p-3">系所</label>
               <input type="text" class="form-control h-12" id="department" name="department" placeholder="必填"
-                target="department" ng-model="educations.current.result.Department" aria-label="請輸入系所名稱">
+                target="department" ng-model="educations.current.result.Department" 
+                aria-label="系所名稱，編輯方塊，輕觸兩下即可啟用">
             </div>
             <div class="input-group" ng-class="{'has-error': !educations.current.result.Degree}">
               <label for="degree" class="input-group-addon p-3">學位</label>
               <input type="text" class="form-control h-12" id="degree" name="degree" placeholder="必填" target="degree"
-                ng-model="educations.current.result.Degree" aria-label="請輸入學位名稱">
+                ng-model="educations.current.result.Degree" 
+                aria-label="學位名稱，編輯方塊，輕觸兩下即可啟用">
             </div>
           </div>
           <div class="modal-footer">
@@ -156,13 +165,13 @@
     <div class="modal fade" id="experience" tabindex="-1" role="dialog" aria-labelledby="myexperience">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close h-12 w-12" data-dismiss="modal" aria-label="關閉經歷編輯框">
-              <span aria-hidden="true">&times;</span>
-            </button>
+          <div class="modal-header d-flex">
             <h4 class="modal-title" id="myexperience">
               {{experiences.current.type === 'edit' ? '編輯經歷' : '新增經歷'}}
             </h4>
+            <button type="button" class="close h-12 w-12 float-none ml-auto" data-dismiss="modal" aria-label="關閉經歷編輯框">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
           <div class="modal-body">
             <div ng-show="experiences.current.confirm" class="alert alert-danger" target="confirm-message" role="alert">
@@ -173,21 +182,28 @@
                 aria-label="確定刪除">確定</button>
             </div>
             <div class="switch">分享：
-              <label>否
-                <input type="checkbox" target="top" name="share" ng-model="experiences.current.result.IsSharing"
-                  aria-label="是否分享經歷">
-                <span class="lever"></span> 是
+              <label for="experiences">否
+                <input type="checkbox" id="experiences" aria-hidden="true" role="switch" class="d-none" 
+                  ng-model="experiences.current.result.IsSharing"
+                  aria-checked="{{experiences.current.result.IsSharing}}" aria-describedby="experiences">
+                <span id="lever1" tabindex="0" class="lever" role="switch"
+                aria-label="{{ experiences.current.result.IsSharing ? '是否分享經歷，現在狀態是，輕觸兩下即可關閉' : '是否分享經歷，現在狀態否，輕觸兩下即可啟用' }}">
+                </span> 
+                是
               </label>
-            </div>
+            </div>            
+
             <div class="input-group" ng-class="{'has-error': !experiences.current.result.CompanyName}">
               <label for="companyname" class="input-group-addon p-3">公司名稱</label>
               <input type="text" class="form-control h-12" id="companyname" name="companyname" placeholder="必填"
-                target="companyname" ng-model="experiences.current.result.CompanyName" aria-label="請輸入公司名稱">
+                target="companyname" ng-model="experiences.current.result.CompanyName" 
+                aria-label="必填，公司名稱，編輯方塊，輕觸兩下即可啟用">
             </div>
             <div class="input-group" ng-class="{'has-error': !experiences.current.result.Position}">
               <label for="position" class="input-group-addon p-3">職稱</label>
               <input type="text" class="form-control h-12" id="position" name="position" placeholder="必填"
-                target="position" ng-model="experiences.current.result.Position" aria-label="請輸入職稱">
+                target="position" ng-model="experiences.current.result.Position" 
+                aria-label="必填，職稱，編輯方塊，輕觸兩下即可啟用">
             </div>
             <div class="form-group" ng-class="{'has-error': !experiences.current.result.PostLevel.length}">
               <label for="postlevel" class="control-label">層級別</label>
@@ -196,7 +212,7 @@
                 name="postlevel" 
                 class="form-control h-12" 
                 ng-model="experiences.current.result.PostLevel" 
-                aria-label="請選擇層級別">
+                aria-label="必填，選擇層級別，輕觸兩下即可啟用">
                 <option value="">...請選擇層級別...</option>
                 <option ng-repeat="item in ExperienceDataSource['C_層級別']" value="{{item}}">{{item}}</option>
                 <option value="其它">其它</option>
@@ -213,7 +229,7 @@
                   name="postlevel-other" 
                   placeholder="輸入其它層級別" 
                   ng-model="experiences.current.result.PostLevelOther" 
-                  aria-label="請填寫其它層級別">
+                  aria-label="必填，其它層級別，編輯方塊，輕觸兩下即可啟用">
               </div>
             </div>
             <div class="dropdown" ng-class="{'has-error': !experiences.current.result.DepartmentCategory}">
@@ -233,17 +249,18 @@
                 <label for="department-other" class="input-group-addon p-3">請註明</label>
                 <input type="text" class="form-control h-12" id="department-other" name="department-other"
                   placeholder="必填" target="department-other"
-                  ng-model="experiences.current.result.DepartmentCategoryOther" aria-label="請填寫其它部門">
+                  ng-model="experiences.current.result.DepartmentCategoryOther" 
+                  aria-label="其它部門，編輯方塊，輕觸兩下即可啟用">
               </div>
             </div>
-
+  
             <div class="form-group" ng-class="{'has-error': !experiences.current.result.IndustryID}">
               <label for="industry-select" class="control-label">產業別</label>
               <select 
                 id="industry-select" 
                 class="form-control h-12" 
                 ng-model="experiences.current.menu.Domain.Domain" 
-                aria-label="請選擇產業別" 
+                aria-label="必填，請選擇產業別，輕觸兩下即可啟用" 
                 ng-change="experiences.toggleExperienceDomain(experiences.current.menu.Domain.Domain)">
                 <option value="" ng-click="experiences.setEmpty()">...請選擇產業別...</option>
                 <option ng-repeat="domain in AdditionalSetup['S_Industry'].Domains" value="{{domain}}">{{domain}}</option>
@@ -256,7 +273,7 @@
                   id="industry-category-select" 
                   class="form-control h-12" 
                   ng-model="experiences.current.menu.Category.Category" 
-                  aria-label="請選擇子類別" 
+                  aria-label="選擇子類別，輕觸兩下即可啟用" 
                   ng-change="experiences.toggleExperienceCategory(experiences.current.menu.Category.Category)">
                   <option value="" disabled>...請選擇子類別...</option>
                   <option ng-repeat="category in experiences.current.menu.Domain.Categorys" value="{{category}}">{{category}}</option>
@@ -269,7 +286,7 @@
                   id="industry-item-select" 
                   class="form-control h-12" 
                   ng-model="experiences.current.menu.Item.Item" 
-                  aria-label="請選擇子項目" 
+                  aria-label="選擇子項目，輕觸兩下即可啟用" 
                   ng-change="experiences.toggleExperienceItem(experiences.current.menu.Item.Item)">
                   <option value="" disabled>...請選擇子項目...</option>
                   <option ng-repeat="item in experiences.current.menu.Category.Items" value="{{item}}">{{item}}</option>
@@ -288,7 +305,7 @@
                 value="{{experiences.current.result.WorkPlace.join(',')}}" 
                 data-toggle="modal" 
                 data-target="#placeModal" 
-                aria-label="請選擇工作地點">
+                aria-label="選擇工作地點，輕觸兩下即可啟用">
               <div 
                 ng-show="experiences.current.result.WorkPlace.indexOf('其它') !== -1" 
                 class="input-group" 
@@ -301,7 +318,7 @@
                   name="workplace-other" 
                   placeholder="必填" 
                   ng-model="experiences.current.result.WorkPlaceOther" 
-                  aria-label="請填寫其它工作地點">
+                  aria-label="必填，輸入其它工作地點，編輯方塊，輕觸兩下即可啟用">
               </div>
             </div>
             
@@ -311,7 +328,7 @@
                 id="workstatus-select" 
                 class="form-control h-12" 
                 ng-model="experiences.current.result.WorkStatus" 
-                aria-label="請選擇工作狀態">
+                aria-label="必填，選擇工作狀態，輕觸兩下即可啟用">
                 <option value="">...請選擇工作狀態...</option>
                 <option ng-repeat="item in ExperienceDataSource['C_工作狀態']" value="{{item}}">{{item}}</option>
                 <option value="其它">其它</option>
@@ -342,15 +359,14 @@
       </div>
     </div>
     <!--modal 經歷－層級別-->
-    <div class="modal fade" id="level" tabindex="-1" role="dialog" aria-labelledby="mylevel" aria-hidden="true">
+    <div class="modal fade" id="level" tabindex="-1" role="dialog" aria-labelledby="mylevel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close h-12 w-12" data-dismiss="modal" aria-label="關閉層級別選擇框">
+          <div class="modal-header d-flex">
+            <h4 class="modal-title" style="font-size: 18px; line-height: 40px;" id="mylevel">層級別 <small class="text-danger">(必填)</small></h4>
+            <button type="button" class="close h-12 w-12 float-none ml-auto" data-dismiss="modal" aria-label="關閉層級別選擇框">
               <span aria-hidden="true">&times;</span>
             </button>
-            <div style="font-size: 18px; line-height: 40px;" id="mylevel">層級別 <small class="text-danger">(必填)</small>
-            </div>
           </div>
           <div class="modal-body row">
             <div class="col-sm-4" ng-repeat="item in ExperienceDataSource['C_層級別']">
@@ -371,7 +387,7 @@
                 </div>
                 <div ng-show="experiences.current.result.PostLevel.indexOf('其它')!=-1" class="col-xs-9"
                   ng-class="{'has-error': (!experiences.current.result.PostLevelOther)}">
-                  <input type="text" id="postlevel-other" class="form-control h-12" placeholder="必填"
+                  <input type="text" id="postlevel-other2" class="form-control h-12" placeholder="必填"
                     ng-model="experiences.current.result.PostLevelOther" aria-label="請填寫其它層級別">
                 </div>
               </div>
@@ -393,16 +409,15 @@
       </div>
     </div>
     <!--modal 經歷－工作地點-->
-    <div class="modal fade" id="placeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-      >
+    <div class="modal fade" id="placeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close h-12 w-12" data-dismiss="modal" aria-label="關閉工作地點選擇框">
+          <div class="modal-header d-flex">
+            <h4 class="modal-title" style="font-size: 18px; line-height: 40px;" id="myModalLabel">工作地點 <small
+                class="text-danger">(必填)</small></h4>
+            <button type="button" class="close h-12 w-12 float-none ml-auto" data-dismiss="modal" aria-label="關閉工作地點選擇框">
               <span aria-hidden="true">&times;</span>
             </button>
-            <div style="font-size: 18px; line-height: 40px;" id="myModalLabel">工作地點 <small
-                class="text-danger">(必填)</small></div>
           </div>
           <div class="modal-body row">
             <div class="col-sm-3" ng-repeat="item in ExperienceDataSource['C_工作地點']">
@@ -445,15 +460,14 @@
       </div>
     </div>
     <!--modal 校外團體-->
-    <div class="modal fade check-modal" id="externalModal" tabindex="-1" role="dialog" aria-labelledby="mygroup4"
-      aria-hidden="true">
+    <div class="modal fade check-modal" id="externalModal" tabindex="-1" role="dialog" aria-labelledby="mygroup4">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close h-12 w-12" data-dismiss="modal" aria-label="關閉校外團體選擇框">
+          <div class="modal-header d-flex">
+            <h4 class="modal-title" style="font-size: 18px; line-height: 40px;" id="mygroup4">參加校外團體</h4>
+            <button type="button" class="close h-12 w-12 float-none ml-auto" data-dismiss="modal" aria-label="關閉校外團體選擇框">
               <span aria-hidden="true">&times;</span>
             </button>
-            <div style="font-size: 18px; line-height: 40px;" id="mygroup4">參加校外團體</div>
           </div>
           <div ng-if="AdditionalSetup.current.type=='ExternalOrganization'" class="modal-body">
             <div class="panel panel-default">
@@ -469,7 +483,8 @@
                       ng-class="{'has-error': AdditionalSetup.current.addition['D_'+domain].Checked && !AdditionalSetup.current.addition['D_'+domain].Description}">
                       <span class="input-group-addon p-3">請註明</span>
                       <input type="text" class="form-control h-12" placeholder="必填"
-                        ng-model="AdditionalSetup.current.addition['D_'+domain].Description" aria-label="請填寫其它校外團體">
+                        ng-model="AdditionalSetup.current.addition['D_'+domain].Description" 
+                        aria-label="必填，輸入校外團體其它類別，編輯方塊，輕觸兩下即可啟用">
                     </div>
                   </label>
                 </div>
@@ -491,7 +506,7 @@
                         <span class="input-group-addon p-3">請註明</span>
                         <input type="text" class="form-control h-12" placeholder="必填"
                           ng-model="AdditionalSetup.current.addition['D_'+domain]['C_'+category].Description"
-                          aria-label="請填寫其它校外團體類別">
+                          aria-label="必填，輸入{{domain}}類其它校外團體，編輯方塊，輕觸兩下即可啟用">
                       </div>
                     </label>
                   </div>
@@ -513,7 +528,7 @@
                           <span class="input-group-addon p-3">請註明</span>
                           <input type="text" class="form-control h-12" placeholder="必填"
                             ng-model="AdditionalSetup.current.addition['D_'+domain]['C_'+category]['I_'+item].Description"
-                            aria-label="請填寫其它校外團體項目">
+                            aria-label="必填，輸入{{category}}的其它校外團體，編輯方塊，輕觸兩下即可啟用">
                         </div>
                       </label>
                     </div>
@@ -531,15 +546,14 @@
       </div>
     </div>
     <!--modal 興趣-->
-    <div class="modal fade check-modal" id="interestModal" tabindex="-1" role="dialog" aria-labelledby="myinterest"
-      aria-hidden="true">
+    <div class="modal fade check-modal" id="interestModal" tabindex="-1" role="dialog" aria-labelledby="myinterest">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close h-12 w-12" data-dismiss="modal" aria-label="關閉興趣編輯框">
+          <div class="modal-header d-flex">
+            <h4 class="modal-title" style="font-size: 18px; line-height: 40px;" id="myinterest">編輯興趣</h4>
+            <button type="button" class="close h-12 w-12 float-none ml-auto" data-dismiss="modal" aria-label="關閉興趣編輯框">
               <span aria-hidden="true">&times;</span>
             </button>
-            <div style="font-size: 18px; line-height: 40px;" id="myinterest">編輯興趣</div>
           </div>
           <div ng-if="AdditionalSetup.current.type=='Interest'" class="modal-body">
             <div class="panel panel-default">
@@ -555,7 +569,8 @@
                       ng-class="{'has-error': AdditionalSetup.current.addition['D_'+domain].Checked && !AdditionalSetup.current.addition['D_'+domain].Description}">
                       <span class="input-group-addon p-3">請註明</span>
                       <input type="text" class="form-control h-12" placeholder="必填"
-                        ng-model="AdditionalSetup.current.addition['D_'+domain].Description" aria-label="請填寫其它興趣">
+                        ng-model="AdditionalSetup.current.addition['D_'+domain].Description" 
+                        aria-label="必填，輸入{{domain}}類興趣，編輯方塊，輕觸兩下即可啟用">
                     </div>
                   </label>
                 </div>
@@ -577,7 +592,7 @@
                         <span class="input-group-addon p-3">請註明</span>
                         <input type="text" class="form-control h-12" placeholder="必填"
                           ng-model="AdditionalSetup.current.addition['D_'+domain]['C_'+category].Description"
-                          aria-label="請填寫其它興趣類別">
+                          aria-label="必填，輸入{{domain}}類其它興趣，編輯方塊，輕觸兩下即可啟用">
                       </div>
                     </label>
                   </div>
@@ -599,7 +614,7 @@
                           <span class="input-group-addon p-3">請註明</span>
                           <input type="text" class="form-control h-12" placeholder="必填"
                             ng-model="AdditionalSetup.current.addition['D_'+domain]['C_'+category]['I_'+item].Description"
-                            aria-label="請填寫其它興趣項目">
+                            aria-label="必填，輸入{{category}}項目其它興趣，編輯方塊，輕觸兩下即可啟用">
                         </div>
                       </label>
                     </div>
@@ -617,15 +632,14 @@
       </div>
     </div>
     <!--madal EMBA團體-->
-    <div class="modal fade check-modal" id="EMBAGroupsModel" tabindex="-1" role="dialog" aria-labelledby="mygroup1"
-      aria-hidden="true">
+    <div class="modal fade check-modal" id="EMBAGroupsModel" tabindex="-1" role="dialog" aria-labelledby="mygroup1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close h-12 w-12" data-dismiss="modal" aria-label="關閉台大EMBA團體選擇框">
+          <div class="modal-header d-flex">
+            <h4 class="modal-title" style="font-size: 18px; line-height: 40px;" id="mygroup1">參加台大EMBA團體</h4>
+            <button type="button" class="close h-12 w-12 float-none ml-auto" data-dismiss="modal" aria-label="關閉台大EMBA團體選擇框">
               <span aria-hidden="true">&times;</span>
             </button>
-            <div style="font-size: 18px; line-height: 40px;" id="mygroup1">參加台大EMBA團體</div>
           </div>
           <div ng-if="AdditionalSetup.current.type=='EMBAGroups'" class="modal-body">
             <div class="panel panel-default">
@@ -641,7 +655,8 @@
                       ng-class="{'has-error': AdditionalSetup.current.addition['D_'+domain].Checked && !AdditionalSetup.current.addition['D_'+domain].Description}">
                       <span class="input-group-addon p-3">請註明</span>
                       <input type="text" class="form-control h-12" placeholder="必填"
-                        ng-model="AdditionalSetup.current.addition['D_'+domain].Description" aria-label="請填寫其它台大EMBA團體">
+                        ng-model="AdditionalSetup.current.addition['D_'+domain].Description" 
+                        aria-label="必填，輸入{{domain}}類別，編輯方塊，輕觸兩下即可啟用">
                     </div>
                   </label>
                 </div>
@@ -663,7 +678,7 @@
                         <span class="input-group-addon p-3">請註明</span>
                         <input type="text" class="form-control h-12" placeholder="必填"
                           ng-model="AdditionalSetup.current.addition['D_'+domain]['C_'+category].Description"
-                          aria-label="請填寫其它台大EMBA團體類別">
+                          aria-label="必填，輸入其它{{domain}}，編輯方塊，輕觸兩下即可啟用">
                       </div>
                     </label>
                   </div>
@@ -685,7 +700,7 @@
                           <span class="input-group-addon p-3">請註明</span>
                           <input type="text" class="form-control h-12" placeholder="必填"
                             ng-model="AdditionalSetup.current.addition['D_'+domain]['C_'+category]['I_'+item].Description"
-                            aria-label="請填寫其它台大EMBA團體項目">
+                            aria-label="必填，其它台大EMBA團體項目，編輯方塊，輕觸兩下即可啟用">
                         </div>
                       </label>
                     </div>
@@ -702,8 +717,8 @@
         </div>
       </div>
     </div>
-
     <!--modal end-->
+    
     <div class="page-container" id="main">
       <!--
             <div class="header">
@@ -802,7 +817,7 @@
                       ng-click="myInfo.DataSharing.DataSharing.Birthdate = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.Birthdate)"
                       tabindex="0" 
                       role="button"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.Birthdate == 'true' ? '已分享出生日期，按鈕，輕觸兩下即可關閉' : '未分享出生日期，按鈕，輕觸兩下即可開啟' }}">
+                      aria-label="{{ myInfo.DataSharing.DataSharing.Birthdate == 'true' ? '已分享出生日期，按鈕，輕觸兩下即可關閉分享' : '未分享出生日期，按鈕，輕觸兩下即可開啟分享' }}">
                       <span class="glyphicon glyphicon-ok" aria-hidden="true"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.Birthdate!='true'}"></span>
                       <!-- <span class="sr-only" aria-live="polite"> {{
@@ -813,11 +828,11 @@
                   </div>
                 </td>
                 <td>
-                  <div class="input-group">
-                    <label for="custodian-name" class="labelh">緊急聯絡人</label>
+                  <div class="input-group" ng-class="{'has-error': !myInfo.StudentInfo.CustodianName}">
+                    <label for="custodian-name" class="labelh">緊急聯絡人(必填)</label>
                     <input type="text" class="form-control h-12" id="custodian-name" name="custodian-name"
-                    placeholder="請輸入緊急聯絡人姓名"
-                      ng-model="myInfo.StudentInfo.CustodianName" aria-label="請輸入緊急聯絡人姓名" aria-required="false">
+                      placeholder="請輸入緊急聯絡人姓名"
+                      ng-model="myInfo.StudentInfo.CustodianName" aria-label="緊急聯絡人，編輯方塊，輕觸兩下即可啟用" aria-required="true">
                     <span class="input-group-addon p-3" 
                       target="cannt-sharing" 
                       id="custodian-name-share-status"
@@ -829,18 +844,18 @@
                   </div>
                 </td>
                 <td>
-                  <div class="input-group">
-                    <label for="custodian-phone" class="labelh">聯絡人電話
+                  <div class="input-group" ng-class="{'has-error': !myInfo.StudentInfo.CustodianOtherInfo.CustodianOtherInfo.Phone}">
+                    <label for="custodian-phone" class="labelh" tabindex="0">聯絡人電話(必填)
                       <img ng-src="./css/images/{{ maskedField.contactPhone.eyeIcon }}" alt="切換聯絡人電話顯示"
                         style="cursor: pointer; margin-left: 8px; padding: 12px; height: 48px; width: 48px;"
                         ng-click="toggleEyeIcon(maskedField.contactPhone)" tabindex="0" role="button"
-                        onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                        >
                     </label>
                     <input type="{{ maskedField.contactPhone.inputType }}" maxlength="20" class="form-control h-12"
                       id="custodian-phone" name="custodian-phone"
                       ng-model="myInfo.StudentInfo.CustodianOtherInfo.CustodianOtherInfo.Phone"
                       ng-change="myInfo.StudentInfo.CustodianOtherInfo.CustodianOtherInfo.Phone = cleanPhoneNo(myInfo.StudentInfo.CustodianOtherInfo.CustodianOtherInfo.Phone)"
-                      aria-label="請輸入聯絡人電話號碼" placeholder="請輸入聯絡人電話號碼" aria-required="false" autocomplete="off">
+                      aria-label="聯絡人電話號碼，編輯方塊，輕觸兩下即可啟用" placeholder="請輸入聯絡人電話號碼" aria-required="true" autocomplete="off">
                     <span class="input-group-addon p-3" 
                       target="cannt-sharing" 
                       id="custodian-phone-share-status"
@@ -868,7 +883,7 @@
                     style="cursor: pointer; margin-left: 8px; width: 20px;"
                     ng-click="toggleEyeIcon(maskedField.homePhone)" role="button" tabindex="0"
                     aria-label="點擊切換住家電話號碼的顯示與隱藏"
-                    onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                    >
                 </th>
                 <th>
                   公司電話
@@ -876,7 +891,7 @@
                     style="cursor: pointer; margin-left: 8px; width: 20px;"
                     ng-click="toggleEyeIcon(maskedField.companyPhone)" role="button" tabindex="0"
                     aria-label="點擊切換公司電話號碼的顯示與隱藏"
-                    onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                    >
                 </th>
                 <th>
                   秘書電話
@@ -884,7 +899,7 @@
                     style="cursor: pointer; margin-left: 8px; width: 20px;"
                     ng-click="toggleEyeIcon(maskedField.secretaryPhone)" role="button" tabindex="0"
                     aria-label="點擊切換秘書電話號碼的顯示與隱藏"
-                    onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                    >
                 </th>
                 <th>
                   行動電話 1
@@ -892,7 +907,7 @@
                     style="cursor: pointer; margin-left: 8px; width: 20px;"
                     ng-click="toggleEyeIcon(maskedField.smsPhone1)" role="button" tabindex="0"
                     aria-label="點擊切換行動電話一號碼的顯示與隱藏"
-                    onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                    >
                 </th>
                 <th>
                   行動電話 2
@@ -900,7 +915,7 @@
                     style="cursor: pointer; margin-left: 8px; width: 20px;"
                     ng-click="toggleEyeIcon(maskedField.smsPhone2)" role="button" tabindex="0"
                     aria-label="點擊切換行動電話二號碼的顯示與隱藏"
-                    onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                    >
                 </th>
               </tr>
             </thead>
@@ -913,19 +928,19 @@
                         style="cursor: pointer; margin-left: 8px; padding: 12px; height: 48px; width: 48px;"
                         ng-click="toggleEyeIcon(maskedField.homePhone)" role="button" tabindex="0"
                         aria-label="點擊切換住家電話號碼的顯示與隱藏"
-                        onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                        >
                     </label>
                     <input type="{{ maskedField.homePhone.inputType }}" maxlength="20" class="form-control h-12"
-                    placeholder="請輸入住家電話號碼"
+                      placeholder="請輸入住家電話號碼"
                       id="permanent-phone" name="permanent-phone" ng-model="myInfo.StudentInfo.PermanentPhone"
                       ng-change="myInfo.StudentInfo.PermanentPhone = cleanPhoneNo(myInfo.StudentInfo.PermanentPhone)"
-                      aria-label="{{ maskedField.homePhone.inputType === 'password' ? '住家電話，內容已遮蔽' : '請輸入住家電話號碼' }}"
+                      aria-label="{{ maskedField.homePhone.inputType === 'password' ? '住家電話，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : '住家電話號碼，編輯方塊，輕觸兩下即可啟用' }}"
                       aria-required="false" autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.PermanentPhone=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.PermanentPhone)"
                       role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.PermanentPhone == 'true' ? '點擊改為不分享住家電話號碼' : '點擊改為分享住家電話號碼' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                      aria-label="{{ myInfo.DataSharing.DataSharing.PermanentPhone == 'true' ? '點擊改為不分享住家電話號碼，按鈕，輕觸兩下即可啟用' : '點擊改為分享住家電話號碼，按鈕，輕觸兩下即可啟用' }}"
+                      >
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-permanent-phone"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.PermanentPhone!='true'}"></span>
                     </span>
@@ -938,20 +953,20 @@
                         style="cursor: pointer; margin-left: 8px; padding: 12px; height: 48px; width: 48px;"
                         ng-click="toggleEyeIcon(maskedField.companyPhone)" role="button" tabindex="0"
                         aria-label="點擊切換公司電話號碼的顯示與隱藏"
-                        onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                        >
                     </label>
                     <input type="{{ maskedField.companyPhone.inputType }}" maxlength="20" class="form-control h-12"
-                    placeholder="請輸入公司電話號碼"
+                      placeholder="請輸入公司電話號碼"
                       id="office-phone" name="office-phone"
                       ng-model="myInfo.StudentInfo.OtherPhones.PhoneList.PhoneNumber[0]"
                       ng-change="myInfo.StudentInfo.OtherPhones.PhoneList.PhoneNumber[0] = cleanPhoneNo(myInfo.StudentInfo.OtherPhones.PhoneList.PhoneNumber[0])"
-                      aria-label="{{ maskedField.companyPhone.inputType === 'password' ? '公司電話，內容已遮蔽' : '請輸入公司電話號碼' }}"
+                      aria-label="{{ maskedField.companyPhone.inputType === 'password' ? '公司電話，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : '公司電話號碼，編輯方塊，輕觸兩下即可啟用' }}"
                       aria-required="false" autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[0]['@text']=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[0]['@text'])"
                       role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[0]['@text'] == 'true' ? '點擊改為不分享公司電話號碼' : '點擊改為分享公司電話號碼' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                      aria-label="{{ myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[0]['@text'] == 'true' ? '點擊改為不分享公司電話號碼，按鈕，輕觸兩下即可啟用' : '點擊改為分享公司電話號碼，按鈕，輕觸兩下即可啟用' }}"
+                      >
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-office-phone"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[0]['@text']!='true'}"></span>
                     </span>
@@ -964,45 +979,45 @@
                         style="cursor: pointer; margin-left: 8px; padding: 12px; height: 48px; width: 48px;"
                         ng-click="toggleEyeIcon(maskedField.secretaryPhone)" role="button" tabindex="0"
                         aria-label="點擊切換秘書電話號碼的顯示與隱藏"
-                        onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                        >
                     </label>
                     <input type="{{ maskedField.secretaryPhone.inputType }}" maxlength="20" class="form-control h-12"
                     placeholder="請輸入秘書電話號碼"
                       id="other-phone" name="other-phone"
                       ng-model="myInfo.StudentInfo.OtherPhones.PhoneList.PhoneNumber[2]"
                       ng-change="myInfo.StudentInfo.OtherPhones.PhoneList.PhoneNumber[2] = cleanPhoneNo(myInfo.StudentInfo.OtherPhones.PhoneList.PhoneNumber[2])"
-                      aria-label="{{ maskedField.secretaryPhone.inputType === 'password' ? '秘書電話，內容已遮蔽' : '請輸入秘書電話號碼' }}"
+                      aria-label="{{ maskedField.secretaryPhone.inputType === 'password' ? '秘書電話，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : '秘書電話號碼，編輯方塊，輕觸兩下即可啟用' }}"
                       aria-required="false" autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[2]['@text']=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[2]['@text'])"
                       role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[2]['@text'] == 'true' ? '點擊改為不分享秘書電話號碼' : '點擊改為分享秘書電話號碼' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                      aria-label="{{ myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[2]['@text'] == 'true' ? '點擊改為不分享秘書電話號碼，按鈕，輕觸兩下即可啟用' : '點擊改為分享秘書電話號碼，按鈕，輕觸兩下即可啟用' }}"
+                      >
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-other-phone"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[2]['@text']!='true'}"></span>
                     </span>
                   </div>
                 </td>
                 <td>
-                  <div class="input-group">
-                    <label for="sms-phone1" class="labelh">行動電話 1
+                  <div class="input-group" ng-class="{'has-error': !myInfo.StudentInfo.SMSPhone}">
+                    <label for="sms-phone1" class="labelh">行動電話 1(必填)
                       <img ng-src="./css/images/{{ maskedField.smsPhone1.eyeIcon }}" alt="切換行動電話一顯示狀態"
                         style="cursor: pointer; margin-left: 8px; padding: 12px; height: 48px; width: 48px;"
                         ng-click="toggleEyeIcon(maskedField.smsPhone1)" role="button" tabindex="0"
                         aria-label="點擊切換行動電話一號碼的顯示與隱藏"
-                        onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                        >
                     </label>
                     <input type="{{ maskedField.smsPhone1.inputType }}" maxlength="20" class="form-control h-12"
-                    placeholder="請輸入行動電話一號碼"
+                      placeholder="請輸入行動電話一號碼"
                       id="sms-phone1" name="sms-phone1" ng-model="myInfo.StudentInfo.SMSPhone"
                       ng-change="myInfo.StudentInfo.SMSPhone = cleanPhoneNo(myInfo.StudentInfo.SMSPhone)"
-                      aria-label="{{ maskedField.smsPhone1.inputType === 'password' ? '行動電話一，內容已遮蔽' : '請輸入行動電話一號碼' }}"
-                      aria-required="false" autocomplete="off">
+                      aria-label="{{ maskedField.smsPhone1.inputType === 'password' ? '行動電話一，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : '行動電話一號碼，編輯方塊，輕觸兩下即可啟用' }}"
+                      aria-required="true" autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.SMSPhone=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.SMSPhone)"
                       role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.SMSPhone == 'true' ? '點擊改為不分享行動電話一號碼' : '點擊改為分享行動電話一號碼' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                      aria-label="{{ myInfo.DataSharing.DataSharing.SMSPhone == 'true' ? '點擊改為不分享行動電話一號碼，按鈕，輕觸兩下即可啟用' : '點擊改為分享行動電話一號碼，按鈕，輕觸兩下即可啟用' }}"
+                      >
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-sms-phone1"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.SMSPhone!='true'}"></span>
                     </span>
@@ -1015,20 +1030,20 @@
                         style="cursor: pointer; margin-left: 8px; padding: 12px; height: 48px; width: 48px;"
                         ng-click="toggleEyeIcon(maskedField.smsPhone2)" role="button" tabindex="0"
                         aria-label="點擊切換行動電話二號碼的顯示與隱藏"
-                        onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                        >
                     </label>
                     <input type="{{ maskedField.smsPhone2.inputType }}" maxlength="20" class="form-control h-12"
                       placeholder="請輸入行動電話二號碼"
                       id="sms-phone2" name="sms-phone2"
                       ng-model="myInfo.StudentInfo.OtherPhones.PhoneList.PhoneNumber[1]"
                       ng-change="myInfo.StudentInfo.OtherPhones.PhoneList.PhoneNumber[1] = cleanPhoneNo(myInfo.StudentInfo.OtherPhones.PhoneList.PhoneNumber[1])"
-                      aria-label="{{ maskedField.smsPhone2.inputType === 'password' ? '行動電話二，內容已遮蔽' : '請輸入行動電話二號碼' }}"
+                      aria-label="{{ maskedField.smsPhone2.inputType === 'password' ? '行動電話二，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : '行動電話二號碼，編輯方塊，輕觸兩下即可啟用' }}"
                       aria-required="false" autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[1]['@text']=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[1]['@text'])"
                       role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[1]['@text'] == 'true' ? '點擊改為不分享行動電話二號碼' : '點擊改為分享行動電話二號碼' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                      aria-label="{{ myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[1]['@text'] == 'true' ? '點擊改為不分享行動電話二號碼，按鈕，輕觸兩下即可啟用' : '點擊改為分享行動電話二號碼，按鈕，輕觸兩下即可啟用' }}"
+                      >
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-sms-phone2"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.OtherPhoneList.PhoneNumber[1]['@text']!='true'}"></span>
                     </span>
@@ -1051,28 +1066,28 @@
                     style="cursor: pointer; margin-left: 8px;  width: 20px;"
                     ng-click="toggleEyeIcon(maskedField.email1)" role="button" tabindex="0"
                     aria-label="點擊切換 Email 1 地址的顯示與隱藏"
-                    onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                    >
                 </th>
                 <th style="line-height: 10px;">Email 2
                   <img ng-src="./css/images/{{ maskedField.email2.eyeIcon }}" alt="切換 Email 2 顯示狀態"
                     style="cursor: pointer; margin-left: 8px;  width: 20px;"
                     ng-click="toggleEyeIcon(maskedField.email2)" role="button" tabindex="0"
                     aria-label="點擊切換 Email 2 地址的顯示與隱藏"
-                    onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                    >
                 </th>
                 <th style="line-height: 10px;">Email 3
                   <img ng-src="./css/images/{{ maskedField.email3.eyeIcon }}" alt="切換 Email 3 顯示狀態"
                     style="cursor: pointer; margin-left: 8px;  width: 20px;"
                     ng-click="toggleEyeIcon(maskedField.email3)" role="button" tabindex="0"
                     aria-label="點擊切換 Email 3 地址的顯示與隱藏"
-                    onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                    >
                 </th>
                 <th style="line-height: 10px;">Email 4
                   <img ng-src="./css/images/{{ maskedField.email4.eyeIcon }}" alt="切換 Email 4 顯示狀態"
                     style="cursor: pointer; margin-left: 8px;  width: 20px;"
                     ng-click="toggleEyeIcon(maskedField.email4)" role="button" tabindex="0"
                     aria-label="點擊切換 Email 4 地址的顯示與隱藏"
-                    onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                    >
 
                 </th>
                 <th style="line-height: 10px;">Email 5
@@ -1080,21 +1095,22 @@
                     style="cursor: pointer; margin-left: 8px;  width: 20px;"
                     ng-click="toggleEyeIcon(maskedField.email5)" role="button" tabindex="0"
                     aria-label="點擊切換 Email 5 地址的顯示與隱藏"
-                    onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                    >
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>
-                  <div class="input-group" ng-class="{'has-error': !myInfo.StudentBrief2.EmailList.email1}">
-                    <label for="email1" class="labelh" tabindex="0" aria-label="Email 1，必填">
+                  <div class="input-group" 
+                  ng-class="{'has-error': !myInfo.StudentBrief2.EmailList.email1}">
+                    <label for="email1" class="labelh">
                       Email 1(必填)
                       <img ng-src="./css/images/{{ maskedField.email1.eyeIcon }}" alt="切換 Email 1 顯示狀態"
                       style="cursor: pointer; margin-left: 8px; padding: 12px; height: 48px; width: 48px;"
                       ng-click="toggleEyeIcon(maskedField.email1)" role="button" tabindex="0"
                       aria-label="點擊切換 Email 1 地址的顯示與隱藏"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                      >
                     </label>
                     <input 
                       type="{{ maskedField.email1.inputType }}" 
@@ -1104,16 +1120,16 @@
                       id="email1" 
                       name="email1"
                       ng-model="myInfo.StudentBrief2.EmailList.email1"
-                      aria-label="{{ maskedField.email1.inputType === 'password' ? 'Email 1，內容已遮蔽' : '請輸入 Email 1 地址' }}"
+                      aria-label="{{ maskedField.email1.inputType === 'password' ? 'Email 1，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 1 地址，編輯方塊，輕觸兩下即可啟用' }}"
                       aria-required="true" 
                       aria-describedby="email1-required"
                       autocomplete="off">
-                    <span id="email1-required" class="sr-only">此欄位為必填</span>
+                    <!-- <span id="email1-required" class="sr-only">此欄位為必填</span> -->
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.EmailList.Email1=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email1)"
                       role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.EmailList.Email1 == 'true' ? '點擊改為不分享 Email 1 地址' : '點擊改為分享 Email 1 地址' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                      aria-label="{{ myInfo.DataSharing.DataSharing.EmailList.Email1 == 'true' ? '點擊改為不分享 Email 1 地址，按鈕，輕觸兩下即可啟用' : '點擊改為分享 Email 1 地址，按鈕，輕觸兩下即可啟用' }}"
+                      >
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-email1"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.EmailList.Email1!='true'}"></span>
                     </span>
@@ -1127,19 +1143,21 @@
                         style="cursor: pointer; margin-left: 8px; padding: 12px; height: 48px; width: 48px;"
                         ng-click="toggleEyeIcon(maskedField.email2)" role="button" tabindex="0"
                         aria-label="點擊切換 Email 2 地址的顯示與隱藏"
-                        onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                        >
                     </label>
-                    <input type="{{ maskedField.email2.inputType }}" maxlength="50"
-                    placeholder="請輸入 Email 地址2"
+                    <input 
+                      type="{{ maskedField.email2.inputType }}" 
+                      maxlength="50"
+                      placeholder="請輸入 Email 地址2"
                       class="{email:true} form-control h-12" id="email2" name="email2"
                       ng-model="myInfo.StudentBrief2.EmailList.email2"
-                      aria-label="{{ maskedField.email2.inputType === 'password' ? 'Email 2，內容已遮蔽' : '請輸入 Email 2 地址' }}"
+                      aria-label="{{ maskedField.email2.inputType === 'password' ? 'Email 2，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 2 地址，編輯方塊，輕觸兩下即可啟用' }}"
                       aria-required="false" autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.EmailList.Email2=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email2)"
                       role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.EmailList.Email2 == 'true' ? '點擊改為不分享 Email 2 地址' : '點擊改為分享 Email 2 地址' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                      aria-label="{{ myInfo.DataSharing.DataSharing.EmailList.Email2 == 'true' ? '點擊改為不分享 Email 2 地址，按鈕，輕觸兩下即可啟用' : '點擊改為分享 Email 2 地址，按鈕，輕觸兩下即可啟用' }}"
+                      >
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-email2"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.EmailList.Email2!='true'}"></span>
                     </span>
@@ -1153,20 +1171,20 @@
                         style="cursor: pointer; margin-left: 8px; padding: 12px; height: 48px; width: 48px;"
                         ng-click="toggleEyeIcon(maskedField.email3)" role="button" tabindex="0"
                         aria-label="點擊切換 Email 3 地址的顯示與隱藏"
-                        onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                        >
 
                     </label>
                     <input type="{{ maskedField.email3.inputType }}" maxlength="50"
                       placeholder="請輸入 Email 地址3"
                       class="{email:true} form-control h-12" id="email3" name="email3"
                       ng-model="myInfo.StudentBrief2.EmailList.email3"
-                      aria-label="{{ maskedField.email3.inputType === 'password' ? 'Email 3，內容已遮蔽' : '請輸入 Email 3 地址' }}"
+                      aria-label="{{ maskedField.email3.inputType === 'password' ? 'Email 3，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 3 地址，編輯方塊，輕觸兩下即可啟用' }}"
                       aria-required="false" autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.EmailList.Email3=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email3)"
                       role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.EmailList.Email3 == 'true' ? '點擊改為不分享 Email 3 地址' : '點擊改為分享 Email 3 地址' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                      aria-label="{{ myInfo.DataSharing.DataSharing.EmailList.Email3 == 'true' ? '點擊改為不分享 Email 3 地址，按鈕，輕觸兩下即可啟用' : '點擊改為分享 Email 3 地址，按鈕，輕觸兩下即可啟用' }}"
+                      >
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-email3"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.EmailList.Email3!='true'}"></span>
                     </span>
@@ -1180,19 +1198,19 @@
                         style="cursor: pointer; margin-left: 8px; padding: 12px; height: 48px; width: 48px;"
                         ng-click="toggleEyeIcon(maskedField.email4)" role="button" tabindex="0"
                         aria-label="點擊切換 Email 4 地址的顯示與隱藏"
-                        onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                        >
                     </label>
                     <input type="{{ maskedField.email4.inputType }}" maxlength="50"
                       placeholder="請輸入 Email 地址4"
                       class="{email:true} form-control h-12" id="email4" name="email4"
                       ng-model="myInfo.StudentBrief2.EmailList.email4"
-                      aria-label="{{ maskedField.email4.inputType === 'password' ? 'Email 4，內容已遮蔽' : '請輸入 Email 4 地址' }}"
+                      aria-label="{{ maskedField.email4.inputType === 'password' ? 'Email 4，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 4 地址，編輯方塊，輕觸兩下即可啟用' }}"
                       aria-required="false" autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.EmailList.Email4=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email4)"
                       role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.EmailList.Email4 == 'true' ? '點擊改為不分享 Email 4 地址' : '點擊改為分享 Email 4 地址' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                      aria-label="{{ myInfo.DataSharing.DataSharing.EmailList.Email4 == 'true' ? '點擊改為不分享 Email 4 地址，按鈕，輕觸兩下即可啟用' : '點擊改為分享 Email 4 地址，按鈕，輕觸兩下即可啟用' }}"
+                      >
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-email4"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.EmailList.Email4!='true'}"></span>
                     </span>
@@ -1206,19 +1224,19 @@
                         style="cursor: pointer; margin-left: 8px; padding: 12px; height: 48px; width: 48px;"
                         ng-click="toggleEyeIcon(maskedField.email5)" role="button" tabindex="0"
                         aria-label="點擊切換 Email 5 地址的顯示與隱藏"
-                        onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                        >
                     </label>
                     <input type="{{ maskedField.email5.inputType }}" maxlength="50"
-                    placeholder="請輸入 Email 地址5"
+                      placeholder="請輸入 Email 地址5"
                       class="{email:true} form-control h-12" id="email5" name="email5"
                       ng-model="myInfo.StudentBrief2.EmailList.email5"
-                      aria-label="{{ maskedField.email5.inputType === 'password' ? 'Email 5，內容已遮蔽' : '請輸入 Email 5 地址' }}"
+                      aria-label="{{ maskedField.email5.inputType === 'password' ? 'Email 5，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 5 地址，編輯方塊，輕觸兩下即可啟用' }}"
                       aria-required="false" autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.EmailList.Email5=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email5)"
                       role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.EmailList.Email5 == 'true' ? '點擊改為不分享 Email 5 地址' : '點擊改為分享 Email 5 地址' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                      aria-label="{{ myInfo.DataSharing.DataSharing.EmailList.Email5 == 'true' ? '點擊改為不分享 Email 5 地址，按鈕，輕觸兩下即可啟用' : '點擊改為分享 Email 5 地址，按鈕，輕觸兩下即可啟用' }}"
+                      >
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-email5"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.EmailList.Email5!='true'}"></span>
                     </span>
@@ -1245,23 +1263,26 @@
               <tr>
                 <td>
                   <div class="input-group">
-                    <label for="contact-address" class="labelh">聯絡地址
-                      <img ng-src="./css/images/pen.png" alt="點擊編輯聯絡地址"
-                        style="cursor: pointer; margin-left: 8px; padding: 14px; width: 48px;"
-                        ng-click="myInfo.edit_address('MailingAddress', myInfo.StudentInfo.MailingAddress)" tabindex="0"
-                        role="button"
-                        onkeypress="if(event.key === 'Enter' || event.key === ' '){ myInfo.edit_address('MailingAddress', myInfo.StudentInfo.MailingAddress); }">
-                    </label>
-                    <input type="text" class="form-control h-12" id="contact-address" name="contact-address"
+                    <label for="contact-address" class="labelh">聯絡地址</label>
+                    <!-- <input type="text" role="button" class="form-control h-12" id="contact-address" name="contact-address"
                       value="{{myInfo.StudentInfo.MailingAddress_desc}}" readonly
-                      ng-click="myInfo.edit_address('MailingAddress', myInfo.StudentInfo.MailingAddress)" role="button"
+                      ng-click="myInfo.edit_address('MailingAddress', myInfo.StudentInfo.MailingAddress)"
                       tabindex="0" aria-label="聯絡地址" placeholder="聯絡地址"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ myInfo.edit_address('MailingAddress', myInfo.StudentInfo.MailingAddress); }">
+                      > -->
+                    <div role="button"
+                        tabindex="0"
+                        aria-label="聯絡地址，{{myInfo.StudentInfo.MailingAddress_desc}}，輕觸兩下即可編輯"
+                        ng-click="myInfo.edit_address('MailingAddress', myInfo.StudentInfo.MailingAddress)">
+                      <input type="text" class="form-control h-12 lh-48"
+                            value="{{myInfo.StudentInfo.MailingAddress_desc}}"
+                            readonly
+                            >
+                    </div>
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.ContactAddress=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.ContactAddress)"
                       role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.ContactAddress == 'true' ? '點擊改為不分享聯絡地址' : '點擊改為分享聯絡地址' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                      aria-label="{{ myInfo.DataSharing.DataSharing.ContactAddress == 'true' ? '點擊改為不分享聯絡地址，按鈕，輕觸兩下即可啟用' : '點擊改為分享聯絡地址，按鈕，輕觸兩下即可啟用' }}"
+                      >
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-contact-address"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.ContactAddress!='true'}"></span>
                     </span>
@@ -1269,24 +1290,20 @@
                 </td>
                 <td>
                   <div class="input-group">
-                    <label for="permanent-address" class="labelh">住家地址
-                      <img ng-src="./css/images/pen.png" alt="點擊編輯住家地址"
-                        style="cursor: pointer; margin-left: 8px; padding: 14px; width: 48px;"
-                        ng-click="myInfo.edit_address('PermanentAddress', myInfo.StudentInfo.PermanentAddress)"
-                        tabindex="0" role="button"
-                        onkeypress="if(event.key === 'Enter' || event.key === ' '){ myInfo.edit_address('PermanentAddress', myInfo.StudentInfo.PermanentAddress); }">
-
-                    </label>
-                    <input type="text" class="form-control h-12" id="permanent-address" name="permanent-address"
-                      value="{{myInfo.StudentInfo.PermanentAddress_desc}}" readonly
-                      ng-click="myInfo.edit_address('PermanentAddress', myInfo.StudentInfo.PermanentAddress)"
-                      role="button" tabindex="0" aria-label="住家地址"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ myInfo.edit_address('PermanentAddress', myInfo.StudentInfo.PermanentAddress); }">
+                    <label for="permanent-address" class="labelh">住家地址</label>
+                    <div role="button"
+                        tabindex="0"
+                        aria-label="住家地址，{{myInfo.StudentInfo.PermanentAddress_desc}}，輕觸兩下即可編輯"
+                        ng-click="myInfo.edit_address('PermanentAddress', myInfo.StudentInfo.PermanentAddress)">
+                      <input type="text" class="form-control h-12 lh-48"
+                            value="{{myInfo.StudentInfo.PermanentAddress_desc}}"
+                            readonly>
+                    </div>
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.PermanentAddress=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.PermanentAddress)"
                       role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.PermanentAddress == 'true' ? '點擊改為不分享住家地址' : '點擊改為分享住家地址' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                      aria-label="{{ myInfo.DataSharing.DataSharing.PermanentAddress == 'true' ? '點擊改為不分享住家地址，按鈕，輕觸兩下即可啟用' : '點擊改為分享住家地址，按鈕，輕觸兩下即可啟用' }}"
+                      >
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-permanent-address"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.PermanentAddress!='true'}"></span>
                     </span>
@@ -1294,23 +1311,20 @@
                 </td>
                 <td>
                   <div class="input-group">
-                    <label for="office-address" class="labelh">公司地址
-                      <img ng-src="./css/images/pen.png" alt="點擊編輯公司地址"
-                        style="cursor: pointer; margin-left: 8px; padding: 14px; width: 48px;"
-                        ng-click="myInfo.edit_address('OtherAddresses', myInfo.StudentInfo.OtherAddresses)" tabindex="0"
-                        role="button"
-                        onkeypress="if(event.key === 'Enter' || event.key === ' '){ myInfo.edit_address('OtherAddresses', myInfo.StudentInfo.OtherAddresses); }">
-                    </label>
-                    <input type="text" class="form-control h-12" id="office-address" name="office-address"
-                      value="{{myInfo.StudentInfo.OtherAddresses_desc}}" readonly
-                      ng-click="myInfo.edit_address('OtherAddresses', myInfo.StudentInfo.OtherAddresses)" role="button"
-                      tabindex="0" aria-label="公司地址"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ myInfo.edit_address('OtherAddresses', myInfo.StudentInfo.OtherAddresses); }">
+                    <label for="office-address" class="labelh">公司地址</label>
+                    <div role="button"
+                        tabindex="0"
+                        aria-label="公司地址，{{myInfo.StudentInfo.OtherAddresses_desc}}，輕觸兩下即可編輯"
+                        ng-click="myInfo.edit_address('OtherAddresses', myInfo.StudentInfo.OtherAddresses)">
+                      <input type="text" class="form-control h-12 lh-48"
+                            value="{{myInfo.StudentInfo.OtherAddresses_desc}}"
+                            readonly>
+                    </div>
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.OtherAddressList.Address[0]=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.OtherAddressList.Address[0])"
                       role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.OtherAddressList.Address[0] == 'true' ? '點擊改為不分享公司地址' : '點擊改為分享公司地址' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                      aria-label="{{ myInfo.DataSharing.DataSharing.OtherAddressList.Address[0] == 'true' ? '點擊改為不分享公司地址，按鈕，輕觸兩下即可啟用' : '點擊改為分享公司地址，按鈕，輕觸兩下即可啟用' }}"
+                      >
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-office-address"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.OtherAddressList.Address[0]!='true'}"></span>
                     </span>
@@ -1482,16 +1496,19 @@
               </div>
             </li>
             <li class="list-group-item" ng-if="myInfo.Willingness.IsSocialEnterprise">
-              <div class="input-group">
+              <div class="input-group" ng-class="{'has-error': !myInfo.Willingness.DescriptionEnterprise}">
                 <label for="description-enterprise-input" class="input-group-addon p-3">請註明</label>
                 <input type="text" class="form-control h-12" id="description-enterprise-input"
-                  name="description-enterprise" ng-model="myInfo.Willingness.DescriptionEnterprise" tabindex="0"
-                  placeholder="請輸入社會企業相關活動內容" aria-required="false">
+                  name="description-enterprise" ng-model="myInfo.Willingness.DescriptionEnterprise" 
+                  tabindex="0"
+                  placeholder="請輸入社會企業相關活動內容"
+                  aria-label="必填，社會企業相關活動內容，編輯方塊，輕觸兩下即可啟用"
+                  aria-required="true">
                 <span class="input-group-addon p-3" target="data-sharing"
                   ng-click="myInfo.Willingness.IsSharingEnterprise = !(myInfo.Willingness.IsSharingEnterprise)"
                   role="button" tabindex="0"
                   aria-label="{{ myInfo.Willingness.IsSharingEnterprise ? '點擊改為不分享社會企業活動內容' : '點擊改為分享社會企業活動內容' }}"
-                  onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                  >
                   <span class="glyphicon glyphicon-ok" aria-hidden="true"
                     ng-class="{notshare: !myInfo.Willingness.IsSharingEnterprise}"></span>
                 </span>
@@ -1514,16 +1531,19 @@
               </div>
             </li>
             <li class="list-group-item" ng-if="myInfo.Willingness.IsNonProfitOrganizations">
-              <div class="input-group">
+              <div class="input-group" ng-class="{'has-error': !myInfo.Willingness.DescriptionOrganizations}">
                 <label for="description-organizations-input" class="input-group-addon p-3">請註明</label>
                 <input type="text" class="form-control h-12" id="description-organizations-input"
-                  name="description-organizations" ng-model="myInfo.Willingness.DescriptionOrganizations"
-                  placeholder="請輸入非營利組織相關活動內容" aria-required="false">
+                  name="description-organizations" 
+                  ng-model="myInfo.Willingness.DescriptionOrganizations"
+                  placeholder="請輸入非營利組織相關活動內容"
+                  aria-label="必填，非營利組織相關活動內容，編輯方塊，輕觸兩下即可啟用"
+                  aria-required="false">
                 <span class="input-group-addon p-3" target="data-sharing"
                   ng-click="myInfo.Willingness.IsSharingOrganizations = !(myInfo.Willingness.IsSharingOrganizations)"
                   role="button" tabindex="0"
                   aria-label="{{ myInfo.Willingness.IsSharingOrganizations ? '點擊改為不分享非營利組織活動內容' : '點擊改為分享非營利組織活動內容' }}"
-                  onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                  >
                   <span class="glyphicon glyphicon-ok" aria-hidden="true"
                     ng-class="{notshare: !myInfo.Willingness.IsSharingOrganizations}"></span>
                   <span class="sr-only" ng-if="myInfo.Willingness.IsSharingOrganizations">非營利組織活動內容已分享</span>
@@ -1548,16 +1568,19 @@
               </div>
             </li>
             <li class="list-group-item" ng-if="myInfo.Willingness.IsCorporateSocialResponsibility">
-              <div class="input-group">
+              <div class="input-group" ng-class="{'has-error': !myInfo.Willingness.DescriptionResponsibility}">
                 <label for="description-responsibility-input" class="input-group-addon p-3">請註明</label>
                 <input type="text" class="form-control h-12" id="description-responsibility-input"
-                  name="description-responsibility" ng-model="myInfo.Willingness.DescriptionResponsibility"
-                  placeholder="請輸入企業社會責任(CSR)相關活動內容" aria-required="false">
+                  name="description-responsibility" 
+                  ng-model="myInfo.Willingness.DescriptionResponsibility"
+                  placeholder="請輸入企業社會責任(CSR)相關活動內容" 
+                  aria-label="必填，企業社會責任(CSR)相關活動內容，編輯方塊，輕觸兩下即可啟用"
+                  aria-required="false">
                 <span class="input-group-addon p-3" target="data-sharing"
                   ng-click="myInfo.Willingness.IsSharingResponsibility = !(myInfo.Willingness.IsSharingResponsibility)"
                   role="button" tabindex="0"
                   aria-label="{{ myInfo.Willingness.IsSharingResponsibility ? '點擊改為不分享企業社會責任(CSR)活動內容' : '點擊改為分享企業社會責任(CSR)活動內容' }}"
-                  onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                  >
                   <span class="glyphicon glyphicon-ok" aria-hidden="true"
                     ng-class="{notshare: !myInfo.Willingness.IsSharingResponsibility}"></span>
                   <span class="sr-only" ng-if="myInfo.Willingness.IsSharingResponsibility">企業社會責任(CSR)活動內容已分享</span>
@@ -1583,14 +1606,17 @@
               </div>
             </li>
             <li class="list-group-item" ng-if="myInfo.Willingness.IsVenture">
-              <div class="input-group">
+              <div class="input-group" ng-class="{'has-error': !myInfo.Willingness.DescriptionVenture}">
                 <label for="description-venture-input" class="input-group-addon p-3">請註明</label>
                 <input type="text" class="form-control h-12" id="description-venture-input" name="description-venture"
-                  ng-model="myInfo.Willingness.DescriptionVenture" placeholder="請輸入創業相關活動內容" aria-required="false">
+                  ng-model="myInfo.Willingness.DescriptionVenture" 
+                  placeholder="請輸入創業相關活動內容"
+                  aria-label="必填，創業相關活動內容，編輯方塊，輕觸兩下即可啟用"
+                  aria-required="false">
                 <span class="input-group-addon p-3" target="data-sharing"
                   ng-click="myInfo.Willingness.IsSharingVenture = !(myInfo.Willingness.IsSharingVenture)" role="button"
-                  tabindex="0" aria-label="{{ myInfo.Willingness.IsSharingVenture ? '點擊改為不分享創業活動內容' : '點擊改為分享創業活動內容' }}"
-                  onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                  tabindex="0" aria-label="{{ myInfo.Willingness.IsSharingVenture ? '點擊改為不分享創業活動內容，按鈕，輕觸兩下即可啟用' : '點擊改為分享創業活動內容，按鈕，輕觸兩下即可啟用' }}"
+                  >
                   <span class="glyphicon glyphicon-ok" aria-hidden="true"
                     ng-class="{notshare: !myInfo.Willingness.IsSharingVenture}"></span>
                   <span class="sr-only" ng-if="myInfo.Willingness.IsSharingVenture">創業活動內容已分享</span>
@@ -1643,18 +1669,19 @@
               </div>
             </li>
             <li class="list-group-item" ng-if="myInfo.Willingness.IsEntrepreneurialTeam">
-              <!--<div class="input-group" ng-class="{'has-error': !myInfo.Willingness.DescriptionEntrpreneurial}">-->
-              <div class="input-group">
+              <div class="input-group" ng-class="{'has-error': !myInfo.Willingness.DescriptionEntrpreneurial}">
                 <span class="input-group-addon p-3">請註明</span>
                 <!--<input type="text" class="form-control h-12" target="" name="" placeholder="必填" ng-model="myInfo.Willingness.DescriptionEntrpreneurial">-->
-                <input type="text" class="form-control h-12" target="" name="" placeholder="請輸入可提供經驗分享內容"
+                <input type="text" class="form-control h-12" target="" name="" 
+                  placeholder="請輸入可提供經驗分享內容"
+                  aria-label="必填，可提供經驗分享內容，編輯方塊，輕觸兩下即可啟用"
                   ng-model="myInfo.Willingness.DescriptionEntrpreneurial">
 
                 <span class="input-group-addon p-3" target="data-sharing"
                   ng-click="myInfo.Willingness.IsSharingEntrpreneurial=!(myInfo.Willingness.IsSharingEntrpreneurial)"
                   role="button" tabindex="0"
-                  aria-label="{{ myInfo.Willingness.IsSharingEntrpreneurial ? '點擊改為不分享擔任相關課程業師意願' : '點擊改為分享擔任相關課程業師意願' }}"
-                  onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                  aria-label="{{ myInfo.Willingness.IsSharingEntrpreneurial ? '點擊改為不分享擔任相關課程業師意願，按鈕，輕觸兩下即可啟用' : '點擊改為分享擔任相關課程業師意願，按鈕，輕觸兩下即可啟用' }}"
+                  >
                   <span class="glyphicon glyphicon-ok" aria-hidden="true"
                     ng-class="{notshare: !myInfo.Willingness.IsSharingEntrpreneurial}"></span>
                 </span>
@@ -1666,25 +1693,25 @@
         <div class="panel panel-info">
           <div class="panel-heading">
             <i class="fa fa-fw fa-group" aria-hidden="true"></i> 參加校外團體
-            <img ng-src="./css/images/pen.png" alt="點擊編輯參加校外團體"
-              style="cursor: pointer; margin-left: 8px; padding: 14px; width: 48px;"
-              ng-click="stu_additionals.edit('ExternalOrganization', AdditionalSetup['S_ExternalOrganization'])"
-              tabindex="0" role="button"
-              onkeypress="if(event.key === 'Enter' || event.key === ' '){ stu_additionals.edit('ExternalOrganization', AdditionalSetup['S_ExternalOrganization']); }">
           </div>
           <div class="panel-body">
             <!--<div class="input-group" ng-class="{'has-error': !stu_additionals.result['my_ExternalOrganization_desc'] || !stu_additionals.valid('ExternalOrganization', AdditionalSetup['S_ExternalOrganization'])}">-->
             <div class="input-group"
               ng-class="{'has-error': !stu_additionals.valid('ExternalOrganization', AdditionalSetup['S_ExternalOrganization'])}">
               <!--<input type="text" class="form-control h-12" placeholder="必填" readonly value="{{stu_additionals.result['my_ExternalOrganization_desc']}}" ng-click="stu_additionals.edit('ExternalOrganization', AdditionalSetup['S_ExternalOrganization'])">-->
-              <input type="text" class="form-control h-12" readonly
-                value="{{stu_additionals.result['my_ExternalOrganization_desc']}}"
-                ng-click="stu_additionals.edit('ExternalOrganization', AdditionalSetup['S_ExternalOrganization'])">
+              <div role="button"
+                  tabindex="0"
+                  aria-label="參加校外團體，{{stu_additionals.result['my_ExternalOrganization_desc']}}，輕觸兩下即可編輯"
+                  ng-click="stu_additionals.edit('ExternalOrganization', AdditionalSetup['S_ExternalOrganization'])">
+                <input type="text" class="form-control h-12 lh-48"
+                      value="{{stu_additionals.result['my_ExternalOrganization_desc']}}"
+                      readonly>
+              </div>
               <span class="input-group-addon p-3" target="data-sharing"
                 ng-click="myInfo.Willingness.IsSharingExternalOrganization=!(myInfo.Willingness.IsSharingExternalOrganization)"
                 role="button" tabindex="0"
-                aria-label="{{ myInfo.Willingness.IsSharingExternalOrganization ? '點擊改為不分享參加校外團體' : '點擊改為分享參加校外團體' }}"
-                onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                aria-label="{{ myInfo.Willingness.IsSharingExternalOrganization ? '點擊改為不分享參加校外團體，按鈕，輕觸兩下即可啟用' : '點擊改為分享參加校外團體，按鈕，輕觸兩下即可啟用' }}"
+                >
                 <span class="glyphicon glyphicon-ok notshare" aria-hidden="true"
                   ng-class="{notshare: !myInfo.Willingness.IsSharingExternalOrganization}"></span>
               </span>
@@ -1695,23 +1722,24 @@
         <div class="panel panel-info">
           <div class="panel-heading">
             <i class="fa fa-fw fa-heart" aria-hidden="true"></i> 興趣
-            <img ng-src="./css/images/pen.png" alt="點擊編輯興趣"
-              style="cursor: pointer; margin-left: 8px; padding: 14px; width: 48px;"
-              ng-click="stu_additionals.edit('Interest', AdditionalSetup['S_Interest'])" tabindex="0" role="button"
-              onkeypress="if(event.key === 'Enter' || event.key === ' '){ stu_additionals.edit('Interest', AdditionalSetup['S_Interest']); }">
           </div>
           <div class="panel-body">
             <!--<div class="input-group" ng-class="{'has-error': !stu_additionals.result['my_Interest_desc'] || !stu_additionals.valid('Interest', AdditionalSetup['S_Interest'])}">-->
             <div class="input-group"
               ng-class="{'has-error': !stu_additionals.valid('Interest', AdditionalSetup['S_Interest'])}">
               <!--<input type="text" class="form-control h-12" placeholder="必填" readonly value="{{stu_additionals.result['my_Interest_desc']}}" ng-click="stu_additionals.edit('Interest', AdditionalSetup['S_Interest'])">-->
-              <input type="text" class="form-control h-12" readonly
-                value="{{stu_additionals.result['my_Interest_desc']}}"
-                ng-click="stu_additionals.edit('Interest', AdditionalSetup['S_Interest'])">
+              <div role="button"
+                  tabindex="0"
+                  aria-label="興趣，{{stu_additionals.result['my_Interest_desc']}}，輕觸兩下即可編輯"
+                  ng-click="stu_additionals.edit('Interest', AdditionalSetup['S_Interest'])">
+                <input type="text" class="form-control h-12 lh-48"
+                      value="{{stu_additionals.result['my_Interest_desc']}}"
+                      readonly>
+              </div>
               <span class="input-group-addon p-3" target="data-sharing"
                 ng-click="myInfo.Willingness.IsSharingInterest=!(myInfo.Willingness.IsSharingInterest)" role="button"
-                tabindex="0" aria-label="{{ myInfo.Willingness.IsSharingInterest ? '點擊改為不分享興趣' : '點擊改為分享興趣' }}"
-                onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                tabindex="0" aria-label="{{ myInfo.Willingness.IsSharingInterest ? '點擊改為不分享興趣，按鈕，輕觸兩下即可啟用' : '點擊改為分享興趣，按鈕，輕觸兩下即可啟用' }}"
+                >
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"
                   ng-class="{notshare: !myInfo.Willingness.IsSharingInterest}"></span>
               </span>
@@ -1722,24 +1750,25 @@
         <div class="panel panel-info">
           <div class="panel-heading">
             <i class="fa fa-fw fa-group" aria-hidden="true"></i> 參加台大EMBA團體
-            <img ng-src="./css/images/pen.png" alt="點擊編輯參加台大EMBA團體"
-              style="cursor: pointer; margin-left: 8px; padding: 14px; width: 48px;"
-              ng-click="stu_additionals.edit('EMBAGroups', AdditionalSetup['S_EMBAGroups'])" tabindex="0" role="button"
-              onkeypress="if(event.key === 'Enter' || event.key === ' '){ stu_additionals.edit('EMBAGroups', AdditionalSetup['S_EMBAGroups']); }">
           </div>
           <div class="panel-body">
             <!--<div class="input-group" ng-class="{'has-error': !stu_additionals.result['my_EMBAGroups_desc'] || !stu_additionals.valid('EMBAGroups', AdditionalSetup['S_EMBAGroups'])}">-->
             <div class="input-group"
               ng-class="{'has-error': !stu_additionals.valid('EMBAGroups', AdditionalSetup['S_EMBAGroups'])}">
               <!--<input type="text" class="form-control h-12" placeholder="必填" readonly value="{{stu_additionals.result['my_EMBAGroups_desc']}}" ng-click="stu_additionals.edit('EMBAGroups', AdditionalSetup['S_EMBAGroups'])">-->
-              <input type="text" class="form-control h-12" readonly
-                value="{{stu_additionals.result['my_EMBAGroups_desc']}}"
-                ng-click="stu_additionals.edit('EMBAGroups', AdditionalSetup['S_EMBAGroups'])">
+              <div role="button"
+                  tabindex="0"
+                  aria-label="參加台大EMBA團體，{{stu_additionals.result['my_EMBAGroups_desc']}}，輕觸兩下即可編輯"
+                  ng-click="stu_additionals.edit('EMBAGroups', AdditionalSetup['S_EMBAGroups'])">
+                <input type="text" class="form-control h-12 lh-48"
+                      value="{{stu_additionals.result['my_EMBAGroups_desc']}}"
+                      readonly>
+              </div>
               <span class="input-group-addon p-3" target="data-sharing"
                 ng-click="myInfo.Willingness.IsSharingEMBAGroups=!(myInfo.Willingness.IsSharingEMBAGroups)"
                 role="button" tabindex="0"
-                aria-label="{{ myInfo.Willingness.IsSharingEMBAGroups ? '點擊改為不分享參加台大EMBA團體' : '點擊改為分享參加台大EMBA團體' }}"
-                onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }">
+                aria-label="{{ myInfo.Willingness.IsSharingEMBAGroups ? '點擊改為不分享參加台大EMBA團體，按鈕，輕觸兩下即可啟用' : '點擊改為分享參加台大EMBA團體，按鈕，輕觸兩下即可啟用' }}"
+                >
                 <span class="glyphicon glyphicon-ok notshare" aria-hidden="true"
                   ng-class="{notshare: !myInfo.Willingness.IsSharingEMBAGroups}"></span>
               </span>
@@ -1827,11 +1856,12 @@
                 <td>
                   <div class="input-group">
                     <label for="line" class="labelh">Line</label>
-                    <input type="text" class="form-control h-12" id="line" name="line" placeholder="請輸入 Line ID"
-                      ng-model="myInfo.StudentInfo.Line" aria-label="請輸入 Line ID">
+                    <input type="text" class="form-control h-12" id="line" name="line" 
+                      placeholder="請輸入 Line ID"
+                      ng-model="myInfo.StudentInfo.Line" 
+                      aria-label="Line ID，編輯方塊，輕觸兩下即可啟用">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.Line  === 'true' ? '點擊改為不分享 Line ID' : '點擊改為分享 Line ID' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }"
+                      aria-label="{{ myInfo.DataSharing.DataSharing.Line  === 'true' ? '點擊改為不分享 Line ID，按鈕，輕觸兩下即可啟用' : '點擊改為分享 Line ID，按鈕，輕觸兩下即可啟用' }}"
                       ng-click="myInfo.DataSharing.DataSharing.Line = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.Line)">
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-Line"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.Line !== 'true'}">
@@ -1846,10 +1876,10 @@
                   <div class="input-group">
                     <label for="facebook" class="labelh">Facebook</label>
                     <input type="text" class="form-control h-12" id="facebook" name="facebook"
-                      placeholder="請輸入 Facebook ID" ng-model="myInfo.StudentInfo.Facebook" aria-label="請輸入 Facebook ID">
+                      placeholder="請輸入 Facebook ID" ng-model="myInfo.StudentInfo.Facebook" 
+                      aria-label="Facebook ID，編輯方塊，輕觸兩下即可啟用">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.Facebook === 'true' ? '點擊改為不分享 Facebook ID' : '點擊改為分享 Facebook ID' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }"
+                      aria-label="{{ myInfo.DataSharing.DataSharing.Facebook === 'true' ? '點擊改為不分享 Facebook ID，按鈕，輕觸兩下即可啟用' : '點擊改為分享 Facebook ID，按鈕，輕觸兩下即可啟用' }}"
                       ng-click="myInfo.DataSharing.DataSharing.Facebook = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.Facebook)">
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-Facebook"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.Facebook !== 'true'}">
@@ -1864,10 +1894,10 @@
                   <div class="input-group">
                     <label for="linkedIn" class="labelh">LinkedIn</label>
                     <input type="text" class="form-control h-12" id="linkedIn" name="linkedIn"
-                      placeholder="請輸入 LinkedIn ID" ng-model="myInfo.StudentInfo.LinkedIn" aria-label="請輸入 LinkedIn ID">
+                      placeholder="請輸入 LinkedIn ID" ng-model="myInfo.StudentInfo.LinkedIn" 
+                      aria-label="LinkedIn ID，編輯方塊，輕觸兩下即可啟用">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.LinkedIn  === 'true' ? '點擊改為不分享 LinkedIn ID' : '點擊改為分享 LinkedIn ID' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }"
+                      aria-label="{{ myInfo.DataSharing.DataSharing.LinkedIn  === 'true' ? '點擊改為不分享 LinkedIn ID，按鈕，輕觸兩下即可啟用' : '點擊改為分享 LinkedIn ID，按鈕，輕觸兩下即可啟用' }}"
                       ng-click="myInfo.DataSharing.DataSharing.LinkedIn = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.LinkedIn)">
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-LinkedIn"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.LinkedIn !== 'true'}">
@@ -1882,10 +1912,10 @@
                   <div class="input-group">
                     <label for="whatsApp" class="labelh">WhatsApp</label>
                     <input type="text" class="form-control h-12" id="whatsApp" name="whatsApp"
-                      placeholder="請輸入 WhatsApp ID" ng-model="myInfo.StudentInfo.WhatsApp" aria-label="請輸入 WhatsApp ID">
+                      placeholder="請輸入 WhatsApp ID" ng-model="myInfo.StudentInfo.WhatsApp" 
+                      aria-label="WhatsApp ID，編輯方塊，輕觸兩下即可啟用">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.WhatsApp  === 'true' ? '點擊改為不分享 WhatsApp ID' : '點擊改為分享 WhatsApp ID' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }"
+                      aria-label="{{ myInfo.DataSharing.DataSharing.WhatsApp  === 'true' ? '點擊改為不分享 WhatsApp ID，按鈕，輕觸兩下即可啟用' : '點擊改為分享 WhatsApp ID，按鈕，輕觸兩下即可啟用' }}"
                       ng-click="myInfo.DataSharing.DataSharing.WhatsApp = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.WhatsApp)">
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-WhatsApp"
                         ng-class="{notshare: !myInfo.DataSharing.DataSharing.WhatsApp !== 'true'}">
@@ -1900,10 +1930,9 @@
                   <div class="input-group">
                     <label for="weChat" class="labelh">WeChat</label>
                     <input type="text" class="form-control h-12" id="weChat" name="weChat" placeholder="請輸入 WeChat ID"
-                      ng-model="myInfo.StudentInfo.WeChat" aria-label="請輸入 WeChat ID">
+                      ng-model="myInfo.StudentInfo.WeChat" aria-label="WeChat ID，編輯方塊，輕觸兩下即可啟用">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
-                      aria-label="{{ myInfo.DataSharing.DataSharing.WeChat  === 'true' ? '點擊改為不分享 WeChat ID' : '點擊改為分享 WeChat ID' }}"
-                      onkeypress="if(event.key === 'Enter' || event.key === ' '){ this.click(); }"
+                      aria-label="{{ myInfo.DataSharing.DataSharing.WeChat  === 'true' ? '點擊改為不分享 WeChat ID，按鈕，輕觸兩下即可啟用' : '點擊改為分享 WeChat ID，按鈕，輕觸兩下即可啟用' }}"
                       ng-click="myInfo.DataSharing.DataSharing.WeChat = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.WeChat)">
                       <span class="glyphicon glyphicon-ok" aria-hidden="true" target="share-WeChat"
                         ng-class="{notshare: myInfo.DataSharing.DataSharing.WeChat !== 'true'}">
@@ -1925,14 +1954,14 @@
       </div>
     </div>
 
-    <div class="modal fade" id="messageBox" tabindex="-1" role="dialog" aria-labelledby="messageTitle" aria-hidden="true">
+    <div class="modal fade" id="messageBox" tabindex="-1" role="dialog" aria-labelledby="messageTitle">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close h-12 w-12" data-dismiss="modal" aria-label="關閉訊息框">
+          <div class="modal-header d-flex">
+            <h4 class="modal-title" style="font-size: 18px; line-height: 40px;" id="messageTitle">訊息</h4>
+            <button type="button" class="close h-12 w-12 float-none ml-auto" data-dismiss="modal" aria-label="關閉訊息框">
               <span aria-hidden="true">&times;</span>
             </button>
-            <div style="font-size: 18px; line-height: 40px;" id="messageTitle">訊息</div>
           </div>
           <div class="modal-body" id="messageContent" tabindex="-1" aria-live="polite" aria-atomic="true">
             <!-- 動態訊息內容將顯示於此 -->
