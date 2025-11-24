@@ -664,7 +664,7 @@
                 <div id="searchResultEmpty" class="py-4" ng-show="isLoadComplete && students.length == 0" 
                      tabindex="-1">查詢結果：無符合資料</div>
             
-                <table id="studentResultsTable" class="table table-bordered table-hover table-striped responsive-table"
+                <table id="studentResultsTable" class="table table-bordered table-hover table-striped responsive-table" ng-show="isLoadComplete && students.length > 0"
                     aria-label="學生查詢結果列表，點擊兩下即可開啟學生詳細資料">
                    <thead>
                         <tr class="info">
