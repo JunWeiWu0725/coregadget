@@ -134,7 +134,11 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
          * @returns {Object} {score: number|null, extension: Object|null, error: string|null}
          */
         function buildScoreAndExtension(rawValue, examExtensionMap) {
-            var val = (rawValue || '').toString().trim();
+            // 注意：不能使用 (rawValue || '')，會把 0 視為空值，導致 0 分被當成「沒有輸入」
+            // 僅在 rawValue 為 null / undefined 時，才視為空白
+            var val = (rawValue === null || rawValue === undefined)
+                ? ''
+                : rawValue.toString().trim();
 
             var result = {
                 score: null,
@@ -1657,6 +1661,7 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                                 }
                                 
                                 // 一般分數時，需要保留 Extension 結構以便清空三欄位
+                                // 一般數字成績（包含 0 分）會走這條路：Extension 只保留殼並清空 Text/UseText/Score
                                 var isNormalScore = (be.extension == null) && (be.score != null);
                                 if (isNormalScore) {
                                     needExtensionShell = true;
@@ -1682,7 +1687,11 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                                     data.Extension.Extension.Text = '';
                                 }
 
-                                if (studentRec['Exam' + examRec.ExamID] != studentRec['Exam' + examRec.ExamID + 'Origin']) {
+                                // 將新值與舊值轉為字串進行比較，確保能正確捕捉「空白 → 0」等變化
+                                var newVal = (studentRec['Exam' + examRec.ExamID] == null ? '' : studentRec['Exam' + examRec.ExamID].toString());
+                                var oldVal = (studentRec['Exam' + examRec.ExamID + 'Origin'] == null ? '' : studentRec['Exam' + examRec.ExamID + 'Origin'].toString());
+                                
+                                if (newVal != oldVal) {
                                     isChange = true;
                                     if (logManangers.length == 0 || !(logManangers.find(x => { return x.key == `Exam_${examRec.ExamID}` }))) { //第一次
 
@@ -1698,7 +1707,10 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                                     }
 
                                     var temp = logManangers.find(x => { return x.key == `Exam_${examRec.ExamID}` });
-                                    var descriptByItem = `　${studentRec.ClassName}班  ${studentRec.SeatNo}號  ${studentRec.StudentName}  , ${studentRec['Exam' + examRec.ExamID + 'Origin'] || '  '} => ${studentRec['Exam' + examRec.ExamID]}  `;
+                                    // 修正 log 描述，確保 0 分能正確顯示（不使用 || '  ' 避免 0 被隱藏）
+                                    var oldValForLog = (studentRec['Exam' + examRec.ExamID + 'Origin'] == null || studentRec['Exam' + examRec.ExamID + 'Origin'] === '') ? '  ' : studentRec['Exam' + examRec.ExamID + 'Origin'].toString();
+                                    var newValForLog = (studentRec['Exam' + examRec.ExamID] == null || studentRec['Exam' + examRec.ExamID] === '') ? '  ' : studentRec['Exam' + examRec.ExamID].toString();
+                                    var descriptByItem = `　${studentRec.ClassName}班  ${studentRec.SeatNo}號  ${studentRec.StudentName}  , ${oldValForLog} => ${newValForLog}  `;
 
                                     temp.descriptSection.push(descriptByItem);
 
