@@ -1456,6 +1456,22 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
             
             var flag = false;
             if ($scope.current.Exam.Type == 'Number') {
+                // ✅ 試卷模式：只允許數字 / 空白 / "-"
+                if ($scope.current.Exam.SubName === '試卷') {
+                    var raw = ($scope.current.Value || '').toString().trim();
+
+                    // 空白與 "-" 允許：空白 = 不輸入，"-" = 清空
+                    if (raw !== '' && raw !== '-') {
+                        // 其餘必須可轉成數字
+                        if (isNaN(Number(raw))) {
+                            alert('試卷成績必須為數字（空白或輸入「-」代表清空），不可輸入缺考輸入內容。');
+
+                            // 中止後續流程，不進行原本的數值處理，也不呼叫 submitGrade
+                            return;
+                        }
+                    }
+                }
+
                 var temp = Number($scope.current.Value);
                 if (!isNaN(temp)
                     && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Max && $scope.current.Exam.Range.Max !== 0) || temp <= $scope.current.Exam.Range.Max)
@@ -1530,8 +1546,22 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                         var ps = $scope.current.Student['Exam' + template.ExamID + 'PScore'];
                         var cs = $scope.current.Student['Exam' + template.ExamID + 'CScore'];
 
-                        // var score = (ps == '' && cs == '') ? '' : ps * 1 + cs * 1;
-                        var score = (ps === '' && cs === '') ? '' : add(+ps, +cs);
+                        // 僅將可轉為數字的內容拿來加總，避免「缺」等文字造成 NaN
+                        var psNum = (ps !== null && ps !== undefined && ps !== '' && !isNaN(Number(ps))) ? Number(ps) : null;
+                        var csNum = (cs !== null && cs !== undefined && cs !== '' && !isNaN(Number(cs))) ? Number(cs) : null;
+
+                        var score;
+
+                        if (psNum === null && csNum === null) {
+                            // 沒有任何有效數字 → 主評量留空
+                            score = '';
+                        } else {
+                            var total = 0;
+                            if (psNum !== null) total = add(total, psNum);
+                            if (csNum !== null) total = add(total, csNum);
+                            score = total;
+                        }
+
                         $scope.current.Student['Exam' + template.ExamID] = score;
                     }
                 }
@@ -1718,8 +1748,15 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
 
                                 // B-4: 讀卡子成績 CScore / PScore 寫入
                                 if (examRec.isSubScoreMode && data.Extension) {
-                                    var cScore = studentRec['Exam' + examRec.ExamID + 'CScore'] || '';
-                                    var pScore = studentRec['Exam' + examRec.ExamID + 'PScore'] || '';
+
+                                    // 僅在 null / undefined 時視為空白；其餘保留原始值（含 0 與文字）
+                                    function normalizeSubScore(raw) {
+                                        if (raw === null || raw === undefined) return '';
+                                        return raw.toString();
+                                    }
+
+                                    var cScore = normalizeSubScore(studentRec['Exam' + examRec.ExamID + 'CScore']);
+                                    var pScore = normalizeSubScore(studentRec['Exam' + examRec.ExamID + 'PScore']);
 
                                     data.Extension.Extension.CScore = cScore;
                                     data.Extension.Extension.PScore = pScore;
@@ -2635,7 +2672,8 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                                     //     flag = true;
                                     // }
 
-                                    if (examRec.Name !== '學期成績')
+                                    // 一般模式可以使用缺考設定文字；試卷模式禁止
+                                    if (examRec.Name !== '學期成績' && examRec.SubName != '試卷')
                                         $scope.examExtensionMap.forEach(function (map) {
                                             if (map.use_text == importProcess.ParseValues[i]) {
                                                 flag = true;
@@ -2682,7 +2720,8 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                                     else {
                                         stuRec['Exam' + examRec.ExamID] = importProcess.ParseValues[index];
 
-                                        if (examRec.Name !== '學期成績')
+                                        // 一般模式可設定缺考 score_type；試卷模式不使用缺考設定
+                                        if (examRec.Name !== '學期成績' && examRec.SubName != '試卷')
                                             $scope.examExtensionMap.forEach(function (map) {
                                                 if (map.use_text == importProcess.ParseValues[index]) {
                                                     stuRec['Exam' + examRec.ExamID + 'score_type'] = map.score_type;

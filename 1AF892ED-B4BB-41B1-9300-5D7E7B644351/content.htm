@@ -442,6 +442,14 @@
                             <td>{{ item.score_type }}</td>
                         </tr>
                     </tbody>
+                    <!-- 讀卡 / 試卷 啟用提示 -->
+                    <tbody ng-if="(examList | filter:{SubName:'讀卡'}).length > 0 || (examList | filter:{SubName:'試卷'}).length > 0">
+                        <tr>
+                            <td colspan="3" class="text-danger" style="padding:5px;">
+                                ✬ 已啟用讀卡成績，不採用缺免設定。
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
             <!--成績管理Table-->
@@ -630,11 +638,19 @@
                                     <td>{{ item.use_text }}</td>
                                     <td>{{ item.score_type }}</td>
                                 </tr>
-                                <tr>
+   <tr>
                                     <td>空白</td>
                                     <td>-</td>
                                     <td></td>
                                 </tr>
+                                <!-- 讀卡 / 試卷啟用提示（匯入畫面也顯示） -->
+                                <tr ng-if="(examList | filter:{SubName:'讀卡'}).length > 0 || (examList | filter:{SubName:'試卷'}).length > 0">
+                                    <td colspan="3" class="text-danger" style="padding:5px;">
+                                        ✬ 已啟用讀卡成績，不採用缺免設定。
+                                    </td>
+                                </tr>
+
+                             
                             </tbody>
                         </table>
                     </div>
