@@ -144,3 +144,28 @@ input[type="text"]:focus-visible {
   color: #337ab7;
 }
 
+.py-4 {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.px-0 {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.mt-4 {
+  margin-top: 16px;
+}
+
+.mb-4 {
+  margin-bottom: 16px;
+}
+
+.text-md {
+  font-size: 16px;
+}
+
+.max-w-28 {
+  max-width: 7rem;
+}

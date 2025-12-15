@@ -11,9 +11,9 @@
         init({
             //application: "demo.h.vicky.chang",
             //application: "1admin_debug5",
-            //application: "1admin_debug6",
+            application: "1admin_debug18",
             //  application: "demo.h.cynthia.chen",
-             application: "demo.h.beibei.lai",
+             //application: "demo.h.beibei.lai",
             paramValues: {
                 "DefaultRound": "2" //預設小數點位數
                 //"第一次期中考Round": "1",
@@ -198,8 +198,8 @@
                 <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                     ng-if="templateList.length > 0">{{current.template.Name}}&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li ng-repeat="template in templateList" ng-class="{active: template == current.template}">
-                        <a href="javascript:;" ng-click="setCurrentTemplate(template)">{{template.Name}}</a>
+                    <li ng-repeat="tpl in templateList track by tpl.ExamID" ng-class="{active: tpl.ExamID === current.templateId}">
+                        <a href="javascript:;" ng-click="setCurrentTemplate(tpl)">{{tpl.Name}}</a>
                     </li>
                 </ul>
             </div>
@@ -442,6 +442,14 @@
                             <td>{{ item.score_type }}</td>
                         </tr>
                     </tbody>
+                    <!-- 讀卡 / 試卷 啟用提示 -->
+                    <tbody ng-if="(examList | filter:{SubName:'讀卡'}).length > 0 || (examList | filter:{SubName:'試卷'}).length > 0">
+                        <tr>
+                            <td colspan="3" class="text-danger" style="padding:5px;">
+                                ✬ 已啟用讀卡成績，不採用缺免設定。
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
             <!--成績管理Table-->
@@ -630,11 +638,19 @@
                                     <td>{{ item.use_text }}</td>
                                     <td>{{ item.score_type }}</td>
                                 </tr>
-                                <tr>
+   <tr>
                                     <td>空白</td>
                                     <td>-</td>
                                     <td></td>
                                 </tr>
+                                <!-- 讀卡 / 試卷啟用提示（匯入畫面也顯示） -->
+                                <tr ng-if="(examList | filter:{SubName:'讀卡'}).length > 0 || (examList | filter:{SubName:'試卷'}).length > 0">
+                                    <td colspan="3" class="text-danger" style="padding:5px;">
+                                        ✬ 已啟用讀卡成績，不採用缺免設定。
+                                    </td>
+                                </tr>
+
+                             
                             </tbody>
                         </table>
                     </div>

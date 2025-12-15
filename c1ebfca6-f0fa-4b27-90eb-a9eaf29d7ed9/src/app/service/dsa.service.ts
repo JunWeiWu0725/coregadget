@@ -113,7 +113,7 @@ export class DSAService {
   /**
    * 儲存課堂點名小幫手
    */
-  public async setHelper(type: string, targetID: string, studentID: string) {
+  public async setHelper(type: string, targetID: string, studentID: string[]) {
     await this.ready;
     var req: any;
 

@@ -145,6 +145,7 @@ var app = angular
         $scope.contract = gadget.getContract("ischool.fitness.input.peteacher");
         $scope.menu = [];
         $scope.checkListBool = false;
+        $scope.showNorm = false;
         $scope.init = function () {
             $scope.getMenu();
         }

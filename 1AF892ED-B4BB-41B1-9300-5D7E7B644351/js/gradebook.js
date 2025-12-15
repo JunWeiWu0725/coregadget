@@ -89,6 +89,7 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
             Course: null,
             SchoolYear: "",
             Semester: "",
+            templateId: null, // [TemplateGuard] 以 ExamID 作為唯一選取依據
         };
         $scope.params = gadget.params;
         $scope.params.DefaultRound = gadget.params.DefaultRound || '2';
@@ -124,6 +125,63 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
             }
             m = Math.pow(10, Math.max(r1, r2));
             return (arg1 * m + arg2 * m) / m;
+        }
+
+        /**
+         * 建立 Score 和 Extension 資料
+         * @param {string|number} rawValue - 原始輸入值
+         * @param {Array} examExtensionMap - 評量缺考設定對照表
+         * @returns {Object} {score: number|null, extension: Object|null, error: string|null}
+         */
+        function buildScoreAndExtension(rawValue, examExtensionMap) {
+            // 注意：不能使用 (rawValue || '')，會把 0 視為空值，導致 0 分被當成「沒有輸入」
+            // 僅在 rawValue 為 null / undefined 時，才視為空白
+            var val = (rawValue === null || rawValue === undefined)
+                ? ''
+                : rawValue.toString().trim();
+
+            var result = {
+                score: null,
+                extension: null,
+                error: null
+            };
+
+            if (val === '') {
+                result.score = null;
+                result.extension = null;
+                return result;
+            }
+
+            var mapHit = null;
+
+            if (Array.isArray(examExtensionMap)) {
+                mapHit = examExtensionMap.find(function (m) {
+                    return (m.use_text && m.use_text.toString() === val)
+                        || (m.use_value != null && m.use_value.toString() === val);
+                });
+            }
+
+            if (mapHit) {
+                result.score = mapHit.use_value;
+
+                result.extension = {
+                    Score: mapHit.use_value,
+                    UseText: mapHit.use_text || '',
+                    Text: mapHit.report_value || ''
+                };
+
+                return result;
+            }
+
+            var num = Number(val);
+            if (!isNaN(num)) {
+                result.score = num;
+                result.extension = null;
+                return result;
+            }
+
+            result.error = '成績格式錯誤（非數字且不在缺考設定）';
+            return result;
         }
 
         /** 
@@ -295,6 +353,30 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
 
 
         /**
+         * [TemplateGuard] 重建 templateList 後回填 current.template
+         * 以 templateId 對應回新陣列中的物件，避免參考失配
+         */
+        function rebuildTemplateList(newList) {
+            $scope.templateList = [].concat(newList || []);
+
+            // 以 ID 對應回新陣列中的物件
+            if ($scope.current.templateId) {
+                var hit = $scope.templateList.find(function (t) { return t.ExamID === $scope.current.templateId; });
+                if (hit) {
+                    $scope.current.template = hit;
+                } else {
+                    // 找不到同 ID，退回第一筆或 null
+                    $scope.current.template = $scope.templateList[0] || null;
+                    $scope.current.templateId = $scope.current.template ? $scope.current.template.ExamID : null;
+                }
+            } else {
+                // 尚未選取過，預設第一筆
+                $scope.current.template = $scope.templateList[0] || null;
+                $scope.current.templateId = $scope.current.template ? $scope.current.template.ExamID : null;
+            }
+        }
+
+        /**
          * 設定目前課程
          * 整理試別項目 examList
          */
@@ -431,7 +513,7 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                 });
 
                 // 課程評分樣板：定期評量清單
-                $scope.templateList = [];
+                var builtTemplateList = []; // [TemplateGuard] 先建構暫存清單
                 $scope.examList = [];
                 // 平時評量
                 $scope.gradeItemList = [];
@@ -613,9 +695,11 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                             }
                             //temp.Lock = !(new Date(temp.InputStartTime) < new Date(timestampWrapper(rsp.Timestamp.Now)) && new Date(timestampWrapper(rsp.Timestamp.Now)) < new Date(temp.InputEndTime));
 
-                            $scope.templateList.push(temp);
+                            builtTemplateList.push(temp); // [TemplateGuard] 先加入暫存清單
                         }
                     });
+                    // [TemplateGuard] 以封裝函式回填 current.template / templateId
+                    rebuildTemplateList(builtTemplateList);
                     $scope.templateList.forEach(function (examRec) {
                         var useGroup = false;
                         if (examRec.Extension)
@@ -1164,13 +1248,12 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
             if ($scope.current.mode == '平時評量') {
                 var chk = false;
 
-                $scope.templateList.forEach(function (rec) {
-                    if ($scope.current.template) {
-                        if ($scope.current.template.Name === rec.Name) {
-                            chk = true;
-                        }
-                    }
-                });
+                // [TemplateGuard] 改用 ExamID 比對而非 Name
+                if ($scope.current.templateId) {
+                    chk = $scope.templateList.some(function (rec) {
+                        return rec.ExamID === $scope.current.templateId;
+                    });
+                }
                 if (chk) {
                     $scope.setCurrentTemplate($scope.current.template);
                 } else {
@@ -1185,6 +1268,8 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
 
         // 目前試別的切換
         $scope.setCurrentTemplate = function (template) {
+            if (!template) return; // [TemplateGuard] 防護檢查
+            
             var execute = false;
             // 檢查資料是否更動
             var data_changed = !$scope.checkAllTable($scope.current.mode);
@@ -1199,7 +1284,9 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                 execute = true;
             }            
             if (execute) {
-                $scope.current.template = template;
+                // [TemplateGuard] 以 ID 作為唯一依據
+                $scope.current.templateId = template.ExamID;
+                $scope.current.template = template; // 保留供舊邏輯使用，但不再當唯一依據
                 $scope.current.gradeItemList = [];
                 // 篩選出目前定期的平時評量項目
                 $scope.gradeItemList.forEach(item => {
@@ -1369,6 +1456,22 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
             
             var flag = false;
             if ($scope.current.Exam.Type == 'Number') {
+                // ✅ 試卷模式：只允許數字 / 空白 / "-"
+                if ($scope.current.Exam.SubName === '試卷') {
+                    var raw = ($scope.current.Value || '').toString().trim();
+
+                    // 空白與 "-" 允許：空白 = 不輸入，"-" = 清空
+                    if (raw !== '' && raw !== '-') {
+                        // 其餘必須可轉成數字
+                        if (isNaN(Number(raw))) {
+                            alert('試卷成績必須為數字（空白或輸入「-」代表清空），不可輸入缺考輸入內容。');
+
+                            // 中止後續流程，不進行原本的數值處理，也不呼叫 submitGrade
+                            return;
+                        }
+                    }
+                }
+
                 var temp = Number($scope.current.Value);
                 if (!isNaN(temp)
                     && (!$scope.current.Exam.Range || (!$scope.current.Exam.Range.Max && $scope.current.Exam.Range.Max !== 0) || temp <= $scope.current.Exam.Range.Max)
@@ -1443,8 +1546,22 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                         var ps = $scope.current.Student['Exam' + template.ExamID + 'PScore'];
                         var cs = $scope.current.Student['Exam' + template.ExamID + 'CScore'];
 
-                        // var score = (ps == '' && cs == '') ? '' : ps * 1 + cs * 1;
-                        var score = (ps === '' && cs === '') ? '' : add(+ps, +cs);
+                        // 僅將可轉為數字的內容拿來加總，避免「缺」等文字造成 NaN
+                        var psNum = (ps !== null && ps !== undefined && ps !== '' && !isNaN(Number(ps))) ? Number(ps) : null;
+                        var csNum = (cs !== null && cs !== undefined && cs !== '' && !isNaN(Number(cs))) ? Number(cs) : null;
+
+                        var score;
+
+                        if (psNum === null && csNum === null) {
+                            // 沒有任何有效數字 → 主評量留空
+                            score = '';
+                        } else {
+                            var total = 0;
+                            if (psNum !== null) total = add(total, psNum);
+                            if (csNum !== null) total = add(total, csNum);
+                            score = total;
+                        }
+
                         $scope.current.Student['Exam' + template.ExamID] = score;
                     }
                 }
@@ -1541,33 +1658,70 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                             };
                             [].concat($scope.studentList || []).forEach(function (studentRec) {
 
-                                var text = '' + studentRec['Exam' + examRec.ExamID + '_文字評量'];
-                                var score = studentRec['Exam' + examRec.ExamID];
-                                var score_type = studentRec['Exam' + examRec.ExamID + 'score_type'];
-                                var use_text = '';
+                                var rawValue = studentRec['Exam' + examRec.ExamID];
 
-                                if (score_type == '0分') {
-                                    score = -1;
-                                    use_text = studentRec['Exam' + examRec.ExamID];
+                                var be = buildScoreAndExtension(rawValue, $scope.examExtensionMap);
+
+                                if (be.error) {
+                                    return;
                                 }
-                                if (score_type == '免試') {
-                                    score = -2;
-                                    use_text = studentRec['Exam' + examRec.ExamID];
-                                }
-                                //ext.use_text=='' && ext.Score =='缺' && Score =='-1'  >>>> 舊制的缺
+
                                 var data = {
                                     '@StudentID': studentRec.StudentID,
-                                    '@Score': score,
-                                    Extension: {
-                                        Extension: {
-                                            Score: studentRec['Exam' + examRec.ExamID]
-                                            , UseText: use_text
-                                            , Text: text.replace(/'/g, "''")
-                                        }
-                                    }
+                                    '@Score': (be.score == null ? '' : be.score)
                                 };
 
-                                if (studentRec['Exam' + examRec.ExamID] != studentRec['Exam' + examRec.ExamID + 'Origin']) {
+                                // B-1: 判斷是否需要建立 Extension 殼
+                                var needExtensionShell = false;
+                                
+                                // 特殊成績需要 Extension
+                                if (be.extension) {
+                                    needExtensionShell = true;
+                                }
+                                
+                                // 檢查是否有文字評量欄位
+                                var hasText = studentRec['Exam' + examRec.ExamID + '_文字評量'];
+                                if (hasText) {
+                                    needExtensionShell = true;
+                                }
+                                
+                                // 讀卡子成績需要 Extension
+                                if (examRec.isSubScoreMode) {
+                                    needExtensionShell = true;
+                                }
+                                
+                                // 一般分數時，需要保留 Extension 結構以便清空三欄位
+                                // 一般數字成績（包含 0 分）會走這條路：Extension 只保留殼並清空 Text/UseText/Score
+                                var isNormalScore = (be.extension == null) && (be.score != null);
+                                if (isNormalScore) {
+                                    needExtensionShell = true;
+                                }
+                                
+                                // 建立 Extension 殼
+                                if (needExtensionShell) {
+                                    data.Extension = { Extension: {} };
+                                }
+
+                                // B-2: 寫入特殊成績的 Extension 內容
+                                if (be.extension && data.Extension) {
+                                    data.Extension.Extension.Score = be.extension.Score;
+                                    data.Extension.Extension.UseText = be.extension.UseText;
+                                    data.Extension.Extension.Text = be.extension.Text;
+                                }
+
+                                // B-3: 一般分數時，保留 Extension 結構但清空三欄位
+                                if (isNormalScore && data.Extension) {
+                                    // 只清空這次功能使用的三個欄位，其餘欄位保留
+                                    data.Extension.Extension.Score = '';
+                                    data.Extension.Extension.UseText = '';
+                                    data.Extension.Extension.Text = '';
+                                }
+
+                                // 將新值與舊值轉為字串進行比較，確保能正確捕捉「空白 → 0」等變化
+                                var newVal = (studentRec['Exam' + examRec.ExamID] == null ? '' : studentRec['Exam' + examRec.ExamID].toString());
+                                var oldVal = (studentRec['Exam' + examRec.ExamID + 'Origin'] == null ? '' : studentRec['Exam' + examRec.ExamID + 'Origin'].toString());
+                                
+                                if (newVal != oldVal) {
                                     isChange = true;
                                     if (logManangers.length == 0 || !(logManangers.find(x => { return x.key == `Exam_${examRec.ExamID}` }))) { //第一次
 
@@ -1583,18 +1737,29 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                                     }
 
                                     var temp = logManangers.find(x => { return x.key == `Exam_${examRec.ExamID}` });
-                                    var descriptByItem = `　${studentRec.ClassName}班  ${studentRec.SeatNo}號  ${studentRec.StudentName}  , ${studentRec['Exam' + examRec.ExamID + 'Origin'] || '  '} => ${studentRec['Exam' + examRec.ExamID]}  `;
+                                    // 修正 log 描述，確保 0 分能正確顯示（不使用 || '  ' 避免 0 被隱藏）
+                                    var oldValForLog = (studentRec['Exam' + examRec.ExamID + 'Origin'] == null || studentRec['Exam' + examRec.ExamID + 'Origin'] === '') ? '  ' : studentRec['Exam' + examRec.ExamID + 'Origin'].toString();
+                                    var newValForLog = (studentRec['Exam' + examRec.ExamID] == null || studentRec['Exam' + examRec.ExamID] === '') ? '  ' : studentRec['Exam' + examRec.ExamID].toString();
+                                    var descriptByItem = `　${studentRec.ClassName}班  ${studentRec.SeatNo}號  ${studentRec.StudentName}  , ${oldValForLog} => ${newValForLog}  `;
 
                                     temp.descriptSection.push(descriptByItem);
 
                                 }
 
+                                // B-4: 讀卡子成績 CScore / PScore 寫入
+                                if (examRec.isSubScoreMode && data.Extension) {
 
-                                // 是否為讀卡子成績項目
-                                if (examRec.isSubScoreMode) {
-                                    data.Extension.Extension['CScore'] = studentRec['Exam' + examRec.ExamID + 'CScore'];
-                                    data.Extension.Extension['PScore'] = studentRec['Exam' + examRec.ExamID + 'PScore'];
+                                    // 僅在 null / undefined 時視為空白；其餘保留原始值（含 0 與文字）
+                                    function normalizeSubScore(raw) {
+                                        if (raw === null || raw === undefined) return '';
+                                        return raw.toString();
+                                    }
 
+                                    var cScore = normalizeSubScore(studentRec['Exam' + examRec.ExamID + 'CScore']);
+                                    var pScore = normalizeSubScore(studentRec['Exam' + examRec.ExamID + 'PScore']);
+
+                                    data.Extension.Extension.CScore = cScore;
+                                    data.Extension.Extension.PScore = pScore;
                                 }
 
                                 eItem.Student.push(data);
@@ -2133,7 +2298,13 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                 execute = true;
             }
             // if (execute) {
-            $scope.current.template = $scope.current.template || $scope.templateList[0];
+            // [TemplateGuard] 確保 templateId 與 template 同步
+            if (!$scope.current.template && $scope.templateList[0]) {
+                $scope.current.template = $scope.templateList[0];
+                $scope.current.templateId = $scope.current.template.ExamID;
+            } else if ($scope.current.template && !$scope.current.templateId) {
+                $scope.current.templateId = $scope.current.template.ExamID;
+            }
             $scope.current.gradeItemList = [];
             // 篩選出目前定期的平時評量項目
             $scope.gradeItemList.forEach(item => {
@@ -2501,7 +2672,8 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                                     //     flag = true;
                                     // }
 
-                                    if (examRec.Name !== '學期成績')
+                                    // 一般模式可以使用缺考設定文字；試卷模式禁止
+                                    if (examRec.Name !== '學期成績' && examRec.SubName != '試卷')
                                         $scope.examExtensionMap.forEach(function (map) {
                                             if (map.use_text == importProcess.ParseValues[i]) {
                                                 flag = true;
@@ -2548,7 +2720,8 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                                     else {
                                         stuRec['Exam' + examRec.ExamID] = importProcess.ParseValues[index];
 
-                                        if (examRec.Name !== '學期成績')
+                                        // 一般模式可設定缺考 score_type；試卷模式不使用缺考設定
+                                        if (examRec.Name !== '學期成績' && examRec.SubName != '試卷')
                                             $scope.examExtensionMap.forEach(function (map) {
                                                 if (map.use_text == importProcess.ParseValues[index]) {
                                                     stuRec['Exam' + examRec.ExamID + 'score_type'] = map.score_type;

@@ -388,3 +388,16 @@ ul {
 .panel>.table-bordered>tbody>tr:first-child>td {
     border-bottom: 1px solid #ddd;
 }
+
+/* 調整文字尺寸 - DT3 */
+.form-control {
+    font-size: 1em;         /* 相對單位，隨使用者設定變化 */
+    width: 100%;            /* 使用彈性寬度，而非固定像素 */
+    height: auto;           /* 讓高度可隨字型大小變化 */
+    box-sizing: border-box;
+}
+
+.py-4 {
+    padding-top: 16px;
+    padding-bottom: 16px;
+}

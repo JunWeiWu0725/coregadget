@@ -84,7 +84,24 @@ export class MainComponent implements OnInit {
         this.selectedValue = this.options[0].value ;
       }
 
-      this.conf = await this.dsa.getSchedule(this.today);      
+      this.conf = await this.dsa.getSchedule(this.today);
+
+      // 合併同課程的多位小幫手，產生 Students 陣列
+      if (this.conf && this.conf.CourseConf) {
+        const targetCourses = [];
+        const tempCourseList = [].concat(this.conf.CourseConf || []);
+        tempCourseList.forEach(course => {
+          let targetCourse = targetCourses.find(c => course.CourseID === c.CourseID);
+          if (!targetCourse) {
+            targetCourse = { ...course };
+            targetCourse.Students = [{ StudentID: course.StudentID, StudentName: course.StudentName, StudentNumber: course.StudentNumber }];
+            targetCourses.push(targetCourse);
+          } else {
+            targetCourse.Students.push({ StudentID: course.StudentID, StudentName: course.StudentName, StudentNumber: course.StudentNumber });
+          }
+        });
+        this.conf.CourseConf = targetCourses;
+      }
 
     } catch (error) {
       this.alert.json(error);

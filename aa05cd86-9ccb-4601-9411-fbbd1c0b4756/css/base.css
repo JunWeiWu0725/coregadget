@@ -12,8 +12,8 @@ body {
 }
 /* 基礎框架 */
 .container-fluid {
-  padding-right: 5px;
-  padding-left: 5px;
+  padding-right: 0px;
+  padding-left: 0px;
 }
 /* 基礎2欄框架 */
 #container-nav,
@@ -190,7 +190,6 @@ body {
 .my-table-bordered {
   border: 1px solid #dddddd;
   border-collapse: separate;
-  *border-collapse: collapsed;
   border-left: 0;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -259,7 +258,7 @@ body {
 	background:#fff;
 	padding:10px;
   margin-bottom: auto;
-	box-shadow:0 0 2px rgba(0, 0, 0, 0.2), 0 0 2px rgba(0, 0, 0, 0.2), 0 1px 1px rgba(0, 0, 0, .2), 3px 3px 0 white,4px 4px 0 rgba(0, 0, 0, .2),6px 6px 0 white,7px 7px 0 rgba(0, 0, 0, .2);
+  box-shadow: none;
 }
 
 @media (min-width: 768px) {
@@ -268,6 +267,11 @@ body {
   }
   .my-page {
     margin-bottom: 100px;
+    box-shadow:0 0 2px rgba(0, 0, 0, 0.2), 0 0 2px rgba(0, 0, 0, 0.2), 0 1px 1px rgba(0, 0, 0, .2), 3px 3px 0 white,4px 4px 0 rgba(0, 0, 0, .2),6px 6px 0 white,7px 7px 0 rgba(0, 0, 0, .2);
+  }
+  .container-fluid {
+    padding-right: 6px;
+    padding-left: 6px;
   }
 }
 
