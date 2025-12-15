@@ -63,6 +63,8 @@ export class CounselImportValidationService {
   private isSpecialStudentFn: (student: any) => boolean = () => true;
   private importMode: "bySeat" | "byStudentId" = "bySeat";
   private role: "班導師" | "管理者" | "" = "";
+  private currentTeacherName: string = "";
+  private currentTeacherID: string = "";
 
   public setStudentList(list: any[]) {
     this.studentList = list;
@@ -81,6 +83,14 @@ export class CounselImportValidationService {
     list: { ID: string; Name: string; NickName: string; Role: string }[]
   ) {
     this.teacherList = list;
+    console.log("=== 驗證服務收到的教師清單 ===");
+    console.log(`教師數量: ${list.length}`);
+    console.log("教師清單:", list.map(t => ({
+      ID: t.ID,
+      姓名: t.Name,
+      暱稱: t.NickName,
+      角色: t.Role
+    })));
   }
 
   public setSpecialStudentCheck(fn: (student: any) => boolean) {
@@ -93,6 +103,11 @@ export class CounselImportValidationService {
 
   public setRole(role: "班導師" | "管理者" | "") {
     this.role = role;
+  }
+
+  public setCurrentTeacher(name: string, id: string) {
+    this.currentTeacherName = name;
+    this.currentTeacherID = id;
   }
 
   private isBlank = (v: any): boolean => v == null || String(v).trim() === ""
@@ -157,8 +172,9 @@ export class CounselImportValidationService {
       (v) => {
         if (this.isBlank(v)) return null;
         const dateStr = String(v).trim();
+        // 支援 yyyy/mm/dd 和 yyyy/m/d 格式
         if (!/^\d{4}\/\d{1,2}\/\d{1,2}$/.test(dateStr)) {
-          return "日期格式錯誤（格式：yyyy/m/d）";
+          return "日期格式錯誤（格式：yyyy/mm/dd 或 yyyy/m/d）";
         }
         const date = new Date(dateStr);
         return isNaN(date.getTime()) ? "日期無效" : null;
@@ -168,8 +184,13 @@ export class CounselImportValidationService {
       (v) => {
         if (this.isBlank(v)) return null;
         const timeStr = String(v).trim();
-        if (!/^\d{1,2}:\d{2}$/.test(timeStr)) {
-          return "晤談時間格式錯誤（格式：h:mm）";
+        // 支援文字輸入，如：第一節、第二節、上午、下午等
+        // 也支援時間格式：h:mm
+        const isTimeFormat = /^\d{1,2}:\d{2}$/.test(timeStr);
+        const isTextFormat = timeStr.length > 0 && timeStr.length <= 20; // 文字長度限制
+        
+        if (!isTimeFormat && !isTextFormat) {
+          return "晤談時間格式錯誤（可輸入文字如：第一節、上午，或時間格式：h:mm）";
         }
         return null;
       },
@@ -199,8 +220,140 @@ export class CounselImportValidationService {
           ? `類別包含無效項目：${invalidCategories.join(", ")}` : null;
       },
     ],
+    年級: [
+      (v) => this.isBlank(v) ? "年級欄必填" : null,
+      (v) => {
+        if (this.isBlank(v)) return null;
+        const gradeStr = String(v).trim();
+        // 驗證是否為阿拉伯數字 1-12（支援國中7-9年級、私立高中10-12年級）
+        if (!/^([1-9]|1[0-2])$/.test(gradeStr)) {
+          return "年級應為阿拉伯數字 1-12（如：1、2、3、4、5、6、7、8、9、10、11、12）";
+        }
+        return null;
+      },
+    ],
     記錄者: [
       (v) => this.isBlank(v) ? "記錄者欄必填" : null,
+      (v, row) => {
+        if (this.isBlank(v)) return null;
+        const authorName = String(v).trim();
+        const nickname = row["暱稱"] ? String(row["暱稱"]).trim() : "";
+        
+        // 使用教師名稱 + 暱稱的組合來查找教師
+        // 先找出所有姓名匹配的教師
+        const nameMatches = this.teacherList.filter(t => t.Name === authorName);
+        
+        // 如果是班導師匯入，必須驗證記錄者是否是班導師本人
+        if (this.role === "班導師") {
+          // 先檢查姓名是否匹配
+          if (authorName !== this.currentTeacherName) {
+            return `記錄者「${authorName}」不是您本人，班導師匯入時記錄者必須是您本人「${this.currentTeacherName}」`;
+          }
+          // 如果有多個相同姓名的教師（包括班導師本人），需要驗證暱稱
+          if (nameMatches.length > 1) {
+            // 找到當前登入教師的資訊
+            const currentTeacher = this.teacherList.find(t => t.ID === this.currentTeacherID);
+            if (currentTeacher && !this.isBlank(currentTeacher.NickName)) {
+              // 如果當前教師有暱稱，必須填寫暱稱
+              if (this.isBlank(nickname)) {
+                return `記錄者「${authorName}」有多位教師，請填寫您的暱稱「${currentTeacher.NickName}」以區分`;
+              }
+              // 驗證暱稱是否正確
+              if (nickname !== currentTeacher.NickName) {
+                return `記錄者「${authorName}」的暱稱「${nickname}」不正確，您的暱稱應為「${currentTeacher.NickName}」`;
+              }
+            }
+          }
+        }
+        
+        if (nameMatches.length === 0) {
+          return `找不到記錄者「${authorName}」，請確認教師姓名是否正確`;
+        }
+        
+        // 如果有多個相同姓名的教師，必須使用暱稱來區分
+        // 注意：如果暱稱為空，錯誤會在"暱稱"驗證器中顯示，這裡不重複顯示
+        if (nameMatches.length > 1) {
+          if (!this.isBlank(nickname)) {
+            // 使用姓名 + 暱稱的組合來精確匹配
+            const exactMatches = nameMatches.filter(t => t.NickName === nickname);
+            if (exactMatches.length === 0) {
+              return `找不到記錄者「${authorName}」且暱稱「${nickname}」的教師，請確認教師姓名和暱稱是否正確`;
+            }
+            if (exactMatches.length > 1) {
+              return `記錄者「${authorName}」且暱稱「${nickname}」有多位教師，資料重複，請聯繫系統管理員`;
+            }
+          }
+          // 如果暱稱為空，不在此處報錯，由"暱稱"驗證器處理
+          return null;
+        }
+        
+        // 只有一個姓名匹配的教師，不需要驗證暱稱（除非有多個相同姓名的教師）
+        // 暱稱驗證邏輯：只有當有姓名相同的教師時才需要驗證暱稱
+        // 這裡已經確定只有一個匹配，所以不需要驗證暱稱
+        
+        return null;
+      }
+    ],
+    暱稱: [
+      (v, row) => {
+        // 如果記錄者欄位有值，則暱稱欄位也需要驗證
+        const authorName = row["記錄者"] ? String(row["記錄者"]).trim() : "";
+        if (this.isBlank(authorName)) {
+          return null; // 記錄者為空時，暱稱驗證由記錄者驗證器處理
+        }
+        
+        const nickname = this.isBlank(v) ? "" : String(v).trim();
+        
+        // 使用教師名稱 + 暱稱的組合來查找教師
+        // 先找出所有姓名匹配的教師
+        const nameMatches = this.teacherList.filter(t => t.Name === authorName);
+        
+        if (nameMatches.length === 0) {
+          return null; // 記錄者驗證會處理這個錯誤
+        }
+        
+        // 暱稱驗證邏輯：只有當有姓名相同的教師時才需要驗證暱稱
+        // 如果有多個相同姓名的教師，需要檢查是否所有教師都有暱稱
+        if (nameMatches.length > 1) {
+          // 檢查所有同名教師是否都有暱稱
+          const teachersWithNickname = nameMatches.filter(t => !this.isBlank(t.NickName));
+          const teachersWithoutNickname = nameMatches.filter(t => this.isBlank(t.NickName));
+          
+          // 如果所有教師都沒有暱稱，則不需要填寫暱稱（無法通過暱稱區分）
+          if (teachersWithNickname.length === 0) {
+            // 所有教師都沒有暱稱，無法通過暱稱區分，不要求填寫
+            return null;
+          }
+          
+          // 如果部分教師有暱稱，部分沒有，需要判斷
+          // 如果填寫了暱稱，驗證是否匹配
+          if (!this.isBlank(nickname)) {
+            // 使用姓名 + 暱稱的組合來精確匹配
+            const exactMatches = nameMatches.filter(t => t.NickName === nickname);
+            if (exactMatches.length === 0) {
+              return `找不到記錄者「${authorName}」且暱稱「${nickname}」的教師，請確認教師姓名和暱稱是否正確`;
+            }
+            if (exactMatches.length > 1) {
+              return `記錄者「${authorName}」且暱稱「${nickname}」有多位教師，資料重複，請聯繫系統管理員`;
+            }
+            return null; // 唯一匹配成功
+          }
+          
+          // 如果沒有填寫暱稱，但所有教師都有暱稱，則要求填寫
+          if (teachersWithoutNickname.length === 0) {
+            // 所有教師都有暱稱，必須填寫暱稱以區分
+            return `記錄者「${authorName}」有多位教師，請填寫暱稱以區分`;
+          }
+          
+          // 部分教師有暱稱，部分沒有，不強制要求填寫（因為可能選擇的是沒有暱稱的教師）
+          return null;
+        }
+        
+        // 只有一個姓名匹配的教師，不需要驗證暱稱
+        // 如果填寫了暱稱，但只有一個匹配的教師，可以忽略暱稱（不報錯）
+        
+        return null;
+      }
     ],
     狀態: [
       (v) => this.isBlank(v) ? "狀態欄必填" : null,
@@ -210,6 +363,8 @@ export class CounselImportValidationService {
   };
 
   public validateRow(row: any, rowNum: number): RowError[] {
+    console.log(`🔍 validateRow 開始 - 第${rowNum}列, 匯入模式=${this.importMode}, 角色=${this.role}, 學生數量=${this.studentList.length}`);
+    
     const errorMap: Map<string, string[]> = new Map();
     
     // 檢查是否整行為空
@@ -266,10 +421,7 @@ export class CounselImportValidationService {
       errorMap.set("類別其他", [`當方式為其他時，此欄必填${studentInfo}`]);
     }
 
-    if (this.isBlank(row["年級"])) {
-      const studentInfo = this.getStudentInfoForError(row);
-      errorMap.set("年級", [`年級欄必填${studentInfo}`]);
-    }
+    // 年級驗證已在 validators 中定義，不需要重複檢查
 
     if (
       row["對象"] &&
@@ -294,9 +446,19 @@ export class CounselImportValidationService {
       errorMap.set("聯絡事項 / 輔導內容", [`聯絡事項與輔導內容需擇一填寫${studentInfo}`]);
     }
 
+    console.log(`🔍 完成基本欄位驗證，當前錯誤數量: ${errorMap.size}`);
+    console.log(`🔍 當前錯誤內容:`, Array.from(errorMap.entries()));
+    console.log(`🔍 準備開始學生匹配驗證`);
+
     // 找學生
     let matchedStudent: any = null;
     const originalStatus = row["狀態"]; // 保留原始中文狀態
+    
+    console.log(`🔍 開始學生匹配 - 第${rowNum}列`);
+    console.log(`🔍 學生清單數量: ${this.studentList.length}`);
+    console.log(`🔍 匯入模式: ${this.importMode}`);
+    console.log(`🔍 角色: ${this.role}`);
+    console.log(`🔍 原始狀態: "${originalStatus}"`);
     
     // 根據角色決定使用哪種狀態比對方式
     let compareStatus: string;
@@ -353,7 +515,8 @@ export class CounselImportValidationService {
        }
     }
 
-    const key = this.importMode === "byStudentId" ? "學號" : "座號";
+    // 🔧 修復：使用不同的 key 避免與基本欄位驗證衝突
+    const key = this.importMode === "byStudentId" ? "學生匹配(學號)" : "學生匹配(座號)";
     if (!matchedStudent) {
       console.log(`❌ 驗證失敗 - 找不到匹配的學生`);
       console.log(`查找條件: 班級="${row["班級"]}", 座號="${row["座號"]}", 狀態="${compareStatus}"`);
@@ -379,7 +542,19 @@ export class CounselImportValidationService {
         errorMessage = `找不到此學生，無法匯入 (匯入資料: ${importInfo})`;
       }
       
-      errorMap.set(key, [errorMessage]);
+      console.log(`🚨 學生驗證錯誤 - 將加入錯誤清單: key="${key}", message="${errorMessage}"`);
+      console.log(`🔍 DEBUG: errorMap 在加入學生錯誤前的狀態:`, Array.from(errorMap.entries()));
+      
+      // 🔧 修復：檢查是否已有相同 key 的錯誤，如果有則追加而不是覆蓋
+      if (errorMap.has(key)) {
+        errorMap.get(key)!.push(errorMessage);
+        console.log(`🔍 DEBUG: 追加到現有錯誤清單`);
+      } else {
+        errorMap.set(key, [errorMessage]);
+        console.log(`🔍 DEBUG: 新增錯誤到清單`);
+      }
+      
+      console.log(`🔍 DEBUG: errorMap 在加入學生錯誤後的狀態:`, Array.from(errorMap.entries()));
     } else {
       // 找到學生，但需要檢查是否有權限匯入
       console.log(`✅ 找到學生: ${matchedStudent.StudentName}, 班級: ${matchedStudent.ClassName}, 座號: ${matchedStudent.SeatNo}`);
@@ -388,7 +563,9 @@ export class CounselImportValidationService {
       if (this.importMode === "byStudentId" && !this.isSpecialStudentFn(matchedStudent)) {
         console.log(`❌ 特殊學生檢查失敗 - 學生: ${matchedStudent.StudentName}, 角色: ${this.role}, 匯入模式: ${this.importMode}`);
         const importInfo = `學號: ${row["學號"] || "未填"}, 學生姓名: ${matchedStudent.StudentName}, 班級: ${matchedStudent.ClassName}`;
-        errorMap.set("學號", [`此學生非本班學生，無法匯入 (匯入資料: ${importInfo})`]);
+        // 🔧 修復：使用不同的 key 避免與基本欄位驗證衝突
+        const permissionKey = "學生權限檢查";
+        errorMap.set(permissionKey, [`此學生非本班學生，無法匯入 (匯入資料: ${importInfo})`]);
       } else {
         // ✅ 驗證通過，將找到的學生ID設定到原始資料中
         console.log(`🎯 驗證通過，設定 ref_student_id = ${matchedStudent.StudentID}`);
@@ -406,16 +583,23 @@ export class CounselImportValidationService {
     row?: any
   ): RowError[] {
     const errors: RowError[] = [];
+    console.log(`🔍 formatErrors - 第${rowNum}列的錯誤數量: ${errorMap.size}`);
+    console.log(`🔍 formatErrors - errorMap 完整內容:`, Array.from(errorMap.entries()));
     errorMap.forEach((messages, column) => {
+      console.log(`🔍 formatErrors - 欄位"${column}"有${messages.length}個錯誤:`, messages);
       messages.forEach((message) => {
-        errors.push({
+        const error = {
           row: rowNum,
           column,
           message,
           value: row ? row[column] : undefined,
-        });
+        };
+        console.log(`🔍 formatErrors - 新增錯誤:`, error);
+        errors.push(error);
       });
     });
+    console.log(`🔍 formatErrors - 第${rowNum}列總共產生${errors.length}個錯誤`);
+    console.log(`🔍 formatErrors - 返回的錯誤陣列:`, errors);
     return errors;
   }
 

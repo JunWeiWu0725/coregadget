@@ -107,6 +107,7 @@ import { ChartModalComponent } from './counsel-statistics/reports/counsel-interv
 import { FormsModule } from '@angular/forms';
 import { OverviewPermissionComponent } from './admin/overview-permission/overview-permission.component';
 import { AddPermissionUserModalComponent } from './admin/overview-permission/add-permission-user-modal/add-permission-user-modal.component';
+import { ImportMappingModalComponent } from './counsel/import-mapping-modal/import-mapping-modal.component';
 
 
 @NgModule({
@@ -174,6 +175,7 @@ import { AddPermissionUserModalComponent } from './admin/overview-permission/add
     ChartModalComponent,
     OverviewPermissionComponent,
     AddPermissionUserModalComponent,
+    ImportMappingModalComponent,
     // AddReferralFormComponent
   ],
   imports: [

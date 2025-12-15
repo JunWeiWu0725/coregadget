@@ -57,6 +57,11 @@ export class ImportModalComponent implements OnInit {
   studentSearchText: string = '';
   filteredStudentList: CounselStudent[] = [];
   isImporting: boolean = false; // 匯入狀態標記
+  
+  // 🔧 新增：開發調試用
+  showDebugInfo: boolean = true; // 🚨 臨時設為 true 以便測試，正式版本應由 dev_mode 控制
+  matchedStudentIds: Set<string> = new Set(); // 追蹤已匹配的學生ID
+  currentValidationData: any[] = []; // 當前驗證的資料
  
   private _studentList: CounselStudent[] = [];
   @Input() 
@@ -80,6 +85,9 @@ export class ImportModalComponent implements OnInit {
       this.loadAllStudent()
     }
     this.filteredStudentList = [...this.StudentList];
+    
+    // 🔧 檢查 dev_mode 設定來決定是否顯示調試信息
+    this.checkDevMode();
   }
 
   public openModal() {
@@ -174,11 +182,21 @@ export class ImportModalComponent implements OnInit {
  
     const rawRows = await this.readExcelFile(file);
     this.errorList = [];
+    
+    // 🔧 重置調試資料
+    this.matchedStudentIds.clear();
+    this.currentValidationData = rawRows;
+    
     this.validator.setImportMode(this.importMode);
     this.validator.setRole(this.Role);
     this.validator.setStudentList(this.StudentList);
     this.validator.setTeacherList(this.TeacherList);
     this.validator.setStudentsData(this.StudentList);
+    // 設置當前登入教師資訊，用於班導師匯入時驗證記錄者是否為本人
+    this.validator.setCurrentTeacher(
+      this.globalService.teacherName || "",
+      this.globalService.teacherID || ""
+    );
     this.validator.setSpecialStudentCheck((student) => {
       return this.StudentList.some((s) => 
         s.StudentNumber === student.StudentNumber
@@ -194,8 +212,15 @@ export class ImportModalComponent implements OnInit {
     this.comparisonResults = [];
     rawRows.forEach((row, index) => {
       const rowNum = index + 2;
+      console.log(`🔍 主組件 - 開始驗證第${rowNum}列:`, row);
       const rowErrors = this.validator.validateRow(row, rowNum);
+      console.log(`🔍 主組件 - 第${rowNum}列驗證結果:`, rowErrors);
+      console.log(`🔍 主組件 - 第${rowNum}列錯誤數量: ${rowErrors.length}`);
       allErrors.push(...rowErrors);
+      console.log(`🔍 主組件 - 累計錯誤數量: ${allErrors.length}`);
+      
+      // 🔧 追蹤匹配的學生
+      this.trackMatchedStudent(row);
       
       // 為每一列生成比對結果
       const comparisonResult = this.generateComparisonResult(row, rowNum);
@@ -402,39 +427,40 @@ export class ImportModalComponent implements OnInit {
               </tr>
             </thead>
             <tbody>
-              ${Object.entries(groupedErrors).map(([row, messages]) => `
-                                <tr>
-                  <td>第 ${row} 列</td>
-                  <td class="error-message">
-                    ${messages.map(msg => {
-                      // 分離錯誤訊息、匯入資料和全班資料
-                      const parts = msg.split(' (匯入資料:');
-                      const errorMsg = parts[0];
-                      
-                      if (parts[1]) {
-                        // 進一步分離匯入資料和全班資料
-                        const dataParts = parts[1].replace(')', '').split('|全班資料:');
-                        const importData = dataParts[0] ? dataParts[0].trim() : null;
-                        const classData = dataParts[1] ? dataParts[1].trim() : null;
-                        
-                        return `
-                          <div style="margin-bottom: 12px; border: 1px solid #e9ecef; border-radius: 6px; padding: 8px;">
-                            <div style="margin-bottom: 8px; font-weight: bold; color: #dc3545;">❌ ${errorMsg}</div>
-                            ${importData ? `<div class="import-data">📝 匯入資料: ${importData}</div>` : ''}
-                            ${classData ? `<div class="comparison-data">👥 全班資料: ${classData}</div>` : ''}
-                          </div>
-                        `;
-                      } else {
-                        return `
-                          <div style="margin-bottom: 8px;">
-                            <div style="color: #dc3545;">❌ ${errorMsg}</div>
-                          </div>
-                        `;
-                      }
-                    }).join('')}
-                  </td>
-                </tr>
-              `).join('')}
+              ${Object.entries(groupedErrors).map(([row, messages]) => 
+                messages.map(msg => {
+                  // 分離錯誤訊息、匯入資料和全班資料
+                  const parts = msg.split(' (匯入資料:');
+                  const errorMsg = parts[0];
+                  
+                  if (parts[1]) {
+                    // 進一步分離匯入資料和全班資料
+                    const dataParts = parts[1].replace(')', '').split('|全班資料:');
+                    const importData = dataParts[0] ? dataParts[0].trim() : null;
+                    const classData = dataParts[1] ? dataParts[1].trim() : null;
+                    
+                    return `
+                      <tr>
+                        <td>第 ${row} 列</td>
+                        <td class="error-message">
+                          <div style="margin-bottom: 8px; font-weight: bold; color: #dc3545;">❌ ${errorMsg}</div>
+                          ${importData ? `<div class="import-data">📝 匯入資料: ${importData}</div>` : ''}
+                          ${classData ? `<div class="comparison-data">👥 全班資料: ${classData}</div>` : ''}
+                        </td>
+                      </tr>
+                    `;
+                  } else {
+                    return `
+                      <tr>
+                        <td>第 ${row} 列</td>
+                        <td class="error-message">
+                          <div style="color: #dc3545;">❌ ${errorMsg}</div>
+                        </td>
+                      </tr>
+                    `;
+                  }
+                }).join('')
+              ).join('')}
             </tbody>
           </table>
         </body>
@@ -935,6 +961,129 @@ export class ImportModalComponent implements OnInit {
   a.download = '一級輔導匯入範本.xlsx';
   a.click();
 }
+
+  // 🔧 新增：追蹤匹配的學生
+  trackMatchedStudent(row: any) {
+    let matchedStudent = null;
+    
+    // 根據匯入模式和角色決定狀態比對方式
+    const originalStatus = row["狀態"];
+    let compareStatus: string;
+    if (this.Role === "班導師") {
+      compareStatus = originalStatus;
+    } else {
+      const statusMapping = { "一般": "1", "延修": "2", "休學": "3" };
+      compareStatus = statusMapping[originalStatus] || originalStatus;
+    }
+    
+    if (this.importMode === "byStudentId") {
+      matchedStudent = this.StudentList.find(
+        (s) => s.StudentNumber === row["學號"] && s.Status === compareStatus
+      );
+    } else {
+      matchedStudent = this.StudentList.find(
+        (s) => s.ClassName == row["班級"] && s.SeatNo == row["座號"] && s.Status === compareStatus
+      );
+    }
+    
+    if (matchedStudent) {
+      this.matchedStudentIds.add(matchedStudent.StudentID);
+      console.log(`🎯 追蹤到匹配學生: ${matchedStudent.StudentName} (ID: ${matchedStudent.StudentID})`);
+    }
+  }
+
+  // 🔧 新增：檢查學生是否被匹配
+  isStudentMatched(studentId: string): boolean {
+    return this.matchedStudentIds.has(studentId);
+  }
+
+  // 🔧 新增：獲取學生匹配狀態的CSS類
+  getStudentMatchClass(studentId: string): string {
+    return this.isStudentMatched(studentId) ? 'student-matched' : 'student-unmatched';
+  }
+
+  // 🔧 新增：檢查 dev_mode 設定
+  private checkDevMode() {
+    try {
+      // 檢查全域變數中的 dev_mode 設定
+      const windowObj = window as any;
+      
+      console.log('🔍 調試：檢查 window 物件:', windowObj);
+      console.log('🔍 調試：window.gadget:', windowObj.gadget);
+      
+      if (windowObj.gadget) {
+        console.log('🔍 調試：window.gadget.paramValues:', windowObj.gadget.paramValues);
+        if (windowObj.gadget.paramValues) {
+          console.log('🔍 調試：dev_mode 值:', windowObj.gadget.paramValues.dev_mode);
+          console.log('🔍 調試：dev_mode 型別:', typeof windowObj.gadget.paramValues.dev_mode);
+        }
+      }
+      
+      const devMode = windowObj && windowObj.gadget && windowObj.gadget.paramValues && windowObj.gadget.paramValues.dev_mode;
+      this.showDebugInfo = devMode === true;
+      
+      console.log('🔍 調試：最終 devMode 值:', devMode);
+      console.log('🔍 調試：showDebugInfo 設定為:', this.showDebugInfo);
+      
+      if (this.showDebugInfo) {
+        console.log('🔧 開發模式已啟用：顯示學生驗證調試界面');
+      } else {
+        console.log('📱 正式模式：隱藏學生驗證調試界面');
+      }
+    } catch (error) {
+      console.warn('無法讀取 dev_mode 設定，預設隱藏調試界面:', error);
+      this.showDebugInfo = false;
+    }
+  }
+
+  // 🔧 新增：切換調試信息顯示
+  toggleDebugInfo() {
+    this.showDebugInfo = !this.showDebugInfo;
+  }
+
+  // 🔧 新增：TrackBy 函數優化性能
+  trackByStudentId(index: number, student: any): string {
+    return student.StudentID;
+  }
+
+  // 🔧 新增：獲取驗證結果文字
+  getValidationResultText(row: any): string {
+    const matchedStudent = this.findMatchedStudentForRow(row);
+    if (matchedStudent) {
+      return '✓ 已匹配';
+    } else {
+      return '✗ 未匹配';
+    }
+  }
+
+  // 🔧 新增：獲取驗證結果CSS類
+  getValidationResultClass(row: any): string {
+    const matchedStudent = this.findMatchedStudentForRow(row);
+    return matchedStudent ? 'badge-success' : 'badge-danger';
+  }
+
+  // 🔧 新增：為指定行找到匹配的學生
+  private findMatchedStudentForRow(row: any): any {
+    // 根據匯入模式和角色決定狀態比對方式
+    const originalStatus = row["狀態"];
+    let compareStatus: string;
+    if (this.Role === "班導師") {
+      compareStatus = originalStatus;
+    } else {
+      const statusMapping = { "一般": "1", "延修": "2", "休學": "3" };
+      compareStatus = statusMapping[originalStatus] || originalStatus;
+    }
+    
+    if (this.importMode === "byStudentId") {
+      return this.StudentList.find(
+        (s) => s.StudentNumber === row["學號"] && s.Status === compareStatus
+      );
+    } else {
+      return this.StudentList.find(
+        (s) => s.ClassName == row["班級"] && s.SeatNo == row["座號"] && s.Status === compareStatus
+      );
+    }
+  }
 
 }
 

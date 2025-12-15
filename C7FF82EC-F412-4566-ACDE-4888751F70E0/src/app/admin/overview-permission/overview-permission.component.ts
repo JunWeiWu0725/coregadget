@@ -11,21 +11,25 @@ interface PermissionRecord {
   ref_teacher_id: string;
   teacher_name?: string;
   ref_teacher_name?: string; // 新增用於轉換
+  nickname?: string;  // 暱稱
   note?: string;
   start_at?: string;  // 開始時間
   end_at?: string;    // 結束時間
+  enable?: boolean;   // 權限啟用狀態
 }
 
 // 前端使用的教師權限結構
 interface TeacherPermission {
   teacherId: string;
   teacher_name: string;
+  nickname?: string;  // 暱稱
   permissions: {
     [featureCode: string]: boolean;
   };
   note?: string;
   start_at?: string;  // 開始時間
   end_at?: string;    // 結束時間
+  enable?: boolean;   // 整體啟用狀態
 }
 
 // 新使用者資料結構（與Modal component一致）
@@ -50,6 +54,7 @@ export class OverviewPermissionComponent implements OnInit {
   isLoading: boolean = false;
   teachers: TeacherPermission[] = [];
   permissionRecords: PermissionRecord[] = [];
+  rawApiData: any = null; // 儲存原始 API 資料用於除錯
   
   // Modal 控制
   showUserModal: boolean = false;
@@ -64,8 +69,8 @@ export class OverviewPermissionComponent implements OnInit {
   // 權限功能對應表
   featureMap = {
     'comp_record': '檢視綜合記錄表',
-    'first_level_counsel': '檢視一級晤談',
-    'case_view': '檢視個案',
+    'interview_basic': '檢視一級晤談',
+    'case': '檢視個案',
     'psych_test': '檢視心理測驗',
     'statistics': '檢視統計'
   };
@@ -77,6 +82,34 @@ export class OverviewPermissionComponent implements OnInit {
 
   ngOnInit() {
     this.GetAllPermissionTeacher();
+  }
+
+  /** 解析 enable 值，處理字串格式的布林值 */
+  parseEnableValue(enableValue: any): boolean {
+    if (enableValue === undefined || enableValue === null) {
+      return true; // 預設為啟用
+    }
+    
+    if (typeof enableValue === 'boolean') {
+      return enableValue;
+    }
+    
+    if (typeof enableValue === 'string') {
+      // 處理字串格式：'t'/'true' 為 true，'f'/'false' 為 false
+      const lowerValue = enableValue.toLowerCase();
+      if (lowerValue === 't' || lowerValue === 'true' || lowerValue === '1') {
+        return true;
+      } else if (lowerValue === 'f' || lowerValue === 'false' || lowerValue === '0') {
+        return false;
+      }
+    }
+    
+    if (typeof enableValue === 'number') {
+      return enableValue !== 0;
+    }
+    
+    // 預設為啟用
+    return true;
   }
 
   /** 取得所有權限教師資料 */
@@ -92,11 +125,25 @@ export class OverviewPermissionComponent implements OnInit {
       console.log("response.result 類型:", typeof resp.result);
       console.log("response.result 長度:", resp.result ? resp.result.length : '無');
       
+      // 儲存原始 API 資料用於除錯顯示
+      this.rawApiData = resp;
+      
       if (resp.result && resp.result.length > 0) {
         console.log("第一筆資料範例:", resp.result[0]);
         console.log("資料結構檢查:");
         Object.keys(resp.result[0]).forEach(key => {
           console.log(`  ${key}:`, resp.result[0][key], `(${typeof resp.result[0][key]})`);
+        });
+        
+        // 特別檢查 enable 欄位
+        console.log("=== Enable 欄位檢查 ===");
+        resp.result.forEach((record, index) => {
+          console.log(`記錄 ${index}:`, {
+            ref_teacher_id: record.ref_teacher_id,
+            feature_code: record.feature_code,
+            enable: record.enable,
+            enable_type: typeof record.enable
+          });
         });
       }
       
@@ -158,6 +205,7 @@ export class OverviewPermissionComponent implements OnInit {
     // 先處理每個權限記錄
     permissionRecords.forEach(record => {
       console.log('處理權限記錄:', record);
+      console.log('Enable 狀態:', record.enable, '類型:', typeof record.enable);
       const teacherId = record.ref_teacher_id;
       
       if (!teacherMap.has(teacherId)) {
@@ -166,7 +214,8 @@ export class OverviewPermissionComponent implements OnInit {
           ref_teacher_name: record.ref_teacher_name,
           teacher_name: record.teacher_name,
           feature_name: record.feature_name,
-          teacherId: teacherId
+          teacherId: teacherId,
+          nickname: record.nickname
         });
         
         const teacherName = record.ref_teacher_name || 
@@ -175,19 +224,24 @@ export class OverviewPermissionComponent implements OnInit {
         
         console.log(`教師 ID: ${teacherId}, 解析出的姓名: "${teacherName}"`);
         
+        const nicknameValue = record.nickname || '';
+        console.log(`設定教師 ${teacherId} 的 nickname: "${nicknameValue}"`);
+        
         teacherMap.set(teacherId, {
           teacherId: teacherId,
           teacher_name: teacherName,
+          nickname: nicknameValue, // 添加暱稱欄位
           permissions: {},
           note: record.note || '',
           start_at: record.start_at || '',
-          end_at: record.end_at || ''
+          end_at: record.end_at || '',
+          enable: true // 預設為啟用，稍後會根據權限狀態調整
         });
       }
 
-      // 設定這個功能的權限
+      // 設定這個功能的權限（只有啟用狀態才設為 true）
       const teacher = teacherMap.get(teacherId)!;
-      teacher.permissions[record.feature_code] = true;
+      teacher.permissions[record.feature_code] = this.parseEnableValue(record.enable); // 使用解析後的 enable 值
       
       // 更新開放時間（如果有更新的記錄，使用最新的）
       if (record.start_at) {
@@ -198,8 +252,19 @@ export class OverviewPermissionComponent implements OnInit {
       }
     });
 
-    // 轉換為陣列並確保所有功能都有預設值
-    const result = Array.from(teacherMap.values()).map(teacher => {
+    // 轉換為陣列並確保所有功能都有預設值，同時過濾掉停用的教師
+    const allTeachers = Array.from(teacherMap.values());
+    console.log('過濾前的所有教師:', allTeachers);
+    console.log('過濾前的教師數量:', allTeachers.length);
+    
+    const result = allTeachers
+      .filter(teacher => {
+        // 檢查是否有任何啟用的權限
+        const hasEnabledPermission = Object.values(teacher.permissions).some(permission => permission === true);
+        console.log(`檢查教師 ${teacher.teacher_name} (${teacher.teacherId}) 是否有啟用權限:`, hasEnabledPermission, '權限狀態:', teacher.permissions);
+        return hasEnabledPermission; // 只保留有啟用權限的教師
+      })
+      .map(teacher => {
       // 確保所有功能都有權限值
       Object.keys(this.featureMap).forEach(featureCode => {
         if (!(featureCode in teacher.permissions)) {
@@ -210,6 +275,12 @@ export class OverviewPermissionComponent implements OnInit {
     });
 
     console.log('轉換後的教師權限資料:', result);
+    
+    // 特別檢查每個教師的 enable 狀態
+    result.forEach(teacher => {
+      console.log(`教師 ${teacher.teacher_name} (${teacher.teacherId}) 的 enable 狀態:`, teacher.enable);
+    });
+    
     return result;
   }
 
@@ -218,6 +289,13 @@ export class OverviewPermissionComponent implements OnInit {
     this.isEditMode = false;
     this.currentEditUser = null;
     this.showUserModal = true;
+  }
+
+  /** 取得使用者 IP */
+  getUserIP(): string {
+    // 可以從 GlobalService 或其他服務取得 IP
+    // 這裡先回傳預設值，您可以根據實際需求修改
+    return '127.0.0.1';
   }
 
   /** 開啟編輯使用者 Modal */
@@ -283,11 +361,62 @@ export class OverviewPermissionComponent implements OnInit {
     }
   }
 
+
   /** 刪除使用者 */
-  deleteUser(teacherId: string) {
-    if (confirm('確定要刪除這個使用者嗎？')) {
-      console.log('刪除使用者:', teacherId);
-      // TODO: 實作刪除 API 呼叫
+  async deleteUser(teacherId: string) {
+    // 找到要刪除的教師資料
+    const teacher = this.teachers.find(t => t.teacherId === teacherId);
+    if (!teacher) {
+      alert('找不到要刪除的教師資料');
+      return;
+    }
+
+    // 顯示詳細的確認對話框
+    const confirmMessage = `確定要停用教師「${teacher.teacher_name}」的所有權限嗎？\n\n` +
+                          `點擊「確定」繼續，點擊「取消」中止操作。`;
+    
+    if (confirm(confirmMessage)) {
+      try {
+        this.isLoading = true;
+        console.log('開始停用教師權限:', teacher);
+        
+        // 呼叫停用權限 API
+        const deleteData = {
+          teacher_id: teacherId,
+          teacher_name: teacher.teacher_name,
+          reason: '管理員手動停用',
+          operator_id: 'admin' // 可以從登入資訊取得
+        };
+        
+        console.log('呼叫停用權限API，資料：', deleteData);
+        const response = await this.dsaService.send('Admin.DeletePermissionTeacher', deleteData);
+        console.log('停用權限API回應：', response);
+        
+        if (response.result === 'OK') {
+          // 記錄操作 LOG
+          const logContent = `停用教師權限 - 教師: ${teacher.teacher_name} (${teacher.teacherId}), 原因: 管理員手動停用`;
+          await this.dsaService.send("Share.AddLog", { 
+            Request: { 
+              Content: logContent, 
+              IP: this.getUserIP(), 
+              Action: '停用教師權限' 
+            } 
+          });
+          
+          alert(`教師「${teacher.teacher_name}」的權限已成功停用！`);
+          
+          // 重新載入資料
+          this.GetAllPermissionTeacher();
+        } else {
+          alert(`停用權限失敗：${response.message || '未知錯誤'}`);
+        }
+        
+      } catch (error) {
+        console.error('停用教師權限失敗：', error);
+        alert(`停用權限失敗：${error.message || '系統錯誤'}`);
+      } finally {
+        this.isLoading = false;
+      }
     }
   }
 

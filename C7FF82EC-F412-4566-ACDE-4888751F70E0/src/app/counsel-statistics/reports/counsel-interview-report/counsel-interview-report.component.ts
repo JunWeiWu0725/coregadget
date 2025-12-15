@@ -8,6 +8,7 @@ import { ChartModalComponent } from './chart-modal/chart-modal.component';
 import { CounselClass, GradeClassInfo } from '../../CounselStatistics-vo';
 import * as moment from 'moment';
 import { ChartAnalysisService, ChartAnalysisConfig, ChartAnalysisResult } from '../../../shared/services/chart-analysis.service';
+import { ImportMappingModalComponent } from '../../../counsel/import-mapping-modal/import-mapping-modal.component';
 
 declare var d3: any;
 
@@ -37,6 +38,7 @@ export class CounselInterviewReportComponent implements OnInit {
   @ViewChild('condition_modal') condition_modal: any;
   @ViewChild('chartModal') chartModal: ChartModalComponent;
   @ViewChild('app_import_modal') app_import_modal: any;
+  @ViewChild('app_import_mapping_modal') app_import_mapping_modal: ImportMappingModalComponent;
   isSaveButtonDisable: boolean = false;
   
   // 🔥 新增：控制數據分析按鈕顯示的變數
@@ -283,6 +285,12 @@ export class CounselInterviewReportComponent implements OnInit {
       // this.loadData();
       $("#app_import_modal").off("hide.bs.modal");
     });
+  }
+
+  openMappingModal() {
+    if (this.app_import_mapping_modal) {
+      this.app_import_mapping_modal.openModal();
+    }
   }
 
   async exportReport() {

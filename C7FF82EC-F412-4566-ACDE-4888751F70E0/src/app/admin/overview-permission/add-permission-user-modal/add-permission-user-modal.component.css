@@ -534,3 +534,18 @@
     width: 40%;
   }
 }
+
+/* Teacher ID 顯示樣式 */
+.teacher-id-display {
+  margin-top: 5px;
+  padding: 5px 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.teacher-id-display small {
+  color: #6c757d;
+  font-weight: 500;
+}

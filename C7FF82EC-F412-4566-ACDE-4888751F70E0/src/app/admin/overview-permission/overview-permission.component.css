@@ -149,10 +149,10 @@
 }
 
 .rwd-table th {
-  background-color: #b3d9c7;
+  background-color: #b9dedc;
   font-weight: 600;
-  color: #2d5a3d;
-  border-bottom: 1px solid #9cc9b7;
+  color: #495057;
+  border-bottom: 1px solid #dee2e6;
 }
 
 .rwd-table tbody tr {
@@ -160,15 +160,15 @@
 }
 
 .rwd-table tbody tr:nth-child(even) {
-  background-color: #f0f8f4;
+  background-color: #f8f9fa;
 }
 
 .rwd-table tbody tr:hover {
-  background-color: #e6f3ea;
+  background-color: #e9ecef;
 }
 
 .rwd-table tbody tr:nth-child(even):hover {
-  background-color: #ddefE3;
+  background-color: #e9ecef;
 }
 
 /* 權限顯示樣式 */

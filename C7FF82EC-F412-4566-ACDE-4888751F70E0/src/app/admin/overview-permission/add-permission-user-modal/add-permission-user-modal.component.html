@@ -27,21 +27,31 @@
                  (blur)="onTeacherNameBlur()"
                  autocomplete="off">
           
+          <!-- 編輯模式時顯示 Teacher ID -->
+          <!-- <div class="teacher-id-display" *ngIf="editMode && userData.teacher_id">
+            <small class="text-muted">教師編號: {{ userData.teacher_id }}</small>
+          </div> -->
+          
+          
           <!-- 教師下拉選單 -->
           <div class="teacher-dropdown" *ngIf="showTeacherDropdown && !editMode && filteredTeachers.length > 0">
             <div class="teacher-dropdown-header">
-              <small class="text-muted">選擇教師 ({{ filteredTeachers.length }} 筆結果)</small>
+              <!-- <small class="text-muted">選擇教師 ({{ filteredTeachers.length }} 筆結果)</small> -->
+              <small class="text-info" *ngIf="!editMode && allTeachers.length > 0">
+                <br>可用教師總數: {{ allTeachers.length }} 人
+              </small>
             </div>
             <div class="teacher-option" 
                  *ngFor="let teacher of filteredTeachers" 
                  (click)="selectTeacher(teacher)">
               <div class="teacher-info">
                 <div class="teacher-name">{{ teacher.teacher_name }}</div>
-                <div class="teacher-id">{{ teacher.teacher_id }}</div>
+                <!-- <div class="teacher-id">{{ teacher.teacher_id }}</div> -->
               </div>
               <div class="teacher-nickname" *ngIf="teacher.nickname">
-                <small class="text-muted">{{ teacher.nickname }}</small>
+                <small class="text-muted">{{ teacher.nickname }}</small> 
               </div>
+           
             </div>
             <div class="teacher-dropdown-footer" *ngIf="filteredTeachers.length === 0">
               <small class="text-muted">沒有找到相符的教師</small>
@@ -49,6 +59,9 @@
           </div>
         </div>
         <small class="text-muted" *ngIf="editMode">（無法修改）</small>
+        <!-- <small class="text-danger" *ngIf="!editMode && !userData.teacherId && userData.teacher_name.trim().length > 0">
+          請從下拉選單中選擇教師
+        </small> -->
       </div>
       
       <!-- 備註輸入 -->
@@ -62,48 +75,7 @@
       </div>
       
       <!-- 開放時間設定 -->
-      <div class="time-setting-section">
-        <h4>開放時間設定</h4>
-        
-        <div class="time-inputs-container">
-          <!-- 開始時間 -->
-          <div class="time-input-card">
-            <div class="time-label">開始時間</div>
-            <div class="datetime-input-wrapper">
-              <input type="datetime-local" 
-                     id="startTime" 
-                     class="form-control datetime-input" 
-                     [(ngModel)]="userData.start_at"
-                     placeholder="年/月/日 -- --:--">
-            </div>
-            <button type="button" 
-                    class="btn btn-primary btn-time-action"
-                    (click)="setStartTimeNow()">
-              現在
-            </button>
-          </div>
-          
-          <!-- 結束時間 -->
-          <div class="time-input-card">
-            <div class="time-label">結束時間</div>
-            <div class="datetime-input-wrapper">
-              <input type="datetime-local" 
-                     id="endTime" 
-                     class="form-control datetime-input" 
-                     [(ngModel)]="userData.end_at"
-                     placeholder="年/月/日 -- --:--">
-            </div>
-            <button type="button" 
-                    class="btn btn-secondary btn-time-action"
-                    (click)="clearEndTime()">
-              清除
-            </button>
-            <div class="time-hint">
-              留空表示無限期開放
-            </div>
-          </div>
-        </div>
-      </div>
+  
       
       <!-- 權限設定 -->
       <div class="permission-section">
