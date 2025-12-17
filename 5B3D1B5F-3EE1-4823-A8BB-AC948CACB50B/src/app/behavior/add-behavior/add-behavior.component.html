@@ -11,74 +11,76 @@
               [routerLink]="['/template']">事由樣板</button>
     </ol>
   </nav>
-  <div class="row">
+  <div class="row align-items-end">
     <div class="col-md-4 col-lg-2">
-      <div class="form-group row">
-        <label for="dateLabel"
-               class="col-2 col-form-label">日期</label>
-        <div class="col-10">
-          <input type="date"
+      <div class="form-group mb-0">
+        <label for="dateLabel" class="form-label">日期</label>
+        <input type="date"
+               class="form-control"
+               id="dateLabel"
+               #currentDate
+               [(ngModel)]="currentDateString"
+               (change)="currentDateChange(currentDate.value)">
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-6"> 
+      <div class="form-group mb-0">
+        <label class="form-label">選擇事由</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <button class="btn btn-outline-primary dropdown-toggle"
+                    type="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">選擇事由</button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item"
+                 href="javascript:;"
+                 *ngFor="let data of commentTemplateList"
+                 (click)="selectItem(data)">{{data.Comment}}</a>
+            </div>
+          </div>
+          <input type="text"
                  class="form-control"
-                 id="dateLabel"
-                 #currentDate
-                 [(ngModel)]="currentDateString"
-                 (change)="currentDateChange(currentDate.value)">
+                 aria-label="Text input with dropdown button"
+                 placeholder="事由.."
+                 [(ngModel)]="addText">
         </div>
       </div>
     </div>
-    <div class="input-group mb-3 col-md-6 col-lg-6"> 
-      <div class="input-group-prepend">
-        <button class="btn btn-outline-primary dropdown-toggle"
-                type="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false">選擇事由</button>
-        <div class="dropdown-menu">
-          <a class="dropdown-item"
-             href="javascript:;"
-             *ngFor="let data of commentTemplateList"
-             (click)="selectItem(data)">{{data.Comment}}</a>
+
+    <div class="col-md-12 col-lg-2">
+      <div class="form-group mb-0">
+        <label class="form-label d-block">選項</label>
+        <div class="form-check">
+          <input id="detention"
+                 type="checkbox"
+                 class="form-check-input"
+                 (change)="onCheckboxChange('detention')"
+                 [(ngModel)]="currentDetention">
+          <label class="form-check-label"
+                 for="detention">Detention</label>
+        </div>
+
+        <div class="form-check">
+          <input id="goodBehavior"
+                 type="checkbox"
+                 class="form-check-input"
+                 (change)="onCheckboxChange('goodBehavior')"
+                 [(ngModel)]="currentGoodBehavior">
+          <label class="form-check-label"
+                 for="goodBehavior">Good</label>
+        </div>    
+        
+        <div class="form-check">
+          <input id="currentDaaDsaFollow" 
+                  type="checkbox" 
+                  class="form-check-input" 
+                  (change)="onCheckboxChange('currentDaaDsaFollow')"
+                  [(ngModel)]="currentDaaDsaFollow">
+          <label class="form-check-label" for="currentDaaDsaFollow">DAA/DSA Follow up</label>
         </div>
       </div>
-
-      <input type="text"
-             class="form-control"
-             aria-label="Text input with dropdown button"
-             placeholder="事由.."
-             [(ngModel)]="addText">
-    </div>
-
-    <div class="input-group col-md-12 col-lg-2 row">
-      <div class="form-group form-check" style="margin-left: 5px">
-        <input id="detention"
-               type="checkbox"
-               class="form-check-input"
-               (change)="onCheckboxChange('detention')"
-               [(ngModel)]="currentDetention">
-        <label class="form-check-label"
-               for="detention">Detention</label>
-      </div>
-
-      <div class="form-group form-check" style="margin-left: 5px">
-        <input id="goodBehavior"
-               type="checkbox"
-               class="form-check-input"
-               (change)="onCheckboxChange('goodBehavior')"
-               [(ngModel)]="currentGoodBehavior">
-        <label class="form-check-label"
-               for="goodBehavior">Good</label>
-      </div>    
-      
-      <div class="form-group form-check  " style="margin-left: 5px">
-        <input id="currentDaaDsaFollow" 
-                type="checkbox" 
-                class="form-check-input" 
-                (change)="onCheckboxChange('currentDaaDsaFollow')"
-                [(ngModel)]="currentDaaDsaFollow">
-        <label class="form-check-label" for="currentDaaDsaFollow">DAA/DSA Follow up</label>
-  
-    </div>
-
     </div>
  
    
@@ -90,9 +92,12 @@
 
 
     <div class="col-md-12 col-lg-2">
-      <button class="ml-auto btn btn-info btn-block"
-              disabled="{{checkButtonEnable}}"
-              (click)="save()">儲存 （已選取: {{selectedStudents.length}}）</button>
+      <div class="form-group mb-0">
+        <label class="form-label">&nbsp;</label>
+        <button class="btn btn-info btn-block"
+                disabled="{{checkButtonEnable}}"
+                (click)="save()">儲存 （已選取: {{selectedStudents.length}}）</button>
+      </div>
     </div>
   </div>
 
@@ -157,18 +162,31 @@
   <hr>
 
   <!-- 選擇班級 -->
-  <div class="st-list d-flex flex-wrap mt-3 mt-lg-1 w-100">
-    <mat-form-field>
-      <mat-label>選擇班級</mat-label>
-      <mat-select (selectionChange)="onClassSelected()"
-                  [(value)]="selectedClass">
-        <mat-option *ngFor="let cls of classes"
-                    [value]="cls"
-                    width="20px">
-          {{cls.Name}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+  <div class="d-flex align-items-end mt-3" style="gap: 15px;">
+    <div>
+      <mat-form-field style="width: 200px;" appearance="outline">
+        <mat-label>選擇班級</mat-label>
+        <mat-select (selectionChange)="onClassSelected()"
+                    [(value)]="selectedClass">
+          <mat-option *ngFor="let cls of classes"
+                      [value]="cls"
+                      width="20px">
+            {{cls.Name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- 排序選項 -->
+    <div>
+      <mat-form-field style="width: 150px;" appearance="outline">
+        <mat-label>排序：</mat-label>
+        <mat-select id="sortSelect" [(value)]="sortType" (selectionChange)="onSortChange()">
+          <mat-option value="seat">班座排序</mat-option>
+          <mat-option value="studentNumber">學號排序</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
   </div>
 
   <!-- 學生資料-->
