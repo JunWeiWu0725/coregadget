@@ -11,12 +11,14 @@ import { ListComponent } from './list/list.component';
 import { CommentComponent } from './comment/comment.component';
 
 import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     BehaviorRoutingModule,
     MatFormFieldModule,
+    MatSelectModule,
   ],
   declarations: [
     AppComponent,

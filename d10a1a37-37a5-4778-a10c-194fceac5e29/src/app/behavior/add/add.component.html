@@ -10,86 +10,96 @@
             <button class="ml-auto btn btn-dark" [routerLink]="['/behavior/comment']">Comment Template</button>
         </ol>
     </nav>
-    <div class="row">
+    <div class="row align-items-end">
         <div class="col-md-3 col-lg-2">
-            <div class="form-group row">
-                <label for="dateLabel" class="col-2 col-form-label">Date</label>
-                <div class="col-10">
-                    <input type="date" 
-                            class="form-control" 
-                            id="dateLabel" 
-                            #currentDate [(ngModel)]="currentDateString"
-                            (change)="currentDateChange(currentDate.value)">
-                </div>
+            <div class="form-group mb-0">
+                <label for="dateLabel" class="form-label">Date</label>
+                <input type="date" 
+                        class="form-control" 
+                        id="dateLabel" 
+                        #currentDate [(ngModel)]="currentDateString"
+                        (change)="currentDateChange(currentDate.value)">
             </div>
         </div>
-        <div class="input-group mb-3 col-md-6 col-lg-6">
-            <div class="input-group-prepend">
-                <button class="btn btn-outline-primary dropdown-toggle" 
-                        type="button" 
-                        data-toggle="dropdown"
-                        aria-haspopup="true" 
-                        aria-expanded="false">SELECT COMMENT</button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" 
-                        href="javascript:;" 
-                        *ngFor="let data of commentTemplateList"
-                        (click)="selectItem(data)">{{data.Comment}}</a>
-                </div>
-            </div>
-            <input type="text" 
-                    class="form-control" 
-                    aria-label="Text input with dropdown button" 
-                    placeholder="Comment…"
-                [(ngModel)]="addText" (change)="commentChange()">
-        </div>
-        <div class="input-group col-md-3 col-lg-2 d-inline-flex">
-
-
-   
-        
-
-                    <!--  -->
-
-                    <div class="form-group form-check"    (click)="onCheckboxChange('detention')" style="margin-left: 5px">
-                        <input id="detention"
-                               type="checkbox"
-                               class="form-check-input"
-                               (change)="onCheckboxChange('detention')"
-                               [(ngModel)]="currentDetention">
-                        <label class="form-check-label"
-                               for="detention">Detention</label>
-                      </div>
-                
-                      <div class="form-group form-check"    (click)="onCheckboxChange('goodBehavior')"  style="margin-left: 5px">
-                        <input id="goodBehavior"
-                               type="checkbox"
-                               class="form-check-input"
-                            
-                               [(ngModel)]="currentGood">
-                        <label class="form-check-label"
-                               for="goodBehavior">Good</label>
-                      </div>    
-                      
-                      <div class="form-group form-check  "    (click)="onCheckboxChange('currentDaaDsaFollow')" style="margin-left: 5px">
-                        <input id="currentDaaDsaFollow" 
-                                type="checkbox" 
-                                class="form-check-input" 
-                             
-                                [(ngModel)]="currentDaaDsaFollow">
-                        <label class="form-check-label" for="currentDaaDsaFollow">DAA/DSA Follow up</label>
-                  
+        <hr>
+        <div class="col-md-6 col-lg-6">
+            <div class="form-group mb-0">
+                <label class="form-label">SELECT COMMENT</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-outline-primary dropdown-toggle" 
+                                type="button" 
+                                data-toggle="dropdown"
+                                aria-haspopup="true" 
+                                aria-expanded="false">SELECT COMMENT</button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" 
+                                href="javascript:;" 
+                                *ngFor="let data of commentTemplateList"
+                                (click)="selectItem(data)">{{data.Comment}}</a>
+                        </div>
                     </div>
-                    <!--  -->
-
+                    <input type="text" 
+                            class="form-control" 
+                            aria-label="Text input with dropdown button" 
+                            placeholder="Comment…"
+                            [(ngModel)]="addText" (change)="commentChange()">
+                </div>
+            </div>
         </div>
         <div class="col-md-12 col-lg-2">
-            <button class="ml-auto btn btn-info btn-block" 
-                    disabled={{checkButtonEnable}} 
-                    [routerLink]="['../list']"
-                (click)="save()">SAVE （Checked : {{checkCount}}）</button>
+            <div class="form-group mb-0">
+                <label class="form-label d-block">選項</label>
+                <div class="form-check">
+                    <input id="detention"
+                           type="checkbox"
+                           class="form-check-input"
+                           (change)="onCheckboxChange('detention')"
+                           [(ngModel)]="currentDetention">
+                    <label class="form-check-label"
+                           for="detention">Detention</label>
+                </div>
+                <div class="form-check">
+                    <input id="goodBehavior"
+                           type="checkbox"
+                           class="form-check-input"
+                           (change)="onCheckboxChange('goodBehavior')"
+                           [(ngModel)]="currentGood">
+                    <label class="form-check-label"
+                           for="goodBehavior">Good</label>
+                </div>
+                <div class="form-check">
+                    <input id="currentDaaDsaFollow" 
+                            type="checkbox" 
+                            class="form-check-input" 
+                            (change)="onCheckboxChange('currentDaaDsaFollow')"
+                            [(ngModel)]="currentDaaDsaFollow">
+                    <label class="form-check-label" for="currentDaaDsaFollow">DAA/DSA Follow up</label>
+                </div>
+            </div>
         </div>
-        
+        <div class="col-md-12 col-lg-2">
+            <div class="form-group mb-0">
+                <label class="form-label">&nbsp;</label>
+                <button class="btn btn-info btn-block" 
+                        disabled={{checkButtonEnable}} 
+                        [routerLink]="['../list']"
+                        (click)="save()">SAVE （Checked : {{checkCount}}）</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 排序選項 -->
+    <div class="d-flex align-items-end mt-3" style="gap: 15px;">
+        <div>
+            <mat-form-field style="width: 150px;" appearance="outline">
+                <mat-label>排序：</mat-label>
+                <mat-select id="sortSelect" [value]="sortType" (selectionChange)="onSortChange($event)">
+                    <mat-option value="seat">班座排序</mat-option>
+                    <mat-option value="studentNumber">學號排序</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
     </div>
     <div class="st-list d-flex flex-wrap mt-3 mt-lg-1">
         <div class="card st-check " 

@@ -27,7 +27,7 @@ export class GadgetService {
 
     var clientID = "7165f90a1118a04c40870d31f64e03bb";
     // this.application = url_var["dsns"] ||"test.p.kcbs.hc.edu.tw";
-    this.application = url_var["dsns"] ||"1admin_debug12";
+    this.application = url_var["dsns"] ||"demo.h.vicky.chang";
 
     var routePath = location.href.lastIndexOf('#') >= 0 ? location.href.substr(location.href.lastIndexOf('#') + 1) : "";
     var source = location.href.lastIndexOf('#') >= 0 ? location.href.substr(0, location.href.lastIndexOf('#')) : location.href;
