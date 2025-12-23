@@ -1,3 +1,13 @@
+<!-- 載入中 -->
+<div *ngIf="loading" class="text-center p-3">
+  <p>載入中...</p>
+</div>
+
+<!-- 錯誤訊息 -->
+<div *ngIf="error && !loading" class="alert alert-danger m-3">
+  <strong>錯誤：</strong>無法載入資料，請重新整理頁面或檢查連線狀態。
+</div>
+
 <!-- 顯示導師班 區塊-->
 <div *ngFor="let cls of classes">
     <app-class-behavior [cls]="cls"></app-class-behavior>

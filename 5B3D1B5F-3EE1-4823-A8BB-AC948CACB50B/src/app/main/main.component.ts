@@ -29,16 +29,21 @@ export class MainComponent implements OnInit {
   async getTeacherClass() {
     try {
       this.loading = true;
+      this.error = null;
       //呼叫service 
       const rsp = await this.contract.send('behaviorForAll.GetTeacherClass');
       this.courseDataINfo = Utils.array(rsp, "Response/Class");
 
       //1.加入班級資料
-      for (const cl in this.courseDataINfo) {
-        this.classes.push(new ClassInfo(this.courseDataINfo[cl].ID, this.courseDataINfo[cl].Name));
+      if (this.courseDataINfo && this.courseDataINfo.length > 0) {
+        for (const cl in this.courseDataINfo) {
+          this.classes.push(new ClassInfo(this.courseDataINfo[cl].ID, this.courseDataINfo[cl].Name));
+        }
       }
     } catch (err) {
-      console.log(err)
+      console.error('取得導師班失敗:', err);
+      this.error = err;
+      alert('無法載入導師班資料，請檢查連線狀態');
     }
     finally {
       this.loading = false;
