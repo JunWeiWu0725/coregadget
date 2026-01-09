@@ -105,6 +105,9 @@ import { appInitializerFactory } from './app-initializer';
 import { ImportModalComponent } from './counsel/import-modal/import-modal.component';
 import { ChartModalComponent } from './counsel-statistics/reports/counsel-interview-report/chart-modal/chart-modal.component';
 import { FormsModule } from '@angular/forms';
+import { OverviewPermissionComponent } from './admin/overview-permission/overview-permission.component';
+import { AddPermissionUserModalComponent } from './admin/overview-permission/add-permission-user-modal/add-permission-user-modal.component';
+import { ImportMappingModalComponent } from './counsel/import-mapping-modal/import-mapping-modal.component';
 
 
 @NgModule({
@@ -170,6 +173,9 @@ import { FormsModule } from '@angular/forms';
     SettingComponent,
     ImportModalComponent,
     ChartModalComponent,
+    OverviewPermissionComponent,
+    AddPermissionUserModalComponent,
+    ImportMappingModalComponent,
     // AddReferralFormComponent
   ],
   imports: [

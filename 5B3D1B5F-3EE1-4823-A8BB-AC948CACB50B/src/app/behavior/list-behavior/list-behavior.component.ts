@@ -67,7 +67,7 @@ export class ListBehaviorComponent implements OnInit {
   // 修改 comment
   async editComment(data) { 
  
-    const result = await this.dialogService.editDialog("編輯  " + data.CreateDate2 + " " + data.Name, "事由:", data.Comment, data.Detention == 'true', data.GoodBehavior =='true' ,data.DaaDsaFollow=='true');
+    const result = await this.dialogService.editDialog("編輯  " + data.LastUpdate + " " + data.Name, "事由:", data.Comment, data.Detention == 'true', data.GoodBehavior =='true' ,data.DaaDsaFollow=='true');
  
     if (result.confirm) {
       try {

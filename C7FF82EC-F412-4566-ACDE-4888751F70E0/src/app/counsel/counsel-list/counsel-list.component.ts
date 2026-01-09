@@ -17,6 +17,7 @@ import { GlobalService } from "../../global.service";
 import { AddInterviewModalComponent } from "src/app/shared-counsel-detail/interview-detail/add-interview-modal/add-interview-modal.component";
 import { MatSnackBar } from "@angular/material";
 import { ImportModalComponent } from "../import-modal/import-modal.component";
+import { ImportMappingModalComponent } from "../import-mapping-modal/import-mapping-modal.component";
 import { DsaService } from "src/app/dsa.service";
 
 @Component({
@@ -50,6 +51,7 @@ export class CounselListComponent implements OnInit {
   // 彈出新稱modal 視窗
   @ViewChild("addInterview") _addInterview: AddInterviewModalComponent;
   @ViewChild("app_import_modal") app_import_modal: ImportModalComponent;
+  @ViewChild("app_import_mapping_modal") app_import_mapping_modal: ImportMappingModalComponent;
 
 
   constructor(
@@ -70,8 +72,9 @@ export class CounselListComponent implements OnInit {
       this.mod = params.get("mod");
       this.roleType = params.get("roleType");
       this.target = params.get("target");
-      if (!this.roleType) {
-        this.roleType = '班導師';
+      // 如果 roleType 为空、null 或空字符串，使用 globalService.currentRole 作为备用值
+      if (!this.roleType || this.roleType.trim() === '') {
+        this.roleType = this.globalService.currentRole || '班導師';
       }
       this._semesterInfo = [];
       this.getList();
@@ -145,6 +148,12 @@ export class CounselListComponent implements OnInit {
       // }
 
       if (this.mod === "class") {
+        // 如果 roleType 为空，优先使用 globalService.currentRole（保存了用户实际选择的身份）
+        // 不能从 classMap 推断，因为一个班级可能同时有"班導師"和"輔導老師"角色
+        if (!this.roleType || this.roleType.trim() === '') {
+          this.roleType = this.globalService.currentRole || '班導師';
+        }
+        // 保存当前 roleType 到 globalService，以便后续恢复
         this.globalService.currentRole = this.roleType;
         if (this.counselStudentService.classMap.has(this.target)) {
           this.targetList = this.counselStudentService.classMap.get(
@@ -241,6 +250,12 @@ export class CounselListComponent implements OnInit {
     });
   }
 
+  openMappingModal() {
+    if (this.app_import_mapping_modal) {
+      this.app_import_mapping_modal.openModal();
+    }
+  }
+
   /**依所選條件 選取*/
   getListByCondition() {
     // 暫存起來後
@@ -248,5 +263,27 @@ export class CounselListComponent implements OnInit {
     // asign 給 要顯示的 targetList
     if (temp && temp.length > 0) {
     }
+  }
+
+  /**檢查是否應該顯示匯入按鈕 */
+  get shouldShowImportButton(): boolean {
+    // 必須是班級模式
+    if (this.mod !== 'class') {
+      return false;
+    }
+    // 必須是從"班導師身分"選擇的（roleType 必須明確是 '班導師'）
+    // 不能只是檢查 classMap 中是否有班導師角色，因為從"輔導老師身分"選擇時不應該顯示
+    if (this.roleType === '班導師') {
+      return true;
+    }
+    // 如果 roleType 為空，嘗試從 globalService.currentRole 恢復
+    // 但只有在確保是從班導師身分選擇時才顯示
+    if (!this.roleType || this.roleType.trim() === '') {
+      // 檢查 globalService.currentRole 是否為班導師
+      if (this.globalService.currentRole === '班導師') {
+        return true;
+      }
+    }
+    return false;
   }
 }

@@ -1,0 +1,551 @@
+/* Modal 樣式 */
+.custom-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.custom-modal-dialog {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease;
+}
+
+.custom-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid #dee2e6;
+  background: #f8f9fa;
+  border-radius: 12px 12px 0 0;
+}
+
+.custom-modal-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2d5a3d;
+}
+
+.custom-close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.custom-close-btn:hover {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.custom-modal-body {
+  padding: 25px;
+}
+
+.custom-modal-subtitle {
+  font-size: 14px;
+  color: #5a7c66;
+  margin: 5px 0 0 0;
+}
+
+/* 表單控制項 */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 5px;
+  display: block;
+  color: #333;
+}
+
+.form-control {
+  background-color: #f8f9fa;
+}
+
+.form-control:focus {
+  background-color: #fff;
+  border-color: #adb5bd;
+  outline: 0;
+}
+
+.required {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.text-small.text-danger {
+  color: #dc3545 !important;
+  font-size: 16px;
+  margin-right: 5px;
+}
+
+.text-muted {
+  color: #666;
+}
+
+/* 唯讀輸入框樣式 */
+.readonly-input {
+  background-color: #e9ecef;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.readonly-input:focus {
+  background-color: #f8f9fa !important;
+  border-color: #e9ecef !important;
+  box-shadow: none !important;
+}
+
+/* 權限設定樣式 */
+.permission-section {
+  margin-top: 25px;
+}
+
+.permission-section h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 15px 0;
+}
+
+/* 教師選擇下拉選單樣式 */
+.teacher-select-container {
+  position: relative;
+}
+
+.teacher-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ced4da;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.teacher-dropdown-header {
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 12px;
+}
+
+.teacher-option {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f1f3f4;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.teacher-option:hover {
+  background-color: #f8f9fa;
+}
+
+.teacher-option:last-child {
+  border-bottom: none;
+}
+
+.teacher-info {
+  flex: 1;
+}
+
+.teacher-name {
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.teacher-id {
+  color: #6c757d;
+  font-size: 12px;
+}
+
+.teacher-nickname {
+  text-align: right;
+  font-size: 12px;
+}
+
+.teacher-dropdown-footer {
+  padding: 8px 12px;
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  background-color: #f8f9fa;
+}
+
+/* 當下拉選單開啟時，調整輸入框樣式 */
+.teacher-select-container input:focus {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* 開放時間設定樣式 */
+.time-setting-section {
+  margin-top: 20px;
+}
+
+.time-setting-section h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #6c757d;
+  margin: 0 0 10px 0;
+}
+
+.time-inputs-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.time-input-card {
+  background: #fafafa;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.time-label {
+  font-weight: 500;
+  color: #6c757d;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.datetime-input-wrapper {
+  margin-bottom: 10px;
+}
+
+.datetime-input {
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #fff;
+  color: #6c757d;
+}
+
+.datetime-input:focus {
+  border: none;
+  outline: 0;
+}
+
+.btn-time-action {
+  width: 100%;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  box-shadow: none;
+}
+
+.btn-primary {
+  background-color: #6c9bd1;
+  border-color: #6c9bd1;
+  color: white;
+  box-shadow: none;
+}
+
+.btn-primary:hover {
+  background-color: #5a89c4;
+  border-color: #5080bb;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background-color: #adb5bd;
+  border-color: #adb5bd;
+  color: white;
+  box-shadow: none;
+}
+
+.btn-secondary:hover {
+  background-color: #98a2ac;
+  border-color: #8e9aa5;
+  box-shadow: none;
+}
+
+.time-hint {
+  font-size: 12px;
+  color: #6c9bd1;
+  background-color: #e8f0f8;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border-left: 3px solid #adb5bd;
+}
+
+/* 響應式：手機版 */
+@media (max-width: 768px) {
+  .time-inputs-container {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .time-input-card {
+    padding: 12px;
+  }
+}
+
+/* RWD Table 樣式 */
+.rwd-table {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.rwd-table .thead {
+  background: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.rwd-table .thead .tr {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-weight: 600;
+  color: #495057;
+}
+
+.rwd-table .thead .tr li {
+  flex: 1;
+  padding: 15px 10px;
+  border-right: 1px solid #dee2e6;
+  text-align: center;
+  font-size: 14px;
+}
+
+.rwd-table .thead .tr li:last-child {
+  border-right: none;
+}
+
+.rwd-table .tbody {
+  background: white;
+}
+
+.rwd-table .tbody .tr {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-bottom: 1px solid #dee2e6;
+  transition: background-color 0.2s ease;
+}
+
+.rwd-table .tbody .tr:hover {
+  background-color: #f8f9fa;
+}
+
+.rwd-table .tbody .tr:last-child {
+  border-bottom: none;
+}
+
+.rwd-table .tbody .tr li {
+  flex: 1;
+  padding: 15px 10px;
+  border-right: 1px solid #dee2e6;
+  text-align: center;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rwd-table .tbody .tr li:last-child {
+  border-right: none;
+}
+
+.rwd-table .tbody .tr li:first-child {
+  text-align: left;
+  font-weight: 500;
+  color: #495057;
+}
+
+.permission-label {
+  font-weight: 500;
+  color: #495057;
+  margin: 0;
+}
+
+.custom-modal-footer {
+  padding: 20px 25px;
+  border-top: 1px solid #dee2e6;
+  background: #f8f9fa;
+  border-radius: 0 0 12px 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.btn-dark {
+  background-color: #343a40;
+  color: white;
+}
+
+.btn-dark:hover:not(:disabled) {
+  background-color: #23272b;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.btn-info:hover:not(:disabled) {
+  background-color: #138496;
+}
+
+/* Modal 動畫 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0; 
+    transform: scale(0.9) translateY(-20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1) translateY(0); 
+  }
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .custom-modal-dialog {
+    width: 95%;
+    margin: 10px;
+  }
+  
+  .rwd-table .thead {
+    display: none;
+  }
+  
+  .rwd-table .tbody .tr {
+    flex-direction: column;
+    border: 1px solid #dee2e6;
+    margin-bottom: 15px;
+    border-radius: 6px;
+  }
+  
+  .rwd-table .tbody .tr li {
+    border-right: none;
+    border-bottom: 1px solid #dee2e6;
+    text-align: left;
+    justify-content: flex-start;
+    position: relative;
+    padding-left: 40%;
+  }
+  
+  .rwd-table .tbody .tr li:last-child {
+    border-bottom: none;
+  }
+  
+  .rwd-table .tbody .tr li:before {
+    content: attr(data-title) ": ";
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 600;
+    color: #666;
+    width: 35%;
+    font-size: 13px;
+  }
+  
+  .custom-modal-header {
+    padding: 15px 20px;
+  }
+  
+  .custom-modal-body {
+    padding: 20px;
+  }
+  
+  .custom-modal-footer {
+    padding: 15px 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .custom-modal-dialog {
+    width: 98%;
+    margin: 5px;
+  }
+  
+  .rwd-table .tbody .tr li {
+    padding-left: 45%;
+  }
+  
+  .rwd-table .tbody .tr li:before {
+    width: 40%;
+  }
+}
+
+/* Teacher ID 顯示樣式 */
+.teacher-id-display {
+  margin-top: 5px;
+  padding: 5px 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.teacher-id-display small {
+  color: #6c757d;
+  font-weight: 500;
+}

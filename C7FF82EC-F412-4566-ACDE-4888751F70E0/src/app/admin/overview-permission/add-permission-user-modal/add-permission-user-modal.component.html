@@ -1,0 +1,123 @@
+<!-- 新增/編輯使用者 Modal -->
+<div class="custom-modal-overlay" *ngIf="isVisible">
+  <div class="custom-modal-dialog">
+    <div class="custom-modal-header">
+      <h3 class="custom-modal-title">{{ getModalTitle() }}</h3>
+      <button class="custom-close-btn" (click)="close()">×</button>
+    </div>
+    
+    <div class="custom-modal-body">
+      <p class="custom-modal-subtitle">
+        {{ editMode ? '調整使用者權限設定（姓名無法修改）' : '請輸入新使用者的姓名並設定權限' }}
+      </p>
+      
+      <!-- 姓名輸入 -->
+      <div class="form-group">
+        <label for="userName">姓名 <span class="required" *ngIf="!isUserNameValid && !editMode">*</span></label>
+        <div class="teacher-select-container">
+          <input type="text" 
+                 id="userName" 
+                 class="form-control" 
+                 [(ngModel)]="userData.teacher_name" 
+                 [readonly]="editMode"
+                 [class.readonly-input]="editMode"
+                 placeholder="請輸入或選擇教師姓名" 
+                 (input)="onTeacherNameInput($event)"
+                 (focus)="onTeacherNameFocus()"
+                 (blur)="onTeacherNameBlur()"
+                 autocomplete="off">
+          
+          <!-- 編輯模式時顯示 Teacher ID -->
+          <!-- <div class="teacher-id-display" *ngIf="editMode && userData.teacher_id">
+            <small class="text-muted">教師編號: {{ userData.teacher_id }}</small>
+          </div> -->
+          
+          
+          <!-- 教師下拉選單 -->
+          <div class="teacher-dropdown" *ngIf="showTeacherDropdown && !editMode && filteredTeachers.length > 0">
+            <div class="teacher-dropdown-header">
+              <!-- <small class="text-muted">選擇教師 ({{ filteredTeachers.length }} 筆結果)</small> -->
+              <small class="text-info" *ngIf="!editMode && allTeachers.length > 0">
+                <br>可用教師總數: {{ allTeachers.length }} 人
+              </small>
+            </div>
+            <div class="teacher-option" 
+                 *ngFor="let teacher of filteredTeachers" 
+                 (click)="selectTeacher(teacher)">
+              <div class="teacher-info">
+                <div class="teacher-name">{{ teacher.teacher_name }}</div>
+                <!-- <div class="teacher-id">{{ teacher.teacher_id }}</div> -->
+              </div>
+              <div class="teacher-nickname" *ngIf="teacher.nickname">
+                <small class="text-muted">{{ teacher.nickname }}</small> 
+              </div>
+           
+            </div>
+            <div class="teacher-dropdown-footer" *ngIf="filteredTeachers.length === 0">
+              <small class="text-muted">沒有找到相符的教師</small>
+            </div>
+          </div>
+        </div>
+        <small class="text-muted" *ngIf="editMode">（無法修改）</small>
+        <!-- <small class="text-danger" *ngIf="!editMode && !userData.teacherId && userData.teacher_name.trim().length > 0">
+          請從下拉選單中選擇教師
+        </small> -->
+      </div>
+      
+      <!-- 備註輸入 -->
+      <div class="form-group">
+        <label for="userNote">備註</label>
+        <textarea id="userNote" 
+                  class="form-control" 
+                  rows="3" 
+                  [(ngModel)]="userData.note" 
+                  placeholder="請輸入備註..."></textarea>
+      </div>
+      
+      <!-- 開放時間設定 -->
+  
+      
+      <!-- 權限設定 -->
+      <div class="permission-section">
+        <h4>權限設定</h4>
+        
+        <ul class="rwd-table">
+          <li class="thead">
+            <ol class="tr">
+              <li class="sticky-top">權限項目</li>
+              <li class="sticky-top">設定</li>
+            </ol>
+          </li>
+          <li class="tbody">
+            <ol class="tr" *ngFor="let permission of permissionList">
+              <li data-title="權限項目">
+                <label class="permission-label">{{ permission.name }}</label>
+              </li>
+              <li data-title="設定">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" 
+                         class="custom-control-input"
+                         [id]="'perm_' + permission.code"
+                         [checked]="userData.permissions[permission.code]"
+                         (click)="togglePermission(permission.code)">
+                  <label class="custom-control-label" 
+                         [for]="'perm_' + permission.code">啟用</label>
+                </div>
+              </li>
+            </ol>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="custom-modal-footer">
+      <button type="button" 
+              class="btn btn-dark" 
+              (click)="close()">取消</button>
+      <button type="button" 
+              class="btn btn-info" 
+              (click)="save()"
+              [disabled]="!isFormValid">{{ getSaveButtonText() }}</button>
+    </div>
+  </div>
+</div>

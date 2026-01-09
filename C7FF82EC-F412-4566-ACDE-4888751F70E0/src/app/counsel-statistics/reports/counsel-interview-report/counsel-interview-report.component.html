@@ -9,6 +9,7 @@
 <div class="d-flex"  style =" width: 90%;">
 
   <app-import-modal #app_import_modal  [StudentList]="[]" [Role]="'管理者'" ></app-import-modal>
+  <app-import-mapping-modal #app_import_mapping_modal></app-import-mapping-modal>
   <div class="d-flex align-items-center" style="width: 90%;"> 
     <div class="date-label" style="font-size: 18px; margin-right: 10px; min-width: 80px;">開始日期</div>
     <div style="margin-right: 20px;">
@@ -32,20 +33,36 @@
     </div>
 
   </div>
-  <button 
-  *ngIf="true"  
-  style="
-    color:#2f8e80;
-    border: 1px solid #a0cfc8; 
-    padding: 6px 16px; 
-    font-size: 14px; 
-    border-radius: 4px;
-    cursor: pointer;
-  "
-  (click)="modalImportShow()">
-  匯入一級晤談紀錄
-</button>
-<button type="button" class="btn btn-info btn-sm" (click)="openChartModal()" *ngIf="showChartButton">數據分析</button>
+  <div class="d-flex flex-column" style="gap: 8px;">
+    <button 
+      *ngIf="true"  
+      style="
+        color:#2f8e80;
+        border: 1px solid #a0cfc8; 
+        padding: 6px 16px; 
+        font-size: 14px; 
+        border-radius: 4px;
+        cursor: pointer;
+      "
+      (click)="modalImportShow()">
+      匯入一級晤談紀錄
+    </button>
+    <!-- <button 
+      *ngIf="true"  
+      style="
+        color:#6c757d;
+        border: 1px solid #adb5bd; 
+        padding: 6px 16px; 
+        font-size: 14px; 
+        border-radius: 4px;
+        cursor: pointer;
+      "
+      (click)="openMappingModal()">
+      欄位映射轉換
+    </button> -->
+  </div>
+
+<button type="button" class="btn btn-info btn-sm" (click)="openChartModal()" *ngIf="false">數據分析</button>
 <app-chart-modal #chartModal></app-chart-modal>
 </div>
 

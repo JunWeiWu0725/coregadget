@@ -39,6 +39,7 @@ export class AddBehaviorComponent implements OnInit {
   selectedText: any = [];
   selectedStudents: any;   //已選取的學生
   currentDate: string = moment().format("YYYY-MM-DD");
+  sortType: string = 'seat';  // 排序類型：'seat' 班座排序, 'studentNumber' 學號排序
 
   constructor(
     private route: ActivatedRoute,
@@ -158,6 +159,62 @@ export class AddBehaviorComponent implements OnInit {
       data.PhotoUrl = `${this.contract.getAccessPoint}/behavior.GetStudentPhoto?stt=Session&sessionid=${this.contract.getSessionID}&parser=spliter&content=StudentID:${data.ID}`;
       this.studentDataList.push(data);
     }
+    // 排序學生列表
+    this.sortStudentList();
+  }
+
+  // 排序變更處理
+  onSortChange() {
+    this.sortStudentList();
+  }
+
+  // 排序學生列表
+  sortStudentList() {
+    if (!this.studentDataList || this.studentDataList.length === 0) {
+      return;
+    }
+
+    if (this.sortType === 'seat') {
+      // 班座排序：按 SeatNo 排序
+      this.studentDataList.sort((a, b) => {
+        const seatA = parseInt(a.SeatNo) || 0;
+        const seatB = parseInt(b.SeatNo) || 0;
+        return seatA - seatB;
+      });
+    } else if (this.sortType === 'studentNumber') {
+      // 學號排序：按 StudentNumber 排序
+      this.studentDataList.sort((a, b) => {
+        const numA = a.StudentNumber || '';
+        const numB = b.StudentNumber || '';
+        return numA.localeCompare(numB);
+      });
+    }
+
+    // 同時排序已選擇的學生列表
+    this.sortSelectedStudents();
+  }
+
+  // 排序已選擇的學生列表
+  sortSelectedStudents() {
+    if (!this.selectedStudents || this.selectedStudents.length === 0) {
+      return;
+    }
+
+    if (this.sortType === 'seat') {
+      // 班座排序：按 SeatNo 排序
+      this.selectedStudents.sort((a, b) => {
+        const seatA = parseInt(a.SeatNo) || 0;
+        const seatB = parseInt(b.SeatNo) || 0;
+        return seatA - seatB;
+      });
+    } else if (this.sortType === 'studentNumber') {
+      // 學號排序：按 StudentNumber 排序
+      this.selectedStudents.sort((a, b) => {
+        const numA = a.StudentNumber || '';
+        const numB = b.StudentNumber || '';
+        return numA.localeCompare(numB);
+      });
+    }
   }
 
   //選擇班級變換後
@@ -186,6 +243,8 @@ export class AddBehaviorComponent implements OnInit {
       //設定為已選取
       student.checked = true;
       this.selectedStudents.push(student);
+      // 排序已選擇的學生列表
+      this.sortSelectedStudents();
     }
 
   }

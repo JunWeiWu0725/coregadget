@@ -1,0 +1,239 @@
+.permission-container {
+  padding: 20px;
+}
+
+.header-section {
+  margin-bottom: 20px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+}
+
+.tab-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.action-header {
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+.save-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* 操作按鈕 */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 表單控制項 */
+.form-control-sm {
+  max-width: 150px;
+  font-size: 13px;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .permission-container {
+    padding: 10px;
+  }
+  
+  .tab-content {
+    padding: 15px;
+  }
+  
+  .rwd-table .thead {
+    display: none;
+  }
+  
+  .rwd-table .tbody .tr {
+    flex-direction: column;
+    border: 1px solid #dee2e6;
+    margin-bottom: 15px;
+    border-radius: 6px;
+  }
+  
+  .rwd-table .tbody .tr li {
+    border-right: none;
+    border-bottom: 1px solid #dee2e6;
+    text-align: left;
+    justify-content: flex-start;
+    position: relative;
+    padding-left: 40%;
+  }
+  
+  .rwd-table .tbody .tr li:last-child {
+    border-bottom: none;
+  }
+  
+  .rwd-table .tbody .tr li:before {
+    content: attr(data-title) ": ";
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 600;
+    color: #666;
+    width: 35%;
+    font-size: 13px;
+  }
+  
+  .permission-display {
+    margin: 0;
+  }
+  
+  .action-buttons {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 576px) {
+  .page-title {
+    font-size: 20px;
+  }
+  
+  .action-header {
+    text-align: center;
+  }
+  
+  .rwd-table .tbody .tr li {
+    padding-left: 45%;
+  }
+  
+  .rwd-table .tbody .tr li:before {
+    width: 40%;
+  }
+}
+
+/* Loading 樣式 */
+.container .row {
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+}
+
+/* 響應式表格樣式 */
+.rwd-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 14px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.rwd-table th,
+.rwd-table td {
+  padding: 12px 8px;
+  text-align: left;
+  border-bottom: 1px solid #d4e6df;
+}
+
+.rwd-table th {
+  background-color: #b9dedc;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.rwd-table tbody tr {
+  background-color: white;
+}
+
+.rwd-table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.rwd-table tbody tr:hover {
+  background-color: #e9ecef;
+}
+
+.rwd-table tbody tr:nth-child(even):hover {
+  background-color: #e9ecef;
+}
+
+/* 權限顯示樣式 */
+.permission-display {
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #2d5a3d;
+}
+
+/* 開放時間顯示樣式 */
+.time-display {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #2d5a3d;
+}
+
+.time-display .start-time,
+.time-display .end-time {
+  margin-bottom: 2px;
+}
+
+.time-display .text-muted {
+  color: #5a7c66 !important;
+}
+
+.time-display .text-info {
+  color: #4a9d6b !important;
+  font-weight: 500;
+}
+
+.time-display .no-time {
+  color: #8fb69f;
+  font-style: italic;
+}
+
+/* 按鈕樣式配合綠色調 */
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.btn-outline-info {
+  color: #4a9d6b;
+  border-color: #4a9d6b;
+}
+
+.btn-outline-info:hover {
+  background-color: #4a9d6b;
+  border-color: #4a9d6b;
+  color: white;
+}
+
+.btn-outline-danger {
+  color: #dc6c6c;
+  border-color: #dc6c6c;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc6c6c;
+  border-color: #dc6c6c;
+  color: white;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+}
+

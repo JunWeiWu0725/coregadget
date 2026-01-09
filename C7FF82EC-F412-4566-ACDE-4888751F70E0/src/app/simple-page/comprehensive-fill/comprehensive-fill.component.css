@@ -47,8 +47,54 @@
     flex-wrap: wrap;
   }
   
-  .align_center {
+    .align_center {
     display: flex;
     align-items: center;
   }
+
+/* 覆蓋全域的 theader 樣式，讓它在這個組件中正常顯示 */
+.theader {
+  display: table-row !important;
+  background-color: #f8f9fa;
+}
+
+.theader th {
+  background-color: #f8f9fa;
+  padding: 12px 8px !important;
+  border-bottom: 1px solid #dee2e6;
+}
+
+/* 主標題不需要灰色背景 */
+.com-view-first-title {
+  background: #e1f2ef !important;
+}
+
+/* 讓 tbody 也有適當的背景 */
+tbody tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+/* 只修正填答類型的對齊問題，保持在同一行 */
+.custom-control-inline .custom-control-label {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.custom-control-inline .sentence-input {
+  vertical-align: middle;
+  margin: 0 2px;
+  display: inline-block;
+}
+
+.custom-control-inline .com-view-option {
+  display: inline;
+  vertical-align: middle;
+  line-height: 1.5;
+}
+
   

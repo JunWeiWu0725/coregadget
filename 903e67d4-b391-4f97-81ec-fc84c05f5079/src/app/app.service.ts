@@ -15,11 +15,15 @@ export class AppService {
   /**呼叫 gadget service */
   private send(opts: SendOptions): Rx.Observable<any> {
     return Rx.Observable.create((subj$) => {
+ 
+      
       let connection = gadget.getContract(opts.contact);
       connection.send({
         service: opts.service,
         body: opts.body,
         result: (response, error) => {
+     
+          
           if (error !== null) {
             subj$.error(error);
           } else {
@@ -41,6 +45,10 @@ export class AppService {
       service: "beta.GetMyClass",
       body: "",
       map: (rsp) => {
+        console.log('=== getMyClass API 原始回傳 ===');
+        console.log('rsp:', rsp);
+        console.log('rsp.Class:', rsp.Class);
+        
         let classes = new Array<Class>();
         if (rsp.Class) {
           rsp.Class = [].concat(rsp.Class || []);
@@ -48,6 +56,7 @@ export class AppService {
             classes.push(new Class(item.ClassId, item.ClassName, item.GradeYear));
           });
         }
+        console.log('=== 轉換後班級列表 ===', classes);
         return classes;
       }
     }) as Rx.Observable<Class[]>;
@@ -159,6 +168,10 @@ export class AppService {
       service: "_.getStudentAttendance",
       body: { classId: selClass.classId , OccurDate: occurDate},
       map: (rsp) => {
+        console.log('=== getStudentAttendance API 原始回傳 ===');
+        console.log('rsp:', rsp);
+        console.log('rsp.Student:', rsp.Student);
+        
         const students = new Array<Student>();
         if (rsp.Student) {
           const stus = [].concat(rsp.Student || []);
@@ -177,6 +190,7 @@ export class AppService {
             students.push(new Student(item.StudentId, item.StudentName, item.SeatNo, leaves, orileaves));
           });
         }
+        console.log('=== 轉換後學生名單 ===', students);
         return students;
       }
     }) as Rx.Observable<Student[]>;
@@ -243,9 +257,10 @@ export class AppService {
           });
         }
 
+        debugger
         if (rsp.List && rsp.List.Content && rsp.List.Content.AbsenceList && rsp.List.Content.AbsenceList.CrossDate) {
           crossDate = (rsp.List.Content.AbsenceList.CrossDate === 'True');
-          crossDateReadOnly = (rsp.List.Content.AbsenceList.CrossDateReadOnly === 'True');
+          crossDateReadOnly = (rsp.List.Content.AbsenceList.CrossDateOnlyRead  === 'True');
           console.log("crossDate" ,rsp.List.Content.AbsenceList);
         }
         return {

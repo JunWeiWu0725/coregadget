@@ -1,0 +1,78 @@
+/* 🔧 開發調試樣式 */
+.student-matched {
+  background-color: #d4edda !important;
+  border-left: 4px solid #28a745 !important;
+}
+
+.student-unmatched {
+  background-color: #f8f9fa !important;
+  border-left: 4px solid #6c757d !important;
+}
+
+.student-matched:hover {
+  background-color: #c3e6cb !important;
+}
+
+.student-unmatched:hover {
+  background-color: #e9ecef !important;
+}
+
+/* 調試卡片樣式 */
+#studentListDebug .card {
+  border: 1px solid #dee2e6;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+#studentListDebug .card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  padding: 0.5rem 1rem;
+}
+
+#studentListDebug .table th {
+  background-color: #f8f9fa;
+  border-top: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #495057;
+}
+
+#studentListDebug .table td {
+  font-size: 0.875rem;
+  vertical-align: middle;
+  border-top: 1px solid #dee2e6;
+}
+
+/* Badge 樣式 */
+.badge-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.badge-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* 程式碼樣式 */
+code {
+  background-color: #f8f9fa;
+  color: #e83e8c;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  #studentListDebug .table {
+    font-size: 0.75rem;
+  }
+  
+  #studentListDebug .table th,
+  #studentListDebug .table td {
+    padding: 0.25rem;
+  }
+}
+
+

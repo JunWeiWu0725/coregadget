@@ -33,7 +33,9 @@ export class CounselRoutingComponent implements OnInit {
         !this.globalService.selectTarget &&
         this.counselStudentService.guidanceStudent.length > 0
       ) {
-        this.router.navigate(["list", "guidance", "g",'認輔老師'], {
+        // 使用 globalService.currentRole 恢复之前的角色，如果没有则默认使用認輔老師
+        const roleType = this.globalService.currentRole === '認輔老師' ? '認輔老師' : '認輔老師';
+        this.router.navigate(["list", "guidance", "g", roleType], {
           relativeTo: this.route,
           skipLocationChange: true
         });
@@ -44,7 +46,12 @@ export class CounselRoutingComponent implements OnInit {
           } else {
             classID = this.globalService.selectTarget;
           }
-          this.router.navigate(["list", "class", classID,'班導師'], {
+          // 使用 globalService.currentRole 恢复之前的角色，如果没有则默认使用班導師
+          const roleType = this.globalService.currentRole && 
+                          (this.globalService.currentRole === '班導師' || this.globalService.currentRole === '輔導老師')
+                          ? this.globalService.currentRole 
+                          : '班導師';
+          this.router.navigate(["list", "class", classID, roleType], {
             relativeTo: this.route,
             skipLocationChange: true
           });

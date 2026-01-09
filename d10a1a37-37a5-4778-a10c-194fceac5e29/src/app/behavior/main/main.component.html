@@ -26,7 +26,7 @@
                 *ngFor="let cdata of data.bDataList">
                 <div class="row">
                     <div class="col-md-4 col-lg-3 text-nowrap">
-                        <span class="pr-3">{{cdata.CreateDate2}}</span>
+                        <span class="pr-3">{{cdata.LastUpdate}}</span>
                         <span class="">{{cdata.StudentName}}</span>
                     </div>
                     <div class="col-md-8 col-lg-9">
@@ -35,7 +35,7 @@
                               <span *ngIf="cdata.IsGoodBehavior=='true'"
                               class="badge badge-success mr-1">Good</span>
                               <span *ngIf="cdata.DaaDsaFollow=='true'"
-                              class="badge  badge-mid mr-1">DAA/DSA Follow up</span>
+                              class="badge  badge-mid mr-1">DAA/DSA Follow up </span>
                               
                               
                         <span >{{cdata.Comment}}</span>
