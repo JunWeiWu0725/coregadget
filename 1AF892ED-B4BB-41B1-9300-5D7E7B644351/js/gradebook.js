@@ -1679,9 +1679,10 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                                     needExtensionShell = true;
                                 }
                                 
-                                // 檢查是否有文字評量欄位
-                                var hasText = studentRec['Exam' + examRec.ExamID + '_文字評量'];
-                                if (hasText) {
+                                // 檢查是否有文字評量欄位（使用 hasOwnProperty 以支援空字串清空）
+                                var textEvalFieldName = 'Exam' + examRec.ExamID + '_文字評量';
+                                var hasTextField = studentRec.hasOwnProperty(textEvalFieldName);
+                                if (hasTextField) {
                                     needExtensionShell = true;
                                 }
                                 
@@ -1710,11 +1711,15 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
                                 }
 
                                 // B-3: 一般分數時，保留 Extension 結構但清空三欄位
+                                // 注意：若存在文字評量欄位，Text 不應在此清空（將在 B-5 寫入）
                                 if (isNormalScore && data.Extension) {
                                     // 只清空這次功能使用的三個欄位，其餘欄位保留
                                     data.Extension.Extension.Score = '';
                                     data.Extension.Extension.UseText = '';
-                                    data.Extension.Extension.Text = '';
+                                    // 若沒有文字評量欄位，才清空 Text；否則保留給 B-5 寫入
+                                    if (!hasTextField) {
+                                        data.Extension.Extension.Text = '';
+                                    }
                                 }
 
                                 // 將新值與舊值轉為字串進行比較，確保能正確捕捉「空白 → 0」等變化
@@ -1760,6 +1765,28 @@ angular.module('gradebook', ['ngSanitize', 'ui.sortable', 'mgcrea.ngStrap.helper
 
                                     data.Extension.Extension.CScore = cScore;
                                     data.Extension.Extension.PScore = pScore;
+                                }
+
+                                // B-5: 寫入文字評量（必須在所有 Extension 邏輯之後，避免被覆蓋）
+                                if (hasTextField && data.Extension) {
+                                    // 取得文字評量輸入值
+                                    var textEval = studentRec[textEvalFieldName];
+                                    
+                                    // 正規化：若為 null/undefined 視為空字串（支援清空）
+                                    if (textEval === null || textEval === undefined) {
+                                        textEval = '';
+                                    } else {
+                                        // 轉為字串
+                                        textEval = '' + textEval;
+                                    }
+                                    
+                                    // 單引號 escape（參考舊版，避免後端 SQL/字串解析問題）
+                                    textEval = textEval.replace(/'/g, "''");
+                                    
+                                    // 寫入 Extension.Extension.Text
+                                    // 注意：若同時有缺考 extension，此處會覆蓋缺考的 Text
+                                    // 但根據舊版實務運作，文字評量與缺考 Text 共用同一欄位是系統設計
+                                    data.Extension.Extension.Text = textEval;
                                 }
 
                                 eItem.Student.push(data);
