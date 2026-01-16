@@ -52,7 +52,7 @@ export class CounselStatisticsComponent implements OnInit {
     }
 
     this.reportTypeList.push('各班導師晤談次數');
-    this.reportTypeList.push('匯出填寫內容');
+    this.reportTypeList.push('匯出填寫內容(綜合紀錄表)');
 
 
     if (gadget.params.groupAanalysisEnabled) {

@@ -2,6 +2,137 @@
 <ng-container *ngIf="!isLoading  else tmpLoading">
   <router-outlet name="simple-page"></router-outlet>
 
+  <!-- 權限資訊面板 -->
+  <div *ngIf="showPermissionPanel" class="permission-panel" 
+       style="position: fixed; top: 80px; right: 20px; width: 400px; max-height: 80vh; 
+              background: white; border: 2px solid #94d0cc; border-radius: 8px; 
+              box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 9999; overflow-y: auto;
+              font-family: '微軟正黑體';">
+    <div style="background: #94d0cc; color: white; padding: 12px 16px; 
+                display: flex; justify-content: space-between; align-items: center;
+                border-radius: 6px 6px 0 0;">
+      <h5 style="margin: 0; font-weight: bold;">功能權限資訊 (Ctrl+I 關閉)</h5>
+      <button (click)="closePermissionPanel()" 
+              style="background: transparent; border: none; color: white; 
+                     font-size: 20px; cursor: pointer; padding: 0 8px;">×</button>
+    </div>
+    <div style="padding: 16px;">
+      <div style="margin-bottom: 12px; padding: 8px; background: #f0f0f0; border-radius: 4px;">
+        <strong>目前登入角色：</strong>
+        <span *ngFor="let role of roleService.role; let last = last">
+          {{role}}<span *ngIf="!last">、</span>
+        </span>
+      </div>
+      <!-- 上方導航欄功能 -->
+      <div style="margin-top: 16px;">
+        <div style="background: #e3f2fd; padding: 8px 12px; border-radius: 4px; margin-bottom: 12px;">
+          <strong style="color: #1976d2; font-size: 15px;">📍 上方導航欄功能</strong>
+        </div>
+        <div style="margin-top: 8px;">
+          <div *ngFor="let perm of getPermissionInfo().topNav" 
+               style="margin-bottom: 10px; padding: 10px; 
+                      border-left: 4px solid {{perm.enabled ? '#4CAF50' : '#ccc'}}; 
+                      background: {{perm.enabled ? '#f0f8f0' : '#f9f9f9'}}; 
+                      border-radius: 4px;">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+              <div style="flex: 1;">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <strong style="color: #333; font-size: 14px;">{{perm.name}}</strong>
+                  <span style="font-size: 11px; color: #999; background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">{{perm.location}}</span>
+                </div>
+                <div style="margin-top: 4px; font-size: 12px; color: #666;">
+                  <span style="color: #888;">所需角色：</span><span style="color: #555;">{{perm.roles}}</span>
+                </div>
+              </div>
+              <div style="margin-left: 12px;">
+                <span *ngIf="perm.enabled" 
+                      style="background: #4CAF50; color: white; padding: 4px 8px; 
+                             border-radius: 12px; font-size: 11px; font-weight: bold;">✓ 可用</span>
+                <span *ngIf="perm.enabled === false" 
+                      style="background: #ccc; color: white; padding: 4px 8px; 
+                             border-radius: 12px; font-size: 11px; font-weight: bold;">✗ 不可用</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 左側選單功能 -->
+      <div style="margin-top: 20px;">
+        <div style="background: #fff3e0; padding: 8px 12px; border-radius: 4px; margin-bottom: 12px;">
+          <strong style="color: #e65100; font-size: 15px;">📍 左側選單功能（學生詳情頁）</strong>
+          <div style="font-size: 11px; color: #666; margin-top: 4px;">
+            ⚠️ 注意：左側選單權限需視該學生的角色關係而定
+          </div>
+        </div>
+        <div style="margin-top: 8px;">
+          <div *ngFor="let perm of getPermissionInfo().leftMenu" 
+               style="margin-bottom: 10px; padding: 10px; 
+                      border-left: 4px solid {{perm.enabled ? '#4CAF50' : '#ff9800'}}; 
+                      background: {{perm.enabled ? '#f0f8f0' : '#fff8e1'}}; 
+                      border-radius: 4px;">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+              <div style="flex: 1;">
+                <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                  <strong style="color: #333; font-size: 14px;">{{perm.name}}</strong>
+                  <span style="font-size: 11px; color: #999; background: #fff3e0; padding: 2px 6px; border-radius: 3px;">{{perm.location}}</span>
+                </div>
+                <div style="margin-top: 4px; font-size: 12px; color: #666;">
+                  <span style="color: #888;">所需角色：</span><span style="color: #555;">{{perm.roles}}</span>
+                </div>
+                <div *ngIf="perm.note" style="margin-top: 4px; font-size: 11px; color: #e65100; font-style: italic;">
+                  💡 {{perm.note}}
+                </div>
+                <div *ngIf="perm.enabled !== null" style="margin-top: 4px;">
+                  <span *ngIf="perm.enabled" 
+                        style="background: #4CAF50; color: white; padding: 3px 6px; 
+                               border-radius: 10px; font-size: 10px; font-weight: bold;">✓ 系統權限已啟用</span>
+                  <span *ngIf="perm.enabled === false" 
+                        style="background: #ccc; color: white; padding: 3px 6px; 
+                               border-radius: 10px; font-size: 10px; font-weight: bold;">✗ 系統權限未啟用</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 列印功能 -->
+      <div style="margin-top: 20px;">
+        <div style="background: #f3e5f5; padding: 8px 12px; border-radius: 4px; margin-bottom: 12px;">
+          <strong style="color: #7b1fa2; font-size: 15px;">🖨️ 列印功能（學生詳情頁 > 列印選單）</strong>
+          <div style="font-size: 11px; color: #666; margin-top: 4px;">
+            ⚠️ 注意：列印權限需視該學生的角色關係而定
+          </div>
+        </div>
+        <div style="margin-top: 8px;">
+          <div *ngFor="let perm of getPermissionInfo().printFunctions" 
+               style="margin-bottom: 10px; padding: 10px; 
+                      border-left: 4px solid #9c27b0; 
+                      background: #fce4ec; 
+                      border-radius: 4px;">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+              <div style="flex: 1;">
+                <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                  <strong style="color: #333; font-size: 14px;">{{perm.name}}</strong>
+                  <span style="font-size: 11px; color: #999; background: #f3e5f5; padding: 2px 6px; border-radius: 3px;">{{perm.location}}</span>
+                </div>
+                <div style="margin-top: 4px; font-size: 12px; color: #666;">
+                  <span style="color: #888;">所需角色：</span><span style="color: #555;">{{perm.roles}}</span>
+                </div>
+                <div *ngIf="perm.note" style="margin-top: 4px; font-size: 11px; color: #7b1fa2; font-style: italic;">
+                  💡 {{perm.note}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 12px; padding: 8px; background: #fff3e0; border-radius: 4px; font-size: 11px; color: #666;">
+          <strong>※ 注意：</strong>設定為公開輔導記錄才能分享給共同輔導的老師們查看。
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div *ngIf="isTeacher" id="appcomponent" class="cbs d-flex justify-content-between flex-column" >
     <div hidden > version 20240806 </div>

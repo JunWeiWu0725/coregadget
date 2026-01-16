@@ -16,8 +16,8 @@ export class CounselHistoryPsychologicaltestComponent implements OnInit {
   StudentName: string;
   addBlank: number[] = [];
   reportData: any;
-  QuizData: { uid }[];
-  QuizDataAnswer: { QuizUid, Field: any[], ImplementationDate }[];
+  QuizData: { uid: string, QuizName?: string, Field?: any[] }[] = [];
+  QuizDataAnswer: { QuizUid, Field: any[], ImplementationDate }[] = [];
   CounselInterview: any[] = [];
   constructor(private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -36,13 +36,13 @@ export class CounselHistoryPsychologicaltestComponent implements OnInit {
   }
 
   /**  */
-  getStudentItemBy(resTestUID: string) {
-
-    if (this.QuizData) {
+  getStudentItemBy(resTestUID: string): { uid: string, QuizName?: string, Field?: any[] } | null {
+    if (this.QuizData && this.QuizData.length > 0) {
       let rsp = this.QuizData.find(x => x.uid == resTestUID);
       // let rsp = this.QuizDataAnswer.find(x => x.QuizUid == resTestUID);
-      return rsp
+      return rsp || null;
     }
+    return null;
   }
 
   /** 取得資料  */
@@ -122,34 +122,25 @@ export class CounselHistoryPsychologicaltestComponent implements OnInit {
 
   /** 取得答案 */
   getQuizAnswerData(quizUID: string, field: string) {
-
-    if (this.QuizDataAnswer) {
-
+    if (this.QuizDataAnswer && this.QuizDataAnswer.length > 0) {
       let rsp = this.QuizDataAnswer.find(x => x.QuizUid == quizUID);
-      return rsp.Field.find(x => x.Name == field)
-    } else {
-
-      return null
-
+      if (rsp && rsp.Field && rsp.Field.length > 0) {
+        return rsp.Field.find(x => x.Name == field) || null;
+      }
     }
-
-
-
-
-
-
-
-
-
-
+    return null;
   }
 
   /**取得答案 */
   getQuizTime(quizUID: string) {
-    let rsp = this.QuizDataAnswer.find(x => x.QuizUid == quizUID);
-    let dateString = this.formatDate(rsp.ImplementationDate);
-
-    return dateString
+    if (this.QuizDataAnswer && this.QuizDataAnswer.length > 0) {
+      let rsp = this.QuizDataAnswer.find(x => x.QuizUid == quizUID);
+      if (rsp && rsp.ImplementationDate) {
+        let dateString = this.formatDate(rsp.ImplementationDate);
+        return dateString;
+      }
+    }
+    return '';
   }
 
 
@@ -167,5 +158,36 @@ export class CounselHistoryPsychologicaltestComponent implements OnInit {
       day = '0' + day;
 
     return [year, month, day].join('-');
+  }
+
+  /** 檢查是否有有效的心理測驗資料 */
+  hasValidQuizData(): boolean {
+    if (!this.QuizData || this.QuizData.length === 0) {
+      return false;
+    }
+    
+    // 檢查是否至少有一個測驗有對應的答案資料
+    for (let quiz of this.QuizData) {
+      if (this.hasQuizAnswer(quiz.uid)) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+
+  /** 檢查指定測驗是否有答案資料 */
+  hasQuizAnswer(quizUID: string): boolean {
+    let quizItem = this.getStudentItemBy(quizUID);
+    if (quizItem && quizItem.Field && quizItem.Field.length > 0) {
+      // 檢查是否有對應的答案資料
+      for (let field of quizItem.Field) {
+        let answer = this.getQuizAnswerData(quizUID, field.Name);
+        if (answer && answer.Value) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }

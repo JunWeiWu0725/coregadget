@@ -51,25 +51,31 @@
         </tr>
       </ng-container>
     </table>
-    <hr>
-    <h3>心理測驗 </h3>
-    <ng-container *ngFor="let item of QuizData">
-      <br>
-      測驗名稱 : {{item.QuizName}}
-      <!-- {{getQuizTime(item.uid)}} -->
-      <!-- {{getJson(item)}}   -->
-      <table>
-        <tr>
-          <td>測驗項目</td>
-          <td>測驗結果</td>
+    <ng-container *ngIf="hasValidQuizData()">
+      <hr>
+      <h3>心理測驗 </h3>
+      <ng-container *ngFor="let item of QuizData">
+        <ng-container *ngIf="hasQuizAnswer(item.uid)">
+          <br>
+          測驗名稱 : {{item.QuizName}}
+          <!-- {{getQuizTime(item.uid)}} -->
+          <!-- {{getJson(item)}}   -->
+          <table>
+            <tr>
+              <td>測驗項目</td>
+              <td>測驗結果</td>
 
-        </tr>
-        <tr *ngFor="let field of getStudentItemBy(item.uid)?.Field">
-          <td>{{field.Name}}</td>
-          <td>{{getQuizAnswerData(item.uid ,field.Name)?.Value}}</td>
-        </tr>
-        <tr> </tr>
-      </table>
+            </tr>
+            <ng-container *ngFor="let field of getStudentItemBy(item.uid).Field">
+              <tr *ngIf="getQuizAnswerData(item.uid, field.Name)?.Value">
+                <td>{{field.Name}}</td>
+                <td>{{getQuizAnswerData(item.uid, field.Name).Value}}</td>
+              </tr>
+            </ng-container>
+            <tr> </tr>
+          </table>
+        </ng-container>
+      </ng-container>
     </ng-container>
 
   </ng-container>

@@ -17,7 +17,12 @@
 
   <button (click)="MakeReport()" type="button" class="btn btn-info ">
     產生報表
-  </button></div>
+  </button>
+
+  <button (click)="MakeReportVision2()" type="button" class="btn btn-info ">
+    產生報表2
+  </button>
+</div>
 <app-chart-modal #chartModal></app-chart-modal>
 <div class="container-xl mx-5 align-items-center" style="width: 95%;">
   <mat-tab-group dynamicHeight>
@@ -137,8 +142,20 @@
               <span class="material-icons" style=" font-size: 22px; color:#94d0cc ">
                 touch_app
               </span>
-              請點擊題目或標題。</b> <b class="my-3 " style=" font-size: 18px; color:#94d0cc  ; ">題數上限：10題 。</b> </span>
-        </div>     
+              請點擊題目或標題。</b> </span>
+      
+          <div class="m-3 d-flex align-items-center">
+            <span class="custom-control custom-checkbox mr-3">
+              <input type="checkbox" class="custom-control-input" id="selectAllQuestions" 
+                [checked]="isSelectAllQuestions" (click)="SetSelectAllQuestions()" />
+              <label class="custom-control-label" for="selectAllQuestions" 
+                style="font-size: 18px; color:#94d0cc; cursor: pointer;">
+                全選題目
+              </label>
+            </span>
+            <b style="font-size: 18px; color:#94d0cc;">已選擇題數：{{GetSelectedQuestionCount()}}題</b>
+          </div>
+            </div>     
         <ng-container>
      
 

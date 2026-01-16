@@ -1,6 +1,7 @@
 import { map } from 'rxjs/operators';
 import { Injectable } from "@angular/core";
 import { DsaService } from './dsa.service';
+import { GlobalService } from './global.service';
 
 @Injectable({
   providedIn: "root"
@@ -40,7 +41,7 @@ export class CounselStudentService {
 
   // public currentStudent: CounselStudent;
 
-  constructor(private dsaService: DsaService) {
+  constructor(private dsaService: DsaService, private globalService: GlobalService) {
     this.reload();
   }
 
@@ -69,6 +70,9 @@ export class CounselStudentService {
       this.teacherInfo.Name = tea.Name;
       this.teacherInfo.ID = tea.ID;
       this.teacherInfo.NickName = tea.NickName;
+      // 同步到 globalService，便於全域使用
+      this.globalService.teacherName = tea.Name || '';
+      this.globalService.teacherID = tea.ID || '';
     });
 
     this.dsaService.getSessionIDAndAccessPoint();

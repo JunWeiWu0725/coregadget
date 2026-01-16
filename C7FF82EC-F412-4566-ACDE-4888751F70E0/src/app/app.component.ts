@@ -5,9 +5,7 @@ import { RoleService } from "./role.service";
 import { GlobalService } from "./global.service";
 import { DsaService } from "./dsa.service";
 import { CommunicationService } from "./referral/service/communication.service";
-import { Connection } from "./dsutil-ng/connection";
-import { AccessPoint } from "./dsutil-ng/access_point";
-import { PublicSecurityToken } from "./dsutil-ng/envelope";
+
 import { ElementRef, Renderer2 } from '@angular/core';
 
 @Component({
@@ -47,6 +45,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
   public hasNewTransfer = false;
   isOpenUserInfo =false
   isTeacher = false;
+  showPermissionPanel = false; // 權限資訊面板顯示狀態
 
   constructor(
     private activeRoute: ActivatedRoute,
@@ -97,6 +96,10 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
       this.onCtrlKPressed();
       event.preventDefault();  // Prevent default action if necessary
     }
+    if (event.ctrlKey && event.key === 'i') {
+      this.onCtrlIPressed();
+      event.preventDefault();  // Prevent default action if necessary
+    }
   }
 
   onCtrlKPressed() {
@@ -104,6 +107,51 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit   {
     this.isOpenUserInfo =!  this.isOpenUserInfo
 
     // 在这里添加您希望执行的操作
+  }
+
+  onCtrlIPressed() {
+    // 切換權限資訊面板顯示狀態
+    this.showPermissionPanel = !this.showPermissionPanel;
+  }
+
+  closePermissionPanel() {
+    this.showPermissionPanel = false;
+  }
+
+  // 取得所有權限資訊（分類顯示，按照實際導航順序）
+  getPermissionInfo() {
+    return {
+      topNav: [
+        { name: '輔導學生', location: '上方導航欄', roles: '輔導老師 認輔老師 班導師', enabled: this.roleService.enableCounsel },
+        { name: '輔導統計', location: '上方導航欄', roles: '管理者 輔導老師', enabled: this.roleService.enableCounselStatistics },
+        { name: '轉介學生', location: '上方導航欄', roles: '管理者 輔導老師', enabled: this.roleService.enableReferral },
+        { name: '個案資料', location: '上方導航欄', roles: '管理者 輔導老師', enabled: this.roleService.enableCase },
+        { name: '綜合紀錄表', location: '上方導航欄', roles: '管理者 輔導老師', enabled: this.roleService.enableComprehensive },
+        { name: '線上轉學', location: '上方導航欄', roles: '管理者', enabled: this.roleService.enableTransferStudents },
+        { name: '心理測驗', location: '上方導航欄', roles: '管理者 輔導老師', enabled: this.roleService.enablePsychologicalTest },
+        { name: '相關服務', location: '上方導航欄', roles: '管理者 輔導老師 校外心理師 兼任輔導 認輔老師', enabled: this.roleService.enableTeacherService },
+        { name: '系統管理', location: '上方導航欄', roles: '管理者', enabled: this.roleService.enableAdmin },
+        { name: '晤談統計', location: '上方導航欄', roles: '管理者 輔導老師 認輔老師', enabled: this.roleService.enableInterviewStatistics }
+      ],
+      leftMenu: [
+        { name: '基本資料', location: '左側選單', roles: '班導師 班級輔導老師（需為該生班導師/輔導老師）', enabled: null, note: '個案認輔老師無法查看' },
+        { name: '班導師輔導紀錄(一級輔導)', location: '左側選單', roles: '班導師 班級輔導老師（需為該生班導師/輔導老師）', enabled: null, note: '個案認輔老師無法查看' },
+        { name: '個案晤談紀錄(二級輔導)', location: '左側選單', roles: '班級輔導老師 個案認輔老師（需為該生輔導老師/認輔老師）', enabled: null, note: '班導師無法查看' },
+        { name: '綜合紀錄表', location: '左側選單', roles: '班導師 班級輔導老師（需為該生班導師/輔導老師）', enabled: this.roleService.enableComprehensive, note: '個案認輔老師無法查看' },
+        { name: '心理測驗', location: '左側選單', roles: '班導師 班級輔導老師（需為該生班導師/輔導老師）', enabled: null, note: '個案認輔老師無法查看（屬於其它輔導資料）' },
+        { name: '缺曠獎懲', location: '左側選單', roles: '班導師 班級輔導老師（需為該生班導師/輔導老師）', enabled: null, note: '個案認輔老師無法查看（屬於其它輔導資料）' },
+        { name: '幹部紀錄', location: '左側選單', roles: '班導師 班級輔導老師（需為該生班導師/輔導老師）', enabled: null, note: '個案認輔老師無法查看（屬於其它輔導資料）' },
+        { name: '服務學習', location: '左側選單', roles: '班導師 班級輔導老師（需為該生班導師/輔導老師）', enabled: null, note: '個案認輔老師無法查看（屬於其它輔導資料）' },
+        { name: '評量成績', location: '左側選單', roles: '班導師 班級輔導老師（需為該生班導師/輔導老師）', enabled: null, note: '個案認輔老師無法查看（屬於其它輔導資料）' },
+        { name: '學期成績', location: '左側選單', roles: '班導師 班級輔導老師（需為該生班導師/輔導老師）', enabled: null, note: '個案認輔老師無法查看（屬於其它輔導資料）' }
+      ],
+      printFunctions: [
+        { name: '列印綜合錄表A表', location: '左側選單 > 列印', roles: '班導師 班級輔導老師（需為該生班導師/輔導老師）', enabled: null, note: '個案認輔老師無法列印' },
+        { name: '列印輔導紀錄表B表', location: '左側選單 > 列印', roles: '班導師 班級輔導老師（需為該生班導師/輔導老師）', enabled: null, note: '個案認輔老師無法列印' },
+        { name: '列印輔導紀錄表B表合併心理測驗', location: '左側選單 > 列印', roles: '班導師 班級輔導老師（需為該生班導師/輔導老師）', enabled: null, note: '個案認輔老師無法列印' },
+        { name: '列印個人輔導紀錄', location: '左側選單 > 列印', roles: '班級輔導老師（需為該生輔導老師，且需有輔導主任/輔導組長角色）', enabled: null, note: '僅班級輔導老師可列印，班導師和個案認輔老師無法列印' }
+      ]
+    };
   }
 
   /** */

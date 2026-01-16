@@ -132,7 +132,93 @@ export class ComprehensiveEditComponent implements OnInit {
                       break;
                   }
 
-                  option.AnswerMatrix = [].concat(JSON.parse(option.AnswerMatrix || '[]') || []);
+                  // 🔍 安全地解析 AnswerMatrix - 先移除控制字元（但保留換行符資訊）
+                  try {
+                    let matrixStr = option.AnswerMatrix || '[]';
+                    if (typeof matrixStr === 'string') {
+                      // 🔍 檢查並打印包含換行符的原始資料
+                      if (matrixStr.includes('\n') || matrixStr.includes('\r') || matrixStr.includes('\t')) {
+                        console.log('=== [comprehensive-edit] 發現包含控制字元的 AnswerMatrix ===');
+                        console.log('原始值:', matrixStr);
+                        console.log('包含換行符 (\\n):', matrixStr.includes('\n'));
+                        console.log('包含回車符 (\\r):', matrixStr.includes('\r'));
+                        console.log('包含 Tab (\\t):', matrixStr.includes('\t'));
+                        // 顯示可視化的控制字元位置
+                        const withMarkers = matrixStr
+                          .replace(/\n/g, '\\n')
+                          .replace(/\r/g, '\\r')
+                          .replace(/\t/g, '\\t');
+                        console.log('可視化字串:', withMarkers);
+                        console.log('字串長度:', matrixStr.length);
+                        console.log('JSON 位置:', matrixStr.indexOf('['), '到', matrixStr.lastIndexOf(']'));
+                      }
+                      
+                      // 先處理控制字元（為了避免 JSON.parse 錯誤）
+                      // 使用特殊標記暫時替換換行符，之後再根據 input/textarea 決定如何處理
+                      const originalStr = matrixStr; // 保留原始值用於對比
+                      // 先用特殊標記替換換行符，避免 JSON.parse 錯誤
+                      matrixStr = matrixStr
+                        .replace(/\n/g, '__NEWLINE_MARKER__')   // 暫時標記換行符
+                        .replace(/\r/g, '')   // 移除回車符
+                        .replace(/\t/g, ' ')   // Tab 轉為空格
+                        .replace(/\f/g, '')   // 移除換頁符
+                        .replace(/\b/g, '');  // 移除退格符
+                      
+                      // 嘗試解析
+                      option.AnswerMatrix = [].concat(JSON.parse(matrixStr) || []);
+                      
+                      // 將特殊標記還原為換行符（稍後會根據 input/textarea 決定是否轉為頓號）
+                      option.AnswerMatrix = option.AnswerMatrix.map((item: string) => {
+                        if (typeof item === 'string') {
+                          return item.replace(/__NEWLINE_MARKER__/g, '\n');
+                        }
+                        return item;
+                      });
+                      
+                      // 如果處理後有變化，打印對比
+                      if (originalStr !== matrixStr) {
+                        console.log('處理後的值:', matrixStr);
+                        console.log('已暫時標記換行符，稍後會根據 input/textarea 類型處理');
+                      }
+                    } else {
+                      // 如果不是字串，直接使用
+                      option.AnswerMatrix = [].concat(option.AnswerMatrix || []);
+                    }
+                  } catch (parseError) {
+                    console.warn('解析 AnswerMatrix 時發生錯誤:', parseError, '原始值:', option.AnswerMatrix);
+                    // 如果解析失敗，嘗試備用方案
+                    try {
+                      let matrixStr = (option.AnswerMatrix || '[]').toString();
+                      // 移除控制字元後再試一次
+                      matrixStr = matrixStr
+                        .replace(/\n/g, '__NEWLINE_MARKER__')  // 暫時標記
+                        .replace(/\r/g, '')
+                        .replace(/\t/g, ' ')
+                        .replace(/\f/g, '')
+                        .replace(/\b/g, '');
+                      
+                      if (matrixStr.startsWith('[') && matrixStr.endsWith(']')) {
+                        // 嘗試手動解析
+                        const content = matrixStr.slice(1, -1);
+                        if (content) {
+                          const matches = content.match(/"([^"]*)"/g);
+                          if (matches && matches.length > 0) {
+                            option.AnswerMatrix = matches.map(m => m.slice(1, -1).replace(/__NEWLINE_MARKER__/g, '\n'));
+                          } else {
+                            const items = content.split(',').map(item => item.trim().replace(/^["']|["']$/g, '').replace(/__NEWLINE_MARKER__/g, '\n'));
+                            option.AnswerMatrix = items.filter(item => item);
+                          }
+                        } else {
+                          option.AnswerMatrix = [];
+                        }
+                      } else {
+                        option.AnswerMatrix = [];
+                      }
+                    } catch (fallbackError) {
+                      console.error('備用解析也失敗:', fallbackError);
+                      option.AnswerMatrix = []; // 最終備選：設為空陣列
+                    }
+                  }
                   option.IsTextArea = false;
                   option.Template = [];
                   //分割OptionText進Template
@@ -178,6 +264,47 @@ export class ComprehensiveEditComponent implements OnInit {
                         }
                         else{
                           option.AnswerMatrix.push(part);
+                        }
+                      }
+                    });
+                  }
+                  
+                  // 🔍 根據 Template 類型處理 AnswerMatrix 中的換行符
+                  // input 類型：換行符轉為頓號；textarea 類型：保留換行符
+                  if (option.Template && option.AnswerMatrix) {
+                    option.Template.forEach((templatePart: string, index: number) => {
+                      if (option.AnswerMatrix[index] && typeof option.AnswerMatrix[index] === 'string') {
+                        // 判斷這個 Template 項目是 input 還是 textarea
+                        const isTextArea = templatePart === '%TEXTAREA%';
+                        const isInput = this.optionKey[templatePart] && this.optionKey[templatePart].element === 'input';
+                        
+                        if (isInput) {
+                          // input 類型：將換行符轉為頓號
+                          const originalValue = option.AnswerMatrix[index];
+                          option.AnswerMatrix[index] = option.AnswerMatrix[index]
+                            .replace(/\n/g, '、')   // 換行符轉為頓號
+                            .replace(/\r/g, '');     // 移除回車符
+                          
+                          if (originalValue !== option.AnswerMatrix[index]) {
+                            console.log(`[comprehensive-edit] input 類型項目 [${index}] 已將換行符轉為頓號`, {
+                              '原始值': originalValue,
+                              '處理後': option.AnswerMatrix[index],
+                              'Template': templatePart
+                            });
+                          }
+                        } else if (isTextArea) {
+                          // textarea 類型：保留換行符，只移除回車符
+                          const originalValue = option.AnswerMatrix[index];
+                          option.AnswerMatrix[index] = option.AnswerMatrix[index]
+                            .replace(/\r/g, '');     // 只移除回車符，保留換行符
+                          
+                          if (originalValue !== option.AnswerMatrix[index]) {
+                            console.log(`[comprehensive-edit] textarea 類型項目 [${index}] 已移除回車符，保留換行符`, {
+                              '原始值': originalValue,
+                              '處理後': option.AnswerMatrix[index],
+                              'Template': templatePart
+                            });
+                          }
                         }
                       }
                     });
