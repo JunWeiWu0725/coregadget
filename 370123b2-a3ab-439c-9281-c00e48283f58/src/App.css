@@ -1,0 +1,607 @@
+/* src/App.css */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column; /* 垂直排列 */
+  align-items: center; /* 水平置中 */
+  padding-top: 20px; /* 頂部內邊距 */
+  padding-bottom: 20px; /* 底部也加一點空間 */
+  
+}
+
+
+.button-container {
+  display: flex;
+  flex-wrap: wrap; /* 按鈕在小螢幕上可以換行 */
+  gap: 10px; /* 按鈕間距加大 */
+  width: 90%; /* 限制按鈕區寬度 */
+  max-width: 800px; /* 按鈕區最大寬度 */
+  justify-content: center;
+}
+
+.shuffle-button {
+  padding: 10px 15px; /* 按鈕內邊距 */
+  background-color: #81d4fa; /* 按鈕背景色 */
+  border: none; /* 無邊框 */
+  border-radius: 5px; /* 圓角 */
+  cursor: pointer; /* 手指鼠標 */
+  font-size: 1em; /* 字體大小 */
+  transition: background-color 0.2s ease; /* 背景色過渡效果 */
+  flex-grow: 0; /* 不伸展 */
+  flex-shrink: 0; /* 不壓縮 */
+  width: auto; /* 寬度由內容和 padding 決定 */
+  min-width: 100px; /* 最小寬度 */
+  text-align: center; /* 文字置中 */
+  line-height: 1.5; /* 增加行高改善垂直置中 */
+}
+
+.shuffle-button:hover {
+  background-color: #4fc3f7; /* 滑鼠懸停時的背景色 */
+}
+
+
+.main-content {
+  flex-grow: 1;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 95%; /* 主要內容區域寬度 */
+  max-width: 1200px; /* 最大寬度 */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.grid-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.grid-container {
+  display: grid;
+  gap: 10px; /* 格子間距稍小 */
+  justify-items: center;
+  margin: 0 auto;
+  box-sizing: border-box;
+  /* JS 控制 grid-template-columns */
+}
+
+.seat {
+  width: var(--seat-size, 90px); /* 座位寬度 */
+  height: calc(var(--seat-size, 90px) * 4 / 3); /* 座位高度維持 3:4 比例 */
+  background-color: #e0f7fa;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  border: 2px solid #0288d1;
+  border-radius: 8px;
+  font-size: 0.9em; /* 座位內字體稍小 */
+  cursor: move;
+  user-select: none;
+  transition: opacity 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  padding: 0;
+  box-sizing: border-box;
+  text-align: center;
+  background-color: #e0f7fa; /* 預設背景色 */
+  border: 2px solid #0288d1; /* 預設邊框色 */
+  overflow: hidden;
+}
+
+/* --- 性別、空位、鎖定樣式 --- */
+
+/* 性別樣式 (基本樣式) */
+.seat.seat-male {
+  background-color: #bbdefb; /* 淺藍色 */
+  border-color: #64b5f6;
+}
+
+.seat.seat-female {
+  background-color: #f8bbd0; /* 淺粉紅色 */
+  border-color: #f06292;
+}
+
+/* 空座位樣式 (會覆蓋預設和性別，因為 JS 不會同時添加 empty 和 gender class) */
+.seat.empty-seat {
+  background-color: #f0f0f0; /* 空位灰色 */
+  border-color: #ccc;
+  color: #ccc;
+}
+
+/* 鎖定座位的樣式 (優先級最高，會覆蓋預設、性別、空位) */
+.seat.locked {
+  background-color: #7c8ca5b9; /* 鎖定紅色 */
+  border-color: #1e475f9e;
+}
+
+/* 鎖定的空座位 (特殊樣式，會覆蓋 .seat.locked) */
+/* 如果希望鎖定的空位是灰色而不是紅色 */
+.seat.locked.empty-seat {
+    background-color: #e0e0e0; /* 鎖定空位灰色 */
+    border-color: #bdbdbd;
+}
+
+.student-name {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 5px;
+  font-size: 1em; /* 相對父層(seat)的字體大小 */
+  padding-bottom: 5px; /* 增加一點底部空間 */
+}
+
+.seat-content {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.seat-content.has-photo {
+  display: block;
+  padding: 0;
+}
+
+.seat-photo-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.seat-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.seat-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 4px 3px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.75) 100%);
+  color: #fff;
+  font-size: 0.72em;
+  line-height: 1.1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  z-index: 1;
+}
+
+
+.seat.dragging {
+  opacity: 0.5;
+}
+
+.seat.empty-seat {
+  background-color: #f0f0f0;
+  color: #ccc;
+  /* font-size: 0.8em; */ /* 繼承 .seat 的 0.9em 即可 */
+}
+
+.seat.locked {
+  background-color: #939dacb9; /* 鎖定紅色 */
+  border-color: #1e475f9e;
+}
+
+.seat.locked.empty-seat {
+    background-color: #e0e0e0;
+    border-color: #bdbdbd;
+}
+
+.exporting .lock-toggle {
+  display: none !important;
+}
+
+.lock-toggle {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  font-size: 1.1em; /* 鎖頭圖示大小 */
+  color: #555;
+  line-height: 1;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.seat.locked .lock-toggle {
+  color: #c62828;
+}
+
+.lock-toggle:hover {
+  color: #000;
+}
+
+
+.student-list {
+  display: flex;
+  flex-direction: column;
+  width: 180px; /* 學生列表寬度稍小 */
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  max-height: 60vh; /* 最大高度 */
+  overflow-y: auto;
+  border-radius: 5px;
+}
+
+.student-list h3 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    color: #333;
+}
+
+/* ... 你現有的 .student-item 樣式 ... */
+.student-item {
+  width: 90px;
+  height: 120px;
+  background-color: #fff; /* 預設背景色 */
+  border: 2px solid #b3e5fc; /* 預設邊框色 */
+  border-radius: 4px;
+  cursor: grab;
+  user-select: none;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+  margin: 4px 0;
+  font-size: 0.95em;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.student-photo-wrapper {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.student-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.student-item-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 4px;
+}
+
+/* --- 新增：學生列表項目的性別樣式 --- */
+
+.student-item.student-male {
+  background-color: #bbdefb; /* 淺藍色 */
+  border-color: #64b5f6; /* 可選：搭配的邊框色 */
+}
+
+.student-item.student-female {
+  background-color: #f8bbd0; /* 淺粉紅色 */
+  border-color: #f06292; /* 可選：搭配的邊框色 */
+}
+
+/* --- 確保選中樣式優先級更高 --- */
+
+.student-item.selected,
+.student-item.selected.student-male,
+.student-item.selected.student-female {
+  background-color: #fff9c4 !important; /* 使用 !important 確保覆蓋性別顏色 */
+  border-color: #fdd835 !important;
+}
+
+.student-item:active {
+    cursor: grabbing; /* 拖曳中手勢 */
+}
+
+.student-item.dragging {
+  opacity: 0.5;
+  background-color: #e0f7fa;
+}
+
+.podium {
+
+  text-align: center;
+  padding: 8px;
+  margin: 10px;
+  background-color: #ffcc80; /* 講台顏色調整 */
+  border-radius: 5px;
+  font-weight: bold;
+  color: #5d4037; /* 文字顏色 */
+}
+
+.number-col{
+  width: 50px; /* 輸入框固定寬度 */
+  padding: 5px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.setup-number{
+  padding: 5px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.setup-number label {
+    font-size: 1em;
+    margin-right: 5px;
+}
+
+.student-item.selected {
+  background-color: #fff9c4 !important;
+  border-color: #fdd835 !important;
+}
+
+.seat.selectable {
+  outline: 2px dashed #4caf50; /* 行動裝置可放置提示 */
+  outline-offset: 2px;
+}
+
+.seat.removable {
+   /* 可以加樣式提示可移除 */
+}
+
+/* --- 新增：Modal 樣式 --- */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6); /* 背景更暗 */
+  z-index: 999;
+}
+
+/* Modal 主體內容區域 */
+.modal-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  /* 增加內邊距 */
+  padding: 30px 40px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  z-index: 1000;
+  width: 90%; /* 在小螢幕上寬度佔比較大 */
+  /* 增加最大寬度，讓桌面版可以更大 */
+  max-width: 700px; /* <--- 增加這個值 (例如從 450px 改為 700px) */
+  box-sizing: border-box;
+}
+
+/* Modal 標題 */
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 20px; /* 標題和說明間距加大 */
+  color: #333;
+  text-align: center;
+  /* 增加標題字體大小 */
+  font-size: 1.6em; /* <--- 增加這個值 (例如從 1.1em 改為 1.6em) */
+}
+
+.main-left-content{
+  padding: 10px;
+}
+
+/* Modal 說明文字 */
+.modal-content p {
+  margin-bottom: 15px; /* 說明和輸入框間距加大 */
+  color: #555;
+  /* 增加說明文字體大小 */
+  font-size: 1.1em; /* <--- 增加這個值 (例如從 0.95em 改為 1.1em) */
+}
+/* Modal 文字輸入區 */
+.modal-textarea {
+  width: 100%;
+  margin-bottom: 25px; /* 輸入框和按鈕間距加大 */
+  padding: 15px; /* 輸入區內邊距加大 */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  /* 增加輸入區字體大小 */
+  font-size: 1.2em; /* <--- 增加這個值 (例如從 1em 改為 1.2em) */
+  /* 增加最小高度 */
+  min-height: 250px; /* <--- 增加這個值 (例如從 150px 改為 250px) */
+  box-sizing: border-box;
+  resize: vertical;
+  line-height: 1.6; /* 增加行高，讓多行文字更易讀 */
+}
+
+/* Modal 按鈕區域 */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px; /* 按鈕間距加大 */
+}
+
+/* Modal 按鈕本身 */
+.modal-button {
+    width: auto;
+    min-width: 90px; /* 按鈕最小寬度 */
+    /* 按鈕文字大小 (可選) */
+    font-size: 1em; /* <--- 可以略微增加 */
+    padding: 10px 18px; /* 按鈕 padding */
+}
+
+.modal-button.confirm {
+    /* 可以加特定樣式 */
+}
+
+.modal-button.cancel {
+    background-color: #e0e0e0; /* 取消按鈕灰色 */
+    color: #333;
+}
+.modal-button.cancel:hover {
+    background-color: #bdbdbd;
+}
+
+/* --- 新增：學生總數文字樣式 --- */
+.student-count {
+  text-align: center; /* 文字置中 */
+  margin: -5px 0 10px 0; /* 調整上下間距 (負的上邊距讓它靠近標題) */
+  font-size: 0.9em;     /* 字體稍小 */
+  color: #555;         /* 文字顏色 */
+  font-weight: bold;    /* 字體加粗 */
+}
+
+/* 截圖時使用的樣式 (可選) */
+.screenshot-area {
+  padding: 20px; /* 圖片周圍留白 */
+  background-color: #ffffff; /* 設定圖片的純白背景 */
+  display: inline-block; /* 讓背景只包住內容 */
+}
+
+
+/* --- 響應式設計 --- */
+@media (max-width: 768px) {
+  .app-container {
+    padding-top: 10px;
+  }
+
+  .main-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* 行動裝置間距 */
+  }
+
+  .grid-scroll-wrapper {
+    overflow-x: auto;
+    padding-bottom: 12px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .grid-container {
+    margin-right: 0;
+    margin-bottom: 15px;
+    width: max-content;
+    min-width: 100%;
+    /* grid-template-columns 由 JS 控制 */
+  }
+
+  .student-list {
+    width: 90%;
+    margin-top: 5px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-left: 0;
+    max-height: none;
+    overflow-y: visible;
+    border: none; /* 行動版移除邊框 */
+    background-color: transparent; /* 行動版移除背景 */
+    padding: 0;
+  }
+
+  .student-item {
+    margin: 4px;
+    padding: 8px 10px;
+    font-size: 0.9em;
+    width: auto; /* 行動版寬度自適應 */
+    flex-grow: 1; /* 在一行內盡量佔滿 */
+    min-width: 70px;
+  }
+
+  .button-container {
+    width: 90%;
+  }
+
+  .shuffle-button {
+    padding: 8px 12px; /* 行動版按鈕 padding */
+    font-size: 0.9em; /* 行動版按鈕字體 */
+    min-width: 80px;
+  }
+
+  .seat {
+      font-size: 0.85em; /* 行動版座位字體 */
+  }
+  
+
+  
+  .lock-toggle {
+      font-size: 1em; /* 行動版鎖頭大小 */
+  }
+   .student-name {
+        font-size: 0.95em; /* 行動版學生名字大小 */
+   }
+
+  .podium {
+      font-size: 0.95em;
+  }
+
+  .setup-number label {
+      font-size: 0.9em;
+  }
+  .number-col {
+      width: 45px;
+  }
+
+  .modal-content {
+    width: 95%; /* 手機上寬度更寬一點 */
+    padding: 20px 25px; /* 手機版 padding */
+    max-width: none; /* 手機上取消最大寬度限制 */
+}
+
+.modal-content h3 {
+    font-size: 1.4em; /* 手機版標題稍小 */
+    margin-bottom: 15px;
+}
+
+.modal-content p {
+    font-size: 1em; /* 手機版說明文字 */
+    margin-bottom: 10px;
+}
+
+.modal-textarea {
+    font-size: 1.1em; /* 手機版輸入區文字 */
+    min-height: 200px; /* 手機版最小高度 */
+    margin-bottom: 20px;
+    padding: 12px;
+}
+
+.modal-buttons {
+    gap: 10px;
+}
+.modal-button {
+    min-width: 80px;
+    padding: 8px 15px;
+    font-size: 0.95em;
+}
+
+}
