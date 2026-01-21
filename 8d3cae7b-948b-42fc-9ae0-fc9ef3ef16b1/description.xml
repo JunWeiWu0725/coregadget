@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Module>
-  <ModulePrefs title="學生幹部" description="班導師管理的學生幹部畫面">
-    <Title lang="zh-TW">幹部</Title>
+<Module ver="1.0.0.5">
+  <ModulePrefs title="班級幹部登錄" description="教師可以選擇班級幹部">
+    <Title lang="zh-TW">班級幹部登錄</Title>
     <Icon>icon.png</Icon>
     <Mobile />
     <Title lang="zh-CN">
