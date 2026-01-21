@@ -1,134 +1,152 @@
 <div class="container-fluid cbs d-flex justify-content-between flex-column">
   <div id="index" page>
-    <nav aria-label="breadcrumb text-nowrap text-truncate">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page">班級幹部管理</li>
-      </ol>
-    </nav>
-    <div class="d-flex flex-column flex-sm-row mb-3">
-      <mat-form-field appearance="fill" class="mr-0 mr-sm-2">
-        <mat-label>選擇班級</mat-label>
-        <mat-select
-          #className
-          [(ngModel)]="selectedClass"
-          (selectionChange)="changeClass() "
-        >
-          <mat-option id="" [value]="cls" *ngFor="let cls of classList">
-            {{ cls.ClassName }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+    <div class="header-bar d-flex justify-content-between align-items-start mb-4">
+      <div class="d-flex align-items-center">
+        <mat-icon class="title-icon mr-2">group_work</mat-icon>
+        <h2 class="m-0 font-weight-bold">班級幹部登錄</h2>
+      </div>
 
-      <mat-form-field appearance="fill" class="mr-0 mr-sm-2">
-        <mat-label>學年度</mat-label>
-        <input
-          type="number"
-          step="1"
-          max="{{ maxSchoolYear }}"
-          min="{{ minSchoolYear }}"
-          matInput
-          [(ngModel)]="selectedSchoolYear"
-          (change)="reloadCadreData()"
-        />
-      </mat-form-field>
+      <div class="header-actions d-flex align-items-center">
+        <button class="btn-return-now mr-2 mr-md-3" (click)="ChangDefSchool()" title="返回目前學年期">
+          <mat-icon>restore</mat-icon>
+          <span class="btn-text">返回目前學年期</span>
+        </button>
 
-      <mat-form-field appearance="fill" class="mr-0 mr-sm-2">
-        <mat-label>學期</mat-label>
-        <input
-          type="number"
-          step="1"
-          max="2"
-          min="1"
-          matInput
-          [(ngModel)]="selectedSemester"
-          (change)="reloadCadreData()"
-        />
-      </mat-form-field>
-      <mat-spinner
-        *ngIf="isLoading"
-        diameter="40"
-        class="ml-4 mt-1"
-      ></mat-spinner>
-
-      <!-- <a>
-          <mat-checkbox [(ngModel)]="showAllStudents" (ngModelChange)="queryStudentAttendance()">顯示全部學生</mat-checkbox>
-        </a> -->
-
-      <!-- <div class="dropdown ml-auto mt-5 mt-sm-0 "> -->
-      <div
-        class="ml-auto pr-2 d-flex align-items-center"
-        style="padding-bottom: 1.34375em"
-      >
-        <a style="cursor: pointer" (click)="exportToExcel()" class="">
-          <mat-icon> cloud_download</mat-icon>匯出
+        <a class="export-link cursor-pointer" (click)="exportToExcel()" title="匯出名單">
+          <mat-icon>file_download</mat-icon>
+          <span class="btn-text">匯出名單</span>
         </a>
       </div>
     </div>
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-1"></div>
-        <!-- 班級幹部 -->
-        <div class="col-sm table-responsive" #table>
-          <table class="table-rwd table table-bordered table-hover kd-t">
-            <thead>
-              <tr>
-                <th style="width: 10%">幹部</th>
-                <th style="width: 10%">姓名</th>
-                <th style="width: 10%">座號</th>
-                <th style="width: 10%">設定</th>
-              </tr>
-            </thead>
-            <tbody *ngFor="let classCadre of this.classCadres">
-              <tr
-                class="collapsed"
-                data-toggle="collapse"
-                data-target="#rA"
-                aria-expanded="false"
-                aria-controls="rA"
-              >
-                <td data-th="幹部">
-                  {{ classCadre.cadreType.Cadrename }}
-                </td>
-                <td data-th="姓名">
-                  {{ classCadre.student ? classCadre.student.StudentName : "" }}
-                </td>
-                <td data-th="座號">
-                  {{ classCadre.student ? classCadre.student.SeatNo : "" }}
-                </td>
-                <td data-th="">
-                  <div *ngIf="isCurrentSemester">
-                    <button
-                      mat-icon-button
-                      *ngIf="!classCadre.student; else elseTmpl"
-                      (click)="openDialog(classCadre, $event)"
-                    >
-                      <mat-icon
-                        aria-hidden="false"
-                        aria-label="create icon"
-                        color="primary"
-                        >create</mat-icon
-                      >
-                    </button>
-                    <ng-template #elseTmpl>
-                        <button mat-icon-button (click)="removeCadre(classCadre)" >
-                          <mat-icon
-                            aria-hidden="false"
-                            aria-label="delete icon"
-                            color="warn"
-                            >delete_forever</mat-icon
-                          >
-                        </button>
-                    </ng-template>
-                </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+    <div class="alert alert-info alert-dismissible fade show mb-4 shadow-sm" role="alert">
+      <div class="d-flex">
+        <mat-icon class="mr-2 text-info">info</mat-icon>
+        <div>
+          <span>
+            ＊.目前時間：{{ selectedNow }}(<span
+              class="font-weight-bold"
+              [class.text-success]="isCanSelectCarde"
+              [class.text-muted]="!isCanSelectCarde">{{isCanSelectCarde ? "已開放輸入" : "未在輸入期間"}}</span>)
+          </span><br>
+          <span>＊.起訖時間：{{ selectedStart }} 至 {{ selectedEnd }}</span>
         </div>
-        <div class="col-sm-1"></div>
+      </div>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="filter-card mb-3 shadow-sm">
+      <div class="row g-4 align-items-end py-2">
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>選擇班級</mat-label>
+            <mat-select [(ngModel)]="selectedClass" (selectionChange)="changeClass()">
+              <mat-option *ngFor="let cls of classList" [value]="cls">{{ cls.ClassName }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>學年度</mat-label>
+            <mat-select [(ngModel)]="selectedSchoolYear" (selectionChange)="reloadCadreData()">
+              <mat-option *ngFor="let year of schoolYearList" [value]="year">{{ year }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <div class="toggle-group-wrapper">
+            <mat-button-toggle-group class="w-100" [(ngModel)]="selectedSemester" (change)="reloadCadreData()">
+              <mat-button-toggle [value]="1" class="flex-fill">第 1 學期</mat-button-toggle>
+              <mat-button-toggle [value]="2" class="flex-fill">第 2 學期</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cadre-section">
+      <div class="cadre-list-container shadow-sm d-none d-md-block">
+        <div class="section-header d-flex justify-content-between align-items-center p-3 border-bottom">
+          <h3 class="m-0 font-weight-bold">幹部清單</h3>
+          <div class="status-indicator">
+            <span class="dot filled"></span><span class="status-text ml-1">已指派</span>
+            <span class="dot empty ml-2"></span><span class="status-text ml-1">待填寫</span>
+          </div>
+        </div>
+        <div class="cadre-list-header d-flex align-items-center py-2 px-3 text-muted border-bottom bg-light">
+          <div class="col-cadre-title">幹部職稱</div>
+          <div class="col-student-info flex-fill">學生姓名</div>
+          <div class="col-seat-no text-center">學生座號</div>
+          <div class="col-action text-right">操作</div>
+        </div>
+        <div class="cadre-list-body">
+          <div class="cadre-item d-flex align-items-center py-3 px-3 border-bottom" *ngFor="let classCadre of classCadres">
+            <div class="col-cadre-title d-flex align-items-center">
+              <div class="indicator-bar" [class.active]="classCadre.student"></div>
+              <span class="cadre-label ml-3">{{ classCadre.cadreType.Cadrename }}</span>
+            </div>
+            <div class="col-student-info d-flex align-items-center flex-fill">
+              <div class="avatar-circle" [class.has-student]="classCadre.student">
+                {{ classCadre.student ? (decodeHtml(classCadre.student.StudentName) | slice:0:1) : "" }}
+              </div>
+              <span class="student-name-text ml-3" [class.not-assigned]="!classCadre.student"
+                    [innerHTML]="classCadre.student ? decodeHtml(classCadre.student.StudentName) : '尚未指定'"></span>
+            </div>
+            <div class="col-seat-no text-center">
+              <span class="seat-badge" *ngIf="classCadre.student">{{ classCadre.student.SeatNo | number:'2.0' }}</span>
+              <span class="text-placeholder" *ngIf="!classCadre.student">--</span>
+            </div>
+            <div class="col-action text-right">
+              <div *ngIf="isCurrentSemester && isCanSelectCarde">
+                <button mat-flat-button class="btn-assign" *ngIf="!classCadre.student; else removeTmpl" (click)="openDialog(classCadre)">
+                  <mat-icon>person_add_alt</mat-icon>
+                </button>
+                <ng-template #removeTmpl>
+                  <button mat-icon-button class="btn-delete" (click)="removeCadre(classCadre)"><mat-icon>delete_outline</mat-icon></button>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mobile-card-container d-block d-md-none">
+        <div class="section-title-row d-flex justify-content-between align-items-center mb-3">
+          <h3 class="m-0 font-weight-bold">幹部清單</h3>
+          <div class="status-indicator">
+            <span class="dot filled"></span> 已指派
+            <span class="dot empty ml-2"></span> 待填寫
+          </div>
+        </div>
+        <div class="cadre-card shadow-sm mb-3" *ngFor="let classCadre of classCadres">
+          <div class="card-header d-flex justify-content-between align-items-center px-3 py-2">
+            <div class="d-flex align-items-center">
+              <span class="status-dot mr-2" [class.active]="classCadre.student"></span>
+              <span class="cadre-card-title">{{ classCadre.cadreType.Cadrename }}</span>
+            </div>
+            <button mat-icon-button class="btn-delete-sm" *ngIf="classCadre.student && isCurrentSemester && isCanSelectCarde" (click)="removeCadre(classCadre); $event.stopPropagation()">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </div>
+          <div class="card-body p-2" (click)="isCurrentSemester && isCanSelectCarde && !classCadre.student && openDialog(classCadre)">
+            <div class="student-info-box d-flex align-items-center p-3" [class.empty]="!classCadre.student">
+              <div class="avatar-circle-sm" [class.has-student]="classCadre.student">
+                {{ classCadre.student ? (decodeHtml(classCadre.student.StudentName) | slice:0:1) : "" }}
+              </div>
+              <div class="ml-3 flex-fill">
+                <div class="student-name-main font-weight-bold"
+                     [innerHTML]="classCadre.student ? decodeHtml(classCadre.student.StudentName) : '尚未指定'"></div>
+                <div class="student-sub-text text-muted" *ngIf="classCadre.student">座號：{{ classCadre.student.SeatNo | number:'2.0' }}</div>
+              </div>
+              <mat-icon class="arrow-icon">keyboard_arrow_down</mat-icon>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
-  <footer class="text-center p-2 mt-auto">Powered By ischool</footer>
 </div>

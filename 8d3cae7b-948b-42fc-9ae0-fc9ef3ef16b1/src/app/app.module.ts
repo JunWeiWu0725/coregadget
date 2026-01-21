@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material-module';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ClassSummaryComponent } from './ui/class-summary/class-summary.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AddCadreDialogComponent } from './ui/add-cadre-dialog/add-cadre-dialog.component';
@@ -22,7 +23,8 @@ import { AddCadreDialogComponent } from './ui/add-cadre-dialog/add-cadre-dialog.
     BrowserAnimationsModule,
     FormsModule,
     MaterialModule,
-    HttpClientModule
+    HttpClientModule,
+    MatButtonToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

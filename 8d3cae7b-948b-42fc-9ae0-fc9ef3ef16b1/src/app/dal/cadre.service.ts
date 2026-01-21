@@ -19,7 +19,7 @@ export class CadreService {
    */
   async getCadreTypes() {
     const contract = await this.contractService.getDefaultContract();
-    const result: any = await contract.send('cadre.GetClassCadreType', {
+    const result: any = await contract.send('_.GetClassCadreType', {
       Request: {}
     }
     );
@@ -36,7 +36,7 @@ export class CadreService {
   // 取得班級學年度學期
   async getSemestersByClassID(classID) {
     const contract = await this.contractService.getDefaultContract();
-    const result: any = await contract.send('cadre.GetSemestersByClassID', {
+    const result: any = await contract.send('_.GetSemestersByClassID', {
       Request: {
         ClassID: classID
       }
@@ -55,12 +55,20 @@ export class CadreService {
     return result ;
   }
 
+  // 取得開放時間 -- New --
+  async getOpenTeacherCadreDate() {
+    const contract = await this.contractService.getDefaultContract();
+    const result: any = await contract.send('_.GetOpenCadreDate', {});
+
+    return result;
+  }
+
   /**
    * 取得指定班級的班級幹部名單
    */
   async getClassCadreStudents(classID, schoolYear, semester) {
     const contract = await this.contractService.getDefaultContract();
-    const result: any = await contract.send('cadre.GetClassCadres', {
+    const result: any = await contract.send('_.GetClassCadres', {
       Request: {
         ClassID: classID,
         SchoolYear: schoolYear,
@@ -98,7 +106,7 @@ export class CadreService {
   // 取得班級學生清單
   async getStudents(classID: string) {
     const contract = await this.contractService.getDefaultContract();
-    const rst: any = await contract.send('classroom.GetStudents', {
+    const rst: any = await contract.send('_.GetStudents', {
       Request: {
         Type: 'Class',
         UID: classID
@@ -114,19 +122,20 @@ export class CadreService {
   }
 
   // 刪除一筆班級幹部紀錄
-  async deleteCadre(cadreUID: string) {
+  async deleteCadre(cadre: ClassCadreRecord) {
     const contract = await this.contractService.getDefaultContract();
-    const rst: any = await contract.send('cadre.DeleteCadre', {
+    const rst: any = await contract.send('_.DeleteCadre', {
       Request: {
-        UID: cadreUID
+        UID: cadre.cadre.uid
       }
     });
+        this.addLog("刪除", "刪除", `學年度「${cadre.cadre.schoolyear}」學期「${cadre.cadre.semester}」班級「${cadre.cadre.text}」刪除幹部「${cadre.cadre.cadrename}」學生「${cadre.student.StudentName}」`);
   }
 
   // 新增一筆班級幹部紀錄
   async addCadre(cadre: CadreInfo) {
     const contract = await this.contractService.getDefaultContract();
-    const rst: any = await contract.send('cadre.AddCadre', {
+    const rst: any = await contract.send('_.AddCadre', {
       Request: {
         Cadre: {
           CadreName: cadre.cadrename,
@@ -136,6 +145,22 @@ export class CadreService {
           StudentID: cadre.studentid ,
           Text: cadre.text
         }
+      }
+    });
+
+    this.addLog("新增", "新增", `學年度「${cadre.schoolyear}」學期「${cadre.semester}」班級「${cadre.text}」新增幹部「${cadre.cadrename}」學生「${cadre.studentname}」`);
+  }
+
+  // 新增系統Log
+  async addLog(actionType: string, action: string, description: string) {
+    const contract = await this.contractService.getDefaultContract();
+    const rst: any = await contract.send('_.InsertLogFromWeb', {
+      Request: {
+        ActionType: actionType,
+        Action: action,
+        TargetCategory: 'teacher',
+        ActionBy: '[特殊歷程]',
+        Description: description,
       }
     });
   }
@@ -159,6 +184,7 @@ export interface CadreInfo {
   schoolyear: string;
   semester: string;
   studentid: string;
+  studentname: string;
   referencetype: string;
   cadrename: string;
   text: string;

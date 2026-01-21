@@ -1,0 +1,123 @@
+// 佈局定義
+.col-cadre-title { width: 25%; min-width: 150px; }
+.col-student-info { min-width: 200px; }
+.col-seat-no { width: 15%; }
+.col-action { width: 15%; }
+
+// 頁頭按鈕群組
+.header-actions {
+  .btn-return-now {
+    /* 1. 基礎對齊設定 */
+    display: inline-flex;  /* 使用 inline-flex 確保按鈕寬度隨內容縮放 */
+    align-items: center;   /* 垂直置中關鍵：確保圖示與文字的中線一致 */
+    justify-content: center; /* 水平置中內容 */
+
+    /* 2. 視覺樣式 */
+    background: #ffffff;
+    border: 1px solid #5c6bc0;
+    color: #5c6bc0;
+    padding: 0 16px;       /* 左右內距，上下交由 height 控制 */
+    height: 36px;          /* 固定高度有助於垂直置中判定 */
+    border-radius: 18px;   /* 高度的一半，達成完美的膠囊圓角 */
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    cursor: pointer;
+    outline: none;
+    line-height: 1;        /* 移除行高造成的額外偏移 */
+
+    mat-icon {
+      font-size: 18px;     /* 固定圖示大小 */
+      width: 18px;
+      height: 18px;
+      margin-right: 6px;   /* 圖示與文字的間距 */
+      display: flex;       /* 確保圖示內部也是 flex 置中 */
+      align-items: center;
+      justify-content: center;
+    }
+
+    &:hover {
+      background: #f0f3ff;
+      box-shadow: 0 2px 6px rgba(92, 107, 192, 0.2);
+    }
+
+    /* 3. 手機版優化：只顯示圖示時保持圓形 */
+    @media (max-width: 767px) {
+      padding: 0;          /* 手機版移除左右內距 */
+      width: 40px;         /* 固定寬高達成正圓形 */
+      height: 40px;
+      border-radius: 50%;
+
+      mat-icon {
+        margin-right: 0;   /* 移除手機版的文字間距 */
+      }
+      .btn-text {
+        display: none;     /* 隱藏文字 */
+      }
+    }
+  }
+}
+
+// 篩選卡片
+.filter-card {
+  background: white;
+  padding: 24px 32px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+
+  .toggle-group-wrapper {
+    margin-bottom: 22px;
+    mat-button-toggle-group {
+      height: 50px;
+      border-radius: 8px;
+      background-color: #f8f9fa;
+      .mat-button-toggle-checked { background-color: #5c6bc0; color: white; }
+    }
+  }
+
+  @media (max-width: 767px) {
+    padding: 16px;
+    .toggle-group-wrapper { margin-bottom: 0; margin-top: 8px; }
+  }
+}
+
+// 列表與卡片樣式
+.cadre-list-container {
+  background: white; border-radius: 12px; overflow: hidden;
+  .bg-light { background-color: #fafafa !important; }
+}
+
+.indicator-bar {
+  width: 4px; height: 24px; background: #e0e0e0; border-radius: 2px;
+  &.active { background: #5c6bc0; }
+}
+
+.avatar-circle {
+  width: 36px; height: 36px; border-radius: 50%; background: #f0f2ff;
+  display: flex; align-items: center; justify-content: center; font-weight: bold; color: #5c6bc0;
+  &.has-student { background: #5c6bc0; color: white; }
+}
+
+.mobile-card-container {
+  .cadre-card {
+    background: white; border-radius: 16px; border: 1px solid #f0f0f0;
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #ddd;
+      &.active { background: #4caf50; }
+    }
+    .student-info-box {
+      background: #f8faff; border-radius: 12px;
+      &.empty { background: white; border: 1px dashed #ccc; }
+    }
+    .avatar-circle-sm {
+      width: 40px; height: 40px; border-radius: 50%; background: #e8eaf6;
+      color: #3f51b5; display: flex; align-items: center; justify-content: center; font-weight: bold;
+    }
+  }
+}
+
+.dot {
+  width: 8px; height: 8px; border-radius: 50%; display: inline-block;
+  &.filled { background: #5c6bc0; }
+  &.empty { background: #ddd; }
+}
