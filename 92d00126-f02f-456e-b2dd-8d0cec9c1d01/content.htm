@@ -845,7 +845,7 @@
                 </td>
                 <td>
                   <div class="input-group" ng-class="{'has-error': !myInfo.StudentInfo.CustodianOtherInfo.CustodianOtherInfo.Phone}">
-                    <label for="custodian-phone" class="labelh" tabindex="0">聯絡人電話(必填)
+                    <label for="custodian-phone" class="labelh">聯絡人電話(必填)
                       <img ng-src="./css/images/{{ maskedField.contactPhone.eyeIcon }}" alt="切換聯絡人電話顯示"
                         style="cursor: pointer; margin-left: 8px; padding: 12px; height: 48px; width: 48px;"
                         ng-click="toggleEyeIcon(maskedField.contactPhone)" tabindex="0" role="button"
@@ -1113,7 +1113,9 @@
                       >
                     </label>
                     <input 
-                      type="{{ maskedField.email1.inputType }}" 
+                      type="{{ maskedField.email1.inputType }}"
+                      inputmode="email"
+                      autocomplete="email"
                       maxlength="50"
                       placeholder="請輸入 Email 地址1"
                       class="{email:true} form-control h-12" 
@@ -1147,6 +1149,8 @@
                     </label>
                     <input 
                       type="{{ maskedField.email2.inputType }}" 
+                      inputmode="email"
+                      autocomplete="email"
                       maxlength="50"
                       placeholder="請輸入 Email 地址2"
                       class="{email:true} form-control h-12" id="email2" name="email2"
@@ -1174,7 +1178,10 @@
                         >
 
                     </label>
-                    <input type="{{ maskedField.email3.inputType }}" maxlength="50"
+                    <input type="{{ maskedField.email3.inputType }}"
+                      inputmode="email"
+                      autocomplete="email"
+                      maxlength="50"
                       placeholder="請輸入 Email 地址3"
                       class="{email:true} form-control h-12" id="email3" name="email3"
                       ng-model="myInfo.StudentBrief2.EmailList.email3"
@@ -1200,7 +1207,10 @@
                         aria-label="點擊切換 Email 4 地址的顯示與隱藏"
                         >
                     </label>
-                    <input type="{{ maskedField.email4.inputType }}" maxlength="50"
+                    <input type="{{ maskedField.email4.inputType }}"
+                      inputmode="email"
+                      autocomplete="email"
+                      maxlength="50"
                       placeholder="請輸入 Email 地址4"
                       class="{email:true} form-control h-12" id="email4" name="email4"
                       ng-model="myInfo.StudentBrief2.EmailList.email4"
@@ -1226,7 +1236,10 @@
                         aria-label="點擊切換 Email 5 地址的顯示與隱藏"
                         >
                     </label>
-                    <input type="{{ maskedField.email5.inputType }}" maxlength="50"
+                    <input type="{{ maskedField.email5.inputType }}"
+                      inputmode="email"
+                      autocomplete="email"
+                      maxlength="50"
                       placeholder="請輸入 Email 地址5"
                       class="{email:true} form-control h-12" id="email5" name="email5"
                       ng-model="myInfo.StudentBrief2.EmailList.email5"
@@ -1856,7 +1869,9 @@
                 <td>
                   <div class="input-group">
                     <label for="line" class="labelh">Line</label>
-                    <input type="text" class="form-control h-12" id="line" name="line" 
+                    <input type="email" class="form-control h-12" id="line" name="line" 
+                      inputmode="email"
+                      autocomplete="email"
                       placeholder="請輸入 Line ID"
                       ng-model="myInfo.StudentInfo.Line" 
                       aria-label="Line ID，編輯方塊，輕觸兩下即可啟用">
@@ -1875,7 +1890,9 @@
                 <td>
                   <div class="input-group">
                     <label for="facebook" class="labelh">Facebook</label>
-                    <input type="text" class="form-control h-12" id="facebook" name="facebook"
+                    <input type="email" class="form-control h-12" id="facebook" name="facebook"
+                      inputmode="email"
+                      autocomplete="email"
                       placeholder="請輸入 Facebook ID" ng-model="myInfo.StudentInfo.Facebook" 
                       aria-label="Facebook ID，編輯方塊，輕觸兩下即可啟用">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
@@ -1893,7 +1910,9 @@
                 <td>
                   <div class="input-group">
                     <label for="linkedIn" class="labelh">LinkedIn</label>
-                    <input type="text" class="form-control h-12" id="linkedIn" name="linkedIn"
+                    <input type="email" class="form-control h-12" id="linkedIn" name="linkedIn"
+                      inputmode="email"
+                      autocomplete="email"
                       placeholder="請輸入 LinkedIn ID" ng-model="myInfo.StudentInfo.LinkedIn" 
                       aria-label="LinkedIn ID，編輯方塊，輕觸兩下即可啟用">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
@@ -1911,7 +1930,9 @@
                 <td>
                   <div class="input-group">
                     <label for="whatsApp" class="labelh">WhatsApp</label>
-                    <input type="text" class="form-control h-12" id="whatsApp" name="whatsApp"
+                    <input type="email" class="form-control h-12" id="whatsApp" name="whatsApp"
+                      inputmode="email"
+                      autocomplete="email"
                       placeholder="請輸入 WhatsApp ID" ng-model="myInfo.StudentInfo.WhatsApp" 
                       aria-label="WhatsApp ID，編輯方塊，輕觸兩下即可啟用">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
@@ -1929,7 +1950,10 @@
                 <td>
                   <div class="input-group">
                     <label for="weChat" class="labelh">WeChat</label>
-                    <input type="text" class="form-control h-12" id="weChat" name="weChat" placeholder="請輸入 WeChat ID"
+                    <input type="email" class="form-control h-12" id="weChat" name="weChat" 
+                      inputmode="email"
+                      autocomplete="email"
+                      placeholder="請輸入 WeChat ID"
                       ng-model="myInfo.StudentInfo.WeChat" aria-label="WeChat ID，編輯方塊，輕觸兩下即可啟用">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
                       aria-label="{{ myInfo.DataSharing.DataSharing.WeChat  === 'true' ? '點擊改為不分享 WeChat ID，按鈕，輕觸兩下即可啟用' : '點擊改為分享 WeChat ID，按鈕，輕觸兩下即可啟用' }}"
