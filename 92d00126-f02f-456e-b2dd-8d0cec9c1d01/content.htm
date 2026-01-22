@@ -1122,7 +1122,7 @@
                       id="email1" 
                       name="email1"
                       ng-model="myInfo.StudentBrief2.EmailList.email1"
-                      aria-label="{{ maskedField.email1.inputType === 'password' ? 'Email 1，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 1 地址，編輯方塊，輕觸兩下即可啟用' }}"
+                      aria-label="{{ maskedField.email1.inputType === 'password' ? 'Email 1，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 1 地址，編輯方塊，輕觸兩下即可啟用，請使用英文輸入' }}"
                       aria-required="true" 
                       aria-describedby="email1-required"
                       autocomplete="off">
@@ -1155,7 +1155,7 @@
                       placeholder="請輸入 Email 地址2"
                       class="{email:true} form-control h-12" id="email2" name="email2"
                       ng-model="myInfo.StudentBrief2.EmailList.email2"
-                      aria-label="{{ maskedField.email2.inputType === 'password' ? 'Email 2，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 2 地址，編輯方塊，輕觸兩下即可啟用' }}"
+                      aria-label="{{ maskedField.email2.inputType === 'password' ? 'Email 2，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 2 地址，編輯方塊，輕觸兩下即可啟用，請使用英文輸入' }}"
                       aria-required="false" autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.EmailList.Email2=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email2)"
@@ -1185,7 +1185,7 @@
                       placeholder="請輸入 Email 地址3"
                       class="{email:true} form-control h-12" id="email3" name="email3"
                       ng-model="myInfo.StudentBrief2.EmailList.email3"
-                      aria-label="{{ maskedField.email3.inputType === 'password' ? 'Email 3，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 3 地址，編輯方塊，輕觸兩下即可啟用' }}"
+                      aria-label="{{ maskedField.email3.inputType === 'password' ? 'Email 3，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 3 地址，編輯方塊，輕觸兩下即可啟用，請使用英文輸入' }}"
                       aria-required="false" autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.EmailList.Email3=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email3)"
@@ -1214,7 +1214,7 @@
                       placeholder="請輸入 Email 地址4"
                       class="{email:true} form-control h-12" id="email4" name="email4"
                       ng-model="myInfo.StudentBrief2.EmailList.email4"
-                      aria-label="{{ maskedField.email4.inputType === 'password' ? 'Email 4，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 4 地址，編輯方塊，輕觸兩下即可啟用' }}"
+                      aria-label="{{ maskedField.email4.inputType === 'password' ? 'Email 4，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 4 地址，編輯方塊，輕觸兩下即可啟用，請使用英文輸入' }}"
                       aria-required="false" autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.EmailList.Email4=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email4)"
@@ -1243,7 +1243,7 @@
                       placeholder="請輸入 Email 地址5"
                       class="{email:true} form-control h-12" id="email5" name="email5"
                       ng-model="myInfo.StudentBrief2.EmailList.email5"
-                      aria-label="{{ maskedField.email5.inputType === 'password' ? 'Email 5，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 5 地址，編輯方塊，輕觸兩下即可啟用' }}"
+                      aria-label="{{ maskedField.email5.inputType === 'password' ? 'Email 5，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 5 地址，編輯方塊，輕觸兩下即可啟用，請使用英文輸入' }}"
                       aria-required="false" autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.EmailList.Email5=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email5)"
@@ -1874,7 +1874,7 @@
                       autocomplete="email"
                       placeholder="請輸入 Line ID"
                       ng-model="myInfo.StudentInfo.Line" 
-                      aria-label="Line ID，編輯方塊，輕觸兩下即可啟用">
+                      aria-label="Line ID，編輯方塊，輕觸兩下即可啟用，請使用英文輸入">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
                       aria-label="{{ myInfo.DataSharing.DataSharing.Line  === 'true' ? '點擊改為不分享 Line ID，按鈕，輕觸兩下即可啟用' : '點擊改為分享 Line ID，按鈕，輕觸兩下即可啟用' }}"
                       ng-click="myInfo.DataSharing.DataSharing.Line = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.Line)">
@@ -1894,7 +1894,7 @@
                       inputmode="email"
                       autocomplete="email"
                       placeholder="請輸入 Facebook ID" ng-model="myInfo.StudentInfo.Facebook" 
-                      aria-label="Facebook ID，編輯方塊，輕觸兩下即可啟用">
+                      aria-label="Facebook ID，編輯方塊，輕觸兩下即可啟用，請使用英文輸入">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
                       aria-label="{{ myInfo.DataSharing.DataSharing.Facebook === 'true' ? '點擊改為不分享 Facebook ID，按鈕，輕觸兩下即可啟用' : '點擊改為分享 Facebook ID，按鈕，輕觸兩下即可啟用' }}"
                       ng-click="myInfo.DataSharing.DataSharing.Facebook = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.Facebook)">
@@ -1914,7 +1914,7 @@
                       inputmode="email"
                       autocomplete="email"
                       placeholder="請輸入 LinkedIn ID" ng-model="myInfo.StudentInfo.LinkedIn" 
-                      aria-label="LinkedIn ID，編輯方塊，輕觸兩下即可啟用">
+                      aria-label="LinkedIn ID，編輯方塊，輕觸兩下即可啟用，請使用英文輸入">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
                       aria-label="{{ myInfo.DataSharing.DataSharing.LinkedIn  === 'true' ? '點擊改為不分享 LinkedIn ID，按鈕，輕觸兩下即可啟用' : '點擊改為分享 LinkedIn ID，按鈕，輕觸兩下即可啟用' }}"
                       ng-click="myInfo.DataSharing.DataSharing.LinkedIn = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.LinkedIn)">
@@ -1934,7 +1934,7 @@
                       inputmode="email"
                       autocomplete="email"
                       placeholder="請輸入 WhatsApp ID" ng-model="myInfo.StudentInfo.WhatsApp" 
-                      aria-label="WhatsApp ID，編輯方塊，輕觸兩下即可啟用">
+                      aria-label="WhatsApp ID，編輯方塊，輕觸兩下即可啟用，請使用英文輸入">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
                       aria-label="{{ myInfo.DataSharing.DataSharing.WhatsApp  === 'true' ? '點擊改為不分享 WhatsApp ID，按鈕，輕觸兩下即可啟用' : '點擊改為分享 WhatsApp ID，按鈕，輕觸兩下即可啟用' }}"
                       ng-click="myInfo.DataSharing.DataSharing.WhatsApp = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.WhatsApp)">
@@ -1954,7 +1954,7 @@
                       inputmode="email"
                       autocomplete="email"
                       placeholder="請輸入 WeChat ID"
-                      ng-model="myInfo.StudentInfo.WeChat" aria-label="WeChat ID，編輯方塊，輕觸兩下即可啟用">
+                      ng-model="myInfo.StudentInfo.WeChat" aria-label="WeChat ID，編輯方塊，輕觸兩下即可啟用，請使用英文輸入">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
                       aria-label="{{ myInfo.DataSharing.DataSharing.WeChat  === 'true' ? '點擊改為不分享 WeChat ID，按鈕，輕觸兩下即可啟用' : '點擊改為分享 WeChat ID，按鈕，輕觸兩下即可啟用' }}"
                       ng-click="myInfo.DataSharing.DataSharing.WeChat = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.WeChat)">
