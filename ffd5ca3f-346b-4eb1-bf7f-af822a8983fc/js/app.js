@@ -1,6 +1,6 @@
 var app = angular.module("app", ["checklist-model"]);
 
-app.controller('MainCtrl', ['$scope', function($scope) {
+app.controller('MainCtrl', ['$scope', '$timeout', function($scope, $timeout) {
     $scope.connection = gadget.getContract("emba.student");
     $scope.isLoadComplete = false;
     $scope.isLoading = false;
@@ -118,6 +118,43 @@ app.controller('MainCtrl', ['$scope', function($scope) {
                 }
             }
         });
+    };
+
+    // 處理 dropdown 選取後的焦點管理和收合
+    $scope.handleDropdownSelection = function(buttonId) {
+        // 立即關閉 dropdown (不等待 timeout)
+        var button = document.getElementById(buttonId);
+        if (button) {
+            var $button = $(button);
+            var $dropdown = $button.closest('.dropdown');
+            
+            // 立即關閉 dropdown
+            $dropdown.removeClass('open');
+            $button.attr('aria-expanded', 'false');
+            $('.dropdown-backdrop').remove();
+        }
+        
+        // 然後在下一個 digest cycle 設置焦點
+        $timeout(function() {
+            if (button) {
+                // 強制設置焦點 - 多種方法組合
+                // 方法 1: 直接 focus
+                button.focus();
+                
+                // 方法 2: 使用 blur + focus 組合(對 iOS 有時有效)
+                $timeout(function() {
+                    button.blur();
+                    $timeout(function() {
+                        button.focus();
+                        
+                        // 方法 3: 對於 iOS,嘗試滾動到元素以觸發焦點
+                        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                            button.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    }, 10);
+                }, 10);
+            }
+        }, 50);
     };
 
     $scope.resetFilter = function() {
@@ -595,6 +632,7 @@ app.controller('MainCtrl', ['$scope', function($scope) {
                 $scope.filter.additional.industry_id = domain.id;
                 $scope.filter.additional.industry = domain.name;
             }
+            $scope.handleDropdownSelection('industry');
         },
         toggleExperienceCategory: function(category) {
             var tmp = $scope.filter.additional.menu.objDomain['C_'+category.name];
@@ -611,6 +649,7 @@ app.controller('MainCtrl', ['$scope', function($scope) {
                     category.name
                 ].join('_');
             }
+            $scope.handleDropdownSelection('industryC');
         },
         toggleExperienceItem: function(item) {
             var tmp = $scope.filter.additional.menu.objCategory['I_'+item.name];
@@ -622,6 +661,7 @@ app.controller('MainCtrl', ['$scope', function($scope) {
                 $scope.filter.additional.menu.Category.name,
                 item.name
             ].join('_');
+            $scope.handleDropdownSelection('industryI');
         },
         setEmpty: function() {
             $scope.filter.additional.menu.Domain = null;
@@ -632,6 +672,7 @@ app.controller('MainCtrl', ['$scope', function($scope) {
 
             $scope.filter.additional.industry = null;
             $scope.filter.additional.industry_id = null;
+            $scope.handleDropdownSelection('industry');
         }
     };
 
