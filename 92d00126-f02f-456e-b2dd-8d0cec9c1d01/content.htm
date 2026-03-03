@@ -30,7 +30,7 @@
 <body ng-controller="MainCtrl">  
   <div id="gadget" class="my-page text-16">
     <!--modal 地址-->
-    <div class="modal fade" id="address" tabindex="-1" role="dialog" aria-labelledby="myaddress">
+    <div class="modal fade" id="address" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex">
@@ -86,7 +86,7 @@
       </div>
     </div>
     <!--modal 學歷-->
-    <div class="modal fade" id="education" tabindex="-1" role="dialog" aria-labelledby="myeducation">
+    <div class="modal fade" id="education" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex">
@@ -162,11 +162,11 @@
       </div>
     </div>
     <!--modal 經歷-->
-    <div class="modal fade" id="experience" tabindex="-1" role="dialog" aria-labelledby="myexperience">
+    <div class="modal fade" id="experience" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex">
-            <h4 class="modal-title" id="myexperience">
+            <h4 class="modal-title" id="myexperience" tabindex="0">
               {{experiences.current.type === 'edit' ? '編輯經歷' : '新增經歷'}}
             </h4>
             <button type="button" class="close h-12 w-12 float-none ml-auto" data-dismiss="modal" aria-label="關閉經歷編輯框">
@@ -213,7 +213,7 @@
                 class="form-control h-12" 
                 ng-model="experiences.current.result.PostLevel" 
                 aria-label="必填，選擇層級別，輕觸兩下即可啟用">
-                <option value="">...請選擇層級別...</option>
+                <option value="">請選擇層級別</option>
                 <option ng-repeat="item in ExperienceDataSource['C_層級別']" value="{{item}}">{{item}}</option>
                 <option value="其它">其它</option>
               </select>
@@ -232,18 +232,18 @@
                   aria-label="必填，其它層級別，編輯方塊，輕觸兩下即可啟用">
               </div>
             </div>
-            <div class="dropdown" ng-class="{'has-error': !experiences.current.result.DepartmentCategory}">
-              <button class="btn btn-default dropdown-toggle" type="button" id="department" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="true" aria-label="請選擇部門">
-                <span target="branch">{{experiences.current.result.DepartmentCategory || '部門'}}</span>
-                <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="department" target="department-options">
-                <li ng-click="experiences.current.result.DepartmentCategory=''">...請選擇部門...</li>
-                <li ng-repeat="item in ExperienceDataSource['C_部門類別']"
-                  ng-click="experiences.current.result.DepartmentCategory=item">{{item}}</li>
-                <li ng-click="experiences.current.result.DepartmentCategory='其它'">其它</li>
-              </ul>
+            <div class="form-group" ng-class="{'has-error': !experiences.current.result.DepartmentCategory}">
+              <label for="department-select" class="control-label">部門</label>
+              <select 
+                id="department-select" 
+                name="department-select" 
+                class="form-control h-12" 
+                ng-model="experiences.current.result.DepartmentCategory" 
+                aria-label="必填，請選擇部門，輕觸兩下即可啟用">
+                <option value="">請選擇部門</option>
+                <option ng-repeat="item in ExperienceDataSource['C_部門類別']" value="{{item}}">{{item}}</option>
+                <option value="其它">其它</option>
+              </select>
               <div ng-show="experiences.current.result.DepartmentCategory === '其它'" class="input-group"
                 ng-class="{'has-error': !experiences.current.result.DepartmentCategoryOther}">
                 <label for="department-other" class="input-group-addon p-3">請註明</label>
@@ -262,7 +262,7 @@
                 ng-model="experiences.current.menu.Domain.Domain" 
                 aria-label="必填，請選擇產業別，輕觸兩下即可啟用" 
                 ng-change="experiences.toggleExperienceDomain(experiences.current.menu.Domain.Domain)">
-                <option value="" ng-click="experiences.setEmpty()">...請選擇產業別...</option>
+                <option value="" ng-click="experiences.setEmpty()">請選擇產業別</option>
                 <option ng-repeat="domain in AdditionalSetup['S_Industry'].Domains" value="{{domain}}">{{domain}}</option>
               </select>
             </div>
@@ -275,7 +275,7 @@
                   ng-model="experiences.current.menu.Category.Category" 
                   aria-label="選擇子類別，輕觸兩下即可啟用" 
                   ng-change="experiences.toggleExperienceCategory(experiences.current.menu.Category.Category)">
-                  <option value="" disabled>...請選擇子類別...</option>
+                  <option value="" disabled>請選擇子類別</option>
                   <option ng-repeat="category in experiences.current.menu.Domain.Categorys" value="{{category}}">{{category}}</option>
               </select>
             </div>
@@ -288,7 +288,7 @@
                   ng-model="experiences.current.menu.Item.Item" 
                   aria-label="選擇子項目，輕觸兩下即可啟用" 
                   ng-change="experiences.toggleExperienceItem(experiences.current.menu.Item.Item)">
-                  <option value="" disabled>...請選擇子項目...</option>
+                  <option value="" disabled>請選擇子項目</option>
                   <option ng-repeat="item in experiences.current.menu.Category.Items" value="{{item}}">{{item}}</option>
               </select>
             </div>            
@@ -329,7 +329,7 @@
                 class="form-control h-12" 
                 ng-model="experiences.current.result.WorkStatus" 
                 aria-label="必填，選擇工作狀態，輕觸兩下即可啟用">
-                <option value="">...請選擇工作狀態...</option>
+                <option value="">請選擇工作狀態</option>
                 <option ng-repeat="item in ExperienceDataSource['C_工作狀態']" value="{{item}}">{{item}}</option>
                 <option value="其它">其它</option>
               </select>
@@ -359,7 +359,7 @@
       </div>
     </div>
     <!--modal 經歷－層級別-->
-    <div class="modal fade" id="level" tabindex="-1" role="dialog" aria-labelledby="mylevel">
+    <div class="modal fade" id="level" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex">
@@ -409,7 +409,7 @@
       </div>
     </div>
     <!--modal 經歷－工作地點-->
-    <div class="modal fade" id="placeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal fade" id="placeModal" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex">
@@ -460,7 +460,7 @@
       </div>
     </div>
     <!--modal 校外團體-->
-    <div class="modal fade check-modal" id="externalModal" tabindex="-1" role="dialog" aria-labelledby="mygroup4">
+    <div class="modal fade check-modal" id="externalModal" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex">
@@ -546,7 +546,7 @@
       </div>
     </div>
     <!--modal 興趣-->
-    <div class="modal fade check-modal" id="interestModal" tabindex="-1" role="dialog" aria-labelledby="myinterest">
+    <div class="modal fade check-modal" id="interestModal" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex">
@@ -632,7 +632,7 @@
       </div>
     </div>
     <!--madal EMBA團體-->
-    <div class="modal fade check-modal" id="EMBAGroupsModel" tabindex="-1" role="dialog" aria-labelledby="mygroup1">
+    <div class="modal fade check-modal" id="EMBAGroupsModel" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex">
@@ -729,7 +729,7 @@
             -->
       <div class="header-space"></div>
 
-      <div class="content">
+      <div class="content" tabindex="0">
         <div class="well well-sm">
           <ol style="margin: 4px 0; padding-left: 16px;">
             <li>如您願意分享個人資訊於 myEMBA 查詢，請於分享框內打勾，學歷、經歷請點選編輯進行分享，如不願意被查詢或分享，則請勿打勾，謝謝。</li>
