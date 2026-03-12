@@ -1,7 +1,58 @@
 var app = angular.module("app", ["checklist-model"]);
 
-app.controller('MainCtrl', ['$scope', function ($scope) {
+app.controller('MainCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
     $scope.connection = gadget.getContract("emba.student");
+
+    // Loading 狀態控制
+    $scope.isLoading = true;
+    var loadingSteps = {
+        dataLoaded: false,
+        domReady: false
+    };
+
+    // 初始化時將焦點設置到 loading
+    $timeout(function() {
+        var loadingSpinner = document.querySelector('.loading-spinner');
+        if (loadingSpinner && $scope.isLoading) {
+            loadingSpinner.focus();
+            document.body.classList.add('loading-active');
+            console.log('Loading 焦點已設置');
+        }
+    }, 100);
+
+    // 檢查是否所有步驟都完成
+    function checkLoadingComplete() {
+        if (loadingSteps.dataLoaded && loadingSteps.domReady) {
+            console.log('所有資料載入完成，準備關閉 loading');
+            $timeout(function() {
+                $scope.isLoading = false;
+                document.body.classList.remove('loading-active');
+                
+                // 關閉 loading 後,將焦點設置到「個人資訊」標題
+                $timeout(function() {
+                    var pageTitle = document.getElementById('page-title');
+                    if (pageTitle) {
+                        pageTitle.focus();
+                        console.log('焦點已設置到「個人資訊」標題');
+                    }
+                }, 200);
+            }, 500); // 給予500ms緩衝時間確保畫面渲染完成
+        }
+    }
+
+    // 標記資料載入完成
+    function markDataLoaded() {
+        loadingSteps.dataLoaded = true;
+        console.log('資料載入完成');
+        checkLoadingComplete();
+    }
+
+    // DOM 準備完成
+    $timeout(function() {
+        loadingSteps.domReady = true;
+        console.log('DOM 準備完成');
+        checkLoadingComplete();
+    }, 0);
 
     $scope.myInfo = {};
     // StudentInfo
@@ -1803,13 +1854,46 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
     };
 
     $scope.connection.ready(function() {
-        $scope.myInfo.load(); // 取得個人基本資料及分享設定
-        $scope.educations.load(); // 學歷
+        console.log('Connection ready, 開始載入資料');
+        
+        var loadingCounter = {
+            total: 4, // 需要載入的項目總數
+            completed: 0
+        };
+        
+        function checkAllDataLoaded() {
+            loadingCounter.completed++;
+            console.log('載入進度: ' + loadingCounter.completed + '/' + loadingCounter.total);
+            if (loadingCounter.completed >= loadingCounter.total) {
+                console.log('所有資料載入完成');
+                markDataLoaded();
+            }
+        }
+        
+        // 取得個人基本資料及分享設定
+        $scope.myInfo.load();
+        $timeout(function() {
+            checkAllDataLoaded();
+        }, 100);
+        
+        // 學歷
+        $scope.educations.load();
+        $timeout(function() {
+            checkAllDataLoaded();
+        }, 100);
 
         // 取得選項內容
         $scope.getDataSource(function () {
-            $scope.stu_additionals.load(); // 興趣/參加台大EMBA團體/參加校外組織
-            $scope.experiences.load(); // 經歷
+            checkAllDataLoaded();
+            
+            // 興趣/參加台大EMBA團體/參加校外組織
+            $scope.stu_additionals.load();
+            $timeout(function() {
+                checkAllDataLoaded();
+            }, 100);
+            
+            // 經歷
+            $scope.experiences.load();
         });
     });
 }]);
