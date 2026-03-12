@@ -4,6 +4,44 @@ app.controller('MainCtrl', ['$scope', '$timeout', function($scope, $timeout) {
     $scope.connection = gadget.getContract("emba.student");
     $scope.isLoadComplete = false;
     $scope.isLoading = false;
+    
+    // 初始載入狀態
+    $scope.isInitialLoading = true;
+    
+    // 追蹤初始資料載入狀態
+    var initialLoadTracker = {
+        dept: false,
+        enrollYear: false,
+        dataSource: false
+    };
+    
+    // 檢查所有初始資料是否載入完成
+    var checkInitialLoadComplete = function() {
+        var allComplete = initialLoadTracker.dept && 
+                         initialLoadTracker.enrollYear && 
+                         initialLoadTracker.dataSource;
+        
+        if (allComplete && $scope.isInitialLoading) {
+            console.log('所有初始資料載入完成,關閉 loading');
+            
+            // 延遲一點時間確保 DOM 完全渲染
+            $timeout(function() {
+                $scope.isInitialLoading = false;
+                
+                // 關閉 loading 後,將焦點設置到"顯示公開總覽數"按鈕
+                $timeout(function() {
+                    var publicCountBtn = document.getElementById('publicCountBtn');
+                    if (publicCountBtn) {
+                        publicCountBtn.focus();
+                        // 確保按鈕在視窗中可見
+                        publicCountBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        console.log('焦點已設置到"顯示公開總覽數"按鈕');
+                    }
+                }, 200);
+            }, 100);
+        }
+    };
+    
     // 取得系所組別
     $scope.getDept = function(enroll_year) {
         // enroll_year 入學年度
@@ -27,6 +65,9 @@ app.controller('MainCtrl', ['$scope', '$timeout', function($scope, $timeout) {
                     if (response.Result) $scope.Department = [].concat(response.Result.Department || []);
                     $scope.$apply();
                 }
+                // 標記系所資料載入完成
+                initialLoadTracker.dept = true;
+                checkInitialLoadComplete();
             }
         });
     };
@@ -41,6 +82,9 @@ app.controller('MainCtrl', ['$scope', '$timeout', function($scope, $timeout) {
                     if (response.Result) $scope.EnrollYears = [].concat(response.Result.EnrollYears || []);
                     $scope.$apply();
                 }
+                // 標記入學年度資料載入完成
+                initialLoadTracker.enrollYear = true;
+                checkInitialLoadComplete();
             }
         });
     };
@@ -116,6 +160,9 @@ app.controller('MainCtrl', ['$scope', '$timeout', function($scope, $timeout) {
                     // console.log($scope.AdditionalIndustry);
                     $scope.$apply();
                 }
+                // 標記資料源載入完成
+                initialLoadTracker.dataSource = true;
+                checkInitialLoadComplete();
             }
         });
     };
