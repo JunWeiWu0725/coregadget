@@ -6,7 +6,7 @@ import { GadgetService } from './gadget.service';
 })
 export class ContractService {
 
-  contactName = '1campus.mobile.v2.teacher';
+  contactName = 'ischool.teacher.cadre';
 
   constructor(private gadget: GadgetService) { }
 

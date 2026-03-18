@@ -1,23 +1,49 @@
-<h2 mat-dialog-title>指定 {{ this.data.classCadre.cadreType.Cadrename }}</h2>
-<mat-dialog-content class="mat-typography">
-  <!-- <h3>請選一位班上學生：</h3> -->
-  <p>
-    <mat-form-field appearance="fill">
-      <mat-label>選擇一位學生</mat-label>
-      <mat-select
-        [(ngModel)]="selectedStudent"
-        (selectionChange)="changeStud()">
-        <mat-option
-          *ngFor="let stud of this.data.students"
-          [value]="stud">
-          {{ stud.SeatNo }} {{ stud.StudentName }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </p>
-  <div *ngIf="errMsg" class="text-danger"> {{ errMsg }} </div>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>取消</button>
-  <button [disabled]="!isValid" mat-button cdkFocusInitial (click)="saveCadre()">確定</button>
-</mat-dialog-actions>
+<div class="dialog-wrapper">
+  <div class="dialog-header d-flex justify-content-between align-items-center p-4">
+    <div class="title-group">
+      <h2 class="dialog-main-title m-0">指派學生</h2>
+      <div class="dialog-subtitle mt-2">
+        正在選擇：<span class="highlight-text">{{ data.classCadre.cadreType.Cadrename }}</span>
+      </div>
+    </div>
+    <button mat-icon-button mat-dialog-close class="close-icon-btn">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content class="custom-content px-4">
+    <div class="search-bar-container mb-4">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input type="text" class="search-input" placeholder="搜尋姓名或座號..." [(ngModel)]="searchText">
+    </div>
+
+    <div class="student-scroll-list">
+      <div
+        class="student-card d-flex align-items-center mb-3"
+        *ngFor="let stud of filteredStudents"
+        (click)="selectStudent(stud)"
+        [class.selected]="selectedStudent?.StudentId === stud.StudentId">
+
+        <div class="seat-badge-square">{{ stud.SeatNo | number:'2.0' }}</div>
+        <div class="student-name ml-3 flex-fill" [innerHTML]="decodeHtml(stud.StudentName)"></div>
+
+        <div class="already-assigned-badge" *ngIf="stud.CurrentCadre">
+          {{ stud.CurrentCadre }}
+        </div>
+      </div>
+
+      <div class="text-center text-muted p-5" *ngIf="filteredStudents.length === 0">
+        找不到符合條件的學生
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <div class="dialog-footer p-4 d-flex justify-content-center gap-3">
+    <button mat-flat-button class="btn-submit" (click)="saveCadre()" [disabled]="!selectedStudent">
+      指派
+    </button>
+    <button mat-button class="btn-cancel" mat-dialog-close>
+      關閉視窗
+    </button>
+  </div>
+</div>

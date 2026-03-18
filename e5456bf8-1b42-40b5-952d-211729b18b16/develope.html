@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="zh-Hant-TW">
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,6 +27,12 @@
 
 <body>
     <div id="widget" class="my-page">
+        <!-- Loading 畫面 -->
+        <div id="loadingScreen" role="status" aria-live="polite" aria-busy="true" aria-label="載入中,請稍候,正在載入資料" tabindex="0" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.9); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+            <div aria-hidden="true" style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">載入中...</div>
+            <div aria-hidden="true" style="font-size: 18px;">請稍候,正在載入資料</div>
+        </div>
+        
         <div id="mainMsg"></div>
         <div class="page-container">
             <!--
@@ -37,24 +43,25 @@
             </div>
             -->
             <div class="header-space"></div>
-            <div class="content container-fluid">
+            <div class="content container-fluid" aria-live="off">
                 <div class="tabbable">
                     <div class="tab-content">
                         <div class="tab-pane active">
                             <div class="row-fluid" style="font-size:medium;">
                                 <div class="span12">
                                     <table class="table table-bordered my-table" id="dropout"
-                                        aria-describedby="dropoutTableCaption" role="table">
+                                        aria-describedby="dropoutTableCaption" role="table" aria-live="off">
                                         <!-- <caption id="dropoutTableCaption" class="sr-only">學生休學紀錄列表</caption> -->
                                         <thead>
                                             <tr class="info">
-                                                <th colspan="2">休學紀錄</th>
+                                                <th colspan="2" id="dropoutTitle" tabindex="0" role="heading" aria-level="1" aria-label="休學紀錄" style="outline: none;">
+                                                    <span aria-hidden="true">休學紀錄</span></th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
                                     </table>
                                 </div>
-                                <div id="DropoutReminderText" role="status" aria-live="polite">
+                                <div id="DropoutReminderText" aria-live="off" aria-label="休學相關說明">
                                 </div>
                             </div>
                         </div>

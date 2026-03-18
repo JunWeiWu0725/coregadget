@@ -1,8 +1,6 @@
-import { ClassInfo } from './../../dal/discipline.service';
-import { StudentInfo, CadreInfo, CadreService } from './../../dal/cadre.service';
 import { Component, Inject, OnInit } from '@angular/core';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import { ClassCadreRecord } from 'src/app/dal/cadre.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { CadreService, StudentInfo, CadreInfo } from './../../dal/cadre.service';
 
 @Component({
   selector: 'app-add-cadre-dialog',
@@ -11,61 +9,59 @@ import { ClassCadreRecord } from 'src/app/dal/cadre.service';
 })
 export class AddCadreDialogComponent implements OnInit {
 
-  selectedStudent: StudentInfo ;
+  selectedStudent: StudentInfo | null = null;
+  searchText: string = '';
   errMsg = '';
-  isValid = true;
+
   constructor(
     public dialogRef: MatDialogRef<AddCadreDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private service: CadreService) {}
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private service: CadreService
+  ) {}
 
-  onNoClick(): void {
-    this.dialogRef.close();
+  ngOnInit(): void {}
+
+  // 搜尋過濾邏輯
+  get filteredStudents(): StudentInfo[] {
+    if (!this.searchText) return this.data.students;
+    const filter = this.searchText.toLowerCase();
+    return this.data.students.filter(s =>
+      s.StudentName.toLowerCase().includes(filter) ||
+      s.SeatNo.toString().includes(filter)
+    );
   }
 
-  ngOnInit(): void {
+  selectStudent(stud: StudentInfo) {
+    this.selectedStudent = stud;
+    this.errMsg = '';
   }
 
   async saveCadre() {
-    if (!this.selectedStudent) {
-      this.errMsg = '請選擇一位學生';
-      return ;
-    }
+    if (!this.selectedStudent) return;
 
-    this.isValid = true;
-
-
-    console.log(this.selectedStudent);
-    console.log(this.data);
-    // this.data.classCadre.student = this.selectedStudent ;
-    const cadre = {
+    const cadre: CadreInfo = {
       schoolyear: this.data.schoolYear,
-      semester: this.data.semester ,
+      semester: this.data.semester,
       studentid: this.selectedStudent.StudentId,
+      studentname: this.selectedStudent.StudentName,
       referencetype: this.data.classCadre.cadreType.Nametype,
-      cadrename: this.data.classCadre.cadreType.Cadrename ,
-      text: this.data.class.ClassName
+      cadrename: this.data.classCadre.cadreType.Cadrename,
+      text: this.data.class.ClassName,
+      uid: ''
     };
 
     try {
-      await this.service.addCadre(cadre as CadreInfo);
-      this.dialogRef.close();
-    } catch(error) {
-      this.errMsg = error ;
+      await this.service.addCadre(cadre);
+      this.dialogRef.close(true); // 傳回 true 觸發父視窗 reload
+    } catch (error) {
+      this.errMsg = '儲存失敗';
     }
-
-    this.isValid = false;
   }
 
-  changeStud() {
-    this.errMsg = '';
+  decodeHtml(html: string) {
+    if (!html) return '';
+    const txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    return txt.value;
   }
-}
-
-export class DialogData {
-  classCadre: ClassCadreRecord;
-  students: StudentInfo[];
-  schoolYear: string;
-  semester: string ;
-  class: ClassInfo;
 }

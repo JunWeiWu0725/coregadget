@@ -1,9 +1,47 @@
 var app = angular.module("app", ["checklist-model"]);
 
-app.controller('MainCtrl', ['$scope', function($scope) {
+app.controller('MainCtrl', ['$scope', '$timeout', function($scope, $timeout) {
     $scope.connection = gadget.getContract("emba.student");
     $scope.isLoadComplete = false;
     $scope.isLoading = false;
+    
+    // 初始載入狀態
+    $scope.isInitialLoading = true;
+    
+    // 追蹤初始資料載入狀態
+    var initialLoadTracker = {
+        dept: false,
+        enrollYear: false,
+        dataSource: false
+    };
+    
+    // 檢查所有初始資料是否載入完成
+    var checkInitialLoadComplete = function() {
+        var allComplete = initialLoadTracker.dept && 
+                         initialLoadTracker.enrollYear && 
+                         initialLoadTracker.dataSource;
+        
+        if (allComplete && $scope.isInitialLoading) {
+            console.log('所有初始資料載入完成,關閉 loading');
+            
+            // 延遲一點時間確保 DOM 完全渲染
+            $timeout(function() {
+                $scope.isInitialLoading = false;
+                
+                // 關閉 loading 後,將焦點設置到"顯示公開總覽數"按鈕
+                $timeout(function() {
+                    var publicCountBtn = document.getElementById('publicCountBtn');
+                    if (publicCountBtn) {
+                        publicCountBtn.focus();
+                        // 確保按鈕在視窗中可見
+                        publicCountBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        console.log('焦點已設置到"顯示公開總覽數"按鈕');
+                    }
+                }, 200);
+            }, 100);
+        }
+    };
+    
     // 取得系所組別
     $scope.getDept = function(enroll_year) {
         // enroll_year 入學年度
@@ -27,6 +65,9 @@ app.controller('MainCtrl', ['$scope', function($scope) {
                     if (response.Result) $scope.Department = [].concat(response.Result.Department || []);
                     $scope.$apply();
                 }
+                // 標記系所資料載入完成
+                initialLoadTracker.dept = true;
+                checkInitialLoadComplete();
             }
         });
     };
@@ -41,6 +82,9 @@ app.controller('MainCtrl', ['$scope', function($scope) {
                     if (response.Result) $scope.EnrollYears = [].concat(response.Result.EnrollYears || []);
                     $scope.$apply();
                 }
+                // 標記入學年度資料載入完成
+                initialLoadTracker.enrollYear = true;
+                checkInitialLoadComplete();
             }
         });
     };
@@ -116,8 +160,48 @@ app.controller('MainCtrl', ['$scope', function($scope) {
                     // console.log($scope.AdditionalIndustry);
                     $scope.$apply();
                 }
+                // 標記資料源載入完成
+                initialLoadTracker.dataSource = true;
+                checkInitialLoadComplete();
             }
         });
+    };
+
+    // 處理 dropdown 選取後的焦點管理和收合
+    $scope.handleDropdownSelection = function(buttonId) {
+        // 立即關閉 dropdown (不等待 timeout)
+        var button = document.getElementById(buttonId);
+        if (button) {
+            var $button = $(button);
+            var $dropdown = $button.closest('.dropdown');
+            
+            // 立即關閉 dropdown
+            $dropdown.removeClass('open');
+            $button.attr('aria-expanded', 'false');
+            $('.dropdown-backdrop').remove();
+        }
+        
+        // 然後在下一個 digest cycle 設置焦點
+        $timeout(function() {
+            if (button) {
+                // 強制設置焦點 - 多種方法組合
+                // 方法 1: 直接 focus
+                button.focus();
+                
+                // 方法 2: 使用 blur + focus 組合(對 iOS 有時有效)
+                $timeout(function() {
+                    button.blur();
+                    $timeout(function() {
+                        button.focus();
+                        
+                        // 方法 3: 對於 iOS,嘗試滾動到元素以觸發焦點
+                        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                            button.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    }, 10);
+                }, 10);
+            }
+        }, 50);
     };
 
     $scope.resetFilter = function() {
@@ -595,6 +679,7 @@ app.controller('MainCtrl', ['$scope', function($scope) {
                 $scope.filter.additional.industry_id = domain.id;
                 $scope.filter.additional.industry = domain.name;
             }
+            $scope.handleDropdownSelection('industry');
         },
         toggleExperienceCategory: function(category) {
             var tmp = $scope.filter.additional.menu.objDomain['C_'+category.name];
@@ -611,6 +696,7 @@ app.controller('MainCtrl', ['$scope', function($scope) {
                     category.name
                 ].join('_');
             }
+            $scope.handleDropdownSelection('industryC');
         },
         toggleExperienceItem: function(item) {
             var tmp = $scope.filter.additional.menu.objCategory['I_'+item.name];
@@ -622,6 +708,7 @@ app.controller('MainCtrl', ['$scope', function($scope) {
                 $scope.filter.additional.menu.Category.name,
                 item.name
             ].join('_');
+            $scope.handleDropdownSelection('industryI');
         },
         setEmpty: function() {
             $scope.filter.additional.menu.Domain = null;
@@ -632,6 +719,7 @@ app.controller('MainCtrl', ['$scope', function($scope) {
 
             $scope.filter.additional.industry = null;
             $scope.filter.additional.industry_id = null;
+            $scope.handleDropdownSelection('industry');
         }
     };
 

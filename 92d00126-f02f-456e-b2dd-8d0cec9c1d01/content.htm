@@ -27,10 +27,20 @@
   <script src="js/checklist-model.js"></script>
 </head>
 
-<body ng-controller="MainCtrl">  
-  <div id="gadget" class="my-page text-16">
+<body ng-controller="MainCtrl">
+  <!-- Loading 畫面 -->
+  <div id="loading-overlay" class="loading-overlay" ng-show="isLoading" aria-live="polite" aria-busy="true">
+    <div class="loading-container">
+      <div class="loading-spinner" role="status" tabindex="0" aria-label="資料載入中，請稍候">
+        <div class="spinner-border" aria-hidden="true"></div>
+        <p class="loading-text">資料載入中，請稍候...</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="gadget" class="my-page text-16" ng-show="!isLoading">
     <!--modal 地址-->
-    <div class="modal fade" id="address" tabindex="-1" role="dialog" aria-labelledby="myaddress">
+    <div class="modal fade" id="address" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex">
@@ -86,7 +96,7 @@
       </div>
     </div>
     <!--modal 學歷-->
-    <div class="modal fade" id="education" tabindex="-1" role="dialog" aria-labelledby="myeducation">
+    <div class="modal fade" id="education" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex">
@@ -162,11 +172,11 @@
       </div>
     </div>
     <!--modal 經歷-->
-    <div class="modal fade" id="experience" tabindex="-1" role="dialog" aria-labelledby="myexperience">
+    <div class="modal fade" id="experience" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex">
-            <h4 class="modal-title" id="myexperience">
+            <h4 class="modal-title" id="myexperience" tabindex="0">
               {{experiences.current.type === 'edit' ? '編輯經歷' : '新增經歷'}}
             </h4>
             <button type="button" class="close h-12 w-12 float-none ml-auto" data-dismiss="modal" aria-label="關閉經歷編輯框">
@@ -213,7 +223,7 @@
                 class="form-control h-12" 
                 ng-model="experiences.current.result.PostLevel" 
                 aria-label="必填，選擇層級別，輕觸兩下即可啟用">
-                <option value="">...請選擇層級別...</option>
+                <option value="">請選擇層級別</option>
                 <option ng-repeat="item in ExperienceDataSource['C_層級別']" value="{{item}}">{{item}}</option>
                 <option value="其它">其它</option>
               </select>
@@ -232,18 +242,18 @@
                   aria-label="必填，其它層級別，編輯方塊，輕觸兩下即可啟用">
               </div>
             </div>
-            <div class="dropdown" ng-class="{'has-error': !experiences.current.result.DepartmentCategory}">
-              <button class="btn btn-default dropdown-toggle" type="button" id="department" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="true" aria-label="請選擇部門">
-                <span target="branch">{{experiences.current.result.DepartmentCategory || '部門'}}</span>
-                <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="department" target="department-options">
-                <li ng-click="experiences.current.result.DepartmentCategory=''">...請選擇部門...</li>
-                <li ng-repeat="item in ExperienceDataSource['C_部門類別']"
-                  ng-click="experiences.current.result.DepartmentCategory=item">{{item}}</li>
-                <li ng-click="experiences.current.result.DepartmentCategory='其它'">其它</li>
-              </ul>
+            <div class="form-group" ng-class="{'has-error': !experiences.current.result.DepartmentCategory}">
+              <label for="department-select" class="control-label">部門</label>
+              <select 
+                id="department-select" 
+                name="department-select" 
+                class="form-control h-12" 
+                ng-model="experiences.current.result.DepartmentCategory" 
+                aria-label="必填，請選擇部門，輕觸兩下即可啟用">
+                <option value="">請選擇部門</option>
+                <option ng-repeat="item in ExperienceDataSource['C_部門類別']" value="{{item}}">{{item}}</option>
+                <option value="其它">其它</option>
+              </select>
               <div ng-show="experiences.current.result.DepartmentCategory === '其它'" class="input-group"
                 ng-class="{'has-error': !experiences.current.result.DepartmentCategoryOther}">
                 <label for="department-other" class="input-group-addon p-3">請註明</label>
@@ -262,7 +272,7 @@
                 ng-model="experiences.current.menu.Domain.Domain" 
                 aria-label="必填，請選擇產業別，輕觸兩下即可啟用" 
                 ng-change="experiences.toggleExperienceDomain(experiences.current.menu.Domain.Domain)">
-                <option value="" ng-click="experiences.setEmpty()">...請選擇產業別...</option>
+                <option value="" ng-click="experiences.setEmpty()">請選擇產業別</option>
                 <option ng-repeat="domain in AdditionalSetup['S_Industry'].Domains" value="{{domain}}">{{domain}}</option>
               </select>
             </div>
@@ -275,7 +285,7 @@
                   ng-model="experiences.current.menu.Category.Category" 
                   aria-label="選擇子類別，輕觸兩下即可啟用" 
                   ng-change="experiences.toggleExperienceCategory(experiences.current.menu.Category.Category)">
-                  <option value="" disabled>...請選擇子類別...</option>
+                  <option value="" disabled>請選擇子類別</option>
                   <option ng-repeat="category in experiences.current.menu.Domain.Categorys" value="{{category}}">{{category}}</option>
               </select>
             </div>
@@ -288,7 +298,7 @@
                   ng-model="experiences.current.menu.Item.Item" 
                   aria-label="選擇子項目，輕觸兩下即可啟用" 
                   ng-change="experiences.toggleExperienceItem(experiences.current.menu.Item.Item)">
-                  <option value="" disabled>...請選擇子項目...</option>
+                  <option value="" disabled>請選擇子項目</option>
                   <option ng-repeat="item in experiences.current.menu.Category.Items" value="{{item}}">{{item}}</option>
               </select>
             </div>            
@@ -329,7 +339,7 @@
                 class="form-control h-12" 
                 ng-model="experiences.current.result.WorkStatus" 
                 aria-label="必填，選擇工作狀態，輕觸兩下即可啟用">
-                <option value="">...請選擇工作狀態...</option>
+                <option value="">請選擇工作狀態</option>
                 <option ng-repeat="item in ExperienceDataSource['C_工作狀態']" value="{{item}}">{{item}}</option>
                 <option value="其它">其它</option>
               </select>
@@ -359,7 +369,7 @@
       </div>
     </div>
     <!--modal 經歷－層級別-->
-    <div class="modal fade" id="level" tabindex="-1" role="dialog" aria-labelledby="mylevel">
+    <div class="modal fade" id="level" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex">
@@ -409,7 +419,7 @@
       </div>
     </div>
     <!--modal 經歷－工作地點-->
-    <div class="modal fade" id="placeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal fade" id="placeModal" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex">
@@ -460,7 +470,7 @@
       </div>
     </div>
     <!--modal 校外團體-->
-    <div class="modal fade check-modal" id="externalModal" tabindex="-1" role="dialog" aria-labelledby="mygroup4">
+    <div class="modal fade check-modal" id="externalModal" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex">
@@ -546,7 +556,7 @@
       </div>
     </div>
     <!--modal 興趣-->
-    <div class="modal fade check-modal" id="interestModal" tabindex="-1" role="dialog" aria-labelledby="myinterest">
+    <div class="modal fade check-modal" id="interestModal" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex">
@@ -632,7 +642,7 @@
       </div>
     </div>
     <!--madal EMBA團體-->
-    <div class="modal fade check-modal" id="EMBAGroupsModel" tabindex="-1" role="dialog" aria-labelledby="mygroup1">
+    <div class="modal fade check-modal" id="EMBAGroupsModel" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex">
@@ -728,8 +738,10 @@
             </div>
             -->
       <div class="header-space"></div>
-
+      
       <div class="content">
+        <div id="page-title" class="text-center" tabindex="-1" aria-label="個人資訊,標題" style="outline: none; font-size: 18px; font-weight: 500; margin-bottom: 8px;">
+          <span aria-hidden="true">個人資訊</span></div>
         <div class="well well-sm">
           <ol style="margin: 4px 0; padding-left: 16px;">
             <li>如您願意分享個人資訊於 myEMBA 查詢，請於分享框內打勾，學歷、經歷請點選編輯進行分享，如不願意被查詢或分享，則請勿打勾，謝謝。</li>
@@ -845,10 +857,11 @@
                 </td>
                 <td>
                   <div class="input-group" ng-class="{'has-error': !myInfo.StudentInfo.CustodianOtherInfo.CustodianOtherInfo.Phone}">
-                    <label for="custodian-phone" class="labelh" tabindex="0">聯絡人電話(必填)
+                    <label for="custodian-phone" class="labelh">聯絡人電話(必填)
                       <img ng-src="./css/images/{{ maskedField.contactPhone.eyeIcon }}" alt="切換聯絡人電話顯示"
                         style="cursor: pointer; margin-left: 8px; padding: 12px; height: 48px; width: 48px;"
                         ng-click="toggleEyeIcon(maskedField.contactPhone)" tabindex="0" role="button"
+                        aria-label="點擊切換聯絡人電話號碼的顯示與隱藏"
                         >
                     </label>
                     <input type="{{ maskedField.contactPhone.inputType }}" maxlength="20" class="form-control h-12"
@@ -1113,14 +1126,15 @@
                       >
                     </label>
                     <input 
-                      type="{{ maskedField.email1.inputType }}" 
+                      type="{{ maskedField.email1.inputType }}"
+                      inputmode="email"
                       maxlength="50"
                       placeholder="請輸入 Email 地址1"
                       class="{email:true} form-control h-12" 
                       id="email1" 
                       name="email1"
                       ng-model="myInfo.StudentBrief2.EmailList.email1"
-                      aria-label="{{ maskedField.email1.inputType === 'password' ? 'Email 1，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 1 地址，編輯方塊，輕觸兩下即可啟用' }}"
+                      aria-label="{{ maskedField.email1.inputType === 'password' ? 'Email 1，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 1 地址，編輯方塊，輕觸兩下即可啟用，請使用英文輸入' }}"
                       aria-required="true" 
                       aria-describedby="email1-required"
                       autocomplete="off">
@@ -1147,12 +1161,14 @@
                     </label>
                     <input 
                       type="{{ maskedField.email2.inputType }}" 
+                      inputmode="email"
                       maxlength="50"
                       placeholder="請輸入 Email 地址2"
                       class="{email:true} form-control h-12" id="email2" name="email2"
                       ng-model="myInfo.StudentBrief2.EmailList.email2"
-                      aria-label="{{ maskedField.email2.inputType === 'password' ? 'Email 2，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 2 地址，編輯方塊，輕觸兩下即可啟用' }}"
-                      aria-required="false" autocomplete="off">
+                      aria-label="{{ maskedField.email2.inputType === 'password' ? 'Email 2，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 2 地址，編輯方塊，輕觸兩下即可啟用，請使用英文輸入' }}"
+                      aria-required="false"
+                      autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.EmailList.Email2=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email2)"
                       role="button" tabindex="0"
@@ -1174,12 +1190,15 @@
                         >
 
                     </label>
-                    <input type="{{ maskedField.email3.inputType }}" maxlength="50"
+                    <input type="{{ maskedField.email3.inputType }}"
+                      inputmode="email"
+                      maxlength="50"
                       placeholder="請輸入 Email 地址3"
                       class="{email:true} form-control h-12" id="email3" name="email3"
                       ng-model="myInfo.StudentBrief2.EmailList.email3"
-                      aria-label="{{ maskedField.email3.inputType === 'password' ? 'Email 3，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 3 地址，編輯方塊，輕觸兩下即可啟用' }}"
-                      aria-required="false" autocomplete="off">
+                      aria-label="{{ maskedField.email3.inputType === 'password' ? 'Email 3，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 3 地址，編輯方塊，輕觸兩下即可啟用，請使用英文輸入' }}"
+                      aria-required="false"
+                      autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.EmailList.Email3=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email3)"
                       role="button" tabindex="0"
@@ -1200,12 +1219,15 @@
                         aria-label="點擊切換 Email 4 地址的顯示與隱藏"
                         >
                     </label>
-                    <input type="{{ maskedField.email4.inputType }}" maxlength="50"
+                    <input type="{{ maskedField.email4.inputType }}"
+                      inputmode="email"
+                      maxlength="50"
                       placeholder="請輸入 Email 地址4"
                       class="{email:true} form-control h-12" id="email4" name="email4"
                       ng-model="myInfo.StudentBrief2.EmailList.email4"
-                      aria-label="{{ maskedField.email4.inputType === 'password' ? 'Email 4，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 4 地址，編輯方塊，輕觸兩下即可啟用' }}"
-                      aria-required="false" autocomplete="off">
+                      aria-label="{{ maskedField.email4.inputType === 'password' ? 'Email 4，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 4 地址，編輯方塊，輕觸兩下即可啟用，請使用英文輸入' }}"
+                      aria-required="false"
+                      autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.EmailList.Email4=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email4)"
                       role="button" tabindex="0"
@@ -1226,12 +1248,15 @@
                         aria-label="點擊切換 Email 5 地址的顯示與隱藏"
                         >
                     </label>
-                    <input type="{{ maskedField.email5.inputType }}" maxlength="50"
+                    <input type="{{ maskedField.email5.inputType }}"
+                      inputmode="email"
+                      maxlength="50"
                       placeholder="請輸入 Email 地址5"
                       class="{email:true} form-control h-12" id="email5" name="email5"
                       ng-model="myInfo.StudentBrief2.EmailList.email5"
-                      aria-label="{{ maskedField.email5.inputType === 'password' ? 'Email 5，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 5 地址，編輯方塊，輕觸兩下即可啟用' }}"
-                      aria-required="false" autocomplete="off">
+                      aria-label="{{ maskedField.email5.inputType === 'password' ? 'Email 5，內容已遮蔽，編輯方塊，輕觸兩下即可啟用' : 'Email 5 地址，編輯方塊，輕觸兩下即可啟用，請使用英文輸入' }}"
+                      aria-required="false"
+                      autocomplete="off">
                     <span class="input-group-addon p-3" target="data-sharing"
                       ng-click="myInfo.DataSharing.DataSharing.EmailList.Email5=myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.EmailList.Email5)"
                       role="button" tabindex="0"
@@ -1856,10 +1881,11 @@
                 <td>
                   <div class="input-group">
                     <label for="line" class="labelh">Line</label>
-                    <input type="text" class="form-control h-12" id="line" name="line" 
+                    <input type="email" class="form-control h-12" id="line" name="line" 
+                      inputmode="email"
                       placeholder="請輸入 Line ID"
                       ng-model="myInfo.StudentInfo.Line" 
-                      aria-label="Line ID，編輯方塊，輕觸兩下即可啟用">
+                      aria-label="Line ID，編輯方塊，輕觸兩下即可啟用，請使用英文輸入">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
                       aria-label="{{ myInfo.DataSharing.DataSharing.Line  === 'true' ? '點擊改為不分享 Line ID，按鈕，輕觸兩下即可啟用' : '點擊改為分享 Line ID，按鈕，輕觸兩下即可啟用' }}"
                       ng-click="myInfo.DataSharing.DataSharing.Line = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.Line)">
@@ -1875,9 +1901,10 @@
                 <td>
                   <div class="input-group">
                     <label for="facebook" class="labelh">Facebook</label>
-                    <input type="text" class="form-control h-12" id="facebook" name="facebook"
+                    <input type="email" class="form-control h-12" id="facebook" name="facebook"
+                      inputmode="email"
                       placeholder="請輸入 Facebook ID" ng-model="myInfo.StudentInfo.Facebook" 
-                      aria-label="Facebook ID，編輯方塊，輕觸兩下即可啟用">
+                      aria-label="Facebook ID，編輯方塊，輕觸兩下即可啟用，請使用英文輸入">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
                       aria-label="{{ myInfo.DataSharing.DataSharing.Facebook === 'true' ? '點擊改為不分享 Facebook ID，按鈕，輕觸兩下即可啟用' : '點擊改為分享 Facebook ID，按鈕，輕觸兩下即可啟用' }}"
                       ng-click="myInfo.DataSharing.DataSharing.Facebook = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.Facebook)">
@@ -1893,9 +1920,10 @@
                 <td>
                   <div class="input-group">
                     <label for="linkedIn" class="labelh">LinkedIn</label>
-                    <input type="text" class="form-control h-12" id="linkedIn" name="linkedIn"
+                    <input type="email" class="form-control h-12" id="linkedIn" name="linkedIn"
+                      inputmode="email"
                       placeholder="請輸入 LinkedIn ID" ng-model="myInfo.StudentInfo.LinkedIn" 
-                      aria-label="LinkedIn ID，編輯方塊，輕觸兩下即可啟用">
+                      aria-label="LinkedIn ID，編輯方塊，輕觸兩下即可啟用，請使用英文輸入">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
                       aria-label="{{ myInfo.DataSharing.DataSharing.LinkedIn  === 'true' ? '點擊改為不分享 LinkedIn ID，按鈕，輕觸兩下即可啟用' : '點擊改為分享 LinkedIn ID，按鈕，輕觸兩下即可啟用' }}"
                       ng-click="myInfo.DataSharing.DataSharing.LinkedIn = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.LinkedIn)">
@@ -1911,9 +1939,10 @@
                 <td>
                   <div class="input-group">
                     <label for="whatsApp" class="labelh">WhatsApp</label>
-                    <input type="text" class="form-control h-12" id="whatsApp" name="whatsApp"
+                    <input type="email" class="form-control h-12" id="whatsApp" name="whatsApp"
+                      inputmode="email"
                       placeholder="請輸入 WhatsApp ID" ng-model="myInfo.StudentInfo.WhatsApp" 
-                      aria-label="WhatsApp ID，編輯方塊，輕觸兩下即可啟用">
+                      aria-label="WhatsApp ID，編輯方塊，輕觸兩下即可啟用，請使用英文輸入">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
                       aria-label="{{ myInfo.DataSharing.DataSharing.WhatsApp  === 'true' ? '點擊改為不分享 WhatsApp ID，按鈕，輕觸兩下即可啟用' : '點擊改為分享 WhatsApp ID，按鈕，輕觸兩下即可啟用' }}"
                       ng-click="myInfo.DataSharing.DataSharing.WhatsApp = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.WhatsApp)">
@@ -1929,8 +1958,10 @@
                 <td>
                   <div class="input-group">
                     <label for="weChat" class="labelh">WeChat</label>
-                    <input type="text" class="form-control h-12" id="weChat" name="weChat" placeholder="請輸入 WeChat ID"
-                      ng-model="myInfo.StudentInfo.WeChat" aria-label="WeChat ID，編輯方塊，輕觸兩下即可啟用">
+                    <input type="email" class="form-control h-12" id="weChat" name="weChat" 
+                      inputmode="email"
+                      placeholder="請輸入 WeChat ID"
+                      ng-model="myInfo.StudentInfo.WeChat" aria-label="WeChat ID，編輯方塊，輕觸兩下即可啟用，請使用英文輸入">
                     <span class="input-group-addon p-3" target="data-sharing" role="button" tabindex="0"
                       aria-label="{{ myInfo.DataSharing.DataSharing.WeChat  === 'true' ? '點擊改為不分享 WeChat ID，按鈕，輕觸兩下即可啟用' : '點擊改為分享 WeChat ID，按鈕，輕觸兩下即可啟用' }}"
                       ng-click="myInfo.DataSharing.DataSharing.WeChat = myInfo.toggleSLTF(myInfo.DataSharing.DataSharing.WeChat)">

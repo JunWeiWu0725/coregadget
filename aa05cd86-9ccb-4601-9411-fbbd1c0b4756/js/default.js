@@ -3,14 +3,44 @@
   var query_absence;
 
   $(function () {
+    // 頁面載入時，將焦點設定到 loading 畫面
+    setTimeout(function() {
+      $("#loading-screen").focus();
+    }, 100);
+    
     $("#absence a[target='query']").click(function (e) {
       e.preventDefault();
       return query_absence();
     });
     $("#absence ul[target='semester-options'] a").click(function (e) {
       e.preventDefault();
-      $("#absence span[target='semester']").html($(this).html());
-      return $("#absence span[target='semester']").attr("value", $(this).attr("value"));
+      var selectedText = $(this).html();
+      var selectedValue = $(this).attr("value");
+      
+      // 更新顯示文字和值
+      $("#absence span[target='semester']").html(selectedText);
+      $("#absence span[target='semester']").attr("value", selectedValue);
+      
+      // 更新按鈕的 aria-label
+      var dropdownButton = $("#semester-dropdown-button");
+      dropdownButton.attr("aria-label", "學期 " + selectedText + "，選單，輕觸兩下即可啟用");
+      
+      // 關閉 dropdown
+      dropdownButton.dropdown('toggle');
+      
+      // 宣告選取結果
+      $("#semester-announcement").text("已選取 " + selectedText);
+      
+      // 將焦點返回到按鈕
+      setTimeout(function() {
+        dropdownButton.focus();
+        // 清除宣告文字,避免下次選取時重複
+        setTimeout(function() {
+          $("#semester-announcement").text("");
+        }, 1000);
+      }, 100);
+      
+      return false;
     });
     gadget.getContract("emba.student").send({
       service: "default.GetSemester",
@@ -32,16 +62,35 @@
         
         semester = response.Result.SystemConfig.DefaultSemester;
         $("#absence span[target='semester']").attr("value", semester);
+        var semesterText;
         if (semester === "0") {
-          semester = "夏季學期";
+          semesterText = "夏季學期";
         }
         if (semester === "1") {
-          semester = "第 1 學期";
+          semesterText = "第 1 學期";
         }
         if (semester === "2") {
-          semester = "第 2 學期";
+          semesterText = "第 2 學期";
         }
-        $("#absence span[target='semester']").html(semester);
+        $("#absence span[target='semester']").html(semesterText);
+        
+        // 更新按鈕的 aria-label 以包含預設學期
+        $("#semester-dropdown-button").attr("aria-label", "學期 " + semesterText + "，選單，輕觸兩下即可啟用");
+        
+        // 資料載入完成，隱藏 loading 並顯示主要內容
+        setTimeout(function() {
+          // 隱藏 loading 畫面
+          $("#loading-screen").addClass("hidden");
+          
+          // 顯示主要內容
+          $("#widget").show();
+          
+          // 將焦點移到「缺課記錄」標題
+          setTimeout(function() {
+            $("#page-title").focus();
+          }, 100);
+        }, 300);
+        
         // query_absence(); // 預設載入查詢結果
       }
     });

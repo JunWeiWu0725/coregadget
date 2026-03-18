@@ -23,19 +23,31 @@
   <link href="css/default.css" rel="stylesheet" />
   <link href="css/base.css" rel="stylesheet" />
   <link href="css/purge.css" rel="stylesheet" />
-
+  
   <script src="js/jquery.min.js"></script>
   <script src="bootstrap/js/bootstrap.min.js"></script>
   <script src="js/default.js"></script>
 </head>
 
 <body>
-  <div id="widget" class="my-page text-sm">
+  <!-- Loading 畫面 -->
+  <div id="loading-screen" class="loading-screen" role="status" aria-live="polite" aria-label="載入中" tabindex="-1">
+    <div class="loading-container">
+      <div class="loading-spinner" aria-hidden="true">
+        <i class="fa fa-spinner fa-spin" style="font-size: 48px;"></i>
+      </div>
+      <p class="loading-text">載入中，請稍候...</p>
+    </div>
+  </div>
+
+  <div id="widget" class="my-page text-sm" style="display: none;">
     <div class="page-container">
       <div class="header-space"></div>
       <div class="content container-fluid">
         <div id="absence">
           <div class="row-fluid">
+            <div id="page-title" class="text-center" tabindex="-1" aria-label="缺課記錄,標題" style="outline: none; font-size: 18px; font-weight: 500; margin-bottom: 8px;">
+              <span aria-hidden="true">缺課記錄</span></div>
             <div class="flex whitespace-nowrap mb-4">
               <label for="schoolYearInput" class="btn btn-inverse disabled px-2">學年度</label>
               <input
@@ -52,7 +64,7 @@
               <div class="btn-group">
                 <button
                   class="btn btn-inverse dropdown-toggle"
-                  style="height: 48px; padding: 6px 8px;"
+                  style="height: 100%; padding: 6px 8px;"
                   data-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
@@ -63,12 +75,13 @@
                   <span id="selected-semester-text" for="semester-options-list" target="semester">學期</span>
                   <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu font-base" target="semester-options" id="semester-options-list" role="menu" 
-                  aria-labelledby="semester-dropdown-button">
+                <ul class="dropdown-menu font-base" target="semester-options" id="semester-options-list" role="menu">
                   <li role="none"><a href="#" value="0" role="menuitem" style="line-height: 42px;">夏季學期</a></li>
                   <li role="none"><a href="#" value="1" role="menuitem" style="line-height: 42px;">第 1 學期</a></li>
                   <li role="none"><a href="#" value="2" role="menuitem" style="line-height: 42px;">第 2 學期</a></li>
                 </ul>
+                <!-- 無障礙：用於宣告選取變更的 live region -->
+                <div class="sr-only" aria-live="polite" aria-atomic="true" id="semester-announcement"></div>
               </div>
     
               <a href="#" class="flex items-center btn btn-primary rounded-none px-2" target="query" id="query-button" role="button" aria-label="查詢，按鈕，輕觸兩下即可啟用">
