@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { DsaTransferService } from 'src/app/transfer-students/service/dsa-transfer.service';
 
@@ -37,7 +37,7 @@ export const STANDARD_FIELDS = [
   { key: '班級', required: true, description: '學生目前班級', type: '文字', mode: 'bySeat' },
   { key: '座號', required: true, description: '學生座號', type: '數字', mode: 'bySeat' },
   { key: '學號', required: true, description: '學生學號', type: '文字', mode: 'byStudentId' },
-  { key: '狀態', required: false, description: '一般、延修、休學（可多選，逗號分隔）', type: '文字', mode: 'both' },
+  { key: '狀態', required: false, description: '一般、延修、休學、畢業或離校（可多選，逗號分隔）', type: '文字', mode: 'both' },
   { key: '年級', required: false, description: '1-12', type: '數字', mode: 'both' },
   { key: '學年度', required: true, description: '如：113、114', type: '數字', mode: 'both' },
   { key: '學期', required: true, description: '1 或 2', type: '數字', mode: 'both' },
@@ -89,21 +89,22 @@ export class ImportMappingModalComponent implements OnInit {
   fileFieldsMap: Map<string, string[]> = new Map(); // 每個檔案對應的欄位名稱
   fileMappingsMap: Map<string, Map<string, FieldMapping>> = new Map(); // 每個檔案對應的映射配置
   currentEditingFileName: string = ''; // 當前正在編輯的檔案名稱
-  
+  syncMappingsToAllFiles: boolean = false; // 是否同步映射配置至所有檔案
+
   // 欄位映射配置
   fieldMappings: Map<string, FieldMapping> = new Map();
-  
+
   // 匯入模式
   importMode: 'bySeat' | 'byStudentId' = 'bySeat';
-  
+
   // 轉換後的資料預覽
   transformedData: any[] = [];
   previewRows: number = 100; // 預覽行數
-  
+
   // UI 狀態
   step: 'upload' | 'mapping' | 'preview' | 'download' = 'upload';
   showFieldMapping: boolean = false;
-  
+
   // 記錄已點擊的唯一值（用於隱藏已使用的標籤）
   clickedUniqueValues: Map<string, Set<string>> = new Map();
 
@@ -111,8 +112,12 @@ export class ImportMappingModalComponent implements OnInit {
   studentList: any[] = [];
   teacherList: any[] = [];
 
+  // 用於追蹤是否已顯示班級字段的 alert（避免重複彈窗）
+  private _classFieldAlertShown: boolean = false;
+
   constructor(
-    private dsaService: DsaTransferService
+    private dsaService: DsaTransferService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -141,7 +146,7 @@ export class ImportMappingModalComponent implements OnInit {
       this.studentList = [].concat(rsp.Students || []);
       console.log("=== 欄位映射工具 - 全校學生清單（包含畢業或離校） ===");
       console.log("學生總數:", this.studentList.length);
-      
+
       // 調試：列出前10個學號作為參考
       if (this.studentList.length > 0) {
         console.log("前10個學生學號範例:", this.studentList.slice(0, 10).map(s => ({
@@ -158,7 +163,7 @@ export class ImportMappingModalComponent implements OnInit {
         this.studentList = [].concat(rsp.Students || []);
         console.log("=== 欄位映射工具 - 全校學生清單（預設） ===");
         console.log("學生總數:", this.studentList.length);
-        
+
         // 調試：列出前10個學號作為參考
         if (this.studentList.length > 0) {
           console.log("前10個學生學號範例:", this.studentList.slice(0, 10).map(s => ({
@@ -219,6 +224,54 @@ export class ImportMappingModalComponent implements OnInit {
     return { success, failed };
   }
 
+  // 取得日期格式驗證統計
+  getDateMatchCount(): { success: number; failed: number } {
+    let success = 0;
+    let failed = 0;
+    this.transformedData.forEach(row => {
+      if (row._dateMatch) {
+        if (row._dateMatch.matched) {
+          success++;
+        } else {
+          failed++;
+        }
+      } else {
+        // 如果沒有日期匹配記錄，檢查日期欄位是否有值
+        const dateValue = (row['日期'] || '').toString().trim();
+        if (!dateValue) {
+          failed++; // 日期為空也算失敗
+        } else {
+          success++; // 有值但沒有驗證記錄，假設成功
+        }
+      }
+    });
+    return { success, failed };
+  }
+
+  // 取得狀態欄位驗證統計
+  getStatusMatchCount(): { success: number; failed: number } {
+    let success = 0;
+    let failed = 0;
+    this.transformedData.forEach(row => {
+      if (row._statusMatch) {
+        if (row._statusMatch.matched) {
+          success++;
+        } else {
+          failed++;
+        }
+      } else {
+        // 如果沒有狀態匹配記錄，檢查狀態欄位是否有值
+        const statusValue = (row['狀態'] || '').toString().trim();
+        if (!statusValue) {
+          failed++; // 狀態為空也算失敗
+        } else {
+          success++; // 有值但沒有驗證記錄，假設成功
+        }
+      }
+    });
+    return { success, failed };
+  }
+
   // 顯示學生清單
   showStudentList() {
     if (this.studentList.length === 0) {
@@ -227,8 +280,8 @@ export class ImportMappingModalComponent implements OnInit {
     }
 
     // 創建學生清單的 HTML 內容
-    const statusText: Record<string, string> = { "1": "一般", "2": "延修", "3": "休學" };
-    
+    const statusText: Record<string, string> = { "1": "一般", "2": "延修", "4": "休學", "16": "畢業或離校" };
+
     let htmlContent = `
       <html>
         <head>
@@ -360,7 +413,7 @@ export class ImportMappingModalComponent implements OnInit {
     }
 
     // 篩選出教師匹配失敗的記錄
-    const failedRecords = this.transformedData.filter(row => 
+    const failedRecords = this.transformedData.filter(row =>
       row._teacherMatch && !row._teacherMatch.matched
     );
 
@@ -505,6 +558,7 @@ export class ImportMappingModalComponent implements OnInit {
     this.showFieldMapping = false;
     this.currentEditingFileName = '';
     this.clickedUniqueValues.clear();
+    this._classFieldAlertShown = false; // 重置 alert 標誌
   }
 
   // 處理檔案上傳（支援多檔案）
@@ -512,24 +566,26 @@ export class ImportMappingModalComponent implements OnInit {
     const files = event.target.files;
     if (!files || files.length === 0) return;
 
+    alert(`開始處理檔案上傳\n檔案數量: ${files.length}\n第一個檔案名稱: ${files[0].name}`);
+
     this.uploadedFileNames = [];
     this.sourceExcelData = [];
     this.fileDataMap.clear();
     this.fileFieldsMap.clear();
     this.fileMappingsMap.clear();
     const allFields = new Set<string>();
-    
+
     try {
       // 讀取所有檔案
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         this.uploadedFileNames.push(file.name);
-        
+
         const data = await this.readExcelFile(file);
-        
+
         // 儲存每個檔案的資料
         this.fileDataMap.set(file.name, data);
-        
+
         // 取得該檔案的欄位名稱
         let fileFields: string[] = [];
         if (data.length > 0) {
@@ -537,70 +593,88 @@ export class ImportMappingModalComponent implements OnInit {
           fileFields.forEach(field => allFields.add(field));
         }
         this.fileFieldsMap.set(file.name, fileFields);
-        
+
         // 為每個檔案初始化獨立的映射配置
         const fileMapping = new Map<string, FieldMapping>();
         this.fileMappingsMap.set(file.name, fileMapping);
-        
+
         // 合併資料（用於顯示）
         this.sourceExcelData = this.sourceExcelData.concat(data);
       }
-      
+
       // 設定所有欄位名稱（所有檔案的欄位合併）
       this.sourceFields = Array.from(allFields).sort();
-      
+
       if (this.sourceExcelData.length === 0) {
         alert('所有檔案都沒有資料');
         return;
       }
-      
+
       // 初始化第一個檔案的欄位映射
       if (this.uploadedFileNames.length > 0) {
         this.currentEditingFileName = this.uploadedFileNames[0];
         this.switchEditingFile(this.currentEditingFileName);
+
+        // 直接設置學年度和學期的固定值
+        this.setYearSemesterFromFileName(this.currentEditingFileName);
       }
-      
+
       // 進入映射步驟
       this.step = 'mapping';
       this.showFieldMapping = true;
-      
+
     } catch (error) {
       alert('讀取 Excel 檔案失敗：' + error);
       console.error(error);
     }
-    
+
     // 清空文件輸入框
     event.target.value = '';
   }
 
   // 切換編輯的檔案
   async switchEditingFile(fileName: string) {
+    // console.log(`switchEditingFile 被調用\n檔案名稱: ${fileName}\n當前編輯檔案: ${this.currentEditingFileName}`);
+
     // 如果切換到同一個檔案，不需要處理
     if (fileName === this.currentEditingFileName) {
       return;
     }
-    
+
     // 保存當前檔案的映射配置
     this.saveCurrentFileMappings();
-    
+
     // 記錄上一個檔案名稱
     const previousFileName = this.currentEditingFileName;
-    
-    // 檢查是否有上一個檔案的映射配置
+
+    // 如果啟用了同步功能，直接載入目標檔案的配置（因為 saveCurrentFileMappings 已經同步好了）
+    if (this.syncMappingsToAllFiles) {
+      this.currentEditingFileName = fileName;
+      const fileMapping = this.fileMappingsMap.get(fileName);
+      if (fileMapping) {
+        this.fieldMappings = new Map(fileMapping);
+      } else {
+        this.fieldMappings.clear();
+      }
+      this.initializeFieldMappings();
+      return;
+    }
+
+    // 檢查是否有上一個檔案的映射配置（未啟用同步時才詢問是否複製）
     if (previousFileName && this.fileMappingsMap.has(previousFileName)) {
       const previousMapping = this.fileMappingsMap.get(previousFileName);
       // 檢查上一個檔案是否有設定映射（不只是空的配置）
-      const hasPreviousMapping = previousMapping && Array.from(previousMapping.values()).some(m => 
+      const hasPreviousMapping = previousMapping && Array.from(previousMapping.values()).some(m =>
         (m.sourceFields && m.sourceFields.length > 0 && m.sourceFields.some(f => f && f.trim() !== '')) ||
         (m.useFixedValue && m.fixedValue && m.fixedValue.trim() !== '') ||
         (m.valueMappings && m.valueMappings.length > 0)
       );
-      
+
       if (hasPreviousMapping) {
         // 彈出確認對話框
         const confirmMessage = `是否要將「${previousFileName}」的映射設定套用到「${fileName}」？\n\n點擊「確定」將複製映射設定，點擊「取消」將使用空白設定。`;
         const shouldCopy = confirm(confirmMessage);
-        
+
         if (shouldCopy) {
           // 複製上一個檔案的映射配置
           const copiedMapping = new Map<string, FieldMapping>();
@@ -621,35 +695,58 @@ export class ImportMappingModalComponent implements OnInit {
               transform: mapping.transform
             });
           });
-          
+
           // 設定為當前檔案的映射配置
           this.fileMappingsMap.set(fileName, copiedMapping);
           this.currentEditingFileName = fileName;
           this.fieldMappings = copiedMapping;
-          
+
           // 初始化欄位映射（會自動匹配欄位名稱）
           this.initializeFieldMappings();
           return;
         }
       }
     }
-    
+
     // 如果沒有上一個檔案或用戶選擇不複製，使用空白設定
     this.currentEditingFileName = fileName;
-    
+
     // 載入該檔案的映射配置
     const fileMapping = this.fileMappingsMap.get(fileName);
-    if (fileMapping) {
-      this.fieldMappings = new Map(fileMapping);
+    if (fileMapping && fileMapping.size > 0) {
+      // 檢查是否有有效的映射配置（有來源欄位或固定值）
+      const hasValidMapping = Array.from(fileMapping.values()).some(m =>
+        (m.sourceFields && m.sourceFields.length > 0 && m.sourceFields.some(f => f && f.trim() !== '')) ||
+        (m.useFixedValue && m.fixedValue && m.fixedValue.trim() !== '')
+      );
+
+      if (hasValidMapping) {
+        // 如果已經有有效的映射配置，載入它
+        this.fieldMappings = new Map(fileMapping);
+      } else {
+        // 如果沒有有效的映射配置，清空並重新初始化
+        this.fieldMappings.clear();
+      }
     } else {
+      // 如果沒有映射配置，清空並重新初始化
       this.fieldMappings.clear();
     }
-    
+
     // 載入該檔案的欄位名稱
     const fileFields = this.fileFieldsMap.get(fileName);
-    if (fileFields) {
-      // 初始化該檔案的欄位映射
+    if (fileFields && fileFields.length > 0) {
+      console.log(`準備初始化 ${fileName} 的欄位映射`);
+      console.log(`檔案欄位:`, fileFields);
+
+      // 初始化該檔案的欄位映射（會自動匹配相同名稱的欄位）
       this.initializeFieldMappings();
+
+      // 檢查初始化後班級字段的狀態
+      const classMapping = this.fieldMappings.get('班級');
+      console.log(`初始化後班級映射:`, classMapping);
+
+      // 保存初始化後的映射配置
+      this.saveCurrentFileMappings();
     }
   }
 
@@ -658,37 +755,185 @@ export class ImportMappingModalComponent implements OnInit {
     if (this.currentEditingFileName) {
       const fileMapping = new Map(this.fieldMappings);
       this.fileMappingsMap.set(this.currentEditingFileName, fileMapping);
+
+      // 如果啟用了同步功能，將配置套用到所有其他檔案（排除學年度與學期）
+      if (this.syncMappingsToAllFiles) {
+        this.uploadedFileNames.forEach(fileName => {
+          if (fileName !== this.currentEditingFileName) {
+            // 獲取該檔案現有的映射，或建立新的
+            let targetMapping = this.fileMappingsMap.get(fileName);
+            if (!targetMapping) {
+              targetMapping = new Map<string, FieldMapping>();
+            }
+            
+            // 複製除了學年度與學期以外的所有映射
+            this.fieldMappings.forEach((mapping, key) => {
+              if (key !== '學年度' && key !== '學期') {
+                // 深拷貝映射配置
+                targetMapping!.set(key, {
+                  standardField: mapping.standardField,
+                  sourceFields: mapping.sourceFields ? [...mapping.sourceFields] : [],
+                  mergeType: mapping.mergeType,
+                  mergeSeparator: mapping.mergeSeparator,
+                  formula: mapping.formula,
+                  fixedValue: mapping.fixedValue,
+                  useFixedValue: mapping.useFixedValue,
+                  valueMappings: mapping.valueMappings ? mapping.valueMappings.map(vm => ({
+                    sourceValue: vm.sourceValue,
+                    targetValue: vm.targetValue
+                  })) : [],
+                  transform: mapping.transform
+                });
+              }
+            });
+            
+            this.fileMappingsMap.set(fileName, targetMapping!);
+          }
+        });
+      }
     }
   }
 
-  // 從資料中識別學年度和學期
-  private detectSchoolYearAndSemester(data: any[]): { schoolYear?: string, semester?: string } {
-    if (!data || data.length === 0) return {};
-    
-    // 嘗試從資料中找學年度和學期欄位
-    const firstRow = data[0];
+  // 從檔案名稱和資料中識別學年度和學期
+  private detectSchoolYearAndSemester(data: any[], fileName?: string): { schoolYear?: string, semester?: string } {
     let schoolYear: string | undefined;
     let semester: string | undefined;
-    
-    // 可能的欄位名稱
-    const yearFields = ['學年度', '學年', 'year', 'Year', 'YEAR'];
-    const semesterFields = ['學期', 'semester', 'Semester', 'SEMESTER'];
-    
-    for (const field of yearFields) {
-      if (firstRow[field]) {
-        schoolYear = String(firstRow[field]).trim();
-        break;
+
+    // 優先從檔案名稱提取學年度和學期
+    if (fileName) {
+      const extracted = this.extractYearSemesterFromFileName(fileName);
+      if (extracted.schoolYear) {
+        schoolYear = extracted.schoolYear;
+        console.log(`✓ 從檔案名稱提取學年度：${schoolYear}`);
+      }
+      if (extracted.semester) {
+        semester = extracted.semester;
+        console.log(`✓ 從檔案名稱提取學期：${semester}`);
       }
     }
-    
-    for (const field of semesterFields) {
-      if (firstRow[field]) {
-        semester = String(firstRow[field]).trim();
-        break;
+
+    // 如果檔案名稱沒有提取到，再嘗試從資料中找
+    if ((!schoolYear || !semester) && data && data.length > 0) {
+      const firstRow = data[0];
+
+      // 可能的欄位名稱
+      const yearFields = ['學年度', '學年', 'year', 'Year', 'YEAR'];
+      const semesterFields = ['學期', 'semester', 'Semester', 'SEMESTER'];
+
+      if (!schoolYear) {
+        for (const field of yearFields) {
+          if (firstRow[field]) {
+            schoolYear = String(firstRow[field]).trim();
+            console.log(`✓ 從資料欄位提取學年度：${schoolYear}`);
+            break;
+          }
+        }
+      }
+
+      if (!semester) {
+        for (const field of semesterFields) {
+          if (firstRow[field]) {
+            semester = String(firstRow[field]).trim();
+            console.log(`✓ 從資料欄位提取學期：${semester}`);
+            break;
+          }
+        }
       }
     }
-    
+
     return { schoolYear, semester };
+  }
+
+  // 從檔案名稱提取學年度和學期
+  private extractYearSemesterFromFileName(fileName: string): { schoolYear?: string, semester?: string } {
+    alert(`=== 開始處理檔案名稱 ===\n檔案名稱: ${fileName}`);
+
+    // 移除副檔名
+    const nameWithoutExt = fileName.replace(/\.[^/.]+$/, '');
+    alert(`移除副檔名後: ${nameWithoutExt}`);
+
+    // 嘗試多種格式：
+    // 1. 113_1_xxx 或 113-1-xxx 格式
+    let match = nameWithoutExt.match(/^(\d{3})[_-](\d)/);
+    if (match) {
+      alert(`✓ 匹配成功！格式1 (113_1_xxx)\n學年度: ${match[1]}\n學期: ${match[2]}`);
+      return {
+        schoolYear: match[1],  // 前3碼
+        semester: match[2]     // 第4碼
+      };
+    }
+
+    // 2. 1131xxx 格式（連續4位數字開頭）
+    match = nameWithoutExt.match(/^(\d{3})(\d)/);
+    if (match) {
+      alert(`✓ 匹配成功！格式2 (1131xxx)\n學年度: ${match[1]}\n學期: ${match[2]}`);
+      return {
+        schoolYear: match[1],  // 前3碼
+        semester: match[2]     // 第4碼
+      };
+    }
+
+    // 3. xxx_113_1 或 xxx-113-1 格式（中間位置）
+    match = nameWithoutExt.match(/[_-](\d{3})[_-](\d)/);
+    if (match) {
+      alert(`✓ 匹配成功！格式3 (xxx_113_1)\n學年度: ${match[1]}\n學期: ${match[2]}`);
+      return {
+        schoolYear: match[1],  // 前3碼
+        semester: match[2]     // 第4碼
+      };
+    }
+
+    // 4. 嘗試找到任何3位數字後跟1位數字的組合
+    match = nameWithoutExt.match(/(\d{3})(\d)/);
+    if (match) {
+      alert(`✓ 匹配成功！格式4 (任意位置的4位數字)\n學年度: ${match[1]}\n學期: ${match[2]}`);
+      return {
+        schoolYear: match[1],  // 前3碼
+        semester: match[2]     // 第4碼
+      };
+    }
+
+    alert(`✗ 匹配失敗！\n無法從檔案名稱「${fileName}」提取學年度和學期\n\n嘗試的格式:\n- 113_1_xxx\n- 113-1-xxx\n- 1131xxx\n- xxx_113_1\n- xxx-113-1\n- 任意位置的4位數字`);
+    return {};
+  }
+
+  // 直接設置學年度和學期的固定值
+  private setYearSemesterFromFileName(fileName: string) {
+    alert(`開始設置學年度和學期固定值\n檔案名稱: ${fileName}`);
+
+    const extracted = this.extractYearSemesterFromFileName(fileName);
+
+    if (extracted.schoolYear) {
+      // 設置學年度固定值
+      const yearMapping: FieldMapping = {
+        standardField: '學年度',
+        sourceFields: [],
+        useFixedValue: true,
+        fixedValue: extracted.schoolYear
+      };
+      this.fieldMappings.set('學年度', yearMapping);
+      alert(`✓ 設置學年度固定值: ${extracted.schoolYear}`);
+    }
+
+    if (extracted.semester) {
+      // 設置學期固定值
+      const semesterMapping: FieldMapping = {
+        standardField: '學期',
+        sourceFields: [],
+        useFixedValue: true,
+        fixedValue: extracted.semester
+      };
+      this.fieldMappings.set('學期', semesterMapping);
+      alert(`✓ 設置學期固定值: ${extracted.semester}`);
+    }
+
+    // 保存映射配置
+    this.saveCurrentFileMappings();
+
+    // 強制觸發變更檢測
+    this.cdr.detectChanges();
+
+    alert(`學年度和學期設置完成！`);
   }
 
   // 讀取 Excel 檔案
@@ -701,10 +946,10 @@ export class ImportMappingModalComponent implements OnInit {
           const workbook = XLSX.read(data, { type: "array", cellDates: true });
           const firstSheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[firstSheetName];
-          
+
           // 使用第一行作為表頭
           const excelData = XLSX.utils.sheet_to_json(worksheet, { raw: false, dateNF: 'HH:mm' });
-          
+
           // 處理時間欄位：將 Excel 的小數時間格式轉換為 HH:mm
           const processedData = excelData.map((row: any) => {
             const processedRow: any = { ...row };
@@ -714,8 +959,8 @@ export class ImportMappingModalComponent implements OnInit {
               if (value !== null && value !== undefined) {
                 const numValue = Number(value);
                 // 如果是 0-1 之間的小數，且欄位名稱包含"時間"或"time"，則轉換為時間格式
-                if (!isNaN(numValue) && numValue >= 0 && numValue < 1 && 
-                    (key.includes('時間') || key.includes('時間') || key.toLowerCase().includes('time'))) {
+                if (!isNaN(numValue) && numValue >= 0 && numValue < 1 &&
+                  (key.includes('時間') || key.includes('時間') || key.toLowerCase().includes('time'))) {
                   processedRow[key] = this.convertExcelTimeToHHMM(numValue);
                 } else if (typeof value === 'number' && numValue >= 0 && numValue < 1) {
                   // 如果值看起來像時間小數（0-1之間），嘗試轉換
@@ -730,14 +975,14 @@ export class ImportMappingModalComponent implements OnInit {
             });
             return processedRow;
           });
-          
+
           // 過濾空白行
           const filteredData = processedData.filter((row: any) => {
-            return row && Object.values(row).some(value => 
+            return row && Object.values(row).some(value =>
               value !== null && value !== undefined && String(value).trim() !== ''
             );
           });
-          
+
           resolve(filteredData);
         } catch (error) {
           reject(error);
@@ -761,46 +1006,98 @@ export class ImportMappingModalComponent implements OnInit {
   initializeFieldMappings() {
     // 使用當前編輯檔案的欄位名稱
     const currentFileFields = this.fileFieldsMap.get(this.currentEditingFileName) || this.sourceFields;
-    
+
+    console.log('=== 初始化欄位映射 ===');
+    console.log('當前編輯檔案:', this.currentEditingFileName);
+
+    // 預處理來源欄位：去除前後空格
+    const normalizedFileFields = currentFileFields.map(f => ({
+      original: f,
+      normalized: f ? f.trim().toLowerCase() : ''
+    }));
+
     STANDARD_FIELDS.forEach(field => {
       // 根據匯入模式過濾欄位
       if (field.mode !== 'both' && field.mode !== this.importMode) {
         return;
       }
 
-      // 如果已經有映射配置，不覆蓋
+      // 取得現有的映射配置
+      let mapping: FieldMapping;
       if (this.fieldMappings.has(field.key)) {
-        return;
+        mapping = this.fieldMappings.get(field.key)!;
+        // 如果已經有有效的來源欄位或固定值，不覆蓋
+        const hasValidSourceFields = mapping.sourceFields && mapping.sourceFields.length > 0 &&
+          mapping.sourceFields.some(f => f && f.trim() !== '');
+        const hasFixedValue = mapping.useFixedValue && mapping.fixedValue &&
+          mapping.fixedValue.trim() !== '';
+        if (hasValidSourceFields || hasFixedValue) {
+          return; // 已經有設定，不覆蓋
+        }
+      } else {
+        // 如果沒有映射配置，創建新的
+        mapping = {
+          standardField: field.key,
+          sourceFields: [''] // 預設空選項
+        };
       }
 
-      const mapping: FieldMapping = {
-        standardField: field.key,
-        sourceFields: []
-      };
-
-      // 自動匹配相同名稱的欄位（精確匹配）
+      // 1. 自動匹配相同名稱的欄位（精確匹配）
       let matchedField = currentFileFields.find(sf => sf === field.key);
-      
-      // 如果精確匹配失敗，嘗試模糊匹配（去除空格、大小寫不敏感）
+
+      // 2. 如果精確匹配失敗，嘗試模糊匹配（去除空格、大小寫不敏感）
       if (!matchedField) {
-        matchedField = currentFileFields.find(sf => {
-          const normalizedSource = sf.trim().toLowerCase();
-          const normalizedTarget = field.key.trim().toLowerCase();
-          return normalizedSource === normalizedTarget;
-        });
+        const found = normalizedFileFields.find(nf => nf.normalized === field.key.trim().toLowerCase());
+        if (found) {
+          matchedField = found.original;
+        }
       }
 
-      // 如果還是沒找到，嘗試部分匹配（針對常見的欄位名稱變體）
+      // 3. 如果還是沒找到，嘗試部分匹配（針對常見的欄位名稱變體）
       if (!matchedField) {
         matchedField = this.findFieldByAliasForFields(field.key, currentFileFields);
       }
 
-      if (matchedField) {
-        mapping.sourceFields = [matchedField];
+      // 特殊處理：學年度和學期優先嘗試從檔案名稱提取
+      if ((field.key === '學年度' || field.key === '學期') && this.currentEditingFileName) {
+        const extracted = this.extractYearSemesterFromFileName(this.currentEditingFileName);
+        let extractedValue = '';
+
+        if (field.key === '學年度' && extracted.schoolYear) {
+          extractedValue = extracted.schoolYear;
+        } else if (field.key === '學期' && extracted.semester) {
+          extractedValue = extracted.semester;
+        }
+
+        if (extractedValue) {
+          // 設置為固定值
+          mapping.useFixedValue = true;
+          mapping.fixedValue = extractedValue;
+          mapping.sourceFields = []; // 清空來源欄位
+          this.fieldMappings.set(field.key, mapping);
+          return; // 跳過後續的欄位匹配邏輯
+        }
+      }
+
+      // 如果找到匹配的欄位，自動設定為來源欄位
+      if (matchedField && matchedField.trim().length > 0) {
+        mapping.sourceFields = [matchedField.trim()];
+        console.log(`✓ 自動匹配：${field.key} → ${matchedField}`);
+      } else {
+        // 如果沒有找到匹配，確保有默認的空選項
+        if (!mapping.sourceFields || mapping.sourceFields.length === 0) {
+          mapping.sourceFields = [''];
+        }
       }
 
       this.fieldMappings.set(field.key, mapping);
     });
+
+    // 立即保存到當前檔案的映射配置
+    this.saveCurrentFileMappings();
+
+    // 強制觸發變更檢測
+    this.cdr.detectChanges();
   }
 
   // 根據別名查找欄位（使用指定的欄位列表）
@@ -827,7 +1124,7 @@ export class ImportMappingModalComponent implements OnInit {
     };
 
     const aliases = aliasMap[standardField] || [];
-    
+
     for (const alias of aliases) {
       const found = fields.find(sf => {
         const normalizedSource = sf.trim().toLowerCase();
@@ -866,7 +1163,7 @@ export class ImportMappingModalComponent implements OnInit {
     };
 
     const aliases = aliasMap[standardField] || [];
-    
+
     for (const alias of aliases) {
       const found = this.sourceFields.find(sf => {
         const normalizedSource = sf.trim().toLowerCase();
@@ -892,22 +1189,36 @@ export class ImportMappingModalComponent implements OnInit {
   // 取得欄位映射配置
   getFieldMapping(standardField: string): FieldMapping {
     if (!this.fieldMappings.has(standardField)) {
+      // console.log(`創建新的映射配置: ${standardField}`);
       this.fieldMappings.set(standardField, {
         standardField: standardField,
-        sourceFields: []
+        sourceFields: [''] // 預設給一個空選項，確保 UI 顯示下拉選單
       });
     }
-    return this.fieldMappings.get(standardField)!;
+    const mapping = this.fieldMappings.get(standardField)!;
+
+    // 安全檢查：如果沒有設定固定值且 sourceFields 為空，自動補一個空選項
+    // 這避免了 UI 渲染錯誤或無法顯示下拉選單的問題
+    if (!mapping.useFixedValue && (!mapping.sourceFields || mapping.sourceFields.length === 0)) {
+      mapping.sourceFields = [''];
+      this.fieldMappings.set(standardField, mapping);
+      console.log(`自動修復空 sourceFields: ${standardField}`);
+    }
+
+    return mapping;
   }
 
   // 設定欄位映射
   setFieldMapping(standardField: string, sourceField: string, index: number = 0) {
+    console.log(`設定欄位映射: ${standardField} → ${sourceField} (index: ${index})`);
+    debugger;
     const mapping = this.getFieldMapping(standardField);
     if (!mapping.sourceFields) {
       mapping.sourceFields = [];
     }
     mapping.sourceFields[index] = sourceField;
     this.fieldMappings.set(standardField, mapping);
+    console.log(`設定後的映射:`, this.fieldMappings.get(standardField));
     // 自動保存到當前檔案的映射配置
     this.saveCurrentFileMappings();
   }
@@ -938,8 +1249,8 @@ export class ImportMappingModalComponent implements OnInit {
   // 檢查是否有來源欄位（用於判斷是否禁用固定值）
   hasSourceFields(standardField: string): boolean {
     const mapping = this.getFieldMapping(standardField);
-    return mapping.sourceFields && mapping.sourceFields.length > 0 && 
-           mapping.sourceFields.some(f => f && f.trim() !== '');
+    return mapping.sourceFields && mapping.sourceFields.length > 0 &&
+      mapping.sourceFields.some(f => f && f.trim() !== '');
   }
 
   // 清除來源欄位（當設定固定值時）
@@ -954,7 +1265,7 @@ export class ImportMappingModalComponent implements OnInit {
   onFixedValueChange(standardField: string, event: any) {
     const value = event.target.value;
     const mapping = this.getFieldMapping(standardField);
-    
+
     if (value && value.trim() !== '') {
       mapping.fixedValue = value.trim();
       mapping.useFixedValue = true; // 自動勾選使用固定值
@@ -964,7 +1275,7 @@ export class ImportMappingModalComponent implements OnInit {
       mapping.fixedValue = undefined;
       mapping.useFixedValue = false; // 自動取消勾選
     }
-    
+
     this.fieldMappings.set(standardField, mapping);
     // 自動保存到當前檔案的映射配置
     this.saveCurrentFileMappings();
@@ -972,6 +1283,7 @@ export class ImportMappingModalComponent implements OnInit {
 
   // 設定固定值
   setFixedValue(standardField: string, value: string) {
+    debugger
     const mapping = this.getFieldMapping(standardField);
     // 清除來源欄位映射（固定值和來源欄位互斥）
     if (value && value.trim() !== '') {
@@ -993,18 +1305,18 @@ export class ImportMappingModalComponent implements OnInit {
   onUseFixedValueChange(standardField: string, checked: boolean) {
     const mapping = this.getFieldMapping(standardField);
     mapping.useFixedValue = checked;
-    
+
     // 如果取消勾選，清除固定值
     if (!checked) {
       mapping.fixedValue = undefined;
     }
-    
+
     // 如果勾選使用固定值，清除來源欄位映射
     if (checked) {
       mapping.sourceFields = [];
       mapping.valueMappings = [];
     }
-    
+
     this.fieldMappings.set(standardField, mapping);
     // 自動保存到當前檔案的映射配置
     this.saveCurrentFileMappings();
@@ -1078,13 +1390,13 @@ export class ImportMappingModalComponent implements OnInit {
     if (!sourceField || !this.currentEditingFileName) {
       return [];
     }
-    
+
     // 使用當前編輯檔案的資料
     const currentFileData = this.fileDataMap.get(this.currentEditingFileName) || [];
     if (currentFileData.length === 0) {
       return [];
     }
-    
+
     const values = new Set<string>();
     currentFileData.forEach(row => {
       const value = row[sourceField];
@@ -1092,7 +1404,7 @@ export class ImportMappingModalComponent implements OnInit {
         values.add(String(value).trim());
       }
     });
-    
+
     return Array.from(values).sort();
   }
 
@@ -1163,7 +1475,7 @@ export class ImportMappingModalComponent implements OnInit {
       // 如果有來源欄位映射
       if (mapping.sourceFields && mapping.sourceFields.length > 0) {
         const validFields = mapping.sourceFields.filter(f => f && f.trim() !== '');
-        
+
         if (validFields.length === 0) {
           transformedRow[field.key] = '';
           return;
@@ -1181,7 +1493,7 @@ export class ImportMappingModalComponent implements OnInit {
             value = this.normalizeSeatNo(value);
           }
           transformedRow[field.key] = value;
-        } 
+        }
         // 多欄位合併（如：摘要一、摘要二、摘要三 → 聯絡事項）
         else {
           const values = validFields.map(f => {
@@ -1189,7 +1501,7 @@ export class ImportMappingModalComponent implements OnInit {
             // 過濾空白值，但保留有內容的值
             return val && String(val).trim() !== '' ? String(val).trim() : null;
           }).filter(v => v !== null);
-          
+
           let mergedValue = '';
           if (mapping.mergeType === 'formula' && mapping.formula) {
             // 使用公式合併（未來擴展）
@@ -1199,7 +1511,7 @@ export class ImportMappingModalComponent implements OnInit {
             const separator = mapping.mergeSeparator || '\n';
             mergedValue = values.join(separator);
           }
-          
+
           // 應用值映射（如果有的話）
           mergedValue = this.applyValueMapping(field.key, mergedValue, mappingConfig);
           transformedRow[field.key] = mergedValue;
@@ -1224,10 +1536,10 @@ export class ImportMappingModalComponent implements OnInit {
     const seatNo = this.normalizeSeatNo(row['座號']);
     const studentNumber = (row['學號'] || '').toString().trim();
     const status = (row['狀態'] || '').toString().trim();
-    
+
     // 狀態轉換：中文狀態 → 系統代碼
-    const statusMapping: Record<string, string> = { "一般": "1", "延修": "2", "休學": "3" };
-    
+    const statusMapping: Record<string, string> = { "一般": "1", "延修": "2", "休學": "4", "畢業或離校": "16" };
+
     // 處理多個狀態值（逗號分隔）
     let statusCodes: string[] = [];
     if (status && status !== '-' && status !== '') {
@@ -1235,9 +1547,9 @@ export class ImportMappingModalComponent implements OnInit {
       const statusValues = status.split(/[,，]/).map(s => s.trim()).filter(s => s !== '');
       statusCodes = statusValues.map(s => statusMapping[s] || s);
     }
-    
+
     let foundStudents: any[] = [];
-    
+
     // 根據匯入模式進行匹配
     if (this.importMode === 'byStudentId') {
       // 按學號匹配（不考慮狀態）
@@ -1248,7 +1560,7 @@ export class ImportMappingModalComponent implements OnInit {
           const systemStudentNumber = s.StudentNumber ? String(s.StudentNumber).trim() : '';
           return systemStudentNumber === normalizedStudentNumber;
         });
-        
+
         // 調試：如果找不到，輸出調試信息
         if (foundStudents.length === 0) {
           console.warn(`找不到學號「${normalizedStudentNumber}」的學生`);
@@ -1271,8 +1583,8 @@ export class ImportMappingModalComponent implements OnInit {
             const studentClassName = (s.ClassName || '').toString();
             // 系統中的座號也需要正規化以便匹配
             const studentSeatNo = this.normalizeSeatNo(s.SeatNo);
-            return studentClassName === className && 
-                   studentSeatNo === seatNo;
+            return studentClassName === className &&
+              studentSeatNo === seatNo;
           });
         } else {
           // 如果有多個狀態值，匹配所有符合的學生
@@ -1281,14 +1593,14 @@ export class ImportMappingModalComponent implements OnInit {
             // 系統中的座號也需要正規化以便匹配
             const studentSeatNo = this.normalizeSeatNo(s.SeatNo);
             const studentStatus = (s.Status || '').toString();
-            return studentClassName === className && 
-                   studentSeatNo === seatNo && 
-                   statusCodes.includes(studentStatus);
+            return studentClassName === className &&
+              studentSeatNo === seatNo &&
+              statusCodes.includes(studentStatus);
           });
         }
       }
     }
-    
+
     // 檢查是否匹配到多個學生（如果狀態有多個值且匹配到多個學生，報錯）
     // 注意：按學號匹配時不考慮狀態，所以這裡只檢查按班級+座號的情況
     if (this.importMode !== 'byStudentId' && statusCodes.length > 1 && foundStudents.length > 1) {
@@ -1299,7 +1611,7 @@ export class ImportMappingModalComponent implements OnInit {
         error: errorMsg
       };
     }
-    
+
     // 按學號匹配時，如果匹配到多個學生，也報錯
     if (this.importMode === 'byStudentId' && foundStudents.length > 1) {
       const studentNames = foundStudents.map(s => s.StudentName || '未知').join('、');
@@ -1309,15 +1621,15 @@ export class ImportMappingModalComponent implements OnInit {
         error: errorMsg
       };
     }
-    
+
     // 如果只匹配到一個學生，返回成功
     if (foundStudents.length === 1) {
       const foundStudent = foundStudents[0];
       // 狀態轉換：系統代碼 → 中文狀態
-      const statusCodeToText: Record<string, string> = { "1": "一般", "2": "延修", "3": "休學" };
+      const statusCodeToText: Record<string, string> = { "1": "一般", "2": "延修", "4": "休學", "16": "畢業或離校" };
       const studentStatusCode = (foundStudent.Status || '').toString();
       const studentStatusText = statusCodeToText[studentStatusCode] || studentStatusCode || '';
-      
+
       return {
         matched: true,
         studentID: foundStudent.StudentID,
@@ -1325,7 +1637,7 @@ export class ImportMappingModalComponent implements OnInit {
         studentStatus: studentStatusText
       };
     }
-    
+
     // 如果沒有匹配到學生，返回錯誤
     if (foundStudents.length === 0) {
       let errorMsg = '';
@@ -1400,26 +1712,26 @@ export class ImportMappingModalComponent implements OnInit {
   private validateTeacherMatch(row: any): { matched: boolean; teacherID?: string; teacherName?: string; error?: string; warning?: string } {
     const authorName = (row['記錄者'] || '').toString().trim();
     const nickname = (row['暱稱'] || '').toString().trim();
-    
+
     if (!authorName) {
       return {
         matched: false,
         error: '記錄者欄位為空'
       };
     }
-    
+
     // 查找匹配的教師
-    let matchedTeachers = this.teacherList.filter(t => 
+    let matchedTeachers = this.teacherList.filter(t =>
       t.Name === authorName || t.NickName === authorName
     );
-    
+
     if (matchedTeachers.length === 0) {
       return {
         matched: false,
         error: `找不到名為「${authorName}」的教師`
       };
     }
-    
+
     if (matchedTeachers.length === 1) {
       // 唯一匹配
       const teacher = matchedTeachers[0];
@@ -1470,36 +1782,53 @@ export class ImportMappingModalComponent implements OnInit {
   validateRequiredFields(): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
     const standardFields = this.getStandardFields();
-    
+
     // 檢查當前編輯的檔案
     const currentFileMapping = this.fileMappingsMap.get(this.currentEditingFileName) || this.fieldMappings;
-    
+
     standardFields.forEach(field => {
+      // 根據匯入模式過濾必填欄位
       if (field.required) {
+        // 如果欄位有 mode 屬性，需要檢查是否符合當前匯入模式
+        if (field.mode && field.mode !== 'both') {
+          if (field.mode !== this.importMode) {
+            // 此欄位不符合當前匯入模式，跳過檢查
+            return;
+          }
+        }
+
         const mapping = currentFileMapping.get(field.key) || this.getFieldMapping(field.key);
-        
+
         // 檢查是否有設定固定值或來源欄位
         const hasFixedValue = mapping.useFixedValue && mapping.fixedValue && mapping.fixedValue.trim() !== '';
-        const hasSourceField = mapping.sourceFields && mapping.sourceFields.length > 0 && 
-                              mapping.sourceFields.some(f => f && f.trim() !== '');
-        
+        const hasSourceField = mapping.sourceFields && mapping.sourceFields.length > 0 &&
+          mapping.sourceFields.some(f => f && f.trim() !== '');
+
         if (!hasFixedValue && !hasSourceField) {
           errors.push(`「${field.key}」為必填欄位，請設定固定值或選擇來源欄位`);
         }
       }
     });
-    
+
     // 檢查所有檔案的映射配置（如果是多檔案）
     if (this.fileMappingsMap.size > 1) {
       this.fileMappingsMap.forEach((fileMapping, fileName) => {
         standardFields.forEach(field => {
           if (field.required) {
+            // 根據匯入模式過濾必填欄位
+            if (field.mode && field.mode !== 'both') {
+              if (field.mode !== this.importMode) {
+                // 此欄位不符合當前匯入模式，跳過檢查
+                return;
+              }
+            }
+
             const mapping = fileMapping.get(field.key);
             if (mapping) {
               const hasFixedValue = mapping.useFixedValue && mapping.fixedValue && mapping.fixedValue.trim() !== '';
-              const hasSourceField = mapping.sourceFields && mapping.sourceFields.length > 0 && 
-                                    mapping.sourceFields.some(f => f && f.trim() !== '');
-              
+              const hasSourceField = mapping.sourceFields && mapping.sourceFields.length > 0 &&
+                mapping.sourceFields.some(f => f && f.trim() !== '');
+
               if (!hasFixedValue && !hasSourceField) {
                 errors.push(`檔案「${fileName}」的「${field.key}」為必填欄位，請設定固定值或選擇來源欄位`);
               }
@@ -1510,7 +1839,7 @@ export class ImportMappingModalComponent implements OnInit {
         });
       });
     }
-    
+
     return {
       valid: errors.length === 0,
       errors
@@ -1541,18 +1870,21 @@ export class ImportMappingModalComponent implements OnInit {
     this.fileDataMap.forEach((fileData, fileName) => {
       // 取得該檔案的映射配置
       const fileMapping = this.fileMappingsMap.get(fileName) || new Map<string, FieldMapping>();
-      
-      // 識別該檔案的學年度和學期
-      const { schoolYear, semester } = this.detectSchoolYearAndSemester(fileData);
-      
+
+      // 識別該檔案的學年度和學期（優先從檔案名稱提取）
+      const { schoolYear, semester } = this.detectSchoolYearAndSemester(fileData, fileName);
+
       // 使用該檔案的映射配置轉換資料
       const transformedFileData = fileData.map((sourceRow) => {
         const transformedRow = this.transformSingleRow(sourceRow, fileMapping, schoolYear, semester);
-        
+
+        // 保存原始資料列（用於錯誤報告）
+        transformedRow['_sourceRow'] = sourceRow;
+
         // 驗證學生匹配
         const studentMatch = this.validateStudentMatch(transformedRow);
         transformedRow['_studentMatch'] = studentMatch;
-        
+
         // 如果學生匹配成功，且狀態欄位為空或未設定，則使用系統中對照出來的狀態
         if (studentMatch && studentMatch.matched && studentMatch.studentStatus) {
           const currentStatus = (transformedRow['狀態'] || '').toString().trim();
@@ -1560,11 +1892,61 @@ export class ImportMappingModalComponent implements OnInit {
             transformedRow['狀態'] = studentMatch.studentStatus;
           }
         }
-        
+
         // 驗證教師匹配
         const teacherMatch = this.validateTeacherMatch(transformedRow);
         transformedRow['_teacherMatch'] = teacherMatch;
-        
+
+        // 驗證日期格式 (yyyy/mm/dd)
+        const dateValue = (transformedRow['日期'] || '').toString().trim();
+        if (dateValue) {
+          // 支援 yyyy/mm/dd 和 yyyy/m/d 格式
+          const dateRegex = /^\d{4}\/\d{1,2}\/\d{1,2}$/;
+          if (!dateRegex.test(dateValue)) {
+            transformedRow['_dateMatch'] = {
+              matched: false,
+              error: `日期格式錯誤（需為 yyyy/mm/dd，如：2024/09/02），當前值：${dateValue}`
+            };
+          } else {
+            // 進一步驗證是否為有效日期
+            const date = new Date(dateValue);
+            if (isNaN(date.getTime())) {
+              transformedRow['_dateMatch'] = {
+                matched: false,
+                error: `日期無效，當前值：${dateValue}`
+              };
+            } else {
+              transformedRow['_dateMatch'] = { matched: true };
+            }
+          }
+        } else {
+          // 日期為空，如果日期是必填欄位，這裡可以標記錯誤，或者交由必填欄位檢查處理
+          // 根據 STANDARD_FIELDS 定義，日期是必填的
+          transformedRow['_dateMatch'] = {
+            matched: false,
+            error: '日期欄位為空'
+          };
+        }
+
+        // 驗證狀態欄位
+        const statusValue = (transformedRow['狀態'] || '').toString().trim();
+        const allowedStatuses = ['一般', '延修', '休學', '畢業或離校'];
+        if (!statusValue) {
+          transformedRow['_statusMatch'] = { matched: false, error: '狀態欄位為空' };
+        } else {
+          // 處理多個狀態值（逗號分隔）
+          const statusValues = statusValue.split(/[,，]/).map(s => s.trim()).filter(s => s !== '');
+          const invalidStatuses = statusValues.filter(s => !allowedStatuses.includes(s));
+          if (invalidStatuses.length > 0) {
+            transformedRow['_statusMatch'] = {
+              matched: false,
+              error: `狀態值無效（需為「一般」、「延修」、「休學」或「畢業或離校」），當前值：${statusValue}`
+            };
+          } else {
+            transformedRow['_statusMatch'] = { matched: true };
+          }
+        }
+
         // 調試：確保錯誤信息存在
         if (studentMatch && !studentMatch.matched && !studentMatch.error) {
           console.warn('學生匹配失敗但無錯誤信息:', transformedRow);
@@ -1574,10 +1956,10 @@ export class ImportMappingModalComponent implements OnInit {
           console.warn('教師匹配失敗但無錯誤信息:', transformedRow);
           teacherMatch.error = '匹配失敗（未知錯誤）';
         }
-        
+
         return transformedRow;
       });
-      
+
       // 合併到總資料中
       this.transformedData = this.transformedData.concat(transformedFileData);
     });
@@ -1589,14 +1971,14 @@ export class ImportMappingModalComponent implements OnInit {
   // 應用值映射（將來源值映射到目標值）
   private applyValueMapping(fieldKey: string, value: any, mappingConfig?: Map<string, FieldMapping>): string {
     if (!value) return '';
-    
+
     // 使用提供的映射配置，或使用當前檔案的映射配置
-    const mapping = mappingConfig && mappingConfig.has(fieldKey) 
-      ? mappingConfig.get(fieldKey)! 
+    const mapping = mappingConfig && mappingConfig.has(fieldKey)
+      ? mappingConfig.get(fieldKey)!
       : this.getFieldMapping(fieldKey);
-      
+
     const strValue = String(value).trim();
-    
+
     // 如果該字段有固定選項值（方式、對象、類別、公開），必須有值映射配置
     if (this.hasAllowedValues(fieldKey)) {
       if (!mapping.valueMappings || mapping.valueMappings.length === 0) {
@@ -1609,13 +1991,13 @@ export class ImportMappingModalComponent implements OnInit {
         return strValue;
       }
     }
-    
+
     // 如果是類別字段（多選，逗號分隔），需要特殊處理
     if (fieldKey === '類別') {
       // 分割多個值（支援中文逗號和英文逗號）
       const values = strValue.split(/[,，]/).map(v => v.trim()).filter(v => v !== '');
       const mappedValues: string[] = [];
-      
+
       values.forEach(val => {
         let mapped = false;
         // 查找匹配的值映射規則
@@ -1646,12 +2028,12 @@ export class ImportMappingModalComponent implements OnInit {
           mappedValues.push(val);
         }
       });
-      
+
       // 去重並用逗號連接
       const uniqueValues = Array.from(new Set(mappedValues));
       return uniqueValues.join(',');
     }
-    
+
     // 其他字段的單一值映射
     // 查找匹配的值映射規則
     for (const valueMapping of mapping.valueMappings) {
@@ -1676,7 +2058,7 @@ export class ImportMappingModalComponent implements OnInit {
         }
       }
     }
-    
+
     // 如果沒有匹配的映射規則，且該字段有值映射配置，返回"?"（待確認）
     // 這表示來源值沒有對應的映射規則
     return '?';
@@ -1771,9 +2153,9 @@ export class ImportMappingModalComponent implements OnInit {
     const contactStr = String(contact).trim();
 
     // 家長相關
-    if (contactStr.includes('爸爸') || contactStr.includes('媽媽') || 
-        contactStr.includes('父親') || contactStr.includes('母親') ||
-        contactStr.includes('家長') || contactStr.includes('父') || contactStr.includes('母')) {
+    if (contactStr.includes('爸爸') || contactStr.includes('媽媽') ||
+      contactStr.includes('父親') || contactStr.includes('母親') ||
+      contactStr.includes('家長') || contactStr.includes('父') || contactStr.includes('母')) {
       return '家長';
     }
 
@@ -1835,11 +2217,14 @@ export class ImportMappingModalComponent implements OnInit {
         }
         errorMessages.push(teacherError);
       }
+      if (row._dateMatch && !row._dateMatch.matched && row._dateMatch.error) {
+        errorMessages.push(`日期：${row._dateMatch.error}`);
+      }
       rowData.push(errorMessages.join('；')); // 添加錯誤訊息到 T 列
       data.push(rowData);
     });
     const worksheet = XLSX.utils.aoa_to_sheet(data);
-    
+
     // 只標記值映射中選擇了"?"（待確認標記）的欄位，用紅色標記
     // 未映射或空值保持空白，不填入問號
     const standardFieldCount = this.getStandardFields().length; // 標準欄位數量
@@ -1859,6 +2244,9 @@ export class ImportMappingModalComponent implements OnInit {
               teacherError += `（${row._teacherMatch.warning}）`;
             }
             errorMessages.push(teacherError);
+          }
+          if (row._dateMatch && !row._dateMatch.matched && row._dateMatch.error) {
+            errorMessages.push(`日期：${row._dateMatch.error}`);
           }
           if (errorMessages.length > 0) {
             const errorText = errorMessages.join('；');
@@ -1882,13 +2270,13 @@ export class ImportMappingModalComponent implements OnInit {
         });
         return;
       }
-      
+
       // 標準欄位的處理
       this.transformedData.forEach((row, rowIndex) => {
         const cellAddress = XLSX.utils.encode_cell({ r: rowIndex + 1, c: colIndex });
         const cellValue = row[header];
         const cellValueStr = cellValue ? String(cellValue).trim() : '';
-        
+
         // 如果值是"?"（待確認標記），用紅色標記
         if (cellValueStr === '?') {
           if (worksheet[cellAddress]) {
@@ -1909,7 +2297,7 @@ export class ImportMappingModalComponent implements OnInit {
         }
       });
     });
-    
+
     XLSX.utils.book_append_sheet(workbook, worksheet, '轉換後資料');
 
     // Sheet 2: 字段映射對應表
@@ -1918,13 +2306,13 @@ export class ImportMappingModalComponent implements OnInit {
     ];
     this.getStandardFields().forEach(field => {
       const mapping = this.getFieldMapping(field.key);
-      const sourceFieldsStr = mapping.sourceFields && mapping.sourceFields.length > 0 
-        ? mapping.sourceFields.join('、') 
+      const sourceFieldsStr = mapping.sourceFields && mapping.sourceFields.length > 0
+        ? mapping.sourceFields.join('、')
         : '';
-      const mergeTypeStr = mapping.mergeType === 'concat' ? '連接' : 
-                          mapping.mergeType === 'formula' ? '公式' : '';
+      const mergeTypeStr = mapping.mergeType === 'concat' ? '連接' :
+        mapping.mergeType === 'formula' ? '公式' : '';
       const separatorStr = mapping.mergeSeparator || '';
-      
+
       fieldMappingData.push([
         field.key,
         field.required ? '是' : '否',
@@ -1942,35 +2330,35 @@ export class ImportMappingModalComponent implements OnInit {
     const valueMappingData = [
       ['系統標準欄位', '來源值', '目標值', '系統允許的選項']
     ];
-    
+
     // 只處理有固定選項值的字段（方式、對象、類別）
     this.getStandardFields().forEach(field => {
       if (this.hasAllowedValues(field.key)) {
         const mapping = this.getFieldMapping(field.key);
         const allowedValues = this.getAllowedValuesForField(field.key);
         const allowedValuesStr = allowedValues ? allowedValues.join('、') : '';
-        
+
         // 如果有來源欄位，列出所有來源值的唯一值
         if (mapping.sourceFields && mapping.sourceFields.length > 0) {
           const sourceField = mapping.sourceFields[0]; // 取第一個來源欄位
           const uniqueValues = this.getUniqueValuesForField(sourceField);
-          
+
           if (uniqueValues.length > 0) {
             // 為每個來源值創建一行
             uniqueValues.forEach(sourceValue => {
               // 查找是否有對應的映射規則
               let targetValue = '';
               if (mapping.valueMappings && mapping.valueMappings.length > 0) {
-                const matchedMapping = mapping.valueMappings.find(vm => 
-                  vm.sourceValue === sourceValue || 
-                  sourceValue.includes(vm.sourceValue) || 
+                const matchedMapping = mapping.valueMappings.find(vm =>
+                  vm.sourceValue === sourceValue ||
+                  sourceValue.includes(vm.sourceValue) ||
                   vm.sourceValue.includes(sourceValue)
                 );
                 if (matchedMapping) {
                   targetValue = matchedMapping.targetValue;
                 }
               }
-              
+
               valueMappingData.push([
                 field.key,
                 sourceValue,
@@ -2006,9 +2394,9 @@ export class ImportMappingModalComponent implements OnInit {
         }
       }
     });
-    
+
     const valueMappingSheet = XLSX.utils.aoa_to_sheet(valueMappingData);
-    
+
     // 設置列寬
     valueMappingSheet['!cols'] = [
       { wch: 15 }, // 系統標準欄位
@@ -2016,24 +2404,24 @@ export class ImportMappingModalComponent implements OnInit {
       { wch: 25 }, // 目標值（可添加下拉選單）
       { wch: 50 }  // 系統允許的選項
     ];
-    
+
     // 為目標值欄位添加下拉選單（只針對有固定選項值的字段）
     let valueMappingRowIndex = 1; // 從第2行開始（第1行是表頭）
     this.getStandardFields().forEach(field => {
       if (this.hasAllowedValues(field.key)) {
         const mapping = this.getFieldMapping(field.key);
         const allowedValues = this.getAllowedValuesForField(field.key);
-        
+
         if (mapping.sourceFields && mapping.sourceFields.length > 0) {
           const sourceField = mapping.sourceFields[0];
           const uniqueValues = this.getUniqueValuesForField(sourceField);
-          
+
           uniqueValues.forEach(() => {
             valueMappingRowIndex++;
             if (allowedValues && allowedValues.length > 0) {
               const dropdownOptions = ['', ...allowedValues];
               const formula = `"${dropdownOptions.join(',')}"`;
-              
+
               // 設置數據驗證（C欄，目標值，索引為2）
               const cellAddress = XLSX.utils.encode_cell({ r: valueMappingRowIndex - 1, c: 2 });
               if (!valueMappingSheet[cellAddress]) {
@@ -2051,7 +2439,7 @@ export class ImportMappingModalComponent implements OnInit {
             if (allowedValues && allowedValues.length > 0) {
               const dropdownOptions = ['', ...allowedValues];
               const formula = `"${dropdownOptions.join(',')}"`;
-              
+
               // 設置數據驗證（C欄，目標值，索引為2）
               const cellAddress = XLSX.utils.encode_cell({ r: valueMappingRowIndex - 1, c: 2 });
               if (!valueMappingSheet[cellAddress]) {
@@ -2066,7 +2454,7 @@ export class ImportMappingModalComponent implements OnInit {
         }
       }
     });
-    
+
     XLSX.utils.book_append_sheet(workbook, valueMappingSheet, '值映射對應表');
 
     // Sheet 4: 固定值設定表
@@ -2090,22 +2478,22 @@ export class ImportMappingModalComponent implements OnInit {
     const confirmData: any[][] = [
       ['系統標準欄位', '必填', '說明', '固定值', '來源欄位對應', '值映射規則（來源值→目標值）', '可用選項說明']
     ];
-    
+
     // 添加資料行
     this.getStandardFields().forEach(field => {
       const mapping = this.getFieldMapping(field.key);
-      const sourceFieldsStr = mapping.sourceFields && mapping.sourceFields.length > 0 
-        ? mapping.sourceFields.join('、') 
+      const sourceFieldsStr = mapping.sourceFields && mapping.sourceFields.length > 0
+        ? mapping.sourceFields.join('、')
         : '';
-      
+
       // 值映射規則字串
       let valueMappingStr = '';
       if (mapping.valueMappings && mapping.valueMappings.length > 0) {
-        valueMappingStr = mapping.valueMappings.map(vm => 
+        valueMappingStr = mapping.valueMappings.map(vm =>
           `${vm.sourceValue}→${vm.targetValue}`
         ).join('；');
       }
-      
+
       // 可用選項說明
       let optionsNote = '';
       if (!sourceFieldsStr && !mapping.fixedValue) {
@@ -2119,7 +2507,7 @@ export class ImportMappingModalComponent implements OnInit {
         } else {
           // 其他字段，根據說明提供建議
           if (field.key === '狀態') {
-            optionsNote = '可用選項：一般、延修、休學';
+            optionsNote = '可用選項：一般、延修、休學、畢業或離校';
           } else if (field.key === '公開') {
             optionsNote = '可用選項：是、否';
           } else if (field.key === '學期') {
@@ -2139,7 +2527,7 @@ export class ImportMappingModalComponent implements OnInit {
       } else if (sourceFieldsStr) {
         optionsNote = '已設定來源欄位對應';
       }
-      
+
       confirmData.push([
         field.key,
         field.required ? '是' : '否',
@@ -2150,9 +2538,9 @@ export class ImportMappingModalComponent implements OnInit {
         optionsNote
       ]);
     });
-    
+
     const confirmSheet = XLSX.utils.aoa_to_sheet(confirmData);
-    
+
     // 為有固定選項值的欄位添加下拉選單（固定值欄位，D欄）
     let confirmRowIndex = 1; // 從第2行開始（第1行是表頭）
     this.getStandardFields().forEach(field => {
@@ -2163,7 +2551,7 @@ export class ImportMappingModalComponent implements OnInit {
           // 創建下拉選單選項字串（用逗號分隔）
           const dropdownOptions = ['', ...allowedValues];
           const formula = `"${dropdownOptions.join(',')}"`;
-          
+
           // 設置數據驗證（D欄，索引為3）
           const cellAddress = XLSX.utils.encode_cell({ r: confirmRowIndex - 1, c: 3 });
           if (!confirmSheet[cellAddress]) {
@@ -2177,7 +2565,7 @@ export class ImportMappingModalComponent implements OnInit {
         }
       }
     });
-    
+
     // 設置列寬
     confirmSheet['!cols'] = [
       { wch: 15 }, // 系統標準欄位
@@ -2188,7 +2576,7 @@ export class ImportMappingModalComponent implements OnInit {
       { wch: 40 }, // 值映射規則
       { wch: 50 }  // 可用選項說明（加寬以顯示完整選項列表）
     ];
-    
+
     XLSX.utils.book_append_sheet(workbook, confirmSheet, '映射配置確認表');
 
     // 下載
@@ -2202,6 +2590,157 @@ export class ImportMappingModalComponent implements OnInit {
     window.URL.revokeObjectURL(url);
 
     this.step = 'download';
+  }
+
+  // 取得成功資料筆數
+  getSuccessDataCount(): number {
+    return this.transformedData.filter(row =>
+      row._studentMatch && row._studentMatch.matched &&
+      row._teacherMatch && row._teacherMatch.matched &&
+      (!row._dateMatch || row._dateMatch.matched) &&
+      (!row._statusMatch || row._statusMatch.matched)
+    ).length;
+  }
+
+  // 取得錯誤資料筆數
+  getErrorDataCount(): number {
+    return this.transformedData.filter(row =>
+      !(row._studentMatch && row._studentMatch.matched &&
+        row._teacherMatch && row._teacherMatch.matched &&
+        (!row._dateMatch || row._dateMatch.matched) &&
+        (!row._statusMatch || row._statusMatch.matched))
+    ).length;
+  }
+
+  // 下載驗證成功的資料（標準格式）
+  downloadSuccessExcel() {
+    // 篩選出成功的資料（學生匹配成功、教師匹配成功、日期格式正確、狀態值正確）
+    const successData = this.transformedData.filter(row =>
+      row._studentMatch && row._studentMatch.matched &&
+      row._teacherMatch && row._teacherMatch.matched &&
+      (!row._dateMatch || row._dateMatch.matched) &&
+      (!row._statusMatch || row._statusMatch.matched)
+    );
+
+    if (successData.length === 0) {
+      alert('沒有驗證成功的資料可下載');
+      return;
+    }
+
+    const workbook = XLSX.utils.book_new();
+
+    // 準備資料
+    const standardHeaders = this.getStandardFields().map(f => f.key);
+    const data = [standardHeaders];
+
+    successData.forEach(row => {
+      const rowData = standardHeaders.map(header => row[header] || '');
+      data.push(rowData);
+    });
+
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    XLSX.utils.book_append_sheet(workbook, worksheet, '匯入資料');
+
+    // 下載
+    const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([wbout], { type: 'application/octet-stream' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `一級輔導匯入_成功資料_${new Date().toISOString().split('T')[0]}.xlsx`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  // 下載驗證失敗的資料（原始格式 + 錯誤原因）
+  downloadErrorExcel() {
+    // 篩選出失敗的資料（學生匹配失敗、教師匹配失敗、日期格式錯誤、或狀態值錯誤）
+    const errorData = this.transformedData.filter(row =>
+      !(row._studentMatch && row._studentMatch.matched &&
+        row._teacherMatch && row._teacherMatch.matched &&
+        (!row._dateMatch || row._dateMatch.matched) &&
+        (!row._statusMatch || row._statusMatch.matched))
+    );
+
+    if (errorData.length === 0) {
+      alert('沒有驗證失敗的資料可下載');
+      return;
+    }
+
+    const workbook = XLSX.utils.book_new();
+
+    // 使用所有的來源欄位（取聯集）
+    const allSourceFieldsSet = new Set<string>();
+
+    // 收集所有錯誤資料的原始欄位
+    errorData.forEach(row => {
+      if (row._sourceRow) {
+        Object.keys(row._sourceRow).forEach(key => allSourceFieldsSet.add(key));
+      }
+    });
+
+    // 轉為陣列並排序
+    const sourceHeaders = Array.from(allSourceFieldsSet).sort();
+
+    // 添加錯誤訊息欄位
+    const headers = [...sourceHeaders, '錯誤訊息'];
+    const data = [headers];
+
+    errorData.forEach(row => {
+      const sourceRow = row._sourceRow || {};
+      const rowData = sourceHeaders.map(header => sourceRow[header] || '');
+
+      // 組合錯誤訊息
+      const errorMessages: string[] = [];
+      if (row._studentMatch && !row._studentMatch.matched && row._studentMatch.error) {
+        errorMessages.push(`學生：${row._studentMatch.error}`);
+      }
+      if (row._teacherMatch && !row._teacherMatch.matched && row._teacherMatch.error) {
+        let teacherError = `教師：${row._teacherMatch.error}`;
+        if (row._teacherMatch.warning) {
+          teacherError += `（${row._teacherMatch.warning}）`;
+        }
+        errorMessages.push(teacherError);
+      }
+      if (row._dateMatch && !row._dateMatch.matched && row._dateMatch.error) {
+        errorMessages.push(`日期：${row._dateMatch.error}`);
+      }
+      if (row._statusMatch && !row._statusMatch.matched && row._statusMatch.error) {
+        errorMessages.push(`狀態：${row._statusMatch.error}`);
+      }
+
+      rowData.push(errorMessages.join('；'));
+      data.push(rowData);
+    });
+
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+
+    // 標記錯誤訊息欄位為紅色
+    const errorColIndex = headers.length - 1;
+    errorData.forEach((row, index) => {
+      const cellAddress = XLSX.utils.encode_cell({ r: index + 1, c: errorColIndex });
+      if (!worksheet[cellAddress]) {
+        worksheet[cellAddress] = { t: 's', v: '' };
+      }
+
+      // 添加樣式（如果庫支持）
+      if (!worksheet[cellAddress].s) worksheet[cellAddress].s = {};
+      worksheet[cellAddress].s = {
+        font: { color: { rgb: "FF0000" } }
+      };
+    });
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, '錯誤資料');
+
+    // 下載
+    const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([wbout], { type: 'application/octet-stream' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `一級輔導匯入_錯誤資料_${new Date().toISOString().split('T')[0]}.xlsx`;
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
 
   // 匯入模式變更

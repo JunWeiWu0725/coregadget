@@ -14,12 +14,12 @@ export interface RowError {
 })
 export class CounselImportValidationService {
   private allStudents: any[] = [];
-  
+
   private allowedValues: Record<string, string[]> = {
     對象: ["學生", "教職員", "家長", "專業人員", "其他"],
     方式: ["面談", "電話", "聯絡簿", "個別約談家長", "會議", "E-mail", "其他"],
     公開: ["是", "否"],
-    狀態: ["一般", "延修", "休學"], // 支援一般、延修、休學
+    狀態: ["一般", "延修", "休學", "畢業或離校"], // 支援一般、延修、休學、畢業或離校
     學期: ["1", "2"],
   };
 
@@ -27,7 +27,8 @@ export class CounselImportValidationService {
   private statusMapping: Record<string, string> = {
     "一般": "1",
     "延修": "2",
-    "休學": "3"
+    "休學": "4",
+    "畢業或離校": "16"
   };
 
   public allowedCategoryList: string[] = [
@@ -134,15 +135,18 @@ export class CounselImportValidationService {
     // 嘗試找到對應的學生資料
     let student = null;
     if (this.importMode === "byStudentId") {
-      student = this.allStudents.find(s => s.StudentID === row["學號"]);
+      const studentNumber = String(row["學號"] || "").trim();
+      student = this.allStudents.find(s => String(s.StudentNumber || "").trim() === studentNumber);
     } else {
-      student = this.allStudents.find(s => 
-        s.ClassName === row["班級"] && s.SeatNo == row["座號"]
+      const className = String(row["班級"] || "").trim();
+      const seatNo = String(row["座號"] || "").trim();
+      student = this.allStudents.find(s =>
+        String(s.ClassName || "").trim() === className && String(s.SeatNo || "").trim() === seatNo
       );
     }
 
     if (student) {
-      return `姓名: ${student.Name || "未知"}, 班級: ${student.ClassName || "未知"}, 座號: ${student.SeatNo || "未知"}, 學號: ${student.StudentID || "未知"}`;
+      return `姓名: ${student.StudentName || "未知"}, 班級: ${student.ClassName || "未知"}, 座號: ${student.SeatNo || "未知"}, 學號: ${student.StudentNumber || "未知"}`;
     } else {
       return "查無此學生資料";
     }
@@ -188,7 +192,7 @@ export class CounselImportValidationService {
         // 也支援時間格式：h:mm
         const isTimeFormat = /^\d{1,2}:\d{2}$/.test(timeStr);
         const isTextFormat = timeStr.length > 0 && timeStr.length <= 20; // 文字長度限制
-        
+
         if (!isTimeFormat && !isTextFormat) {
           return "晤談時間格式錯誤（可輸入文字如：第一節、上午，或時間格式：h:mm）";
         }
@@ -197,17 +201,17 @@ export class CounselImportValidationService {
     ],
     對象: [
       (v) => this.isBlank(v) ? "對象欄必填" : null,
-      (v) => !this.isBlank(v) && !this.allowedValues.對象.includes(String(v).trim()) 
+      (v) => !this.isBlank(v) && !this.allowedValues.對象.includes(String(v).trim())
         ? `對象應為 ${this.allowedValues.對象.join(" 或 ")}` : null,
     ],
     方式: [
       (v) => this.isBlank(v) ? "方式欄必填" : null,
-      (v) => !this.isBlank(v) && !this.allowedValues.方式.includes(String(v).trim()) 
+      (v) => !this.isBlank(v) && !this.allowedValues.方式.includes(String(v).trim())
         ? `方式應為 ${this.allowedValues.方式.join(" 或 ")}` : null,
     ],
     公開: [
       (v) => this.isBlank(v) ? "公開欄必填" : null,
-      (v) => !this.isBlank(v) && !this.allowedValues.公開.includes(String(v).trim()) 
+      (v) => !this.isBlank(v) && !this.allowedValues.公開.includes(String(v).trim())
         ? "公開應為 是 或 否" : null,
     ],
     類別: [
@@ -216,12 +220,11 @@ export class CounselImportValidationService {
         if (this.isBlank(v)) return null;
         const categories = String(v).split(/[,，]/).map(c => c.trim());
         const invalidCategories = categories.filter(c => !this.allowedCategoryList.includes(c));
-        return invalidCategories.length > 0 
+        return invalidCategories.length > 0
           ? `類別包含無效項目：${invalidCategories.join(", ")}` : null;
       },
     ],
     年級: [
-      (v) => this.isBlank(v) ? "年級欄必填" : null,
       (v) => {
         if (this.isBlank(v)) return null;
         const gradeStr = String(v).trim();
@@ -238,11 +241,11 @@ export class CounselImportValidationService {
         if (this.isBlank(v)) return null;
         const authorName = String(v).trim();
         const nickname = row["暱稱"] ? String(row["暱稱"]).trim() : "";
-        
+
         // 使用教師名稱 + 暱稱的組合來查找教師
         // 先找出所有姓名匹配的教師
         const nameMatches = this.teacherList.filter(t => t.Name === authorName);
-        
+
         // 如果是班導師匯入，必須驗證記錄者是否是班導師本人
         if (this.role === "班導師") {
           // 先檢查姓名是否匹配
@@ -265,11 +268,11 @@ export class CounselImportValidationService {
             }
           }
         }
-        
+
         if (nameMatches.length === 0) {
           return `找不到記錄者「${authorName}」，請確認教師姓名是否正確`;
         }
-        
+
         // 如果有多個相同姓名的教師，必須使用暱稱來區分
         // 注意：如果暱稱為空，錯誤會在"暱稱"驗證器中顯示，這裡不重複顯示
         if (nameMatches.length > 1) {
@@ -286,11 +289,11 @@ export class CounselImportValidationService {
           // 如果暱稱為空，不在此處報錯，由"暱稱"驗證器處理
           return null;
         }
-        
+
         // 只有一個姓名匹配的教師，不需要驗證暱稱（除非有多個相同姓名的教師）
         // 暱稱驗證邏輯：只有當有姓名相同的教師時才需要驗證暱稱
         // 這裡已經確定只有一個匹配，所以不需要驗證暱稱
-        
+
         return null;
       }
     ],
@@ -301,30 +304,30 @@ export class CounselImportValidationService {
         if (this.isBlank(authorName)) {
           return null; // 記錄者為空時，暱稱驗證由記錄者驗證器處理
         }
-        
+
         const nickname = this.isBlank(v) ? "" : String(v).trim();
-        
+
         // 使用教師名稱 + 暱稱的組合來查找教師
         // 先找出所有姓名匹配的教師
         const nameMatches = this.teacherList.filter(t => t.Name === authorName);
-        
+
         if (nameMatches.length === 0) {
           return null; // 記錄者驗證會處理這個錯誤
         }
-        
+
         // 暱稱驗證邏輯：只有當有姓名相同的教師時才需要驗證暱稱
         // 如果有多個相同姓名的教師，需要檢查是否所有教師都有暱稱
         if (nameMatches.length > 1) {
           // 檢查所有同名教師是否都有暱稱
           const teachersWithNickname = nameMatches.filter(t => !this.isBlank(t.NickName));
           const teachersWithoutNickname = nameMatches.filter(t => this.isBlank(t.NickName));
-          
+
           // 如果所有教師都沒有暱稱，則不需要填寫暱稱（無法通過暱稱區分）
           if (teachersWithNickname.length === 0) {
             // 所有教師都沒有暱稱，無法通過暱稱區分，不要求填寫
             return null;
           }
-          
+
           // 如果部分教師有暱稱，部分沒有，需要判斷
           // 如果填寫了暱稱，驗證是否匹配
           if (!this.isBlank(nickname)) {
@@ -338,35 +341,35 @@ export class CounselImportValidationService {
             }
             return null; // 唯一匹配成功
           }
-          
+
           // 如果沒有填寫暱稱，但所有教師都有暱稱，則要求填寫
           if (teachersWithoutNickname.length === 0) {
             // 所有教師都有暱稱，必須填寫暱稱以區分
             return `記錄者「${authorName}」有多位教師，請填寫暱稱以區分`;
           }
-          
+
           // 部分教師有暱稱，部分沒有，不強制要求填寫（因為可能選擇的是沒有暱稱的教師）
           return null;
         }
-        
+
         // 只有一個姓名匹配的教師，不需要驗證暱稱
         // 如果填寫了暱稱，但只有一個匹配的教師，可以忽略暱稱（不報錯）
-        
+
         return null;
       }
     ],
     狀態: [
       (v) => this.isBlank(v) ? "狀態欄必填" : null,
-      (v) => !this.isBlank(v) && !this.allowedValues.狀態.includes(String(v).trim()) 
-        ? "狀態應為 一般 或 延修 或 休學" : null,
+      (v) => !this.isBlank(v) && !this.allowedValues.狀態.includes(String(v).trim())
+        ? "狀態應為 一般、延修、休學 或 畢業或離校" : null,
     ],
   };
 
   public validateRow(row: any, rowNum: number): RowError[] {
     console.log(`🔍 validateRow 開始 - 第${rowNum}列, 匯入模式=${this.importMode}, 角色=${this.role}, 學生數量=${this.studentList.length}`);
-    
+
     const errorMap: Map<string, string[]> = new Map();
-    
+
     // 檢查是否整行為空
     const allFields = Object.keys(row);
     const hasContent = allFields.some((key) => !this.isBlank(row[key]));
@@ -377,7 +380,19 @@ export class CounselImportValidationService {
     }
 
     Object.keys(this.validators).forEach((field) => {
-      if (field === "學號") return; // 跳過學號，下面另外判斷
+      // 根據匯入模式跳過不需要驗證的欄位
+      if (this.importMode === "byStudentId") {
+        // 學號模式：跳過班級、座號、學號（學號在下面另外判斷）
+        if (field === "班級" || field === "座號" || field === "學號") {
+          return;
+        }
+      } else {
+        // 班級座號模式：跳過學號
+        if (field === "學號") {
+          return;
+        }
+      }
+      
       const rules = this.validators[field];
       const value = row[field];
       rules.forEach((rule) => {
@@ -453,13 +468,13 @@ export class CounselImportValidationService {
     // 找學生
     let matchedStudent: any = null;
     const originalStatus = row["狀態"]; // 保留原始中文狀態
-    
+
     console.log(`🔍 開始學生匹配 - 第${rowNum}列`);
     console.log(`🔍 學生清單數量: ${this.studentList.length}`);
     console.log(`🔍 匯入模式: ${this.importMode}`);
     console.log(`🔍 角色: ${this.role}`);
     console.log(`🔍 原始狀態: "${originalStatus}"`);
-    
+
     // 根據角色決定使用哪種狀態比對方式
     let compareStatus: string;
     if (this.role === "班導師") {
@@ -471,48 +486,53 @@ export class CounselImportValidationService {
       compareStatus = this.statusMapping[originalStatus] || originalStatus;
       console.log(`🔍 管理者模式 - 狀態轉換: "${originalStatus}" → "${compareStatus}"`);
     }
-    
+
     console.log(`學生清單中的狀態範例:`, this.studentList.slice(0, 3).map(s => `"${s.Status}"`));
-    
+
     if (this.importMode === "byStudentId") {
+      const searchStudentNumber = String(row["學號"] || "").trim();
       matchedStudent = this.studentList.find(
-        (s) => s.StudentNumber === row["學號"] && s.Status === compareStatus
+        (s) => String(s.StudentNumber || "").trim() === searchStudentNumber && s.Status === compareStatus
       );
     } else {
+      const searchClassName = String(row["班級"] || "").trim();
+      const searchSeatNo = String(row["座號"] || "").trim();
       matchedStudent = this.studentList.find(
-        (s) => s.ClassName == row["班級"] && s.SeatNo == row["座號"] && s.Status === compareStatus
+        (s) => String(s.ClassName || "").trim() === searchClassName && 
+               String(s.SeatNo || "").trim() === searchSeatNo && 
+               s.Status === compareStatus
       );
-      
-             console.log(`🔍 座號匹配詳細分析:`);
-       console.log(`查找條件: 班級="${row["班級"]}", 座號="${row["座號"]}", 狀態="${compareStatus}"`);
-       
-       if (!matchedStudent) {
-         // 逐一檢查每個條件
-         const allMatches = this.studentList.map(s => ({
-           學生: s.StudentName,
-           班級匹配: s.ClassName == row["班級"],
-           座號匹配: s.SeatNo == row["座號"], 
-           狀態匹配: s.Status === compareStatus,
-           實際狀態: s.Status
-         }));
-         
-         console.log("詳細匹配分析:", allMatches);
-         
-         // 特別檢查工202班的學生
-         const class202Students = this.studentList.filter(s => s.ClassName && s.ClassName.includes("202"));
-         if (class202Students.length > 0) {
-           console.log(`🔍 工202班學生詳細檢查:`, class202Students.map(s => ({
-             學生: s.StudentName,
-             班級匹配: s.ClassName == row["班級"],
-             座號匹配: s.SeatNo == row["座號"],
-             狀態匹配: s.Status === compareStatus,
-             實際狀態: s.Status
-           })));
-         }
-       } else {
-         console.log(`✅ 找到匹配學生: ${matchedStudent.StudentName}`);
-         console.log(`✅ 成功找到學生! 學生: ${matchedStudent.StudentName}, 班級: ${matchedStudent.ClassName}, 座號: ${matchedStudent.SeatNo}, 狀態: "${matchedStudent.Status}"`);
-       }
+
+      console.log(`🔍 座號匹配詳細分析:`);
+      console.log(`查找條件: 班級="${searchClassName}", 座號="${searchSeatNo}", 狀態="${compareStatus}"`);
+
+      if (!matchedStudent) {
+        // 逐一檢查每個條件
+        const allMatches = this.studentList.map(s => ({
+          學生: s.StudentName,
+          班級匹配: s.ClassName == row["班級"],
+          座號匹配: s.SeatNo == row["座號"],
+          狀態匹配: s.Status === compareStatus,
+          實際狀態: s.Status
+        }));
+
+        console.log("詳細匹配分析:", allMatches);
+
+        // 特別檢查工202班的學生
+        const class202Students = this.studentList.filter(s => s.ClassName && s.ClassName.includes("202"));
+        if (class202Students.length > 0) {
+          console.log(`🔍 工202班學生詳細檢查:`, class202Students.map(s => ({
+            學生: s.StudentName,
+            班級匹配: s.ClassName == row["班級"],
+            座號匹配: s.SeatNo == row["座號"],
+            狀態匹配: s.Status === compareStatus,
+            實際狀態: s.Status
+          })));
+        }
+      } else {
+        console.log(`✅ 找到匹配學生: ${matchedStudent.StudentName}`);
+        console.log(`✅ 成功找到學生! 學生: ${matchedStudent.StudentName}, 班級: ${matchedStudent.ClassName}, 座號: ${matchedStudent.SeatNo}, 狀態: "${matchedStudent.Status}"`);
+      }
     }
 
     // 🔧 修復：使用不同的 key 避免與基本欄位驗證衝突
@@ -521,17 +541,17 @@ export class CounselImportValidationService {
       console.log(`❌ 驗證失敗 - 找不到匹配的學生`);
       console.log(`查找條件: 班級="${row["班級"]}", 座號="${row["座號"]}", 狀態="${compareStatus}"`);
       console.log(`可用學生清單:`, this.studentList.map(s => `${s.ClassName}-${s.SeatNo}-${s.Status}(${s.StudentName})`));
-      
+
       // 建立詳細的錯誤訊息，包含匯入資料資訊
       let errorMessage = "";
       let importInfo = "";
-      
+
       if (this.importMode === "byStudentId") {
         importInfo = `學號: ${row["學號"] || "未填"}, 狀態: ${row["狀態"] || "未填"}`;
       } else {
         importInfo = `班級: ${row["班級"] || "未填"}, 座號: ${row["座號"] || "未填"}, 狀態: ${row["狀態"] || "未填"}`;
       }
-      
+
       if (this.role === "班導師") {
         console.log(`班導師權限檢查失敗 - 查找條件: 班級="${row["班級"]}", 座號="${row["座號"]}", 狀態="${compareStatus}"`);
         console.log(`您目前可輔導的學生:`, this.studentList.map(s => `${s.ClassName} 座號${s.SeatNo} ${s.StudentName} (狀態:${s.Status})`));
@@ -541,10 +561,10 @@ export class CounselImportValidationService {
       } else {
         errorMessage = `找不到此學生，無法匯入 (匯入資料: ${importInfo})`;
       }
-      
+
       console.log(`🚨 學生驗證錯誤 - 將加入錯誤清單: key="${key}", message="${errorMessage}"`);
       console.log(`🔍 DEBUG: errorMap 在加入學生錯誤前的狀態:`, Array.from(errorMap.entries()));
-      
+
       // 🔧 修復：檢查是否已有相同 key 的錯誤，如果有則追加而不是覆蓋
       if (errorMap.has(key)) {
         errorMap.get(key)!.push(errorMessage);
@@ -553,13 +573,13 @@ export class CounselImportValidationService {
         errorMap.set(key, [errorMessage]);
         console.log(`🔍 DEBUG: 新增錯誤到清單`);
       }
-      
+
       console.log(`🔍 DEBUG: errorMap 在加入學生錯誤後的狀態:`, Array.from(errorMap.entries()));
     } else {
       // 找到學生，但需要檢查是否有權限匯入
       console.log(`✅ 找到學生: ${matchedStudent.StudentName}, 班級: ${matchedStudent.ClassName}, 座號: ${matchedStudent.SeatNo}`);
       console.log(`🔍 檢查權限 - 角色: ${this.role}, 匯入模式: ${this.importMode}`);
-      
+
       if (this.importMode === "byStudentId" && !this.isSpecialStudentFn(matchedStudent)) {
         console.log(`❌ 特殊學生檢查失敗 - 學生: ${matchedStudent.StudentName}, 角色: ${this.role}, 匯入模式: ${this.importMode}`);
         const importInfo = `學號: ${row["學號"] || "未填"}, 學生姓名: ${matchedStudent.StudentName}, 班級: ${matchedStudent.ClassName}`;
@@ -610,7 +630,7 @@ export class CounselImportValidationService {
     field: string,
     message?: string
   ): ValidatorFn => (v) =>
-    !this.isBlank(v) && !this.allowedValues[field].includes(String(v).trim())
-      ? message || `${field}值不正確`
-      : null;
+      !this.isBlank(v) && !this.allowedValues[field].includes(String(v).trim())
+        ? message || `${field}值不正確`
+        : null;
 }

@@ -1,25 +1,23 @@
 
 *{
   font-family: "微軟正黑體";
-
 }
+
 .hover-a:hover
 {
-   /* letter-spacing: 1.3px; */
    font-weight: bold;
    cursor: pointer;
-   color :#94d0cc
+   color :#5daea4;
 }
+
 .IsChecked{
-    color :#94d0cc;
+    color :#5daea4;
     font-weight: bold;
-   
 }
 
 .detailInfoPin
 {
     position: absolute ;
-  
 }
 
 .detailInfo
@@ -30,11 +28,10 @@ position: relative ;
 top :30px;
 left :50px;
 z-index: 10;
-
 }
+
 .tabText{
 font-size: 30px;
-
 }
 
 .whole  
@@ -62,8 +59,6 @@ right: 0;
     align-items: center;
 }
 
-
-
 .mat-tab-label {
     min-width: 25px !important;
     padding: 5px;
@@ -73,37 +68,795 @@ right: 0;
     font-family: "微軟正黑體";
 }
 
-
-
 .mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar {
-    background-color: #94d0cc !important;
+    background-color: #5daea4 !important;
 }
-
-
-
 
 .mat-form-field.mat-focused .mat-form-field-ripple{
-    background: #94d0cc;
+    background: #5daea4;
 }
+
 /* loading的spinner */
 .mat-progress-spinner circle, .mat-spinner circle {
-    stroke:
-    /* #A24B1F; */
-     /* #4A4B2F; */
-     #4C6F17;
-     /* #5D9D0E; */
-     /* #C3CCA9; */
-    /* #304C53 */
+    stroke: #4C6F17;
+}
+
+.questionSheet
+{
+    font-size: 16px;
+}
+
+.can_click
+{
+    display: inline;
+    cursor: pointer;
+}
+
+/* 頁面標題 */
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 匯出按鈕 */
+.btn-export {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+}
+
+.btn-export:hover:not(.disabled) {
+    background-color: #1d4ed8;
+    transform: scale(0.98);
+}
+
+.btn-export.disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* 步驟指示器 */
+.step-indicator-wrapper {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e5e7eb;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.step-item:hover {
+    background-color: #f9fafb;
+}
+
+.step-item.active {
+    color: #5daea4;
+    font-weight: 600;
+    transform: scale(1.05);
+}
+
+.step-item.completed {
+    color: #9ca3af;
+}
+
+.step-icon-wrapper {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.step-item.active .step-icon-wrapper {
+    border-color: #5daea4;
+    background-color: rgba(93, 174, 164, 0.1);
+}
+
+.step-item.completed .step-icon-wrapper {
+    background-color: #5daea4;
+    border-color: #5daea4;
+    color: white;
+}
+
+.step-icon, .step-check {
+    font-size: 20px;
+    color: #6b7280;
+}
+
+.step-item.active .step-icon {
+    color: #5daea4;
+}
+
+.step-item.completed .step-check {
+    color: white;
+}
+
+.step-label-text {
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.step-connector {
+    height: 2px;
+    width: 40px;
+    background-color: #e5e7eb;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.step-connector.completed {
+    background-color: #5daea4;
+}
+
+/* 內容卡片 */
+.content-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e5e7eb;
+    min-height: 400px;
+    padding: 32px;
+    margin-bottom: 100px; /* 增加底部边距，避免被固定导航栏遮挡 */
+    transition: all 0.3s ease;
+}
+
+.step-content {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
     }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Step 1 樣式 */
+.step1-content {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
+.step-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.step-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.step-subtitle {
+    font-size: 14px;
+    color: #9ca3af;
+    margin: 0;
+}
+
+.step1-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4b5563;
+    margin-bottom: 8px;
+}
+
+.form-label .material-icons {
+    font-size: 16px;
+    color: #5daea4;
+}
+
+/* 學期按鈕 */
+.semester-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.semester-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 16px;
+    border: 2px solid #f3f4f6;
+    background: white;
+    border-radius: 12px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.semester-btn:hover {
+    border-color: #d1d5db;
+}
+
+.semester-btn.active {
+    border-color: #5daea4;
+    background-color: rgba(93, 174, 164, 0.05);
+    color: #5daea4;
+    font-weight: 700;
+}
+
+.semester-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.7;
+}
+
+.semester-number {
+    font-size: 16px;
+}
+
+/* Step 2 樣式 */
+.step2-content {
+    padding: 20px 0;
+}
+
+.step-header {
+    margin-bottom: 24px;
+}
+
+.btn-select-all {
+    font-size: 14px;
+    font-weight: 500;
+    color: #5daea4;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.btn-select-all:hover {
+    background-color: rgba(93, 174, 164, 0.1);
+    text-decoration: underline;
+}
+
+.grade-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.grade-card {
+    background: rgba(249, 250, 251, 0.5);
+    border: 1px solid #f3f4f6;
+    border-radius: 16px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.grade-card:hover {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.grade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.grade-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.grade-checkbox {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #e5e7eb;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.grade-checkbox.checked {
+    background-color: #5daea4;
+    color: white;
+}
+
+.grade-checkbox .material-icons {
+    font-size: 14px;
+}
+
+.grade-name {
+    font-weight: 700;
+    color: #374151;
+    font-size: 16px;
+}
+
+.grade-count {
+    font-size: 12px;
+    background-color: #e5e7eb;
+    color: #6b7280;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.class-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.class-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border: 2px solid transparent;
+    background: white;
+    color: #6b7280;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.class-btn:hover {
+    border-color: #d1d5db;
+    color: #374151;
+}
+
+.class-btn.active {
+    border-color: #5daea4;
+    background: white;
+    color: #5daea4;
+    font-weight: 700;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* 底部導航欄 */
+.bottom-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    border-radius: 0;
+    margin-top: 20px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    box-shadow: none;
+}
+
+.btn-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-nav:hover:not(:disabled) {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.btn-nav:disabled {
+    color: #d1d5db;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.btn-nav.btn-next {
+    background-color: #5daea4;
+    border-color: #5daea4;
+    color: white;
+}
+
+.btn-nav.btn-next:hover:not(:disabled) {
+    background-color: #4a8d84;
+}
+
+.nav-info {
+    font-size: 14px;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+/* Step 3 樣式 */
+.step3-content {
+    padding: 20px 0;
+}
+
+.step3-header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+@media (min-width: 768px) {
+    .step3-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.field-count-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background-color: #dbeafe;
+    border: 1px solid #bfdbfe;
+    color: #2563eb;
+    font-size: 14px;
+}
+
+.field-count-badge.max-reached {
+    background-color: #fef3c7;
+    border-color: #fde68a;
+    color: #d97706;
+}
+
+.field-count-badge .material-icons {
+    font-size: 16px;
+}
+
+.field-count-badge strong {
+    font-weight: 700;
+}
+
+.max-warning {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background-color: #f9fafb;
+    color: #6b7280;
+    border-radius: 8px;
+    font-size: 12px;
+    font-style: italic;
+    margin-bottom: 24px;
+}
+
+.max-warning .material-icons {
+    font-size: 14px;
+}
+
+.field-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.category-card {
+    border: 1px solid #f3f4f6;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.category-header {
+    width: 100%;
+    text-align: left;
+    padding: 16px 20px;
+    background-color: rgba(249, 250, 251, 0.8);
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.category-header:hover {
+    background-color: rgba(243, 244, 246, 0.8);
+}
+
+.category-title {
+    font-weight: 700;
+    color: #374151;
+    font-size: 16px;
+}
+
+.category-select-all {
+    font-size: 12px;
+    color: #2563eb;
+    font-weight: 500;
+}
+
+.field-grid {
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+@media (min-width: 640px) {
+    .field-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+}
+
+@media (min-width: 768px) {
+    .field-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .field-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+}
+
+/* QuestionGroup 容器样式 */
+.question-group-container {
+    grid-column: 1 / -1; /* 跨越整行 */
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+    width: 100%;
+}
+
+.question-group-container:first-child {
+    margin-top: 0;
+}
+
+/* QuestionGroup 标题容器 */
+.question-group-title-wrapper {
+    width: 100%;
+}
+
+/* QuestionGroup 标题样式 */
+.question-group-title {
+    font-weight: 600;
+    font-size: 15px;
+    color: #374151;
+    padding: 12px 0 8px 0;
+    margin-bottom: 8px;
+    border-bottom: 2px solid #e5e7eb;
+    display: block !important;
+    width: 100% !important;
+    background-color: #f9fafb;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+/* Group 标题作为可勾选项 */
+.group-title-item {
+    margin-bottom: 8px;
+}
+
+/* QuestionGroup 项目容器 */
+.question-group-items {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+/* QuestionQuery 容器样式 */
+.question-query-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* QuestionQuery 标题容器 */
+.question-query-title-wrapper {
+    width: 100%;
+}
+
+/* QuestionQuery 标题样式 */
+.question-query-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #4b5563;
+    padding: 8px 0 4px 0;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Query 标题作为可勾选项 */
+.query-title-item {
+    margin-bottom: 4px;
+}
+
+/* QuestionQuery 项目容器 */
+.question-query-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+@media (min-width: 640px) {
+    .question-query-items {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+}
+
+@media (min-width: 768px) {
+    .question-query-items {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .question-query-items {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+}
+
+@media (min-width: 640px) {
+    .question-group-items {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+}
+
+@media (min-width: 768px) {
+    .question-group-items {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .question-group-items {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+}
 
 
-    .questionSheet
-    {
-        font-size: 16px;
-    }
+.field-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 2px solid #f3f4f6;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    gap: 8px;
+}
 
-    .can_click
-    {
-        display: inline;
-        cursor: pointer;
-    }
+.field-item:hover:not(.disabled) {
+    border-color: #d1d5db;
+}
+
+.field-item.selected {
+    border-color: #5daea4;
+    background-color: rgba(93, 174, 164, 0.05);
+    color: #5daea4;
+    font-weight: 500;
+}
+
+.field-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.field-checkbox {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #d1d5db;
+    border-radius: 4px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.field-checkbox.checked {
+    background-color: #5daea4;
+    border-color: #5daea4;
+}
+
+.field-checkbox .material-icons {
+    font-size: 12px;
+    color: white;
+}
+
+.field-name {
+    font-size: 14px;
+    color: #6b7280;
+    flex: 1;
+}
+
+.field-item.selected .field-name {
+    color: #5daea4;
+}
+
+/* Material Form Field 樣式調整 */
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+    color: #e5e7eb;
+}
+
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+    color: #5daea4;
+}
+
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-label {
+    color: #5daea4;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-infix {
+    padding: 12px 0;
+}

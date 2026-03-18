@@ -37,8 +37,8 @@
             <input type="text" class="form-control" id="semester" placeholder="請輸入學期"
               [(ngModel)]="_currentCounselInterview.Semester" (keyup)="_currentCounselInterview.checkValue()" />
           </div>
-          <div class="form-group col-md-3">
-            <label for="interviewDate" class="col-form-label">
+          <div class="form-group col-md-3" style="margin-bottom: 0; padding-right: 8px;">
+            <label for="interviewDate" class="col-form-label" style="margin-bottom: 4px;">
               <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isOccurDateHasValue">*</span>
               <b class="modal-sub-title"> 日期</b>
             </label>
@@ -52,6 +52,14 @@
                 <!-- <span  *ngIf="dayOfWeek">星期: {{ dayOfWeek }}</span> -->
              
           </div>
+          <div class="form-group col-md-3" style="margin-left: 0; margin-bottom: 0; padding-left: 8px;">
+            <label for="reasonTemplate" class="col-form-label" style="margin-bottom: 4px;">
+              <span class="text-samll text-danger"></span>
+              <b class="modal-sub-title"> 事由範本</b>
+            </label>
+            <input type="text" class="form-control" id="reasonTemplate" placeholder="選擇事由"
+              style="position: relative;" />
+          </div>
           <div class="form-group col-md-2">
             <label for="interviewDate" class="col-form-label text-center">
               <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isOccurDateHasValue">*</span>
@@ -63,6 +71,8 @@
             <!-- <input type="text" class="form-control"  readonly *ngIf="dayOfWeek"  [value]="'星期' +dayOfWeek "/> -->
 
           </div>
+        </div>
+        <div class="form-row" style="margin-top: 0;">
           <div class="form-group col-md-3">
          
             <label for="interviewDate" class="col-form-label ">
@@ -167,8 +177,8 @@
         <div class="form-group">
           <label for="description" class="col-form-label">
             <span class="text-samll text-danger" *ngIf="!_currentCounselInterview.isContentHasValue">*</span>
-            <b class="modal-sub-title">輔導內容 </b>
-            <span class="text-muted">（會顯示於輔導記錄卡）</span>
+            <b class="modal-sub-title">輔導內容 （會顯示於輔導記錄卡）</b>
+            <span class=""></span>
           </label>
           <textarea  rows="6"  id="description" (input)="autoResize($event.target)"
             class="form-control" placeholder="請輸入輔導內容"

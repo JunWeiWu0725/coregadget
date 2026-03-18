@@ -47,8 +47,8 @@
       (click)="modalImportShow()">
       匯入一級晤談紀錄
     </button>
-    <!-- <button 
-      *ngIf="true"  
+    <button 
+      *ngIf="showMappingButton"  
       style="
         color:#6c757d;
         border: 1px solid #adb5bd; 
@@ -59,7 +59,7 @@
       "
       (click)="openMappingModal()">
       欄位映射轉換
-    </button> -->
+    </button>
   </div>
 
 <button type="button" class="btn btn-info btn-sm" (click)="openChartModal()" *ngIf="false">數據分析</button>

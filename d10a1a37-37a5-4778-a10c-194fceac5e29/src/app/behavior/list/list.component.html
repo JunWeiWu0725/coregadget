@@ -21,8 +21,24 @@
                     [routerLink]="['/behavior/add', courseID, courseName]"><i
                    class="material-icons mr-1">add</i>ADD</button>
         </li>
+        
+        <!-- Loading 狀態 -->
+        <li class="list-group-item text-center" *ngIf="loading">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <p class="mt-2">載入中...</p>
+        </li>
+        
+        <!-- 沒有資料時顯示 -->
+        <li class="list-group-item text-center" *ngIf="!loading && (!behaviorDataList || behaviorDataList.length === 0)">
+            <p class="text-muted">目前沒有資料</p>
+        </li>
+        
+        <!-- 資料列表 -->
         <li class="list-group-item"
-            *ngFor="let data of behaviorDataList">
+            *ngFor="let data of behaviorDataList"
+            [hidden]="loading">
             <div class="row">
                 <div class="col-md-3 col-lg-2 text-nowrap">
                     <span class="pr-3">{{data.CreateDate2}}</span>
@@ -43,14 +59,18 @@
                            -->
                     <span class ="p-2 fw-boldit ">{{data.Comment}}</span>
                     <div class="float-right">
-                        <a class="h6 text-info point"
+                        <a class="h6 text-info point mr-2"
                            (click)="editComment(data)">
                             <i class="material-icons mr-1">edit</i>
                         </a>
-                        <a class="h6 text-danger point"
+                        <a class="h6 text-danger point mr-2"
                            (click)="delete(data)">
                             <i class="material-icons mr-1">delete</i>
                         </a>
+                        <!-- 最後更新時間 -->
+                        <span class="text-muted small">
+                            最後更新: {{data.FormattedLastUpdate}}
+                        </span>
                     </div>
                 </div>
             </div>

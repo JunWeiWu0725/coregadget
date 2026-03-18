@@ -40,6 +40,7 @@ export class ComprehensiveDataExportComponent implements OnInit {
   SelectSections: SectionInfo[] = [];
   SelectSection: SectionInfo;
   IsWorking: boolean = false;
+  currentStep: number = 1; // 當前步驟
   
   @ViewChild('chartModal') chartModal: ChartModalComponent;
 
@@ -67,7 +68,16 @@ export class ComprehensiveDataExportComponent implements OnInit {
     let count = 0;
     [].concat(Array.from(this.QuestionSubjectMap.values())).forEach((questionSubject: QuestionSubject) => {
       [].concat(Array.from(questionSubject.QuestionGroupMap.values())).forEach((quesitonGroup: QuestionGroup) => {
+        // 如果 Group 是最底层（没有 Query），且被选中，计入计数
+        if (quesitonGroup.GetQuestionQuerys().length === 0 && quesitonGroup.IsChecked) {
+          count++;
+        }
         [].concat(Array.from(quesitonGroup.QuestionQueryMap.values())).forEach((questionQuery: QuestionQuery) => {
+          // Query 总是可以勾选，如果被选中且没有子项，计入计数
+          // 如果有子项，只计算子项，不重复计算 Query 本身
+          if (questionQuery.IsChecked && (!questionQuery.hasChild || questionQuery.GetQuestionText().length === 0)) {
+            count++;
+          }
           [].concat(Array.from(questionQuery.QuestionTextMap.values())).forEach((questionText: QuestionText) => {
             if (questionText.IsChecked) {
               count++;
@@ -77,6 +87,59 @@ export class ComprehensiveDataExportComponent implements OnInit {
       });
     });
     return count;
+  }
+
+  /**
+   * 取得已選擇的班級數量
+   */
+  GetSelectedClassCount(): number {
+    if (!this.SelectGradeYearList) {
+      return 0;
+    }
+    let count = 0;
+    this.SelectGradeYearList.forEach(item => {
+      item.ClassItems.forEach(classItem => {
+        if (classItem.Checked) {
+          count++;
+        }
+      });
+    });
+    return count;
+  }
+
+  /**
+   * 取得指定年級已選擇的班級數量
+   */
+  getGradeSelectedCount(gradeItem: any): number {
+    if (!gradeItem || !gradeItem.ClassItems) {
+      return 0;
+    }
+    return gradeItem.ClassItems.filter((item: any) => item.Checked).length;
+  }
+
+  /**
+   * 下一步
+   */
+  nextStep() {
+    if (this.currentStep < 3) {
+      this.currentStep++;
+    }
+  }
+
+  /**
+   * 上一步
+   */
+  previousStep() {
+    if (this.currentStep > 1) {
+      this.currentStep--;
+    }
+  }
+
+  /**
+   * 切換到指定步驟
+   */
+  goToStep(step: number) {
+    this.currentStep = step;
   }
 
   /**
@@ -113,6 +176,7 @@ export class ComprehensiveDataExportComponent implements OnInit {
 
   // 取得系統內目前學年度學期
   async getCurrentSemester() {
+    // 1. 取得當前學年度學期
     const resp = await this.dsaService.send("GetCurrentSemester", {
       Request: {
       }
@@ -124,10 +188,28 @@ export class ComprehensiveDataExportComponent implements OnInit {
       this.SelectSemester = +(Semesters[0].Semester);
     }
 
-    let i: number = 0;
-    while (i <= 2) {
-      this.SchoolYears.push(Number(this.SelectSchoolYear) - i);
-      i++;
+    // 2. 取得所有可用的學年度學期
+    try {
+      const schoolYearResp = await this.dsaService.send("ComprehensiveRecordForm.GetComprehensiveRecordSchoolSemester");
+      const semesterList = [].concat(schoolYearResp.SemesterInfo || []);
+      
+      // 提取所有學年度並去重、排序
+      const schoolYears = [...new Set(semesterList.map(item => Number(item.SchoolYear)))];
+      this.SchoolYears = schoolYears.sort((a, b) => b - a); // 降序，最新在前
+      
+      // 如果當前學年度不在清單中，加入當前學年度
+      if (!this.SchoolYears.includes(Number(this.SelectSchoolYear))) {
+        this.SchoolYears.unshift(Number(this.SelectSchoolYear));
+      }
+
+      // 預設選中最大的學年度（最新的學年度）
+      if (this.SchoolYears.length > 0) {
+        this.SelectSchoolYear = this.SchoolYears[0]; // 第一個就是最大的（因為降序排列）
+      }
+    } catch (error) {
+      console.warn('無法取得綜合紀錄表學年度學期，使用預設邏輯', error);
+      // 如果 API 失敗，回到原本的邏輯
+      this.SchoolYears = [Number(this.SelectSchoolYear)];
     }
   }
   /*
@@ -238,7 +320,7 @@ export class ComprehensiveDataExportComponent implements OnInit {
       if (QuestionDatas.length > 0) {
         QuestionDatas.forEach(item => {
           let item1 = {
-
+            '學生系統編號': item.student_id || "",
             '班級': item.ClassName || "",
             '座號': item.SeatNo,
             '學號': item.StudentNumber,
@@ -285,6 +367,24 @@ export class ComprehensiveDataExportComponent implements OnInit {
     }
   }
   /**
+   * 取得 Group 的标题（优先使用 GroupText，如果没有则使用第一个 QueryText）
+   *
+   * @param {QuestionGroup} group
+   * @returns {string}
+   * @memberof ComprehensiveDataExportComponent
+   */
+  public getGroupTitle(group: QuestionGroup): string {
+    if (group.GroupText && group.GroupText.trim() !== '') {
+      return group.GroupText;
+    }
+    const queries = group.GetQuestionQuerys();
+    if (queries && queries.length > 0 && queries[0].QueryText && queries[0].QueryText.trim() !== '') {
+      return queries[0].QueryText;
+    }
+    return '';
+  }
+
+  /**
    *點選 Group
    *
    * @param {QuestionGroup} target
@@ -302,10 +402,11 @@ export class ComprehensiveDataExportComponent implements OnInit {
   }
 
   public selectQuery(target: QuestionQuery) {
-
-
-    target.CheckChildIsChecked(target.IsChecked);
-
+    if (!target.IsChecked) {
+      target.CheckChildIsChecked(target.IsChecked);
+    } else {
+      target.CheckChildIsChecked(target.IsChecked);
+    }
   }
 
   public selectQuestionText(target: QuestionText) {
@@ -422,6 +523,7 @@ export class ComprehensiveDataExportComponent implements OnInit {
    * 產生報表2 - 題目放在最上面那一列，題目階層用冒號分隔
    */
   async MakeReportVision2() {
+    console.log('🎯🎯🎯 MakeReportVision2 開始執行！🎯🎯🎯');
     let chkDataPass: boolean = true;
     // 確認所選班級
     this.selectClassIDs = [];
@@ -449,7 +551,6 @@ export class ComprehensiveDataExportComponent implements OnInit {
     }> = [];
 
     // 整理資料
-    console.log('=== 開始收集選中的題目 ===');
     const questionCodeSet = new Set<string>(); // 用 Set 來追蹤已加入的 QuestionCode
     [].concat(Array.from(this.QuestionSubjectMap.values())).forEach((questionSubject: QuestionSubject) => {
       [].concat(Array.from(questionSubject.QuestionGroupMap.values())).forEach((quesitonGroup: QuestionGroup) => {
@@ -457,14 +558,7 @@ export class ComprehensiveDataExportComponent implements OnInit {
           [].concat(Array.from(questionQuery.QuestionTextMap.values())).forEach((questionText: QuestionText) => {
             if (questionText.IsChecked) {
               // 🔍 檢查是否有重複的 QuestionCode
-              if (questionCodeSet.has(questionText.QuestionCode)) {
-                console.warn(`⚠️ 發現重複的 QuestionCode: ${questionText.QuestionCode}`, {
-                  'Subject': questionSubject.SubjectText,
-                  'Group': quesitonGroup.GroupText,
-                  'Query': questionQuery.QueryText,
-                  'Text': questionText.QuestionText
-                });
-              } else {
+              if (!questionCodeSet.has(questionText.QuestionCode)) {
                 questionCodeSet.add(questionText.QuestionCode);
                 this.SelectQuestionCodes.push(questionText.QuestionCode);
                 // 建立題目標題（用冒號分隔階層）
@@ -484,8 +578,6 @@ export class ComprehensiveDataExportComponent implements OnInit {
       });
     });
     
-    console.log('=== 選中的題目收集完成 ===');
-    console.log('選中的題目總數:', selectedQuestions.length);
     console.log('選中的 QuestionCode 列表:', this.SelectQuestionCodes);
     
     // 🔍 檢查 selectedQuestions 中是否有重複的 QuestionCode
@@ -502,7 +594,8 @@ export class ComprehensiveDataExportComponent implements OnInit {
     }
 
     if (chkDataPass) {
-      this.GenReportVision2(selectedQuestions);
+      this.GenReportVision2(selectedQuestions); 
+   
     }
   }
 
@@ -517,6 +610,8 @@ export class ComprehensiveDataExportComponent implements OnInit {
     QuestionText: string;
     QuestionTitle: string;
   }>) {
+    console.log('🚀🚀🚀 GenReportVision2 開始執行！🚀🚀🚀');
+    console.log('selectedQuestions 數量:', selectedQuestions.length);
     this.IsWorking = true;
     let wsName: string = "填寫內容";
     let fileName: string = wsName + ".xlsx";
@@ -531,68 +626,57 @@ export class ComprehensiveDataExportComponent implements OnInit {
         }
       });
 
-      // 🔍 完整輸出 API 返回的資料
-      console.log('=== API 完整回應 ===');
-      console.log('API Response:', resp);
-      console.log('API Response (JSON):', JSON.stringify(resp, null, 2));
-      
       const QuestionDatas = [].concat(resp.QuestionData || []);
       
-      // 🔍 輸出所有 QuestionData 資料
-      console.log('=== QuestionData 完整資料 ===');
-      console.log('QuestionData 總筆數:', QuestionDatas.length);
-      console.log('QuestionData 完整內容:', QuestionDatas);
+      // 🔍 重要！檢查從資料庫回傳的原始資料
+      console.log('🔍🔍🔍 === 資料庫原始資料檢查 === 🔍🔍🔍');
+      console.log('資料總筆數:', QuestionDatas.length);
       
-      // 🔍 輸出每筆資料的詳細內容
-      console.log('=== 每筆資料詳細內容 ===');
-      QuestionDatas.forEach((item, index) => {
-        if (index < 20) { // 只輸出前20筆，避免太多
-          console.log(`[${index + 1}]`, {
-            StudentSystemID: item.StudentSystemID,
-            StudentNumber: item.StudentNumber,
-            ClassName: item.ClassName,
-            SeatNo: item.SeatNo,
-            StudentName: item.StudentName,
-            Gender: item.Gender,
-            QuestionCode: item.QuestionCode,
-            QuestionSubject: item.QuestionSubject,
-            QuestionGroup: item.QuestionGroup,
-            QuestionQuery: item.QuestionQuery,
-            QuestionText: item.QuestionText,
-            AnswerValue: item.AnswerValue,
-            QuestionType: item.QuestionType,
-            '完整物件': item
+      if (QuestionDatas.length > 0) {
+        console.log('🔍 所有欄位名稱:', Object.keys(QuestionDatas[0]));
+        console.log('🔍 第一筆完整資料:', QuestionDatas[0]);
+        console.log('🔍 student_id 值:', QuestionDatas[0].StudentID);
+        
+        // 🔍 特別檢查 AnswerValue 的原始格式
+        console.log('🔍🔍🔍 === AnswerValue 原始資料分析 === 🔍🔍🔍');
+        
+        // 🔍 檢查是否有包含「公斤」的答案
+        const kgAnswers = QuestionDatas.filter(item => 
+          item.AnswerValue && item.AnswerValue.includes('公斤')
+        );
+        
+        if (kgAnswers.length > 0) {
+          alert(`⚠️ 發現 ${kgAnswers.length} 個包含「公斤」的答案！\n\n範例：\n${kgAnswers.slice(0, 3).map(item => 
+            `學生：${item.StudentName}\n題目：${item.QuestionText}\n答案：${item.AnswerValue}`
+          ).join('\n\n')}`);
+          
+          console.log('🚨🚨🚨 === 包含「公斤」的答案 === 🚨🚨🚨');
+          kgAnswers.forEach((item, index) => {
+            console.log(`🚨 [公斤答案 ${index + 1}]`, {
+              '學生姓名': item.StudentName,
+              '題目代碼': item.QuestionCode,
+              '題目': `${item.QuestionSubject}-${item.QuestionGroup}-${item.QuestionQuery}-${item.QuestionText}`,
+              '答案': item.AnswerValue
+            });
           });
         }
-      });
-      
-      if (QuestionDatas.length > 20) {
-        console.log(`... 還有 ${QuestionDatas.length - 20} 筆資料未顯示`);
-      }
-      
-      // 🔍 除錯：檢查 API 返回的原始資料
-      console.log('=== API 返回資料檢查 ===');
-      console.log('總資料筆數:', QuestionDatas.length);
-      console.log('前10筆資料範例:', QuestionDatas.slice(0, 10));
-      
-      // 檢查是否有重複的學生+題目組合
-      const duplicateCheck = new Map<string, number>();
-      QuestionDatas.forEach(item => {
-        const key = `${item.StudentNumber || item.StudentName}_${item.QuestionCode}`;
-        duplicateCheck.set(key, (duplicateCheck.get(key) || 0) + 1);
-      });
-      
-      const duplicates = Array.from(duplicateCheck.entries()).filter(([key, count]) => count > 1);
-      if (duplicates.length > 0) {
-        console.warn('⚠️ 發現重複的學生+題目組合:', duplicates.slice(0, 10));
-        // 顯示詳細的重複資料
-        duplicates.slice(0, 5).forEach(([key, count]) => {
-          const [studentKey, questionCode] = key.split('_');
-          const duplicateItems = QuestionDatas.filter(item => 
-            (item.StudentNumber || item.StudentName) === studentKey && 
-            item.QuestionCode === questionCode
-          );
-          console.log(`重複項目 [${key}] (${count}筆):`, duplicateItems);
+        
+        QuestionDatas.slice(0, 10).forEach((item, index) => {
+          console.log(`🔍 [資料庫原始 ${index + 1}]`, {
+            '學生姓名': item.StudentName,
+            '題目代碼': item.QuestionCode,
+            '題目主題': item.QuestionSubject,
+            '題目群組': item.QuestionGroup,
+            '題目查詢': item.QuestionQuery,
+            '題目文字': item.QuestionText,
+            '原始答案': item.AnswerValue,
+            '答案類型': typeof item.AnswerValue,
+            '答案長度': item.AnswerValue ? item.AnswerValue.length : 0,
+            '包含民國': item.AnswerValue ? item.AnswerValue.includes('民國') : false,
+            '包含年': item.AnswerValue ? item.AnswerValue.includes('年') : false,
+            '包含公斤': item.AnswerValue ? item.AnswerValue.includes('公斤') : false,
+            '答案字符分析': item.AnswerValue ? item.AnswerValue.split('').map(char => `${char}(${char.charCodeAt(0)})`) : []
+          });
         });
       }
       
@@ -602,9 +686,6 @@ export class ComprehensiveDataExportComponent implements OnInit {
         const values = item.AnswerValue.split('、');
         return values.length > 1 && values[0] === values[1];
       });
-      if (duplicateAnswers.length > 0) {
-        console.warn('⚠️ 發現 AnswerValue 本身包含重複值:', duplicateAnswers.slice(0, 10));
-      }
       
       if (QuestionDatas.length > 0) {
         // 建立學生資料Map，key為學號
@@ -620,14 +701,13 @@ export class ComprehensiveDataExportComponent implements OnInit {
 
         // 整理資料：將答案按學生分組
         // 使用組合鍵確保學生唯一性：優先使用 StudentSystemID，其次使用 班級+學號+座號 的組合
-        console.log('=== 開始處理資料分組 ===');
         let processCount = 0;
         QuestionDatas.forEach(item => {
           processCount++;
-          // 優先使用 StudentSystemID，如果沒有則使用組合鍵
+          // 優先使用 student_id，如果沒有則使用組合鍵
           let studentKey: string;
-          if (item.StudentSystemID) {
-            studentKey = `SYS_${item.StudentSystemID}`;
+          if (item.student_id) {
+            studentKey = `SYS_${item.student_id}`;
           } else if (item.StudentNumber) {
             studentKey = `${item.ClassName}_${item.StudentNumber}_${item.SeatNo}`;
           } else {
@@ -636,27 +716,10 @@ export class ComprehensiveDataExportComponent implements OnInit {
           }
           
           // 🔍 詳細追蹤：前10筆資料的處理過程
-          if (processCount <= 10) {
-            console.log(`[處理 ${processCount}]`, {
-              '原始資料': {
-                StudentSystemID: item.StudentSystemID,
-                StudentNumber: item.StudentNumber,
-                ClassName: item.ClassName,
-                SeatNo: item.SeatNo,
-                StudentName: item.StudentName,
-                QuestionCode: item.QuestionCode,
-                AnswerValue: item.AnswerValue,
-                'AnswerValue類型': typeof item.AnswerValue,
-                'AnswerValue長度': item.AnswerValue ? item.AnswerValue.length : 0
-              },
-              '產生的studentKey': studentKey,
-              '是否已有此學生': studentDataMap.has(studentKey)
-            });
-          }
           
           if (!studentDataMap.has(studentKey)) {
             studentDataMap.set(studentKey, {
-              StudentSystemID: item.StudentSystemID || "",
+              StudentSystemID: item.StudentID || "",
               StudentNumber: item.StudentNumber || "",
               ClassName: item.ClassName || "",
               SeatNo: item.SeatNo || 0,
@@ -670,6 +733,15 @@ export class ComprehensiveDataExportComponent implements OnInit {
           
           // 🔍 處理 AnswerValue：如果本身有重複值，先去除重複
           let processedAnswer = item.AnswerValue || "";
+          
+          // 🔍 詳細檢查答案內容和分隔符號
+          if (processedAnswer && typeof processedAnswer === 'string') {
+            // 檢查是否為純數字答案（如 "90"）
+            const trimmedAnswer = processedAnswer.trim();
+            const isSimpleNumber = /^\d+$/.test(trimmedAnswer);
+            
+          }
+          
           if (processedAnswer && typeof processedAnswer === 'string' && processedAnswer.includes('、')) {
             try {
               // 分割答案，去除重複值
@@ -678,14 +750,6 @@ export class ComprehensiveDataExportComponent implements OnInit {
               processedAnswer = uniqueAnswers.join('、');
               
               // 如果處理後有變化，記錄下來
-              if (processedAnswer !== item.AnswerValue) {
-                console.log(`[${processCount}] 去除 AnswerValue 中的重複值`, {
-                  '原始答案': item.AnswerValue,
-                  '處理後答案': processedAnswer,
-                  '學生': student.StudentName,
-                  'QuestionCode': item.QuestionCode
-                });
-              }
             } catch (err) {
               console.error(`處理 AnswerValue 時發生錯誤:`, err, '原始值:', item.AnswerValue);
               // 如果處理失敗，使用原始值
@@ -698,14 +762,6 @@ export class ComprehensiveDataExportComponent implements OnInit {
             const existingAnswer = student.Answers.get(item.QuestionCode);
             
             // 如果已有答案，只保留第一個（跳過重複記錄）
-            console.warn(`⚠️ [${processCount}] 發現重複的 QuestionCode，已排除重複記錄`, {
-              '學生': student.StudentName,
-              '學號': student.StudentNumber,
-              'QuestionCode': item.QuestionCode,
-              '原有答案': existingAnswer,
-              '新答案': processedAnswer,
-              '動作': '保留原有答案，忽略新答案'
-            });
             // 不更新，保留原有的答案，跳過這筆重複的資料
             return; // 在 forEach 中，return 會跳過當前迭代
           }
@@ -714,12 +770,7 @@ export class ComprehensiveDataExportComponent implements OnInit {
           student.Answers.set(item.QuestionCode, processedAnswer);
         });
         
-        console.log('=== 資料分組完成 ===');
-        console.log('學生總數:', studentDataMap.size);
         
-        // 🔍 除錯：檢查處理後的學生資料
-        console.log('=== 處理後的學生資料檢查 ===');
-        console.log('學生總數:', studentDataMap.size);
         let duplicateAnswerCount = 0;
         studentDataMap.forEach((student, key) => {
           student.Answers.forEach((answer, questionCode) => {
@@ -759,7 +810,6 @@ export class ComprehensiveDataExportComponent implements OnInit {
         excelData.push(headerRow);
 
         // 後續行：學生資料
-        console.log('=== 開始建立 Excel 資料 ===');
         let excelRowCount = 0;
         studentDataMap.forEach((student, studentKey) => {
           excelRowCount++;
@@ -775,44 +825,18 @@ export class ComprehensiveDataExportComponent implements OnInit {
           const usedQuestionCodes = new Set<string>(); // 追蹤已使用的 QuestionCode
           selectedQuestions.forEach((q, qIndex) => {
             // 🔍 檢查是否有重複的 QuestionCode
-            if (usedQuestionCodes.has(q.QuestionCode)) {
-              console.error(`❌ [Excel資料 ${excelRowCount}] 發現重複的 QuestionCode: ${q.QuestionCode}`, {
-                '學生': student.StudentName,
-                '題目標題': q.QuestionTitle,
-                '已使用的 QuestionCode': Array.from(usedQuestionCodes)
-              });
-            } else {
-              usedQuestionCodes.add(q.QuestionCode);
-            }
+            usedQuestionCodes.add(q.QuestionCode);
             
             const answer = student.Answers.get(q.QuestionCode) || "";
             dataRow.push(answer);
             
-            // 🔍 詳細追蹤：前3個學生的前5個題目
-            if (excelRowCount <= 3 && qIndex < 5) {
-              console.log(`[Excel資料 ${excelRowCount}][題目 ${qIndex + 1}]`, {
-                '學生': student.StudentName,
-                'QuestionCode': q.QuestionCode,
-                '題目標題': q.QuestionTitle,
-                '答案': answer,
-                '答案類型': typeof answer,
-                '答案長度': answer ? answer.length : 0,
-                '答案包含、': answer.includes('、'),
-                '答案是否重複': answer.includes('、') && answer.split('、')[0] === answer.split('、')[1],
-                '從 Answers Map 取得': student.Answers.has(q.QuestionCode)
-              });
-            }
           });
           
           excelData.push(dataRow);
         });
         
-        console.log('=== Excel 資料建立完成 ===');
-        console.log('Excel 總行數:', excelData.length);
         console.log('Excel 前3行資料:', excelData.slice(0, 3));
         
-        // 🔍 完整檢查：是否有重複
-        console.log('=== 🔍 完整重複檢查報告 ===');
         
         // 1. 檢查 selectedQuestions 中是否有重複的 QuestionCode
         const questionCodeCount = new Map<string, number>();
@@ -820,97 +844,7 @@ export class ComprehensiveDataExportComponent implements OnInit {
           questionCodeCount.set(q.QuestionCode, (questionCodeCount.get(q.QuestionCode) || 0) + 1);
         });
         const duplicateQuestionCodes = Array.from(questionCodeCount.entries()).filter(([code, count]) => count > 1);
-        if (duplicateQuestionCodes.length > 0) {
-          console.error('❌ selectedQuestions 中有重複的 QuestionCode:');
-          duplicateQuestionCodes.forEach(([code, count]) => {
-            const questions = selectedQuestions.filter(q => q.QuestionCode === code);
-            console.error(`  QuestionCode: ${code} (出現 ${count} 次)`, questions);
-          });
-        } else {
-          console.log('✅ selectedQuestions 中沒有重複的 QuestionCode');
-        }
         
-        // 2. 檢查 Excel 標題行是否有重複
-        const headerDuplicates = headerRow.slice(5).filter((title, index, self) => self.indexOf(title) !== index);
-        if (headerDuplicates.length > 0) {
-          console.error('❌ Excel 標題行中有重複的題目標題:', headerDuplicates);
-        } else {
-          console.log('✅ Excel 標題行中沒有重複的題目標題');
-        }
-        
-        // 3. 檢查 Excel 資料中是否有重複答案
-        let excelDuplicateCount = 0;
-        const duplicateAnswers: Array<{row: number, col: number, value: string, student: string}> = [];
-        excelData.slice(1).forEach((row, rowIndex) => {
-          // 跳過標題行，從第2行開始檢查
-          const studentName = row[4] || ''; // 姓名在第5欄（索引4）
-          row.slice(5).forEach((cell, colIndex) => {
-            if (cell && typeof cell === 'string' && cell.includes('、')) {
-              const values = cell.split('、');
-              if (values.length > 1 && values[0] === values[1]) {
-                excelDuplicateCount++;
-                duplicateAnswers.push({
-                  row: rowIndex + 2,
-                  col: colIndex + 6,
-                  value: cell,
-                  student: studentName
-                });
-              }
-            }
-          });
-        });
-        
-        if (excelDuplicateCount > 0) {
-          console.error(`❌ Excel資料中總共有 ${excelDuplicateCount} 個重複答案:`);
-          duplicateAnswers.slice(0, 20).forEach(dup => {
-            console.error(`  第${dup.row}行, 第${dup.col}欄, 學生: ${dup.student}, 值: "${dup.value}"`);
-          });
-          if (duplicateAnswers.length > 20) {
-            console.error(`  ... 還有 ${duplicateAnswers.length - 20} 個重複答案未顯示`);
-          }
-        } else {
-          console.log('✅ Excel資料中沒有重複答案');
-        }
-        
-        // 4. 檢查學生資料 Map 中是否有重複答案
-        let studentMapDuplicateCount = 0;
-        const studentMapDuplicates: Array<{student: string, questionCode: string, answer: string}> = [];
-        studentDataMap.forEach((student, key) => {
-          student.Answers.forEach((answer, questionCode) => {
-            if (answer && answer.includes('、')) {
-              const values = answer.split('、');
-              if (values.length > 1 && values[0] === values[1]) {
-                studentMapDuplicateCount++;
-                studentMapDuplicates.push({
-                  student: student.StudentName,
-                  questionCode: questionCode,
-                  answer: answer
-                });
-              }
-            }
-          });
-        });
-        
-        if (studentMapDuplicateCount > 0) {
-          console.error(`❌ 學生資料 Map 中總共有 ${studentMapDuplicateCount} 個重複答案:`);
-          studentMapDuplicates.slice(0, 20).forEach(dup => {
-            console.error(`  學生: ${dup.student}, QuestionCode: ${dup.questionCode}, 答案: "${dup.answer}"`);
-          });
-          if (studentMapDuplicates.length > 20) {
-            console.error(`  ... 還有 ${studentMapDuplicates.length - 20} 個重複答案未顯示`);
-          }
-        } else {
-          console.log('✅ 學生資料 Map 中沒有重複答案');
-        }
-        
-        // 5. 總結報告
-        console.log('=== 📊 重複檢查總結 ===');
-        console.log({
-          'selectedQuestions 重複': duplicateQuestionCodes.length > 0 ? `❌ ${duplicateQuestionCodes.length} 個` : '✅ 無',
-          'Excel 標題重複': headerDuplicates.length > 0 ? `❌ ${headerDuplicates.length} 個` : '✅ 無',
-          'Excel 資料重複答案': excelDuplicateCount > 0 ? `❌ ${excelDuplicateCount} 個` : '✅ 無',
-          '學生 Map 重複答案': studentMapDuplicateCount > 0 ? `❌ ${studentMapDuplicateCount} 個` : '✅ 無'
-        });
 
         // 產生Excel
         const wb = XLSX.utils.book_new();
@@ -933,7 +867,6 @@ export class ComprehensiveDataExportComponent implements OnInit {
 
   // 🔥 新增：數據分析方法
   async openChartAnalysis() {
-    console.log('=== 開始綜合數據分析 ===');
     
     // 收集選中的班級ID
     this.selectClassIDs = [];

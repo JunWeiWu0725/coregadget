@@ -28,7 +28,6 @@ export class AddComponent implements OnInit {
   checkCount: Number;
   addText: string;
   checkButtonEnable: string = "disabled";
-  sortType: string = 'seat';  // 排序類型：'seat' 班座排序, 'studentNumber' 學號排序
   constructor(private route: ActivatedRoute, private gadget: GadgetService, private router: Router, private behaviorDataService: BehaviorDataService) { }
   contract: Contract;
 
@@ -78,7 +77,7 @@ export class AddComponent implements OnInit {
       this.checkButtonEnable = "";
       this.checkCount = 0;
       this.loading = true;
-      this.currentDateString = moment().format("YYYY-MM-DD");
+      this.currentDateString = moment().format("YYYY-MM-DD HH:mm:ss");
       this.currentDetention = false;
       this.currentGood = false;
       this.currentDaaDsaFollow =false ;
@@ -108,8 +107,6 @@ export class AddComponent implements OnInit {
         // console.log(data.PhotoUrl);
         this.studentDataList.push(data);
       }
-      // 排序學生列表
-      this.sortStudentList();
 
       if (this.behaviorDataService.addCheckStudentList) {
         if (this.behaviorDataService.addCheckStudentList.length > 0) {
@@ -143,35 +140,6 @@ export class AddComponent implements OnInit {
     this.behaviorDataService.addComment = this.addText;
   }
 
-  // 排序變更處理
-  onSortChange(event: any) {
-    this.sortType = event.value;
-    this.sortStudentList();
-  }
-
-  // 排序學生列表
-  sortStudentList() {
-    if (!this.studentDataList || this.studentDataList.length === 0) {
-      return;
-    }
-
-    if (this.sortType === 'seat') {
-      // 班座排序：按 SeatNo 排序
-      this.studentDataList.sort((a, b) => {
-        const seatA = parseInt(a.SeatNo) || 0;
-        const seatB = parseInt(b.SeatNo) || 0;
-        return seatA - seatB;
-      });
-    } else if (this.sortType === 'studentNumber') {
-      // 學號排序：按 StudentNumber 排序
-      this.studentDataList.sort((a, b) => {
-        const numA = a.StudentNumber || '';
-        const numB = b.StudentNumber || '';
-        return numA.localeCompare(numB);
-      });
-    }
-  }
-
   alert(id) {
     //  alert(JSON.stringify(id.checked));
 
@@ -184,8 +152,6 @@ export class AddComponent implements OnInit {
 
     // console.log(this.behaviorDataService.addCheckStudentList);
     this.checkCount = cot;
-    // 排序已選擇的學生列表
-    this.sortStudentList();
     this.behaviorDataService.addCheckStudentList = this.studentDataList;
     // this.behaviorDataService.addComment = this.addText;
     // this.behaviorDataService.addDate = this.currentDateString;

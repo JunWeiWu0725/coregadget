@@ -99,40 +99,84 @@ export class ImportModalComponent implements OnInit {
     this.TeacherList = [].concat(rsp.Teacher || []);
   }
   async loadAllStudent(){
-
-  let rsp = await this.dsaService.send("_.GetAllStudent", {});
-    this.StudentList = [].concat(rsp.Students || []);
-    console.log("=== 系統內原本學生清單 ===");
-    console.log("學生總數:", this.StudentList.length);
-    console.log("完整學生清單:", this.StudentList);
-    
-    // 印出前5筆學生資料作為範例
-    console.log("前5筆學生資料範例:");
-    const statusText = { "1": "一般", "2": "延修" };
-    this.StudentList.slice(0, 5).forEach((student, index) => {
-      console.log(`學生${index + 1}:`, {
-        StudentID: student.StudentID,
-        StudentNumber: student.StudentNumber,
-        ClassName: student.ClassName,
-        SeatNo: student.SeatNo,
-        StudentName: student.StudentName,
-        Status: student.Status,
-        StatusText: statusText[student.Status] || student.Status,
-        Gender: student.Gender
+    try {
+      // 傳入參數以包含所有學生（包括畢業或離校的）
+      let rsp = await this.dsaService.send("_.GetAllStudent", {
+        IncludeGraduated: true,
+        IncludeTransferred: true
       });
-    });
-    
-    // 統計各狀態的學生數量
-    const statusCount = {};
-    this.StudentList.forEach(student => {
-      const status = student.Status || '未設定';
-      const statusName = statusText[status] || status;
-      const key = `${status}(${statusName})`;
-      statusCount[key] = (statusCount[key] || 0) + 1;
-    });
-    console.log("各狀態學生統計:", statusCount);
-    console.log("=== 學生清單印出完成 ===");
-
+      this.StudentList = [].concat(rsp.Students || []);
+      console.log("=== 系統內原本學生清單（包含畢業或離校） ===");
+      console.log("學生總數:", this.StudentList.length);
+      console.log("完整學生清單:", this.StudentList);
+      
+      // 印出前5筆學生資料作為範例
+      console.log("前5筆學生資料範例:");
+      const statusText = { "1": "一般", "2": "延修", "4": "休學", "16": "畢業或離校" };
+      this.StudentList.slice(0, 5).forEach((student, index) => {
+        console.log(`學生${index + 1}:`, {
+          StudentID: student.StudentID,
+          StudentNumber: student.StudentNumber,
+          ClassName: student.ClassName,
+          SeatNo: student.SeatNo,
+          StudentName: student.StudentName,
+          Status: student.Status,
+          StatusText: statusText[student.Status] || student.Status,
+          Gender: student.Gender
+        });
+      });
+      
+      // 統計各狀態的學生數量
+      const statusCount = {};
+      this.StudentList.forEach(student => {
+        const status = student.Status || '未設定';
+        const statusName = statusText[status] || status;
+        const key = `${status}(${statusName})`;
+        statusCount[key] = (statusCount[key] || 0) + 1;
+      });
+      console.log("各狀態學生統計:", statusCount);
+      console.log("=== 學生清單印出完成 ===");
+    } catch (error) {
+      console.error("載入學生清單失敗（帶參數）:", error);
+      // 如果帶參數的 API 調用失敗，嘗試不帶參數的調用
+      try {
+        let rsp = await this.dsaService.send("_.GetAllStudent", {});
+        this.StudentList = [].concat(rsp.Students || []);
+        console.log("=== 系統內原本學生清單（預設） ===");
+        console.log("學生總數:", this.StudentList.length);
+        console.log("完整學生清單:", this.StudentList);
+        
+        // 印出前5筆學生資料作為範例
+        console.log("前5筆學生資料範例:");
+        const statusText = { "1": "一般", "2": "延修", "4": "休學", "16": "畢業或離校" };
+        this.StudentList.slice(0, 5).forEach((student, index) => {
+          console.log(`學生${index + 1}:`, {
+            StudentID: student.StudentID,
+            StudentNumber: student.StudentNumber,
+            ClassName: student.ClassName,
+            SeatNo: student.SeatNo,
+            StudentName: student.StudentName,
+            Status: student.Status,
+            StatusText: statusText[student.Status] || student.Status,
+            Gender: student.Gender
+          });
+        });
+        
+        // 統計各狀態的學生數量
+        const statusCount = {};
+        this.StudentList.forEach(student => {
+          const status = student.Status || '未設定';
+          const statusName = statusText[status] || status;
+          const key = `${status}(${statusName})`;
+          statusCount[key] = (statusCount[key] || 0) + 1;
+        });
+        console.log("各狀態學生統計:", statusCount);
+        console.log("=== 學生清單印出完成 ===");
+      } catch (fallbackError) {
+        console.error("載入學生清單失敗（備用方案）:", fallbackError);
+        this.StudentList = [];
+      }
+    }
   }
 
   canImport(): boolean {
@@ -289,7 +333,7 @@ export class ImportModalComponent implements OnInit {
     const skippedCount = this.interviewLists.length - cleanedInterviewLists.length;
     
     if (cleanedInterviewLists.length === 0) {
-      alert(`所有 ${this.interviewLists.length} 筆資料都無法匯入，原因：找不到對應的學生資料。\n\n請檢查：\n1. 班級名稱是否正確\n2. 座號是否正確\n3. 狀態是否正確（一般/延修/休學）`);
+      alert(`所有 ${this.interviewLists.length} 筆資料都無法匯入，原因：找不到對應的學生資料。\n\n請檢查：\n1. 班級名稱是否正確\n2. 座號是否正確\n3. 狀態是否正確（一般/延修/休學/畢業或離校）`);
       this.isImporting = false; // 重設匯入狀態
       return;
     }
@@ -564,7 +608,7 @@ export class ImportModalComponent implements OnInit {
           const studentNumber = row["學號"].toString().trim();
           const status = (row["狀態"] || "").toString().trim();
           // 將中文狀態轉換為系統代碼
-          const statusMapping = { "一般": "1", "延修": "2", "休學": "3" };
+          const statusMapping = { "一般": "1", "延修": "2", "休學": "4", "畢業或離校": "16" };
           const statusCode = statusMapping[status] || status;
           
           console.log(`🔍 按學號匹配 - 學號: "${studentNumber}", 狀態: "${status}" → "${statusCode}"`);
@@ -602,7 +646,7 @@ export class ImportModalComponent implements OnInit {
           console.log(`班導師模式 - 保持原始狀態: "${status}"`);
         } else {
           // 管理者等其他角色才轉換為系統代碼
-          const statusMapping = { "一般": "1", "延修": "2", "休學": "3" };
+          const statusMapping = { "一般": "1", "延修": "2", "休學": "4", "畢業或離校": "16" };
           statusCode = statusMapping[status] || status;
           console.log(`管理者模式 - 狀態轉換: "${status}" → "${statusCode}"`);
         }
@@ -730,10 +774,38 @@ export class ImportModalComponent implements OnInit {
       console.log("=== 匯入組件檢查結束 ===");
 
       const authorName = (row["記錄者"] || "").toString().trim();
-      for (const t of this.TeacherList) {
-        if (t.Name === authorName || t.NickName === authorName) {
-          result["ref_teacher_id"] = t.ID;
-          break;
+      const nickname = (row["暱稱"] || "").toString().trim();
+      
+      // 先找出所有姓名匹配的教師
+      const nameMatches = this.TeacherList.filter(t => t.Name === authorName);
+      
+      if (nameMatches.length === 0) {
+        // 找不到匹配的教師姓名
+        console.log(`❌ 找不到名為「${authorName}」的教師`);
+      } else if (nameMatches.length === 1) {
+        // 只有一個匹配的教師，直接使用
+        result["ref_teacher_id"] = nameMatches[0].ID;
+        console.log(`✅ 教師匹配成功: ${authorName} -> ${result["ref_teacher_id"]}`);
+      } else {
+        // 有多個同名教師，需要使用暱稱來區分
+        if (nickname) {
+          const exactMatch = nameMatches.find(t => t.NickName === nickname);
+          if (exactMatch) {
+            result["ref_teacher_id"] = exactMatch.ID;
+            console.log(`✅ 教師匹配成功（使用暱稱區分）: ${authorName} (暱稱: ${nickname}) -> ${result["ref_teacher_id"]}`);
+          } else {
+            console.log(`❌ 有多個名為「${authorName}」的教師，但暱稱「${nickname}」不匹配`);
+            // 如果暱稱不匹配，可以選擇第一個或返回錯誤
+            // 這裡選擇使用第一個匹配的教師（保持原有行為）
+            result["ref_teacher_id"] = nameMatches[0].ID;
+            console.log(`⚠️ 使用第一個匹配的教師: ${authorName} -> ${result["ref_teacher_id"]}`);
+          }
+        } else {
+          // 沒有提供暱稱，但有多個同名教師
+          console.log(`❌ 有多個名為「${authorName}」的教師，但未提供暱稱`);
+          // 使用第一個匹配的教師（保持原有行為）
+          result["ref_teacher_id"] = nameMatches[0].ID;
+          console.log(`⚠️ 使用第一個匹配的教師: ${authorName} -> ${result["ref_teacher_id"]}`);
         }
       }
 
@@ -828,7 +900,8 @@ export class ImportModalComponent implements OnInit {
     switch (status) {
       case '1': return '一般';
       case '2': return '延修';
-      case '3': return '休學';
+      case '4': return '休學';
+      case '16': return '畢業或離校';
       default: return '未設定';
     }
   }
@@ -972,7 +1045,7 @@ export class ImportModalComponent implements OnInit {
     if (this.Role === "班導師") {
       compareStatus = originalStatus;
     } else {
-      const statusMapping = { "一般": "1", "延修": "2", "休學": "3" };
+      const statusMapping = { "一般": "1", "延修": "2", "休學": "4", "畢業或離校": "16" };
       compareStatus = statusMapping[originalStatus] || originalStatus;
     }
     
@@ -1070,7 +1143,7 @@ export class ImportModalComponent implements OnInit {
     if (this.Role === "班導師") {
       compareStatus = originalStatus;
     } else {
-      const statusMapping = { "一般": "1", "延修": "2", "休學": "3" };
+      const statusMapping = { "一般": "1", "延修": "2", "休學": "4", "畢業或離校": "16" };
       compareStatus = statusMapping[originalStatus] || originalStatus;
     }
     

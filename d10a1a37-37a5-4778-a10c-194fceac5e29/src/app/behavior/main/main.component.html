@@ -26,7 +26,7 @@
                 *ngFor="let cdata of data.bDataList">
                 <div class="row">
                     <div class="col-md-4 col-lg-3 text-nowrap">
-                        <span class="pr-3">{{cdata.LastUpdate}}</span>
+                        <span class="pr-3">{{cdata.FormattedCreateDate}}</span>
                         <span class="">{{cdata.StudentName}}</span>
                     </div>
                     <div class="col-md-8 col-lg-9">
@@ -37,8 +37,12 @@
                               <span *ngIf="cdata.DaaDsaFollow=='true'"
                               class="badge  badge-mid mr-1">DAA/DSA Follow up </span>
                               
-                              
                         <span >{{cdata.Comment}}</span>
+                        
+                        <!-- 最後更新時間顯示在右邊 -->
+                        <span class="float-right text-muted small">
+                            最後更新: {{cdata.FormattedLastUpdate}}
+                        </span>
                     </div>
                 </div>
             </li>

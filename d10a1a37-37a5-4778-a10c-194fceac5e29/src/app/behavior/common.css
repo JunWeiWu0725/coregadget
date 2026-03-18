@@ -18,6 +18,193 @@
     自訂 Class Style
 ----------------------------------------------------- */
 
+/* Evaluation Card Styles */
+.evaluation-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: 1px solid #e0e0e0;
+}
+
+/* Section Labels */
+.section-label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+    display: block;
+    font-size: 0.875rem;
+}
+
+/* Input with Icon */
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon .icon-left {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    z-index: 2;
+}
+
+/* Custom Input */
+.custom-input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.custom-input:focus {
+    outline: none;
+    border-color: #2196f3;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+/* Custom Dropdown Button */
+.custom-dropdown-btn {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 12px 16px;
+    text-align: left;
+    color: #333;
+    transition: all 0.3s;
+}
+
+.custom-dropdown-btn:hover {
+    border-color: #2196f3;
+    background: #f8f9fa;
+}
+
+/* Feedback Container */
+.feedback-container {
+    position: relative;
+}
+
+/* Custom Textarea */
+.custom-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.3s;
+}
+
+.custom-textarea:focus {
+    outline: none;
+    border-color: #2196f3;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+/* Character Count */
+.char-count {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-size: 12px;
+    color: #666;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2px 4px;
+    border-radius: 2px;
+}
+
+/* Behavior Tags */
+.behavior-tags {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.behavior-tag-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #fff;
+}
+
+.behavior-tag-item:hover {
+    background: #f8f9fa;
+    border-color: #2196f3;
+}
+
+.behavior-tag-item.active {
+    background: #e3f2fd;
+    border-color: #2196f3;
+    color: #1976d2;
+}
+
+.behavior-tag-item input[type="checkbox"] {
+    display: none;
+}
+
+.behavior-tag-item .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ddd;
+    margin-right: 8px;
+    transition: background 0.3s;
+}
+
+.behavior-tag-item.active .dot {
+    background: #2196f3;
+}
+
+/* Custom Mat Select Wrapper */
+.custom-mat-select-wrapper {
+    position: relative;
+}
+
+.custom-mat-select-wrapper .icon-left {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    z-index: 2;
+}
+
+.custom-mat-select-wrapper .mat-form-field {
+    width: 100%;
+}
+
+.custom-mat-select-wrapper .mat-select {
+    padding-left: 40px;
+}
+
+/* No line for mat-form-field */
+.no-line .mat-form-field-underline {
+    display: none;
+}
+
+.no-line .mat-form-field-wrapper {
+    padding-bottom: 0;
+}
+
+/* Custom Select Trigger */
+.custom-select-trigger {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 12px 40px 12px 40px;
+    background: #fff;
+}
+
+.custom-select-trigger:focus {
+    border-color: #2196f3;
+}
+
 .st-list .card {
 	width: calc(16.66% - 8px);
 	margin-right: 8px;

@@ -32,6 +32,7 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -42,4 +43,44 @@
     font-size: 16px;
     font-weight: 500;
     margin: 0;
+}
+
+/* 按鈕樣式優化 */
+.action-btn {
+    background-color: #fff;
+    color: #83AFB8;
+    border: 1px solid #83AFB8;
+    padding: 8px 24px;
+    font-size: 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 2px 4px rgba(131, 175, 184, 0.1);
+    min-width: 180px;
+    height: 42px;
+}
+
+.action-btn:hover {
+    background-color: #83AFB8;
+    color: white;
+    box-shadow: 0 4px 8px rgba(131, 175, 184, 0.3);
+    transform: translateY(-1px);
+}
+
+.action-btn.primary {
+    background-color: #83AFB8;
+    color: white;
+}
+
+.action-btn.primary:hover {
+    background-color: #6d9aa5;
+    border-color: #6d9aa5;
+}
+
+.action-btn i {
+    font-size: 16px;
 }

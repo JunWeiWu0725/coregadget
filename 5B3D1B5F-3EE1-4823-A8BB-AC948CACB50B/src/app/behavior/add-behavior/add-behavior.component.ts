@@ -40,6 +40,7 @@ export class AddBehaviorComponent implements OnInit {
   selectedStudents: any;   //已選取的學生
   currentDate: string = moment().format("YYYY-MM-DD");
   sortType: string = 'seat';  // 排序類型：'seat' 班座排序, 'studentNumber' 學號排序
+  lastUpdateTime: string = '';  // 最後更新時間
 
   constructor(
     private route: ActivatedRoute,
@@ -66,7 +67,7 @@ export class AddBehaviorComponent implements OnInit {
     this.selectedStudents = [];
 
     this.contract = await this.gadget.getContract("kcis");
-    this.currentDateString = moment().format("YYYY-MM-DD");//取得日期字串
+    this.currentDateString = moment().format("YYYY-MM-DD HH:mm:ss");//取得日期字串
 
     //1. 取得目前的班級 :若不是蟲導師班開啟此畫面 是不會有班級編號和名稱
     this.currentClassID = this.route.snapshot.paramMap.get('classID');
@@ -290,7 +291,7 @@ export class AddBehaviorComponent implements OnInit {
             let item = {
               Field: {
                 Comment: this.addText,
-                CreateDate: this.currentDateString,
+                CreateDate: moment().format("YYYY-MM-DD HH:mm:ss"),
                 CourseID: null,
                 Detention: this.currentDetention ? "true" : "false",
                 IsGoodBehavior: this.currentGoodBehavior ? "true" : "false",
@@ -305,6 +306,9 @@ export class AddBehaviorComponent implements OnInit {
         let reqStr = JSON.stringify(items);
         rsp = (await this.contract.send('behaviorForAll.AddBehaviorData', { Request: { BehaviorData: items } }));
 
+        // 更新最後更新時間
+        this.lastUpdateTime = moment().format("YYYY/MM/DD HH:mm:ss");
+        
         alert('已儲存！');
 
         // 清空暫存值

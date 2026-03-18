@@ -1,5 +1,6 @@
 <!-- 欄位映射 Modal -->
-<div class="modal fade" id="import_mapping_modal" tabindex="-1" role="dialog" aria-labelledby="importMappingModalLabel" aria-hidden="true">
+<div class="modal fade" id="import_mapping_modal" tabindex="-1" role="dialog" aria-labelledby="importMappingModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-xl" role="document" style="max-width: 95%;">
     <div class="modal-content">
       <!-- <div class="modal-header">
@@ -9,7 +10,7 @@
         </button>
       </div> -->
       <div class="modal-body">
-        
+
         <!-- 步驟 1: 上傳檔案 -->
         <div *ngIf="step === 'upload'">
           <div class="mb-4">
@@ -38,8 +39,7 @@
           <div class="form-group">
             <label class="btn btn-primary">
               <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                (change)="onFileSelected($event)" #mappingFileInput (click)="mappingFileInput.value = null"
-                multiple
+                (change)="onFileSelected($event)" #mappingFileInput (click)="mappingFileInput.value = null" multiple
                 style="display: none" />
               <i class="bi bi-upload me-1"></i> 選擇 Excel 檔（可多選）
             </label>
@@ -51,7 +51,7 @@
                 </li>
               </ul>
               <small class="text-info d-block mt-2">
-                <i class="bi bi-info-circle"></i> 
+                <i class="bi bi-info-circle"></i>
                 總共 {{ sourceExcelData.length }} 筆資料
               </small>
             </div>
@@ -61,28 +61,49 @@
         <!-- 步驟 2: 欄位映射 -->
         <div *ngIf="step === 'mapping' && showFieldMapping">
           <div class="mb-4">
-            <h6>步驟 2：設定欄位映射</h6>
-            <p class="text-muted">請將來源 Excel 的欄位對應到系統標準欄位</p>
-            
+            <div class="d-flex align-items-center mb-3"
+              style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <div class="mr-3" style="font-size: 2.5rem;">📋</div>
+              <div>
+                <h3 class="mb-2" style="color: white; font-weight: 600; font-size: 1.8rem; margin: 0;">
+                  步驟 2：設定欄位映射
+                </h3>
+                <p class="mb-0" style="color: rgba(255,255,255,0.9); font-size: 1.1rem;">
+                  請將來源 Excel 的欄位對應到系統標準欄位
+                </p>
+              </div>
+            </div>
+
             <!-- 檔案選擇器（多檔案時顯示） -->
             <div *ngIf="uploadedFileNames.length > 1" class="mt-3 mb-3">
               <label class="col-form-label"><strong>選擇要編輯的檔案：</strong></label>
-              <select class="form-control" 
-                [value]="currentEditingFileName"
+              <select class="form-control" [value]="currentEditingFileName"
                 (change)="switchEditingFile($event.target.value)">
                 <option *ngFor="let fileName of uploadedFileNames" [value]="fileName">
                   {{ fileName }}
                 </option>
               </select>
+
+              <!-- 🔧 同步映射配置選項 -->
+              <div class="custom-control custom-checkbox mt-3 mb-2 p-3" 
+                style="background-color: rgba(102, 126, 234, 0.1); border-radius: 8px; border-left: 4px solid #667eea;">
+                <input type="checkbox" class="custom-control-input" id="sync_all_files" 
+                  [(ngModel)]="syncMappingsToAllFiles" (change)="saveCurrentFileMappings()">
+                <label class="custom-control-label ml-2" for="sync_all_files" style="font-weight: 500; cursor: pointer;">
+                  <strong>同步此配置至所有檔案</strong>
+                  <span class="text-muted d-block small">勾選後，當前設定的欄位對應將自動套用到所有檔案（排除「學年度」與「學期」）</span>
+                </label>
+              </div>
+
               <small class="text-muted d-block mt-1">
-                <i class="bi bi-info-circle"></i> 
+                <i class="bi bi-info-circle"></i>
                 每個檔案可以設定獨立的映射配置
               </small>
             </div>
-            
+
             <!-- 當前編輯檔案資訊 -->
             <div *ngIf="currentEditingFileName" class="alert alert-info mt-2">
-              <i class="bi bi-file-earmark-excel"></i> 
+              <i class="bi bi-file-earmark-excel"></i>
               當前編輯：<strong>{{ currentEditingFileName }}</strong>
               <span class="ml-2">
                 （{{ fileDataMap.get(currentEditingFileName)?.length || 0 }} 筆資料）
@@ -90,128 +111,141 @@
             </div>
           </div>
 
-          <div class="table-responsive" style="max-height: 500px">
-            <table class="table table-bordered table-sm">
-              <thead class="thead-light">
+          <div class="table-responsive"
+            style="max-height: 500px; border-radius: 8px; overflow-y: auto; overflow-x: auto; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <table class="table table-bordered" style="margin-bottom: 0; font-size: 1rem;">
+              <thead
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; position: sticky; top: 0; z-index: 10;">
                 <tr>
-                  <th style="width: 150px;">系統標準欄位</th>
-                  <th style="width: 200px;">說明</th>
-                  <th style="width: 120px;">是否使用固定值</th>
-                  <th style="width: 150px;">固定值</th>
-                  <th style="width: 250px;">來源欄位對應</th>
-                  <th style="width: 300px;">值映射</th>
-                  <th style="width: 100px;">操作</th>
+                  <th style="width: 150px; font-size: 1.1rem; font-weight: 600; padding: 16px; border: none;">系統標準欄位
+                  </th>
+                  <th style="width: 200px; font-size: 1.1rem; font-weight: 600; padding: 16px; border: none;">說明</th>
+                  <th style="width: 120px; font-size: 1.1rem; font-weight: 600; padding: 16px; border: none;">是否使用固定值
+                  </th>
+                  <th style="width: 150px; font-size: 1.1rem; font-weight: 600; padding: 16px; border: none;">固定值</th>
+                  <th style="width: 250px; font-size: 1.1rem; font-weight: 600; padding: 16px; border: none;">來源欄位對應
+                  </th>
+                  <th style="width: 300px; font-size: 1.1rem; font-weight: 600; padding: 16px; border: none;">值映射</th>
+                  <th style="width: 100px; font-size: 1.1rem; font-weight: 600; padding: 16px; border: none;">操作</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr *ngFor="let field of getStandardFields()">
-                  <td>
-                    <strong>{{ field.key }}</strong>
-                    <span *ngIf="field.required" class="text-danger ml-1">*</span>
+              <tbody style="background-color: #ffffff;">
+                <tr *ngFor="let field of getStandardFields()" style="border-bottom: 1px solid #e9ecef;">
+                  <td style="padding: 14px; vertical-align: middle;">
+                    <strong style="font-size: 1.05rem; color: #495057;">{{ field.key }}</strong>
+                    <span *ngIf="field.required" class="text-danger ml-1"
+                      style="font-size: 1.2rem; font-weight: bold;">*</span>
                   </td>
-                  <td>
-                    <small class="text-muted">{{ field.description }}</small>
+                  <td style="padding: 14px; vertical-align: middle;">
+                    <span style="font-size: 0.95rem; color: #6c757d;">{{ field.description }}</span>
                   </td>
-                  <td>
+                  <td style="padding: 14px; vertical-align: middle;">
                     <!-- 是否使用固定值 -->
                     <div class="form-check">
-                      <input class="form-check-input" 
-                        type="checkbox" 
-                        [id]="'useFixedValue_' + field.key"
+                      <input class="form-check-input" type="checkbox" [id]="'useFixedValue_' + field.key"
                         [checked]="getFieldMapping(field.key).useFixedValue || false"
                         (change)="onUseFixedValueChange(field.key, $event.target.checked)"
-                        [disabled]="hasSourceFields(field.key)">
-                      <label class="form-check-label" [for]="'useFixedValue_' + field.key">
-                        <small>使用固定值</small>
+                        [disabled]="hasSourceFields(field.key)" style="width: 18px; height: 18px; cursor: pointer;">
+                      <label class="form-check-label" [for]="'useFixedValue_' + field.key"
+                        style="font-size: 0.95rem; cursor: pointer; margin-left: 8px;">
+                        使用固定值
                       </label>
                     </div>
                   </td>
-                  <td>
+                  <td style="padding: 14px; vertical-align: middle;">
                     <!-- 固定值設定 -->
                     <div>
-                      <div class="input-group input-group-sm">
+                      <div class="input-group" style="font-size: 0.95rem;">
                         <!-- 如果欄位有固定選項值，使用下拉選單 -->
-                        <select *ngIf="hasAllowedValues(field.key)" 
-                          class="form-control form-control-sm" 
+                        <select *ngIf="hasAllowedValues(field.key)" class="form-control"
                           [value]="getFieldMapping(field.key).fixedValue || ''"
                           (change)="onFixedValueChange(field.key, $event)"
-                          [disabled]="!getFieldMapping(field.key).useFixedValue || hasSourceFields(field.key)">
+                          [disabled]="!getFieldMapping(field.key).useFixedValue || hasSourceFields(field.key)"
+                          style="font-size: 0.95rem; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
                           <option value="">-- 請選擇固定值 --</option>
-                          <option *ngFor="let allowedValue of getAllowedValuesForField(field.key)" [value]="allowedValue">
+                          <option *ngFor="let allowedValue of getAllowedValuesForField(field.key)"
+                            [value]="allowedValue">
                             {{ allowedValue }}
                           </option>
                         </select>
                         <!-- 如果欄位沒有固定選項值，檢查是否為座號，如果是則使用下拉選單顯示來源欄位的唯一值 -->
-                        <select *ngIf="!hasAllowedValues(field.key) && field.key === '座號' && getFieldMapping(field.key).sourceFields && getFieldMapping(field.key).sourceFields.length > 0" 
-                          class="form-control form-control-sm" 
-                          [value]="getFieldMapping(field.key).fixedValue || ''"
+                        <select
+                          *ngIf="!hasAllowedValues(field.key) && field.key === '座號' && getFieldMapping(field.key).sourceFields && getFieldMapping(field.key).sourceFields.length > 0"
+                          class="form-control" [value]="getFieldMapping(field.key).fixedValue || ''"
                           (change)="onFixedValueChange(field.key, $event)"
-                          [disabled]="!getFieldMapping(field.key).useFixedValue || hasSourceFields(field.key)">
+                          [disabled]="!getFieldMapping(field.key).useFixedValue || hasSourceFields(field.key)"
+                          style="font-size: 0.95rem; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
                           <option value="">-- 請選擇固定值 --</option>
-                          <option *ngFor="let uniqueValue of getUniqueValuesForField(getFieldMapping(field.key).sourceFields[0])" [value]="uniqueValue">
+                          <option
+                            *ngFor="let uniqueValue of getUniqueValuesForField(getFieldMapping(field.key).sourceFields[0])"
+                            [value]="uniqueValue">
                             {{ uniqueValue }}
                           </option>
                         </select>
                         <!-- 如果欄位沒有固定選項值且不是座號，或座號但沒有來源欄位，使用文字輸入框 -->
-                        <input *ngIf="!hasAllowedValues(field.key) && (field.key !== '座號' || !getFieldMapping(field.key).sourceFields || getFieldMapping(field.key).sourceFields.length === 0)" 
-                          type="text" 
-                          class="form-control form-control-sm" 
-                          [value]="getFieldMapping(field.key).fixedValue || ''"
-                          (blur)="setFixedValue(field.key, $event.target.value)"
-                          (focus)="clearSourceFields(field.key)"
+                        <input
+                          *ngIf="!hasAllowedValues(field.key) && (field.key !== '座號' || !getFieldMapping(field.key).sourceFields || getFieldMapping(field.key).sourceFields.length === 0)"
+                          type="text" class="form-control" [value]="getFieldMapping(field.key).fixedValue || ''"
+                          (blur)="setFixedValue(field.key, $event.target.value)" (focus)="clearSourceFields(field.key)"
                           placeholder="固定值"
-                          [disabled]="!getFieldMapping(field.key).useFixedValue || hasSourceFields(field.key)">
+                          [disabled]="!getFieldMapping(field.key).useFixedValue || hasSourceFields(field.key)"
+                          style="font-size: 0.95rem; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
                         <!-- 清除固定值按鈕 -->
                         <div class="input-group-append" *ngIf="getFieldMapping(field.key).fixedValue">
-                          <button class="btn btn-outline-secondary" 
-                            type="button"
-                            (click)="clearFixedValue(field.key)"
+                          <button class="btn btn-outline-secondary" type="button" (click)="clearFixedValue(field.key)"
                             title="清除固定值"
                             [disabled]="!getFieldMapping(field.key).useFixedValue || hasSourceFields(field.key)">
                             <i class="bi bi-x"></i>
                           </button>
                         </div>
                       </div>
-                      <small class="text-muted d-block mt-1">
-                        <i class="bi bi-info-circle"></i> 
+                      <small class="d-block mt-2" style="font-size: 0.85rem; color: #6c757d;">
+                        <i class="bi bi-info-circle"></i>
                         設定後會覆蓋來源欄位
                       </small>
                     </div>
                   </td>
-                  <td>
-                    <div *ngFor="let sourceField of getFieldMapping(field.key).sourceFields; let i = index" class="mb-2">
-                      <div class="input-group input-group-sm">
-                        <select class="form-control form-control-sm" 
-                          [value]="sourceField"
-                          (change)="setFieldMapping(field.key, $event.target.value, i)">
+                  <td style="padding: 14px; vertical-align: middle;">
+                    <div *ngFor="let sourceField of getFieldMapping(field.key).sourceFields; let i = index"
+                      class="mb-2">
+                      <div class="input-group" style="font-size: 0.95rem;">
+                        <select class="form-control"
+                          [value]="sourceField && sourceField.trim() !== '' ? sourceField : ''"
+                          (change)="setFieldMapping(field.key, $event.target.value, i)" #selectElement
+                          style="font-size: 0.95rem; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
                           <option value="">-- 請選擇來源欄位 --</option>
-                          <option *ngFor="let sf of (fileFieldsMap.get(currentEditingFileName) || sourceFields)" [value]="sf">{{ sf }}</option>
+                          <option *ngFor="let sf of (fileFieldsMap.get(currentEditingFileName) || sourceFields)"
+                            [value]="sf" [selected]="sf === sourceField && sourceField && sourceField.trim() !== ''">
+                            {{ sf }}
+                          </option>
                         </select>
                         <div class="input-group-append">
-                          <button class="btn btn-outline-secondary" 
-                            type="button"
-                            (click)="removeMergeField(field.key, i)"
-                            title="移除此欄位">
+                          <button class="btn btn-outline-secondary" type="button"
+                            (click)="removeMergeField(field.key, i)" title="移除此欄位"
+                            style="font-size: 0.9rem; padding: 8px 12px; border-radius: 0 6px 6px 0;">
                             <i class="bi bi-x"></i>
                           </button>
                         </div>
                       </div>
                     </div>
-                    <button *ngIf="getFieldMapping(field.key).sourceFields.length === 0" 
-                      class="btn btn-sm btn-outline-secondary" 
-                      (click)="addMergeField(field.key)">
+                    <button
+                      *ngIf="getFieldMapping(field.key).sourceFields.length === 0 || (getFieldMapping(field.key).sourceFields.length === 1 && getFieldMapping(field.key).sourceFields[0] === '')"
+                      class="btn btn-outline-secondary mt-2" (click)="addMergeField(field.key)"
+                      style="font-size: 0.9rem; padding: 6px 12px; border-radius: 6px;">
                       <i class="bi bi-plus"></i> 新增欄位
                     </button>
-                    <button *ngIf="getFieldMapping(field.key).sourceFields.length > 0" 
-                      class="btn btn-sm btn-outline-primary ml-1" 
-                      (click)="addMergeField(field.key)">
+                    <button
+                      *ngIf="getFieldMapping(field.key).sourceFields.length > 0 && getFieldMapping(field.key).sourceFields[0] && getFieldMapping(field.key).sourceFields[0].trim() !== ''"
+                      class="btn btn-outline-primary mt-2 ml-2" (click)="addMergeField(field.key)"
+                      style="font-size: 0.9rem; padding: 6px 12px; border-radius: 6px;">
                       <i class="bi bi-plus"></i> 合併欄位
                     </button>
                     <div *ngIf="getFieldMapping(field.key).sourceFields.length > 1" class="mt-2">
-                      <small class="text-muted">合併方式：</small>
-                      <select class="form-control form-control-sm" 
-                        [value]="getFieldMapping(field.key).mergeSeparator || ' '"
-                        (change)="setMergeType(field.key, 'concat', $event.target.value)">
+                      <small
+                        style="font-size: 0.9rem; color: #6c757d; display: block; margin-bottom: 4px;">合併方式：</small>
+                      <select class="form-control" [value]="getFieldMapping(field.key).mergeSeparator || ' '"
+                        (change)="setMergeType(field.key, 'concat', $event.target.value)"
+                        style="font-size: 0.9rem; padding: 6px 10px; border-radius: 6px;">
                         <option value=" ">空格</option>
                         <option value=",">逗號</option>
                         <option value="-">連字號</option>
@@ -219,50 +253,50 @@
                       </select>
                     </div>
                   </td>
-                  <td>
+                  <td style="padding: 14px; vertical-align: middle;">
                     <!-- 值映射配置（只有方式、對象、類別需要） -->
-                    <div *ngIf="hasAllowedValues(field.key) && getFieldMapping(field.key).sourceFields && getFieldMapping(field.key).sourceFields.length > 0 && !getFieldMapping(field.key).fixedValue">
+                    <div
+                      *ngIf="hasAllowedValues(field.key) && getFieldMapping(field.key).sourceFields && getFieldMapping(field.key).sourceFields.length > 0 && !getFieldMapping(field.key).fixedValue">
                       <div *ngFor="let valueMapping of getValueMappings(field.key); let i = index" class="mb-2">
-                        <div class="input-group input-group-sm">
-                          <input type="text" 
-                            class="form-control form-control-sm" 
-                            [value]="valueMapping.sourceValue"
+                        <div class="input-group" style="font-size: 0.9rem;">
+                          <input type="text" class="form-control" [value]="valueMapping.sourceValue"
                             (blur)="updateValueMapping(field.key, i, $event.target.value, getValueMappings(field.key)[i].targetValue)"
-                            placeholder="來源值">
+                            placeholder="來源值" style="font-size: 0.9rem; padding: 6px 10px; border-radius: 6px 0 0 6px;">
                           <div class="input-group-append">
-                            <span class="input-group-text">→</span>
+                            <span class="input-group-text" style="font-size: 0.9rem; padding: 6px 10px;">→</span>
                           </div>
                           <!-- 使用下拉選單選擇系統允許的值 -->
-                          <select class="form-control form-control-sm" 
-                            [value]="valueMapping.targetValue"
-                            (change)="updateValueMapping(field.key, i, getValueMappings(field.key)[i].sourceValue, $event.target.value)">
+                          <select class="form-control" [value]="valueMapping.targetValue"
+                            (change)="updateValueMapping(field.key, i, getValueMappings(field.key)[i].sourceValue, $event.target.value)"
+                            style="font-size: 0.9rem; padding: 6px 10px;">
                             <option value="">-- 請選擇目標值 --</option>
                             <option value="?">?（待確認）</option>
-                            <option *ngFor="let allowedValue of getAllowedValuesForField(field.key)" [value]="allowedValue">
+                            <option *ngFor="let allowedValue of getAllowedValuesForField(field.key)"
+                              [value]="allowedValue">
                               {{ allowedValue }}
                             </option>
                           </select>
                           <div class="input-group-append">
-                            <button class="btn btn-sm btn-outline-danger" 
-                              (click)="removeValueMapping(field.key, i)"
-                              title="刪除映射規則">
+                            <button class="btn btn-outline-danger" (click)="removeValueMapping(field.key, i)"
+                              title="刪除映射規則" style="font-size: 0.9rem; padding: 6px 10px; border-radius: 0 6px 6px 0;">
                               <i class="bi bi-x"></i>
                             </button>
                           </div>
                         </div>
                       </div>
-                      <button class="btn btn-sm btn-outline-primary" 
-                        (click)="addValueMapping(field.key)"
-                        title="新增值映射規則">
+                      <button class="btn btn-outline-primary mt-2" (click)="addValueMapping(field.key)" title="新增值映射規則"
+                        style="font-size: 0.9rem; padding: 6px 12px; border-radius: 6px;">
                         <i class="bi bi-plus"></i> 新增值映射
                       </button>
                       <!-- 顯示來源欄位的唯一值建議（只顯示未點擊的） -->
                       <div *ngIf="getFieldMapping(field.key).sourceFields.length === 1" class="mt-2">
-                        <small class="text-muted d-block">來源欄位「{{ getFieldMapping(field.key).sourceFields[0] }}」的唯一值：</small>
+                        <small style="font-size: 0.85rem; color: #6c757d; display: block; margin-bottom: 4px;">來源欄位「{{
+                          getFieldMapping(field.key).sourceFields[0]
+                          }}」的唯一值：</small>
                         <div class="mt-1">
-                          <span *ngFor="let uniqueValue of getUnclickedUniqueValues(field.key, getFieldMapping(field.key).sourceFields[0])" 
-                            class="badge badge-secondary mr-1 mb-1" 
-                            style="cursor: pointer;"
+                          <span
+                            *ngFor="let uniqueValue of getUnclickedUniqueValues(field.key, getFieldMapping(field.key).sourceFields[0])"
+                            class="badge badge-secondary mr-1 mb-1" style="cursor: pointer;"
                             (click)="addValueMapping(field.key); updateValueMapping(field.key, getValueMappings(field.key).length - 1, uniqueValue, ''); markUniqueValueAsClicked(field.key, uniqueValue)"
                             title="點擊快速新增映射">
                             {{ uniqueValue }}
@@ -271,23 +305,26 @@
                       </div>
                       <!-- 顯示系統允許的固定選項值（提示） -->
                       <div class="mt-2">
-                        <small class="text-info d-block">
-                          <i class="bi bi-info-circle"></i> 
+                        <small style="font-size: 0.85rem; color: #17a2b8; display: block;">
+                          <i class="bi bi-info-circle"></i>
                           系統允許的值：{{ getAllowedValuesForField(field.key)?.join('、') }}
                         </small>
                       </div>
                     </div>
                     <!-- 如果設定了固定值，不顯示值映射 -->
-                    <div *ngIf="getFieldMapping(field.key).fixedValue" class="text-muted">
-                      <small>已設定固定值，不需要值映射</small>
+                    <div *ngIf="getFieldMapping(field.key).fixedValue" style="color: #6c757d;">
+                      <span style="font-size: 0.9rem;">已設定固定值，不需要值映射</span>
                     </div>
                     <!-- 其他欄位不需要值映射 -->
-                    <div *ngIf="!hasAllowedValues(field.key) && !getFieldMapping(field.key).fixedValue" class="text-muted">
-                      <small>此欄位不需要值映射</small>
+                    <div *ngIf="!hasAllowedValues(field.key) && !getFieldMapping(field.key).fixedValue"
+                      style="color: #6c757d;">
+                      <span style="font-size: 0.9rem;">此欄位不需要值映射</span>
                     </div>
                     <!-- 如果是有固定選項值的欄位但還沒選擇來源欄位 -->
-                    <div *ngIf="hasAllowedValues(field.key) && (!getFieldMapping(field.key).sourceFields || getFieldMapping(field.key).sourceFields.length === 0) && !getFieldMapping(field.key).fixedValue" class="text-muted">
-                      <small>請先選擇來源欄位</small>
+                    <div
+                      *ngIf="hasAllowedValues(field.key) && (!getFieldMapping(field.key).sourceFields || getFieldMapping(field.key).sourceFields.length === 0) && !getFieldMapping(field.key).fixedValue"
+                      style="color: #6c757d;">
+                      <span style="font-size: 0.9rem;">請先選擇來源欄位</span>
                     </div>
                   </td>
                   <td>
@@ -311,7 +348,7 @@
             <h6>步驟 3：資料預覽（全部檔案合併結果）</h6>
             <p class="text-muted">轉換後的資料預覽（前 {{ previewRows }} 筆）</p>
             <div *ngIf="uploadedFileNames.length > 1" class="alert alert-info mt-2">
-              <i class="bi bi-info-circle"></i> 
+              <i class="bi bi-info-circle"></i>
               已合併 {{ uploadedFileNames.length }} 個檔案的資料，總共 {{ transformedData.length }} 筆
             </div>
           </div>
@@ -319,23 +356,34 @@
           <!-- 驗證統計資訊 -->
           <div class="alert alert-info mb-3">
             <div class="row">
-              <div class="col-md-4">
+              <div class="col-md-3">
                 <strong>學生匹配：</strong>
-                <span class="text-success">{{ getStudentMatchCount().success }} 筆成功</span> / 
+                <span class="text-success">{{ getStudentMatchCount().success }} 筆成功</span> /
                 <span class="text-danger">{{ getStudentMatchCount().failed }} 筆失敗</span>
                 <button class="btn btn-sm btn-outline-info ml-2" (click)="showStudentList()" title="查看學生清單">
                   <i class="bi bi-list-ul"></i> 查看學生清單
                 </button>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-3">
                 <strong>教師匹配：</strong>
-                <span class="text-success">{{ getTeacherMatchCount().success }} 筆成功</span> / 
+                <span class="text-success">{{ getTeacherMatchCount().success }} 筆成功</span> /
                 <span class="text-danger">{{ getTeacherMatchCount().failed }} 筆失敗</span>
-                <button class="btn btn-sm btn-outline-info ml-2" (click)="showTeacherMatchFailures()" title="查看教師匹配失敗記錄" *ngIf="getTeacherMatchCount().failed > 0">
+                <button class="btn btn-sm btn-outline-info ml-2" (click)="showTeacherMatchFailures()" title="查看教師匹配失敗記錄"
+                  *ngIf="getTeacherMatchCount().failed > 0">
                   <i class="bi bi-list-ul"></i> 查看失敗記錄
                 </button>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-3">
+                <strong>日期格式：</strong>
+                <span class="text-success">{{ getDateMatchCount().success }} 筆正確</span> /
+                <span class="text-danger">{{ getDateMatchCount().failed }} 筆錯誤</span>
+              </div>
+              <div class="col-md-3">
+                <strong>狀態欄位：</strong>
+                <span class="text-success">{{ getStatusMatchCount().success }} 筆正確</span> /
+                <span class="text-danger">{{ getStatusMatchCount().failed }} 筆錯誤</span>
+              </div>
+              <div class="col-md-3">
                 <strong>總資料：</strong>{{ transformedData.length }} 筆
               </div>
             </div>
@@ -348,22 +396,31 @@
                   <th *ngFor="let field of getStandardFields()">{{ field.key }}</th>
                   <th style="width: 120px;">學生匹配</th>
                   <th style="width: 120px;">教師匹配</th>
+                  <th style="width: 120px;">日期格式</th>
+                  <th style="width: 120px;">狀態欄位</th>
                   <th style="width: 300px;">錯誤訊息</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let row of transformedData.slice(0, previewRows); let i = index">
                   <td *ngFor="let field of getStandardFields()">
-                    <!-- 如果是班級、座號、學號、狀態、記錄者、暱稱，檢查是否匹配並用紅字標記 -->
-                    <span *ngIf="(field.key === '班級' || field.key === '座號' || field.key === '學號' || field.key === '狀態') && row._studentMatch && !row._studentMatch.matched" 
-                          class="text-danger" [title]="row._studentMatch.error">
+                    <!-- 如果是班級、座號、學號、狀態、記錄者、暱稱、日期，檢查是否匹配並用紅字標記 -->
+                    <span
+                      *ngIf="(field.key === '班級' || field.key === '座號' || field.key === '學號' || field.key === '狀態') && row._studentMatch && !row._studentMatch.matched"
+                      class="text-danger" [title]="row._studentMatch.error">
                       {{ row[field.key] || '-' }}
                     </span>
-                    <span *ngIf="(field.key === '記錄者' || field.key === '暱稱') && row._teacherMatch && !row._teacherMatch.matched" 
-                          class="text-danger" [title]="row._teacherMatch.error">
+                    <span
+                      *ngIf="(field.key === '記錄者' || field.key === '暱稱') && row._teacherMatch && !row._teacherMatch.matched"
+                      class="text-danger" [title]="row._teacherMatch.error">
                       {{ row[field.key] || '-' }}
                     </span>
-                    <span *ngIf="!((field.key === '班級' || field.key === '座號' || field.key === '學號' || field.key === '狀態') && row._studentMatch && !row._studentMatch.matched) && !((field.key === '記錄者' || field.key === '暱稱') && row._teacherMatch && !row._teacherMatch.matched)">
+                    <span *ngIf="field.key === '日期' && row._dateMatch && !row._dateMatch.matched" class="text-danger"
+                      [title]="row._dateMatch.error">
+                      {{ row[field.key] || '-' }}
+                    </span>
+                    <span
+                      *ngIf="!((field.key === '班級' || field.key === '座號' || field.key === '學號' || field.key === '狀態') && row._studentMatch && !row._studentMatch.matched) && !((field.key === '記錄者' || field.key === '暱稱') && row._teacherMatch && !row._teacherMatch.matched) && !(field.key === '日期' && row._dateMatch && !row._dateMatch.matched)">
                       {{ row[field.key] || '-' }}
                     </span>
                   </td>
@@ -372,7 +429,8 @@
                     <span *ngIf="row._studentMatch?.matched" class="text-success" title="匹配成功">
                       <i class="bi bi-check-circle"></i> 成功
                     </span>
-                    <span *ngIf="row._studentMatch && !row._studentMatch.matched" class="text-danger" [title]="row._studentMatch.error">
+                    <span *ngIf="row._studentMatch && !row._studentMatch.matched" class="text-danger"
+                      [title]="row._studentMatch.error">
                       <i class="bi bi-x-circle"></i> 失敗
                     </span>
                     <span *ngIf="!row._studentMatch" class="text-muted">
@@ -384,31 +442,72 @@
                     <span *ngIf="row._teacherMatch?.matched" class="text-success" title="匹配成功">
                       <i class="bi bi-check-circle"></i> 成功
                     </span>
-                    <span *ngIf="row._teacherMatch && !row._teacherMatch.matched" class="text-danger" [title]="row._teacherMatch.error + (row._teacherMatch.warning ? ' (' + row._teacherMatch.warning + ')' : '')">
+                    <span *ngIf="row._teacherMatch && !row._teacherMatch.matched" class="text-danger"
+                      [title]="row._teacherMatch.error + (row._teacherMatch.warning ? ' (' + row._teacherMatch.warning + ')' : '')">
                       <i class="bi bi-x-circle"></i> 失敗
                     </span>
                     <span *ngIf="!row._teacherMatch" class="text-muted">
                       -
                     </span>
                   </td>
+                  <!-- 日期格式狀態 -->
+                  <td>
+                    <span *ngIf="row._dateMatch?.matched" class="text-success" title="日期格式正確">
+                      <i class="bi bi-check-circle"></i> 正確
+                    </span>
+                    <span *ngIf="row._dateMatch && !row._dateMatch.matched" class="text-danger"
+                      [title]="row._dateMatch.error">
+                      <i class="bi bi-x-circle"></i> 錯誤
+                    </span>
+                    <span *ngIf="!row._dateMatch" class="text-muted">
+                      -
+                    </span>
+                  </td>
+                  <!-- 狀態欄位狀態 -->
+                  <td>
+                    <span *ngIf="row._statusMatch?.matched" class="text-success" title="狀態值正確">
+                      <i class="bi bi-check-circle"></i> 正確
+                    </span>
+                    <span *ngIf="row._statusMatch && !row._statusMatch.matched" class="text-danger"
+                      [title]="row._statusMatch.error">
+                      <i class="bi bi-x-circle"></i> 錯誤
+                    </span>
+                    <span *ngIf="!row._statusMatch" class="text-muted">
+                      -
+                    </span>
+                  </td>
                   <!-- 錯誤訊息 -->
                   <td>
-                    <div *ngIf="row._studentMatch && !row._studentMatch.matched && row._studentMatch.error" class="text-danger small">
+                    <div *ngIf="row._studentMatch && !row._studentMatch.matched && row._studentMatch.error"
+                      class="text-danger small">
                       <strong>學生：</strong>{{ row._studentMatch.error }}
                     </div>
-                    <div *ngIf="row._teacherMatch && !row._teacherMatch.matched && row._teacherMatch.error" class="text-danger small">
+                    <div *ngIf="row._teacherMatch && !row._teacherMatch.matched && row._teacherMatch.error"
+                      class="text-danger small">
                       <strong>教師：</strong>{{ row._teacherMatch.error }}
                       <span *ngIf="row._teacherMatch.warning" class="text-warning">
                         （{{ row._teacherMatch.warning }}）
                       </span>
                     </div>
-                    <div *ngIf="row._studentMatch && !row._studentMatch.matched && !row._studentMatch.error" class="text-danger small">
+                    <div *ngIf="row._dateMatch && !row._dateMatch.matched && row._dateMatch.error"
+                      class="text-danger small">
+                      <strong>日期：</strong>{{ row._dateMatch.error }}
+                    </div>
+                    <div *ngIf="row._statusMatch && !row._statusMatch.matched && row._statusMatch.error"
+                      class="text-danger small">
+                      <strong>狀態：</strong>{{ row._statusMatch.error }}
+                    </div>
+                    <div *ngIf="row._studentMatch && !row._studentMatch.matched && !row._studentMatch.error"
+                      class="text-danger small">
                       <strong>學生：</strong>匹配失敗（無詳細錯誤訊息）
                     </div>
-                    <div *ngIf="row._teacherMatch && !row._teacherMatch.matched && !row._teacherMatch.error" class="text-danger small">
+                    <div *ngIf="row._teacherMatch && !row._teacherMatch.matched && !row._teacherMatch.error"
+                      class="text-danger small">
                       <strong>教師：</strong>匹配失敗（無詳細錯誤訊息）
                     </div>
-                    <span *ngIf="(!row._studentMatch || row._studentMatch.matched) && (!row._teacherMatch || row._teacherMatch.matched)" class="text-muted small">
+                    <span
+                      *ngIf="(!row._studentMatch || row._studentMatch.matched) && (!row._teacherMatch || row._teacherMatch.matched) && (!row._dateMatch || row._dateMatch.matched) && (!row._statusMatch || row._statusMatch.matched)"
+                      class="text-muted small">
                       -
                     </span>
                   </td>
@@ -419,7 +518,7 @@
 
           <div class="mt-3">
             <p class="text-info">
-              <i class="bi bi-info-circle"></i> 
+              <i class="bi bi-info-circle"></i>
               總共 {{ transformedData.length }} 筆資料，已預覽前 {{ previewRows }} 筆
             </p>
           </div>
@@ -428,9 +527,23 @@
             <button class="btn btn-secondary" (click)="step = 'mapping'">
               <i class="bi bi-arrow-left"></i> 返回修改映射
             </button>
-            <button class="btn btn-success" (click)="downloadTransformedExcel()">
-              <i class="bi bi-download"></i> 下載轉換後的 Excel
-            </button>
+            <div class="d-flex gap-2">
+              <button class="btn btn-success mr-2" (click)="downloadSuccessExcel()"
+                [disabled]="getSuccessDataCount() === 0"
+                style="font-size: 1rem; padding: 10px 20px; border-radius: 8px; font-weight: 500;">
+                <i class="bi bi-download"></i> 下載成功資料 (標準格式)
+                <span class="badge badge-light ml-2" style="font-size: 0.9rem; padding: 4px 8px;">
+                  {{ getSuccessDataCount() }} 筆
+                </span>
+              </button>
+              <button class="btn btn-danger" (click)="downloadErrorExcel()" [disabled]="getErrorDataCount() === 0"
+                style="font-size: 1rem; padding: 10px 20px; border-radius: 8px; font-weight: 500;">
+                <i class="bi bi-exclamation-triangle"></i> 下載錯誤資料 (原始格式)
+                <span class="badge badge-light ml-2" style="font-size: 0.9rem; padding: 4px 8px;">
+                  {{ getErrorDataCount() }} 筆
+                </span>
+              </button>
+            </div>
           </div>
         </div>
 

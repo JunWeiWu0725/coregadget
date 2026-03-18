@@ -1,262 +1,308 @@
 
 <div>
-<div style="height: 20px">
+  <div style="height: 20px"></div>
 
-</div>
+  <div *ngIf="IsWorking" class="whole"></div>
+  <div *ngIf="IsWorking" class="look">
+    <mat-spinner></mat-spinner>
+  </div>
 
-<div *ngIf="IsWorking" class="whole">
+  <!-- 舊版按鈕已註解，現在使用 Step 3 中的產生報表按鈕 -->
+  <!--
+  <div class="float-right">
+    <button (click)="MakeReportVision2()" type="button" class="btn btn-info">
+      產生報表
+    </button>
+    <button (click)="MakeReport()" type="button" class="btn btn-info">
+      產生報表（舊版）
+    </button>
+  </div>
+  -->
 
-</div>
-<div *ngIf="IsWorking" class="look">
+  <app-chart-modal #chartModal></app-chart-modal>
 
-  <mat-spinner></mat-spinner>
-  <!-- <mat-progress-bar mode="buffer" [bufferValue]=50> </mat-progress-bar>
-    <span>資料處理中 ...</span>   -->
-</div>
-<div class="float-right">
+  <div class="container-xl mx-5 align-items-center" style="width: 95%;">
+    <!-- 標題 -->
+    <div class="mb-6 d-flex justify-content-between align-items-center">
+      <h1 class="page-title" style="margin-bottom: 15px;">
+        匯出填寫內容 
+      </h1>
+    <hr>
+      <button 
+        *ngIf="currentStep === 3"
+        (click)="MakeReportVision2()"
+        [disabled]="GetSelectedClassCount() === 0 || GetSelectedQuestionCount() === 0"
+        class="btn btn-export"
+        [ngClass]="{'disabled': GetSelectedClassCount() === 0 || GetSelectedQuestionCount() === 0}">
+        <i class="material-icons">download</i>
+        產生報表
+      </button>
+    </div>
 
-  <button (click)="MakeReport()" type="button" class="btn btn-info ">
-    產生報表
-  </button>
+    <!-- 步驟指示器 -->
+    <div class="step-indicator-wrapper">
+      <div class="step-indicator">
+        <div class="step-item" [ngClass]="{'active': currentStep === 1, 'completed': currentStep > 1}" (click)="goToStep(1)">
+          <div class="step-icon-wrapper">
+            <i *ngIf="currentStep > 1" class="material-icons step-check">check_circle</i>
+            <i *ngIf="currentStep <= 1" class="material-icons step-icon">school</i>
+          </div>
+          <span class="step-label-text">Step 1 學年度學期</span>
+        </div>
+        <div class="step-connector" [ngClass]="{'completed': currentStep > 1}"></div>
+        <div class="step-item" [ngClass]="{'active': currentStep === 2, 'completed': currentStep > 2}" (click)="goToStep(2)">
+          <div class="step-icon-wrapper">
+            <i *ngIf="currentStep > 2" class="material-icons step-check">check_circle</i>
+            <i *ngIf="currentStep <= 2" class="material-icons step-icon">layers</i>
+          </div>
+          <span class="step-label-text">Step 2 選擇班級</span>
+        </div>
+        <div class="step-connector" [ngClass]="{'completed': currentStep > 2}"></div>
+        <div class="step-item" [ngClass]="{'active': currentStep === 3}" (click)="goToStep(3)">
+          <div class="step-icon-wrapper">
+            <i class="material-icons step-icon">list</i>
+          </div>
+          <span class="step-label-text">Step 3 選擇題目欄位</span>
+        </div>
+      </div>
+    </div>
 
-  <button (click)="MakeReportVision2()" type="button" class="btn btn-info ">
-    產生報表2
-  </button>
-</div>
-<app-chart-modal #chartModal></app-chart-modal>
-<div class="container-xl mx-5 align-items-center" style="width: 95%;">
-  <mat-tab-group dynamicHeight>
-    <mat-tab class="tabText" label="step1 學年度學期 >">
-      <div class="row">
-        <div class="col-sm">
+    <!-- 內容區域 -->
+    <div class="content-card">
+      <!-- Step 1: 學年度學期 -->
+      <div *ngIf="currentStep === 1" class="step-content step1-content">
+        <div class="step-header">
+          <h2 class="step-title">選擇匯出範圍</h2>
+          <p class="step-subtitle">請指定欲匯出資料的對應學年度與學期</p>
+        </div>
 
-
-          
-
-          <label style="font-size: 18px; padding-top: 8px;"> 學年度</label>
-          <div style="margin-left: 10px;font-size: 18px">
-            <mat-form-field>
-              <mat-label></mat-label>
-              <mat-select [(value)]="SelectSchoolYear" (selectionChange)="reloadSectionInfo()">
+        <div class="step1-form">
+          <div class="form-field">
+            <label class="form-label">
+              <i class="material-icons">calendar_today</i>
+              學年度
+            </label>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-select [(value)]="SelectSchoolYear" (selectionChange)="reloadSectionInfo()" placeholder="請選擇學年度">
                 <mat-option *ngFor="let schoolYear of SchoolYears" [value]="schoolYear">{{schoolYear}}</mat-option>
               </mat-select>
             </mat-form-field>
- 
-
-
-      
           </div>
 
+          <div class="form-field">
+            <label class="form-label">
+              <i class="material-icons">schedule</i>
+              學期
+            </label>
+            <div class="semester-buttons">
+              <button 
+                type="button" 
+                class="semester-btn" 
+                [ngClass]="{'active': SelectSemester === 1}"
+                (click)="SelectSemester = 1; reloadSectionInfo()">
+                <span class="semester-label">SEMESTER</span>
+                <span class="semester-number">第 1 學期</span>
+              </button>
+              <button 
+                type="button" 
+                class="semester-btn" 
+                [ngClass]="{'active': SelectSemester === 2}"
+                (click)="SelectSemester = 2; reloadSectionInfo()">
+                <span class="semester-label">SEMESTER</span>
+                <span class="semester-number">第 2 學期</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          <label style="font-size: 18px; padding-top: 8px;"> 學期</label>
-          <div style="margin-left: 10px;font-size: 18px">
-            <mat-form-field>
-              <mat-label></mat-label>
-              <mat-select [(value)]="SelectSemester" (selectionChange)="reloadSectionInfo()">
-                <mat-option [value]="1">1</mat-option>
-                <mat-option [value]="2">2 </mat-option>
+      <!-- Step 2: 選擇班級 -->
+      <div *ngIf="currentStep === 2" class="step-content step2-content">
+        <div class="step-header d-flex justify-content-between align-items-start mb-4">
+          <div>
+            <h2 class="step-title d-flex align-items-center">
+              <i class="material-icons mr-2">people</i>
+              選擇匯出班級
+            </h2>
+            <p class="step-subtitle">點擊年級名稱可全選該年級班級</p>
+          </div>
+          <button 
+            type="button"
+            class="btn-select-all"
+            (click)="SetSelectAllItem()">
+            {{isSelectAllItem ? '取消全選' : '全選所有班級'}}
+          </button>
+        </div>
+
+        <div class="grade-grid">
+          <ng-container *ngFor="let item of SelectGradeYearList">
+            <div class="grade-card">
+              <div class="grade-header">
+                <button 
+                  type="button"
+                  class="grade-toggle"
+                  (click)="SetSelectGradeItem(item.GradeYear)">
+                  <div class="grade-checkbox" [ngClass]="{'checked': item.Checked}">
+                    <i class="material-icons">check</i>
+                  </div>
+                  <span class="grade-name">{{item.GradeYearStr}}</span>
+                </button>
+                <span class="grade-count">
+                  已選 {{getGradeSelectedCount(item)}} / {{item.ClassItems.length}}
+                </span>
+              </div>
+              <div class="class-grid">
+                <button
+                  *ngFor="let ClassItem of item.ClassItems"
+                  type="button"
+                  class="class-btn"
+                  [ngClass]="{'active': ClassItem.Checked}"
+                  (click)="ClassItem.SetClassCheck()">
+                  {{ClassItem.ClassName}}
+                </button>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- Step 3: 選擇題目欄位 -->
+      <div *ngIf="currentStep === 3" class="step-content step3-content">
+        <div *ngIf="SelectSections.length > 0 && SelectSection" class="mb-4">
+          <div class="form-field mb-4">
+            <label class="form-label" style="font-size: 18px; padding-top: 8px;">表單名稱：</label>
+            <mat-form-field appearance="outline" class="ml-3">
+              <mat-select [(value)]="SelectSection" (selectionChange)="LoadngQuestionData()">
+                <mat-option *ngFor="let selectSection of SelectSections" [value]="selectSection">
+                  {{selectSection.SectionName || ""}}
+                </mat-option>
               </mat-select>
             </mat-form-field>
-
           </div>
         </div>
 
-        <div class="col-sm">
-          <div class="ml-auto align-self-center p-2  float-right">
+        <div class="step3-header">
+          <div>
+            <h2 class="step-title d-flex align-items-center">
+              <i class="material-icons mr-2">list</i>
+              選擇匯出欄位
+            </h2>
+            <p class="step-subtitle">點擊分類標題可快速勾選欄位</p>
           </div>
-        </div>
-      </div>
-    </mat-tab>
-    <mat-tab label="step2 選擇班級 >">
-
-
-      <ng-container>
-        <div class="form-group">
-          <span class="custom-control custom-checkbox w-25">
-            <input type="checkbox" class="custom-control-input" [id]="0" [checked]="isSelectAllItem"
-              (click)="SetSelectAllItem()" />
-
-            <label class="custom-control-label" [for]="0">全選 年級
-            </label>
-          </span>
-
-          <div class="d-flex flex-wrap pl-3">
-
-            <div class="custom-control custom-checkbox w-25" *ngFor="let item of SelectGradeYearList">
-              <input type="checkbox" class="custom-control-input" [id]="item.id" [checked]="item.Checked"
-                (click)="SetSelectGradeItem(item.GradeYear)" />
-              <label class="custom-control-label" [for]="item.id">{{item.GradeYearStr}}
-              </label>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-
-      <div style="height: 20px ; width: 200px; ;display :block">
-
-      </div>
-
-
-      <ng-container *ngFor="let item of SelectGradeYearList">
-        <div class="form-group">
-
-          <span class="custom-control custom-checkbox w-25  ">
-
-            <input type="checkbox" class="custom-control-input" [id]="item.id" [checked]="item.Checked"
-              (click)="SetSelectGradeItem(item.GradeYear)" />
-            <label class="custom-control-label" [for]="item.id"> 全選 {{item.GradeYearStr}}
-            </label>
-          </span>
-
-          <div class="d-flex flex-wrap pl-3">
-            <div class="custom-control custom-checkbox w-25" *ngFor="let ClassItem of item.ClassItems">
-              <input type="checkbox" class="custom-control-input" [id]="ClassItem.id" [checked]="ClassItem.Checked"
-                (click)="ClassItem.SetClassCheck()" />
-              <label class="custom-control-label" [for]="ClassItem.id"> {{ClassItem.ClassName}}
-              </label>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-
-
-    </mat-tab>
-
-    <mat-tab label="step3 選擇題目 >" disabled="false">
-
-
-      <div mx-3>
-
-        <div *ngIf="SelectSections.length>0 && SelectSection">
-          <label class="m-3" style="font-size: 18px; padding-top: 8px;">表單名稱 :</label>
-          <mat-form-field class="m-3">
-            <!-- <mat-label>{{SelectSection.SectionName}}</mat-label> -->
-            <mat-select [(value)]="SelectSection" (selectionChange)="LoadngQuestionData()">
-              <mat-option *ngFor="let selectSection of SelectSections" [value]="selectSection">
-                {{selectSection.SectionName||""}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <span class="m-1 float-right d-flex flex-row" style="display: inline-block;"><b class="my-3"
-              style=" font-size: 18px; color:#94d0cc  ; ">
-              <span class="material-icons" style=" font-size: 22px; color:#94d0cc ">
-                touch_app
-              </span>
-              請點擊題目或標題。</b> </span>
-      
-          <div class="m-3 d-flex align-items-center">
-            <span class="custom-control custom-checkbox mr-3">
-              <input type="checkbox" class="custom-control-input" id="selectAllQuestions" 
-                [checked]="isSelectAllQuestions" (click)="SetSelectAllQuestions()" />
-              <label class="custom-control-label" for="selectAllQuestions" 
-                style="font-size: 18px; color:#94d0cc; cursor: pointer;">
-                全選題目
-              </label>
+          <div class="field-count-badge">
+            <i class="material-icons">info</i>
+            <span class="field-count-text">
+              已選擇 <strong>{{GetSelectedQuestionCount()}}</strong> 個欄位
             </span>
-            <b style="font-size: 18px; color:#94d0cc;">已選擇題數：{{GetSelectedQuestionCount()}}題</b>
           </div>
-            </div>     
-        <ng-container>
-     
+        </div>
 
-          <div style ="border:1.5px solid #e1e1e1"class="" *ngIf="this.GetQuestionSubjectMapValue().length>0; else tmpLoading">
-            <ng-container *ngFor="let subject of this.GetQuestionSubjectMapValue() ">
-              <div class=" mb-2 px-3 mt-2 questionSheet">
-                <h4 (click)="selectSubject(subject)" class="hover-a" [ngClass]="{'IsChecked':subject.IsChecked }">
-                  {{subject.SubjectText}}</h4>
-                <table class="table table-sm table-bordered">
-                  <ng-container *ngFor="let group of subject.GetQuestionGroups()">
-                    <tr>
-                      <th colspan="2" (click)="selectGroup(group)" class=" text-left hover-a"
-                       >
-                      <span  [ngClass]="{'IsChecked':group.IsChecked }">
-                        {{group.GroupText}} 
-                      </span>
-                      </th>
-                    </tr>
-                    <ng-container *ngFor="let query of group.GetQuestionQuerys()">
-                      <tr>
-                        <td class="text-left pl-4 " style="width:221px ;"
-                        
-                        scope="col">
-                      
-                          <span *ngIf="!query.ShowChecked" style="color:transparent ;font-size: 9px;" class="material-icons">
-                            check_circle_outline
-                          </span>
-
-                          <div   (click)="selectQuery(query)"  class="can_click ">
-                          <span *ngIf="query.ShowChecked"   
-                            class=" material-icons posit"  style="color: #ccc ;font-size: 9px;">
-                            check_circle_outline
-                          </span>
-                          <span  class ="hover-a" [ngClass]="{'IsChecked':query.IsChecked }">
-                          {{query.QueryText}} :
-                        </span>
+        <div class="field-categories" *ngIf="this.GetQuestionSubjectMapValue().length > 0; else tmpLoading">
+          <ng-container *ngFor="let subject of this.GetQuestionSubjectMapValue()">
+            <div class="category-card">
+              <button 
+                type="button"
+                class="category-header"
+                (click)="selectSubject(subject)">
+                <span class="category-title">{{subject.SubjectText}}</span>
+                <span class="category-select-all">點擊全選</span>
+              </button>
+              
+              <div class="field-grid">
+                <ng-container *ngFor="let group of subject.GetQuestionGroups()">
+                  <div class="question-group-container">
+                    <!-- 显示 QuestionGroup 标题，如果是最底层则可以勾选 -->
+                    <div class="question-group-title-wrapper" *ngIf="group.GroupText && group.GroupText.trim() !== ''">
+                      <label 
+                        *ngIf="group.GetQuestionQuerys().length === 0"
+                        class="field-item group-title-item"
+                        [ngClass]="{
+                          'selected': group.IsChecked
+                        }"
+                        (click)="selectGroup(group)">
+                        <div class="field-checkbox" [ngClass]="{'checked': group.IsChecked}">
+                          <i *ngIf="group.IsChecked" class="material-icons">check</i>
                         </div>
-                        </td>
-                        <td class="text-left" scope="col">
-                          <ng-container
-                            *ngFor="let questionText of query.GetQuestionText();let questionTextIndex = index">
-                            <span [attr.questionCode]=questionText.QuestionCode>
-                              <!-- <span class="ml-2 mr-3"></span> -->
-
-                              <span *ngIf="questionText.QuestionText">
-                                <span *ngIf="!questionText.IsChecked" style="color:transparent  ;font-size: 9px;"
-                                class="material-icons  posit">
-                                check_circle_outline
-                              </span>
-                                
-                                
-                              
-                                <div class ="can_click" style="display: inline;" (click)="selectQuestionText(questionText)" >
-                                  <span *ngIf="questionText.IsChecked" style="color: #ccc  ;font-size: 9px;"
-                                  class="material-icons posit">
-                                  check_circle_outline
-                                </span>
-                                <span class="hover-a"
-                                  id="{{questionText.QuestionCode}}"
-                                  [ngClass]="{'IsChecked':questionText.IsChecked }">{{questionText.QuestionText}}</span>
+                        <span class="field-name">{{group.GroupText}}</span>
+                      </label>
+                      <div *ngIf="group.GetQuestionQuerys().length > 0" class="question-group-title">
+                        {{group.GroupText}}
+                      </div>
+                    </div>
+                    <div class="question-group-items">
+                      <ng-container *ngFor="let query of group.GetQuestionQuerys()">
+                        <div class="question-query-container">
+                          <!-- 显示 QuestionQuery 标题，总是可以勾选 -->
+                          <div class="question-query-title-wrapper" *ngIf="query.QueryText && query.QueryText.trim() !== ''">
+                            <label 
+                              class="field-item query-title-item"
+                              [ngClass]="{
+                                'selected': query.IsChecked
+                              }"
+                              (click)="selectQuery(query)">
+                              <div class="field-checkbox" [ngClass]="{'checked': query.IsChecked}">
+                                <i *ngIf="query.IsChecked" class="material-icons">check</i>
+                              </div>
+                              <span class="field-name">{{query.QueryText}}</span>
+                            </label>
+                          </div>
+                          <div class="question-query-items" *ngIf="query.hasChild && query.GetQuestionText().length > 0">
+                            <ng-container *ngFor="let questionText of query.GetQuestionText()">
+                              <label 
+                                *ngIf="questionText.QuestionText"
+                                class="field-item"
+                                [ngClass]="{
+                                  'selected': questionText.IsChecked
+                                }"
+                                (click)="selectQuestionText(questionText)">
+                                <div class="field-checkbox" [ngClass]="{'checked': questionText.IsChecked}">
+                                  <i *ngIf="questionText.IsChecked" class="material-icons">check</i>
                                 </div>
-                                <span class="ml-1 mr-2">:<span class=" ml-3"> ---</span></span>
-                              </span>
-                              <span *ngIf="!questionText.QuestionText">
-                                <span  style="color:transparent"
-                                  class="material-icons  posit">
-                                  check_circle_outline
-                                </span>
-                                <span *ngIf="" style="color:transparent" class="material-icons ">
-                                  check_circle_outline
-                                </span>
-                                ---</span>
-                            </span>
-
-                          </ng-container>
-                        </td>
-                      </tr>
-                    </ng-container>
-                  </ng-container>
-                </table>
+                                <span class="field-name">{{questionText.QuestionText}}</span>
+                              </label>
+                            </ng-container>
+                          </div>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </ng-container>
               </div>
-            </ng-container>
-          </div>
-        </ng-container>
+            </div>
+          </ng-container>
+        </div>
 
         <ng-template #tmpLoading class="container">
-          <div *ngIf="this.QuestionSubjectMap.size ===0" class="row justify-content-center"
-            style=" font-size:18px;margin-top:250px;margin-bottom:200px;">
-
+          <div *ngIf="this.QuestionSubjectMap.size === 0" class="row justify-content-center"
+            style="font-size:18px;margin-top:250px;margin-bottom:200px;">
             {{SelectSchoolYear}}學年度 第{{SelectSemester}}學期 無資料
           </div>
         </ng-template>
       </div>
+    </div>
 
-    </mat-tab>
-
-
-  </mat-tab-group>
-
-  <!-- 年級班級顯示section -->
-  <div class="ml-auto align-self-center p-2  float-right">
+    <!-- 底部導航欄 -->
+    <div class="bottom-navigation">
+      <button 
+        type="button" 
+        class="btn-nav btn-prev" 
+        (click)="previousStep()" 
+        [disabled]="currentStep === 1">
+        <i class="material-icons">arrow_back</i>
+        上一步
+      </button>
+      <div class="nav-info">
+        <!-- 已選擇 {{GetSelectedClassCount()}} 個班級 / {{GetSelectedQuestionCount()}} 個欄位 -->
+      </div>
+      <button 
+        *ngIf="currentStep < 3"
+        type="button" 
+        class="btn-nav btn-next" 
+        (click)="nextStep()">
+        下一步
+        <i class="material-icons">chevron_right</i>
+      </button>
+      <div *ngIf="currentStep === 3" class="w-32"></div>
+    </div>
   </div>
 </div>
-  <!-- 測試tab -->

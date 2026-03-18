@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+ 
+ import { Component, OnInit } from '@angular/core';
 import { GadgetService, Contract } from 'src/app/gadget.service';
 import { Utils } from 'src/app/util';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-main',
@@ -47,6 +49,21 @@ export class MainComponent implements OnInit {
           displayItem = false;
         }
 
+        // 格式化時間顯示
+        for (const bData of bDataList) {
+          // 格式化 CreateDate（創建日期）
+          if (bData.CreateDate) {
+            const createDate = this.formatDateTime(bData.CreateDate);
+            bData.FormattedCreateDate = createDate;
+          }
+          
+          // 格式化 LastUpdate（最後更新時間）
+          if (bData.LastUpdate) {
+            const lastUpdate = this.formatDateTime(bData.LastUpdate);
+            bData.FormattedLastUpdate = lastUpdate;
+          }
+        }
+
         this.courseDataList.push({ ID: data.ID, Name: data.Name, DisplayItem: displayItem, bDataList });
       }
 
@@ -56,6 +73,45 @@ export class MainComponent implements OnInit {
       console.log(err);
     } finally {
       this.loading = false;
+    }
+  }
+
+
+  // 格式化日期時間的通用方法
+  private formatDateTime(dateStr: any): string {
+    if (!dateStr) return '';
+    
+    // 嘗試用 moment 解析各種可能的格式
+    let parsedDate = moment(dateStr);
+    
+    // 如果直接解析失敗，嘗試常見的格式
+    if (!parsedDate.isValid()) {
+      // 嘗試 ISO 格式
+      parsedDate = moment(dateStr, 'YYYY-MM-DDTHH:mm:ss');
+    }
+    
+    if (!parsedDate.isValid()) {
+      // 嘗試帶毫秒的格式
+      parsedDate = moment(dateStr, 'YYYY-MM-DDTHH:mm:ss.SSS');
+    }
+    
+    if (!parsedDate.isValid()) {
+      // 嘗試空格分隔的格式
+      parsedDate = moment(dateStr, 'YYYY-MM-DD HH:mm:ss');
+    }
+    
+    if (!parsedDate.isValid()) {
+      // 嘗試斜線格式
+      parsedDate = moment(dateStr, 'YYYY/MM/DD HH:mm:ss');
+    }
+    
+    if (parsedDate.isValid()) {
+      // 格式化為 YYYY/MM/DD HH:mm 格式（不包含秒數）
+      return parsedDate.format('YYYY/MM/DD HH:mm');
+    } else {
+      // 如果都無法解析，顯示原始值
+      console.warn('Unable to parse date:', dateStr);
+      return dateStr;
     }
   }
 

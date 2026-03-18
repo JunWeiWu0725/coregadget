@@ -104,6 +104,18 @@ export class ListComponent implements OnInit {
       this.behaviorDataInfo = Utils.array(rsp, "Response/BehaviorData");
       this.behaviorDataList = [];
       for (const data of this.behaviorDataInfo) {
+        // 格式化日期
+        if (data.CreateDate) {
+          const createDate = this.formatDateTime(data.CreateDate);
+          data.CreateDate2 = createDate;
+        }
+        
+        // 格式化 LastUpdate（最後更新時間）
+        if (data.LastUpdate) {
+          const lastUpdate = this.formatDateTime(data.LastUpdate);
+          data.FormattedLastUpdate = lastUpdate;
+        }
+        
         this.behaviorDataList.push(data);
       }
 
@@ -112,6 +124,44 @@ export class ListComponent implements OnInit {
       console.log(err);
     } finally {
       this.loading = false;
+    }
+  }
+
+  // 格式化日期時間的通用方法
+  private formatDateTime(dateStr: any): string {
+    if (!dateStr) return '';
+    
+    // 嘗試用 moment 解析各種可能的格式
+    let parsedDate = moment(dateStr);
+    
+    // 如果直接解析失敗，嘗試常見的格式
+    if (!parsedDate.isValid()) {
+      // 嘗試 ISO 格式
+      parsedDate = moment(dateStr, 'YYYY-MM-DDTHH:mm:ss');
+    }
+    
+    if (!parsedDate.isValid()) {
+      // 嘗試帶毫秒的格式
+      parsedDate = moment(dateStr, 'YYYY-MM-DDTHH:mm:ss.SSS');
+    }
+    
+    if (!parsedDate.isValid()) {
+      // 嘗試空格分隔的格式
+      parsedDate = moment(dateStr, 'YYYY-MM-DD HH:mm:ss');
+    }
+    
+    if (!parsedDate.isValid()) {
+      // 嘗試斜線格式
+      parsedDate = moment(dateStr, 'YYYY/MM/DD HH:mm:ss');
+    }
+    
+    if (parsedDate.isValid()) {
+      // 格式化為 YYYY/MM/DD HH:mm 格式（不包含秒數）
+      return parsedDate.format('YYYY/MM/DD HH:mm');
+    } else {
+      // 如果都無法解析，顯示原始值
+      console.warn('Unable to parse date:', dateStr);
+      return dateStr;
     }
   }
 }

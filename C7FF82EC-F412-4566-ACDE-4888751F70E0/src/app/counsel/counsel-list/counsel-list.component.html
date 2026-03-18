@@ -10,164 +10,128 @@
             2.「某年某班」
             3.尚未在 input 內輸入搜尋條件
         ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ -->
-    <div *ngIf="mod === 'class'"
-         class="class-page">
+    <div *ngIf="mod === 'class'" class="class-page">
       <ng-container *ngIf="targetList.length === 0">
         <div class="row justify-content-center mt-5">沒有資料。</div>
       </ng-container>
 
       <div class="font-weight-bold mb-2">
-        <h5  class ="base-semester " style ="padding-left: 20px;">
-          {{ currentSchoolYear }}學年度 第{{ currentSemester }}學期 
+        <h5 class="base-semester " style="padding-left: 20px;">
+          {{ currentSchoolYear }}學年度 第{{ currentSemester }}學期
         </h5>
-<div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
-  <button 
-    *ngIf="shouldShowImportButton"  
-    class="btn import-btn"
-    style="
-      background-color: #83AFB8;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      font-size: 14px;
-      font-weight: normal;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: none !important;
-    "
-    onmouseover="this.style.backgroundColor='#6d9aa5'"
-    onmouseout="this.style.backgroundColor='#83AFB8'"
-    (click)="modalImportShow()">
-    <i class="bi bi-upload" style="font-size: 14px;"></i>
-    匯入一級晤談紀錄
-  </button>
-    
-</div>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <button *ngIf="shouldShowImportButton" class="action-btn primary" (click)="modalImportShow()">
+            <i class="bi bi-upload"></i>
+            匯入一級晤談紀錄
+          </button>
 
-        <app-import-modal #app_import_modal  [StudentList]="targetList"  [Role]="'班導師'"></app-import-modal>
+          <!-- <button *ngIf="shouldShowImportButton" class="action-btn" (click)="openMappingModal()">
+            <i class="bi bi-table"></i>
+            欄位映射轉換
+          </button> -->
+        </div>
+
+        <app-import-modal #app_import_modal [StudentList]="targetList" [Role]="'班導師'"></app-import-modal>
         <app-import-mapping-modal #app_import_mapping_modal></app-import-mapping-modal>
       </div>
- 
+
       <ul class="rwd-table">
         <li class="thead">
           <ol class="tr">
-            <li class="sticky-top"
-                style="width: 70px">座號</li>
-            <li class="sticky-top"
-                style="width: 120px">姓名</li>
-            <li class="sticky-top"
-                style="width: 70px">聯絡事項筆數</li>
-            <li class="sticky-top"
-                style="width: 70px">輔導內容筆數</li>
-            <li class="sticky-top"
-                style="width: 100px">最後日期</li>
-            <li class="sticky-top"
-                style="width: 120px">對象</li>
-            <li class="sticky-top"
-                style="width: 120px">方式</li>
+            <li class="sticky-top" style="width: 70px">座號</li>
+            <li class="sticky-top" style="width: 120px">姓名</li>
+            <li class="sticky-top" style="width: 70px">聯絡事項筆數</li>
+            <li class="sticky-top" style="width: 70px">輔導內容筆數</li>
+            <li class="sticky-top" style="width: 100px">最後日期</li>
+            <li class="sticky-top" style="width: 120px">對象</li>
+            <li class="sticky-top" style="width: 120px">方式</li>
             <li class="sticky-top">聯絡事項/內容</li>
             <li class="sticky-top">新增一級輔導紀錄</li>
 
             <!-- <li class="sticky-top"
                 style="width: 100px">轉介</li> -->
-                
-            <li class="sticky-top"
-            style="width: 100px">學生資訊</li>
+
+            <li class="sticky-top" style="width: 100px">學生資訊</li>
           </ol>
         </li>
-        <li class="tbody " style ="cursor:  context-menu !important;">
-          <ol *ngFor="let stuRec of targetList"
-              class="tr"
-          
-         
-             >
+        <li class="tbody " style="cursor:  context-menu !important;">
+          <ol *ngFor="let stuRec of targetList" class="tr">
 
-              <!--  -->
-            
-            <li data-title="座號"  style ="cursor:  context-menu !important;">
+            <!--  -->
+
+            <li data-title="座號" style="cursor:  context-menu !important;">
               {{ stuRec.SeatNo }}
             </li>
-            <li data-title="姓名"
-            style ="cursor: context-menu !important;"
-                title="{{stuRec.StudentName}}">
+            <li data-title="姓名" style="cursor: context-menu !important;" title="{{stuRec.StudentName}}">
               <div style="width:100%;position: relative; ">
-                <div *ngIf="stuRec.Status!='一般'"
-                     class="text-danger"
-                     style="position: absolute; top:-50x; left:-12px; z-index: 30;   ">
+                <div *ngIf="stuRec.Status!='一般'" class="text-danger"
+                  style="position: absolute; top:-50x; left:-12px; z-index: 30;   ">
                   <small> ({{stuRec.Status}})</small>
                 </div>
                 <!-- <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"> -->
-                  <div class="w-100 align-baseline base-studentname" style ="cursor: context-menu !important;">
+                <div class="w-100 align-baseline base-studentname" style="cursor: context-menu !important;">
                   {{ stuRec.StudentName }}
                 </div>
               </div>
             </li>
-            <li data-title="聯絡事項筆數" style ="cursor: context-menu !important;">
+            <li data-title="聯絡事項筆數" style="cursor: context-menu !important;">
               {{ stuRec.InterviewCount == 0 ? '--' :stuRec.InterviewContactItemCount }}
             </li>
-            <li data-title="輔導內容筆數" style ="cursor: context-menu !important;">
+            <li data-title="輔導內容筆數" style="cursor: context-menu !important;">
               {{ stuRec.InterviewCount == 0 ? '--' :stuRec.InterviewContentCount }}
             </li>
-            <li data-title="最後日期" style ="cursor: context-menu !important;">
+            <li data-title="最後日期" style="cursor: context-menu !important;">
               {{ stuRec.LastInterviewDate }}
             </li>
-            <li data-title="對象"
-            style ="cursor: context-menu !important;"
-                title="{{stuRec.LastInterviewContact}}">
+            <li data-title="對象" style="cursor: context-menu !important;" title="{{stuRec.LastInterviewContact}}">
               <div style="width:100%;position: relative;">
                 <!-- <div style="width:100%;position:ab solute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"> -->
-                  <div  class="w-100 align-baseline">
+                <div class="w-100 align-baseline">
                   {{ stuRec.LastInterviewContact }}
                 </div>
               </div>
             </li>
-            <li data-title="方式" 
-            style ="cursor: context-menu !important;"
-                title="{{stuRec.LastInterviewType+stuRec.LastInterviewTypeOther}}">
+            <li data-title="方式" style="cursor: context-menu !important;"
+              title="{{stuRec.LastInterviewType+stuRec.LastInterviewTypeOther}}">
               <div style="width:100%;position: relative;">
                 <!-- <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"> -->
-                <div  class="w-100 align-baseline">
+                <div class="w-100 align-baseline">
                   {{ stuRec.LastInterviewType }}{{ stuRec.LastInterviewTypeOther }}
                 </div>
               </div>
             </li>
-            <li data-title="聯絡事項/內容"
-            style ="cursor: context-menu !important;"
-                title="{{(stuRec.LastInterviewContactItem?'聯絡事項:\n  '+stuRec.LastInterviewContactItem:'')+(stuRec.LastInterviewContactItem&&stuRec.LastInterviewContent?'\n':'')+(stuRec.LastInterviewContent?'內容:\n  '+stuRec.LastInterviewContent:'')}}">
+            <li data-title="聯絡事項/內容" style="cursor: context-menu !important;"
+              title="{{(stuRec.LastInterviewContactItem?'聯絡事項:\n  '+stuRec.LastInterviewContactItem:'')+(stuRec.LastInterviewContactItem&&stuRec.LastInterviewContent?'\n':'')+(stuRec.LastInterviewContent?'內容:\n  '+stuRec.LastInterviewContent:'')}}">
               <div style="width:100%;position: relative;">
-                <div  class=" align-baseline" 
-                style ="white-space: pre-wrap;
+                <div class=" align-baseline" style="white-space: pre-wrap;
                 word-break: break-all;
                 overflow-y: hidden;
                 text-overflow: ellipsis; 
                 height: 28px;
                 line-height: 28px;
                 text-overflow: ellipsis
-                "  >
-                <!-- <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
+                ">
+                  <!-- <div style="width:100%;position:absolute;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
                 class="text-left">   -->
-                  {{ stuRec.LastInterviewContent || stuRec.LastInterviewContactItem }} 
+                  {{ stuRec.LastInterviewContent || stuRec.LastInterviewContactItem }}
                 </div>
               </div>
             </li>
-   
+
 
             <li>
 
-              <i class="material-icons"  (click)="addInterviews($event,stuRec)" style ="color :#799eb3 ;font-size: 19px;">  note_alt</i> 
+              <i class="material-icons" (click)="addInterviews($event,stuRec)" style="color :#799eb3 ;font-size: 19px;">
+                note_alt</i>
 
 
             </li>
-        
-            <li   [routerLink]="['/counsel', 'detail', stuRec.StudentID]">
-          <span style="font-weight :900;"> 
-            . . .
-          </span>
-             
+
+            <li [routerLink]="['/counsel', 'detail', stuRec.StudentID]">
+              <span style="font-weight :900;">
+                . . .
+              </span>
+
             </li>
           </ol>
         </li>
@@ -191,7 +155,7 @@
       <div class="font-weight-bold">
         <!-- {{ sems.SchoolYear }}學年度 第{{ sems.Semester }}學期 -->
       </div>
-      
+
 
       <!-- 康橋增加需求 -->
       <!-- <div class="dropdown"
@@ -209,14 +173,14 @@
         (click)="reloadByCondition(doc)">{{ doc.Name+'('+doc.DocumentName+')'}}</a>
    </div>
  </div> -->
-    <!--  -->
-    <div class="float-right">
-   <p style ="color :#ea3f33">
-     認輔學生為您目前負責個案中，尚未結案的學生(學籍在校生)。 
-    
-     您可以在您負責的認輔學生個案中，填寫學生的晤談紀錄。
-   </p>    
-    </div> 
+      <!--  -->
+      <div class="float-right">
+        <p style="color :#ea3f33">
+          認輔學生為您目前負責個案中，尚未結案的學生(學籍在校生)。
+
+          您可以在您負責的認輔學生個案中，填寫學生的晤談紀錄。
+        </p>
+      </div>
 
       <ul class="rwd-table">
         <li class="thead">
@@ -224,15 +188,17 @@
             <li>班級</li>
             <li>座號</li>
             <li>姓名</li>
-            <li style="position:relative"> 晤談次數 
-            
-              <mat-icon  (mouseover)="isShowInfo = true" (mouseout)="isShowInfo = false"  aria-hidden="false" aria-label="Example home icon"
-              style="cursor:pointer ;font-size: 17px;  position:relative"  class="material-symbols-outlined material-icons-align" >
+            <li style="position:relative"> 晤談次數
+
+              <mat-icon (mouseover)="isShowInfo = true" (mouseout)="isShowInfo = false" aria-hidden="false"
+                aria-label="Example home icon" style="cursor:pointer ;font-size: 17px;  position:relative"
+                class="material-symbols-outlined material-icons-align">
                 info
-        </mat-icon>
-        <div  *ngIf="isShowInfo" class="info_section "  style="  position:absolute ;left :-1px  ;bottom :-50px ;z-index: 9999;">
-         教師各人對該位學生不分學年度之總晤談次數
-        </div>  
+              </mat-icon>
+              <div *ngIf="isShowInfo" class="info_section "
+                style="  position:absolute ;left :-1px  ;bottom :-50px ;z-index: 9999;">
+                教師各人對該位學生不分學年度之總晤談次數
+              </div>
             </li>
             <li>最近一次日期</li>
             <li>最近一次晤談對象</li>
@@ -242,9 +208,8 @@
           </ol>
         </li>
         <li class="tbody">
-          <ol class="tr"
-              *ngFor="let item of targetList"
-              [routerLink]="['/counsel', 'detail', item.StudentID, 'counsel']">
+          <ol class="tr" *ngFor="let item of targetList"
+            [routerLink]="['/counsel', 'detail', item.StudentID, 'counsel']">
             <li data-title="班級">{{ item.ClassName }}</li>
             <li data-title="座號">{{ item.SeatNo }}</li>
             <li data-title="姓名">{{ item.StudentName }}</li>
@@ -252,12 +217,10 @@
             <li data-title="最後日期">
               {{ item.LastUpdateVg | date: "yyyy-MM-dd" }}
             </li>
-            <li class="text-normal"
-                data-title="對象">
+            <li class="text-normal" data-title="對象">
               {{ item.ContactNameVg }}
             </li>
-            <li class="text-normal"
-                data-title="方式">
+            <li class="text-normal" data-title="方式">
               {{ item.CounselTypeVg }}
             </li>
             <!-- <li class="text-left text-normal"
@@ -272,8 +235,7 @@
     <div *ngIf="mod == 'search'">
       <div class="row justify-content-center">{{searchMessage}}</div>
       <ul class="rwd-table">
-        <li class="thead"
-            *ngIf="targetList.length > 0">
+        <li class="thead" *ngIf="targetList.length > 0">
           <ol class="tr">
             <li style="width:15%">學號</li>
             <li style="width:15%">班級</li>
@@ -284,23 +246,16 @@
           </ol>
         </li>
         <li class="tbody">
-          <ol class="tr"
-              *ngFor="let item of targetList"
-              [routerLink]="['/counsel', 'detail', item.StudentID, 'counsel']">
-            <li data-title="學號"
-                style="white-space: pre-wrap;word-break: break-all;">{{ item.StudentNumber }}</li>
-            <li data-title="班級"
-                style="white-space: pre-wrap;word-break: break-all;">{{ item.ClassName }}</li>
-            <li data-title="座號"
-                style="white-space: pre-wrap;word-break: break-all;">{{ item.SeatNo }}</li>
-            <li data-title="姓名"
-                style="white-space: pre-wrap;word-break: break-all;">{{ item.StudentName  }}</li>
+          <ol class="tr" *ngFor="let item of targetList"
+            [routerLink]="['/counsel', 'detail', item.StudentID, 'counsel']">
+            <li data-title="學號" style="white-space: pre-wrap;word-break: break-all;">{{ item.StudentNumber }}</li>
+            <li data-title="班級" style="white-space: pre-wrap;word-break: break-all;">{{ item.ClassName }}</li>
+            <li data-title="座號" style="white-space: pre-wrap;word-break: break-all;">{{ item.SeatNo }}</li>
+            <li data-title="姓名" style="white-space: pre-wrap;word-break: break-all;">{{ item.StudentName }}</li>
             <!-- <li data-title="身分證號"
                 style="white-space: pre-wrap;word-break: break-all;">{{ item.IDNumber}}</li> -->
-                <li data-title="身分證號"
-                style="white-space: pre-wrap;word-break: break-all;">--</li>
-            <li data-title="學生狀態"
-                style="white-space: pre-wrap;word-break: break-all;">{{ item.Status }}</li>
+            <li data-title="身分證號" style="white-space: pre-wrap;word-break: break-all;">--</li>
+            <li data-title="學生狀態" style="white-space: pre-wrap;word-break: break-all;">{{ item.Status }}</li>
           </ol>
         </li>
       </ul>

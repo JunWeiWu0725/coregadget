@@ -43,6 +43,9 @@ export class CounselInterviewReportComponent implements OnInit {
   
   // 🔥 新增：控制數據分析按鈕顯示的變數
   showChartButton: boolean = false;
+  
+  // 控制欄位映射轉換按鈕顯示的變數（預設隱藏，按 Shift+J 顯示）
+  showMappingButton: boolean = false;
 
   constructor(
     private dsaService: DsaService,
@@ -413,13 +416,19 @@ export class CounselInterviewReportComponent implements OnInit {
     classItem.SetClassCheck();
   }
 
-  // 🔥 新增：監聽 Ctrl + Q 組合鍵
+  // 🔥 新增：監聽 Ctrl + Q 組合鍵和 Shift + J 組合鍵
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.ctrlKey && event.key.toLowerCase() === 'q') {
       event.preventDefault(); // 防止瀏覽器預設行為
       this.showChartButton = !this.showChartButton; // 切換顯示狀態
       console.log('數據分析按鈕顯示狀態:', this.showChartButton);
+    }
+    // 監聽 Shift + J 組合鍵（顯示/隱藏欄位映射轉換按鈕）
+    if (event.shiftKey && event.key.toLowerCase() === 'j') {
+      event.preventDefault(); // 防止瀏覽器預設行為
+      this.showMappingButton = !this.showMappingButton; // 切換顯示狀態
+      console.log('欄位映射轉換按鈕顯示狀態:', this.showMappingButton);
     }
   }
 

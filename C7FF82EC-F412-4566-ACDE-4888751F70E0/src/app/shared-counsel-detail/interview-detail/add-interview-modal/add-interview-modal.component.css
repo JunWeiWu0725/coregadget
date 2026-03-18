@@ -1,3 +1,12 @@
 .text-center {
     padding-left:  5px;
   }
+
+/* 縮小日期和事由範本之間的距離 */
+.form-row .form-group[style*="margin-bottom: 0"] {
+  margin-bottom: 0 !important;
+}
+
+.form-row + .form-row {
+  margin-top: 0.5rem;
+}

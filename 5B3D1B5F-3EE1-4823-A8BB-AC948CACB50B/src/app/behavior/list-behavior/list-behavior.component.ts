@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GadgetService, Contract } from "src/app/gadget.service";
 import { DialogService } from '../dialog-service.service';
 import { Utils } from "src/app/util";
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-list-behavior',
@@ -129,5 +130,25 @@ export class ListBehaviorComponent implements OnInit {
     } else {
       return;
     }
+  }
+
+  // 格式化最後更新時間
+  formatLastUpdateTime(lastUpdate: string): string {
+    if (!lastUpdate) return '';
+    
+    // 嘗試解析不同的日期格式
+    let parsedDate = moment(lastUpdate);
+    
+    // 如果解析失敗，嘗試其他格式
+    if (!parsedDate.isValid()) {
+      parsedDate = moment(lastUpdate, 'YYYY-MM-DD HH:mm:ss');
+    }
+    
+    if (!parsedDate.isValid()) {
+      return lastUpdate; // 如果都無法解析，返回原始值
+    }
+    
+    // 統一顯示完整的日期時間格式
+    return parsedDate.format('YYYY/MM/DD HH:mm');
   }
 }

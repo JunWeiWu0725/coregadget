@@ -10,14 +10,14 @@
                 <span class="point"
                       [routerLink]="['/behavior']">Behavior</span></li> -->
             <li class="breadcrumb-item active"
-                aria-current="page"><span style="font-size: 1.1rem; font-weight: bold;">{{className?className+"班":"我的紀錄"}}</span></li>
+                aria-current="page"><span>{{className?className+"班":"我的紀錄"}}</span></li>
             <button class="ml-auto btn btn-dark"
                     [routerLink]="['/template']">事由樣板</button>
         </ol>
     </nav>
     <ul class="list-group mb-3">
-        <li class="list-group-item active d-flex align-items-center" style="padding: 1rem 1.25rem;">
-            <span style="font-size: 1.25rem; font-weight: bold;">{{className?className+"班":"我的紀錄"}}</span>
+        <li class="list-group-item active d-flex align-items-center py-2">
+            {{className?className+"班":"我的紀錄"}}
             <button *ngIf="classID != null"
                     class="ml-auto btn btn-info"
                     [routerLink]="['/behavior/add', classID, className]"><i
@@ -27,47 +27,44 @@
                     [routerLink]="['/behavior/add']"><i class="material-icons mr-1">add</i>新增</button>
         </li>
         <li class="list-group-item"
-            *ngFor="let data of behaviorDataList"
-            style="padding: 1rem 1.25rem;">
-            <div class="row align-items-center">
-                <!-- 第一行：日期時間和姓名 -->
-                <div class="col-12 col-md-3 col-lg-2 text-nowrap" style="min-width: 0; line-height: 1.8;">
-                    <span class="pr-2" style="color: #666;">{{data.LastUpdate}}</span>
+            *ngFor="let data of behaviorDataList">
+            <div class="row">
+                <div class="col-md-3 col-lg-2 text-nowrap">
                     <span class="">
-                        <span style="font-weight: bold; color: #3b3b3b;">{{data.Name}}</span>
+                        <span>{{data.Name}}</span>
                     </span>
                     <span *ngIf="!classID"
                           class="pl-2">
-                        <span style="color: #666;">{{data.ClassName}}班</span>
+                        <span>{{data.ClassName}}班</span>
                     </span>
                 </div>
-                <!-- 第二行：標籤和事由 -->
-                <div class="col-12 col-md-6 col-lg-7 mt-2 mt-md-0" style="min-width: 0; overflow: hidden; line-height: 1.8;">
+                <div class="col-md-6 col-lg-7">
                     <span *ngIf="data.Detention=='true'"
                           class="badge badge-danger mr-1">Detention</span>
                     <span *ngIf="data.GoodBehavior=='true'"
                           class="badge badge-success mr-1">Good</span>
-                    <span *ngIf="data.DaaDsaFollow=='true'"
+                          <span *ngIf="data.DaaDsaFollow=='true'"
                           class="badge badge-follow-up mr-1">DAA/DSA Follow up</span>
-                    <span style="color: #666;">{{data.Comment}}</span>
+                    <span>{{data.Comment}}</span>
+            
                 </div>
-                <!-- 第三行：登錄信息和操作按鈕 -->
-                <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center flex-nowrap text-nowrap mt-2 mt-md-0" style="min-width: 0; line-height: 1.8;">
-                    <span class="mr-auto" style="color: #666; white-space: nowrap;">登錄：{{data.Teacher}}</span>
-                    <div style="display: inline-flex; align-items: center; width: 50px; justify-content: flex-end; flex-shrink: 0;">
-                        <a *ngIf="data.IfEdit=='true'"
-                           class="h6 text-info point mr-1"
-                           (click)="editComment(data)"
-                           style="white-space: nowrap;">
-                            <i class="material-icons">edit</i>
-                        </a>
-                        <a *ngIf="data.IfEdit=='true'"
-                           class="h6 text-danger point"
-                           (click)="delete(data)"
-                           style="white-space: nowrap;">
-                            <i class="material-icons">delete</i>
-                        </a>
-                    </div>
+                <div class="col-md-3 col-lg-3 text-right">
+                        <span>登錄：{{data.Teacher}}</span>
+                            <a *ngIf="data.IfEdit=='true'"
+                            class="h6 text-info point ml-2"
+                            (click)="editComment(data)">
+                            <i class="material-icons mr-1">edit</i>
+                            </a>
+                            <a *ngIf="data.IfEdit=='true'"
+                                class="h6 text-danger point ml-1"
+                                (click)="delete(data)">
+                                <i class="material-icons mr-1">delete</i>
+                            </a>
+                        <div class="mt-1">
+                            <small class="text-muted">
+                                最後更新: {{formatLastUpdateTime(data.LastUpdate)}}
+                            </small>
+                        </div>
                 </div>
             </div>
         </li>
