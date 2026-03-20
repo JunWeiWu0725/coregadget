@@ -3,11 +3,6 @@
   var query_absence;
 
   $(function () {
-    // 頁面載入時，將焦點設定到 loading 畫面
-    setTimeout(function() {
-      $("#loading-screen").focus();
-    }, 100);
-    
     $("#absence a[target='query']").click(function (e) {
       e.preventDefault();
       return query_absence();
@@ -76,20 +71,6 @@
         
         // 更新按鈕的 aria-label 以包含預設學期
         $("#semester-dropdown-button").attr("aria-label", "學期 " + semesterText + "，選單，輕觸兩下即可啟用");
-        
-        // 資料載入完成，隱藏 loading 並顯示主要內容
-        setTimeout(function() {
-          // 隱藏 loading 畫面
-          $("#loading-screen").addClass("hidden");
-          
-          // 顯示主要內容
-          $("#widget").show();
-          
-          // 將焦點移到「缺課記錄」標題
-          setTimeout(function() {
-            $("#page-title").focus();
-          }, 100);
-        }, 300);
         
         // query_absence(); // 預設載入查詢結果
       }

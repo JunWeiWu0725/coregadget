@@ -16,6 +16,13 @@
       },
       paramValues: {}
     });
+    document.addEventListener("DOMContentLoaded", () => {
+      // 強制將焦點設定在標題上
+      const mainHeading = document.getElementById('main-heading');
+      if (mainHeading) {
+        mainHeading.focus();
+      }
+    });
   </script>
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
   <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" />
@@ -30,24 +37,14 @@
 </head>
 
 <body>
-  <!-- Loading 畫面 -->
-  <div id="loading-screen" class="loading-screen" role="status" aria-live="polite" aria-label="載入中" tabindex="-1">
-    <div class="loading-container">
-      <div class="loading-spinner" aria-hidden="true">
-        <i class="fa fa-spinner fa-spin" style="font-size: 48px;"></i>
-      </div>
-      <p class="loading-text">載入中，請稍候...</p>
-    </div>
-  </div>
-
-  <div id="widget" class="my-page text-sm" style="display: none;">
+  <div id="widget" class="my-page text-sm" style="margin-top: 20px; padding-top: 0;">
     <div class="page-container">
       <div class="header-space"></div>
       <div class="content container-fluid">
         <div id="absence">
-          <div class="row-fluid">
-            <div id="page-title" class="text-center" tabindex="-1" aria-label="缺課記錄,標題" style="outline: none; font-size: 18px; font-weight: 500; margin-bottom: 8px;">
-              <span aria-hidden="true">缺課記錄</span></div>
+          <div class="row-fluid">            
+            <h1 id="main-heading" class="text-center md-hidden" tabindex="-1" aria-label="缺課記錄,標題" style="outline: none; font-size: 18px; font-weight: 500; border: none; line-height: 36px; left: 0; padding: 0; margin: 0px;">
+              <span aria-hidden="true">缺課記錄</span></h1>
             <div class="flex whitespace-nowrap mb-4">
               <label for="schoolYearInput" class="btn btn-inverse disabled px-2">學年度</label>
               <input
