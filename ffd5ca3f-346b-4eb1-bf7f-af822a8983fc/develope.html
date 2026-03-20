@@ -14,6 +14,13 @@
                 password: ''
             }
         });
+        document.addEventListener("DOMContentLoaded", () => {
+            // 強制將焦點設定在標題上
+            const mainHeading = document.getElementById('main-heading');
+            if (mainHeading) {
+                mainHeading.focus();
+            }
+        });
     </script>
     <meta content='text/html;charset=utf-8' />
     <link href="css/bootstrap.min.css" rel="stylesheet" />
@@ -28,24 +35,7 @@
 </head>
 
 <body ng-controller="MainCtrl">
-    <!-- 初始載入 Loading 畫面 - 無障礙優化 -->
-    <div id="initialLoading" 
-         ng-show="isInitialLoading" 
-         role="alert" 
-         aria-live="assertive" 
-         aria-busy="true"
-         tabindex="0"
-         style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.98); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-        <div style="text-align: center;">
-            <div style="margin-bottom: 20px;">
-                <i class="fa fa-spinner fa-spin" style="font-size: 64px; color: #337ab7;" aria-hidden="true"></i>
-            </div>
-            <h2 style="color: #333; font-size: 28px; margin: 0;">系統準備中,請稍候...</h2>
-            <p style="color: #666; font-size: 18px; margin-top: 15px;">正在載入資料和畫面元素</p>
-        </div>
-    </div>
-
-    <div id="gadget" class="my-page" ng-show="!isInitialLoading">
+    <div id="gadget" class="my-page">
 
         <div class="modal fade" id="noConditionModal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -211,8 +201,10 @@
             <div class="header-space"></div>
             <!-- 查詢 -->
             <div class="content" ng-show="panel=='filter'">
-                <div style="margin-bottom: 10px">
-                    <button id="publicCountBtn" class="btn btn-info" ng-click="showPublicCountModal()" aria-label="顯示公開總覽數，按鈕，輕觸兩下即可啟用" tabindex="0">顯示公開總覽數</button>
+                <h1 id="main-heading" class="text-center md-hidden" tabindex="-1" aria-label="同學校友查詢,標題" style="outline: none; font-size: 18px; font-weight: 500; border: none; line-height: 36px; left: 0; padding: 0; margin: 0px;">
+                    <span aria-hidden="true">同學/校友查詢</span></h1>
+                <div>
+                    <button class="btn btn-info" ng-click="showPublicCountModal()" aria-label="顯示公開總覽數，按鈕，輕觸兩下即可啟用" tabindex="0" style="margin-bottom: 8px;">顯示公開總覽數</button>
                 </div>
                 <div class="panel panel-info">
                     <div class="panel-heading">
