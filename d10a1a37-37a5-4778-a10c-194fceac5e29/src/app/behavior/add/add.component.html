@@ -16,7 +16,7 @@
             <!-- Left Column: Date & Templates -->
             <div class="col-md-3 d-flex flex-column justify-content-between">
                 <div>
-                    <label class="section-label">日期</label>
+                    <label class="section-label">Date</label>
                     <div class="input-with-icon">
                         <i class="far fa-calendar-alt icon-left"></i>
                         <input type="date" 
@@ -26,13 +26,13 @@
                     </div>
                 </div>
                 <div class="mb-2">
-                    <label class="section-label">事由範本</label>
+                    <label class="section-label">SELECT COMMENT</label>
                     <div class="dropdown w-100">
                         <button class="custom-dropdown-btn w-100 d-flex align-items-center" 
                                 type="button" 
                                 data-toggle="dropdown">
                             <i class="far fa-comment-dots mr-2 text-primary"></i>
-                            <span>選擇事由</span>
+                            <span>SELECT COMMENT</span>
                             <i class="fas fa-chevron-right ml-auto text-muted small"></i>
                         </button>
                         <div class="dropdown-menu w-100 shadow-sm border-0">
@@ -48,22 +48,22 @@
             <!-- Middle Column: Feedback -->
             <div class="col-md-6">
                 <div class="mb-2">
-                    <label class="section-label mb-0">事由</label>
+                    <label class="section-label mb-0">Comment</label>
                 </div>
                 <div class="feedback-container">
                     <textarea class="custom-textarea" 
-                              placeholder="事由…"
+                              placeholder="Comment…"
                               rows="2"
                               [(ngModel)]="addText" 
                               (change)="commentChange()"></textarea>
-                    <div class="char-count">{{addText?.length || 0}} 字數</div>
+                    <div class="char-count">{{addText?.length || 0}} characters</div>
                 </div>
             </div>
 
             <!-- Right Column: Tags & Sort -->
             <div class="col-md-3 d-flex flex-column justify-content-between">
                 <div>
-                    <label class="section-label">標籤</label>
+                    <label class="section-label">Tags</label>
                     <div class="behavior-tags">
                         <label class="behavior-tag-item" [class.active]="currentDetention">
                             <input type="checkbox" [(ngModel)]="currentDetention" (change)="onCheckboxChange('detention')">
@@ -81,13 +81,13 @@
                 </div>
 
                 <div class="mb-2">
-                    <label class="section-label">排序</label>
+                    <label class="section-label">Sort</label>
                     <div class="custom-mat-select-wrapper">
                         <i class="fas fa-filter icon-left"></i>
                         <mat-form-field appearance="none" class="w-100 no-line">
                             <mat-select [value]="sortType" (selectionChange)="onSortChange($event)" class="custom-select-trigger">
-                                <mat-option value="seat">班座排序</mat-option>
-                                <mat-option value="studentNumber">學號排序</mat-option>
+                                <mat-option value="seat">Sort by Seat Number</mat-option>
+                                <mat-option value="studentNumber">Sort by Student Number</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
@@ -101,7 +101,7 @@
             <button class="btn btn-save py-2 px-5" 
                     [disabled]="checkButtonEnable === 'disabled'" 
                     (click)="save()">
-                儲存 （已選 : {{checkCount}}）
+                SAVE （Checked : {{checkCount}}）
             </button>
         </div>
     </div>
